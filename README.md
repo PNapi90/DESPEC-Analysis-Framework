@@ -24,11 +24,11 @@ The general idea of DEAF:
 
 EVENTBUILDER:
   - the pointer double** data_stream includes all necessary data from each system:
-    -> FATIMA: E[], T[], hitID[]
-    -> GALILEO: E[], T[],hitID[]
-    -> PLASTIC: T,... (what else necessary ?)
-    -> AIDA: X[],Y[],E[],T[]
-    -> FRS: ?
+  - FATIMA: E[ ], T[ ], hitID[ ]
+  - GALILEO: E[ ], T[ ],hitID[ ]
+  - PLASTIC: T,... (what else necessary ?)
+  - AIDA: X[ ],Y[ ],E[ ],T[ ]
+  - FRS: ?
   - buffer events for few seconds (experimental seconds)
   
 
