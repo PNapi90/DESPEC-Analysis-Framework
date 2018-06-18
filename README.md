@@ -27,7 +27,7 @@ EVENTBUILDER:
   - FATIMA: E[ ], T[ ], hitID[ ]
   - GALILEO: E[ ], T[ ], hitID[ ]
   - PLASTIC: T,... (what else necessary ?)
-  - AIDA: X[ ], Y[ ], E[ ], T[ ]
+  - AIDA: X[ ], Y[ ], E[ ], T[ ], GRID_ADRESS[ ]
   - FRS: ?
   - buffer events for few seconds (experimental seconds)
   
