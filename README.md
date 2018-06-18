@@ -30,6 +30,15 @@ EVENTBUILDER:
   - AIDA: X[ ], Y[ ], E[ ], T[ ], GRID_ADRESS[ ]
   - FRS: ?
   - buffer events for few seconds (experimental seconds)
+
+=======================================================================
+
+EXPECTED DATA FORMATS BY double** data_stream (White Rabbit TS already known by EVENTBUILDER):
+  - FATIMA: data_stream[i] = {E[i],T[i],detID[i],am_hits}
+  - GALILEO: data_stream[i] = {E[i],T[i],detID[i],am_hits}
+  - AIDA: data_stream[i] = {E[i],T[i],hit_grid_id[i],strip_x_ID[i],strip_y_ID[i],am_hits}
+  - FRS: data_stream[i] = {?,?,?,...,am_hits}
+  - PLASTIC: data_stream[i] = {E[i],T[i],...,am_hits}
   
 
 =======================================================================
