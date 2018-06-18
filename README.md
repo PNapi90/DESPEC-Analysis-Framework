@@ -20,11 +20,7 @@ The general idea of DEAF:
   - format output data stream in each system
   - send output data stream to corresponding data stream object i
   - build physical events inside eventbuilder object (for isomeric decay and beta decay)
-
-
-
-
-
+  - for each physical event -> create "interesting" histograms and matrices
 
 =======================================================================
 
