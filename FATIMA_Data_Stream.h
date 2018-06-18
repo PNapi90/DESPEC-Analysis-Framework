@@ -11,10 +11,10 @@ private:
     
     ULong64_t WR_T;
 
-    double E[36];
-    double T[36];
+    double E[100];
+    double T[100];
 
-    int hitID[36];
+    int hitID[100];
     int am_hits;
 
 public:
@@ -22,7 +22,7 @@ public:
     FATIMA_Data_Stream();
     ~FATIMA_Data_Stream();
 
-    void set_data_stream(double**,int,ULong64_t);
+    void set_data_stream(double**,ULong64_t);
     void set_Event();
 
 };

@@ -22,7 +22,7 @@ public:
     PLASTIC_Data_Stream();
     ~PLASTIC_Data_Stream();
 
-    void set_data_stream(double**,int,ULong64_t);
+    void set_data_stream(double**,ULong64_t);
     void set_Event();
 
 };
