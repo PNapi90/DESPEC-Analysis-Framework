@@ -22,6 +22,16 @@ The general idea of DEAF:
   - build physical events inside eventbuilder object (for isomeric decay and beta decay)
   - for each physical event -> create "interesting" histograms and matrices
 
+EVENTBUILDER:
+  - the pointer double** data_stream includes all necessary data from each system:
+    -> FATIMA: E[], T[], hitID[]
+    -> GALILEO: E[], T[],hitID[]
+    -> PLASTIC: T,... (what else necessary ?)
+    -> AIDA: X[],Y[],E[],T[]
+    -> FRS: ?
+  - buffer events for few seconds (experimental seconds)
+  
+
 =======================================================================
 
 To do (UNPACKING):
@@ -39,7 +49,12 @@ To do (EVENTBUILDING):
   - How to build physical events?
 
 
+
+
+
+=======================================================================
+
 !!! Go4 linking (access to data via Int_t* pdata) still missing !!!
 
-
+=======================================================================
 
