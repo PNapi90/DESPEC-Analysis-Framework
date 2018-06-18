@@ -38,7 +38,9 @@ To do (UNPACKING):
 
 To do (EVENTBUILDING):
   - Define general data stream structure of each detector
-
+  - Write abstract data stream class and inheriting detector system classes
+  - Write EventBuilder class
+  - How to build physical events?
 
 
 !!! Go4 linking (access to data via Int_t* pdata) still missing !!!
