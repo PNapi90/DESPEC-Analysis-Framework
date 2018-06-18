@@ -39,7 +39,7 @@ EXPECTED DATA FORMATS BY double** data_stream (White Rabbit TS already known by 
   - AIDA: data_stream[i] = {E[i],T[i],hit_grid_id[i],strip_x_ID[i],strip_y_ID[i],am_hits}
   - FRS: data_stream[i] = {?,?,?,...,am_hits}
   - PLASTIC: data_stream[i] = {E[i],T[i],...,am_hits}
-  
+where i represents the index over the amount of hits am_hits (different for each system)  
 
 =======================================================================
 
