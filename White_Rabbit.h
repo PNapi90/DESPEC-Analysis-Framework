@@ -32,7 +32,10 @@ private:
 
 public:
     White_Rabbit();
+    White_Rabbit(bool);
     ~White_Rabbit();
+
+    void set_WR_from_MASTER_DET(ULong64_t);
 
     ULong64_t get_White_Rabbit(int*);
     int get_Detector_id();

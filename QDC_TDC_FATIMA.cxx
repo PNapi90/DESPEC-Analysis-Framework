@@ -4,7 +4,7 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-QDC_TDC_FATIMA::QDC_TDC_FATIMA(int QDC_amount,int TDC_amount){
+QDC_TDC_FATIMA::QDC_TDC_FATIMA(int QDC_amount,int TDC_amount,bool shared_WR){
 
     //amount of QDCs and TDCs used for FATIMA setup
     this->QDC_amount = QDC_amount;
@@ -385,9 +385,17 @@ int QDC_TDC_FATIMA::get_amount_of_fired_Dets(){return fired_Dets;}
 //---------------------------------------------------------------
 
 double** QDC_TDC_FATIMA::get_Detector_Data(){
+    //not yet implemented (if you would not have guessed yourself)
     return nullptr;
 }
 
 //---------------------------------------------------------------
 
 
+void QDC_TDC_FATIMA::check_PLASTIC_HEADER(int* pdata){
+    //check if data includes PLASIC HEADER (if shared_WR)
+    PHeader* phead = (PHeader*) pdata;
+
+    //check if plastic header (value not known yet)
+    PLASITC_HEADER = (phead->identifier == 0);
+}

@@ -18,6 +18,7 @@
 #include "FATIMA_Energy_Calibration.h"
 #include "FATIMA_Time_Calibration.h"
 
+typedef unsigned long long ULong64_t;
 
 class QDC_TDC_FATIMA{
 
@@ -27,6 +28,8 @@ private:
 
     const int amount_of_FAT_DETS = 36;
     const char* format = "%d %d %d";
+
+    bool shared_WR;
 
     int QDC_amount,TDC_amount;
 

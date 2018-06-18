@@ -10,10 +10,16 @@ White_Rabbit::White_Rabbit(){
 
 //---------------------------------------------------------------
 
-White_Rabbit::~White_Rabbit(){}
+White_Rabbit::White_Rabbit(bool tmp){
+    //second ctor for linked systems (linking of FATIMA and PLASTIC)
+    //load_config_file();
+}
 
 //---------------------------------------------------------------
 
+White_Rabbit::~White_Rabbit(){}
+
+//---------------------------------------------------------------
 
 void White_Rabbit::load_config_file(){
     
@@ -33,6 +39,9 @@ void White_Rabbit::load_config_file(){
     }
 }
 
+//---------------------------------------------------------------
+
+void White_Rabbit::set_WR_from_MASTER_DET(ULong64_t WR_Time){this->WR_Time = WR_Time;}
 
 //---------------------------------------------------------------
 
