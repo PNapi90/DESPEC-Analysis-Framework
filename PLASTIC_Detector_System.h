@@ -6,6 +6,7 @@
 #include "Detector_System.cxx"
 #include "TAMEX.h"
 
+#include "PLASTIC_Data_Stream.h"
 
 typedef unsigned long long ULong64_t;
 
@@ -17,11 +18,25 @@ private:
 
     const int add = 2781;
     const int aa = 170;
+    const int six_eight = 104
+    const unsigned long trailer_code = 3138451013;
 
-    double** data_stream;
+    int sfp_id;
+    int trigger_type;
+    int iterator;
 
-    TAMEX* tamex;
+    unsigned long Pre_Trigger_Window;
+    unsigned long Post_Trigger_Window;
 
+    unsigned long** coarse_T;
+    unsigned long** fine_T;
+    unsigned int** ch_ID;
+
+    void check_error(int*);
+    void check_trailer(int*);
+    void get_edges(int*);
+    void get_trigger(int*);
+    void skip_padding(int*);
 
 
 public:
@@ -30,7 +45,7 @@ public:
 
     //functions from abstract class Detector_System
     void Process_MBS(int*);
-    double** get_Event_data();
+    void get_Event_data(PLASTIC_Data_Stream* data_stream);
 };
 
 

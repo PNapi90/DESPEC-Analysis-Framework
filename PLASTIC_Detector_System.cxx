@@ -5,27 +5,46 @@ using namespace std;
 //---------------------------------------------------------------
 
 PLASTIC_Detector_System::PLASTIC_Detector_System(){
-    data_stream = nullptr;
-
-    tamex = new TAMEX();
+    
+    coarse_T = new unsigned long*[100];
+    fine_T = new unsigned long*[100];
+    ch_ID = new unsigned int*[100];
+    
+    for(int i = 0;i < 100;++i){
+        coarse_T[i] = new unsigned long[2];
+        fine_T[i] = new unsigned long[2];
+        ch_ID[i] = new unsigned int[2];
+    }
 }
 
 //---------------------------------------------------------------
 
 PLASTIC_Detector_System::~PLASTIC_Detector_System(){
-    delete tamex;
+    for(int i = 0;i < 100;++i){
+        delete[] coarse_T[i];
+        delete[] fine_T[i];
+        delete[] ch_ID[i];
+    }
+    delete[] coarse_T;
+    delete[] fine_T;
+    delete[] ch_ID;
 }
 
 //---------------------------------------------------------------
 
-double** PLASTIC_Detector_System::get_Event_data(){
+void PLASTIC_Detector_System::get_Event_data(PLASTIC_Data_Stream* data_stream){
     //return important information of event
-    return data_stream;
+    data_stream->set_amount_of_Events(iterator);
+    data_stream->set_event_data(coarse_T,fine_T,ch_ID,coarse_T_trigger,fine_T_trigger);
 }
 
 //---------------------------------------------------------------
 
 void PLASTIC_Detector_System::Process_MBS(int* pdata){
+
+    //reset iterator
+    iterator = 0;
+
     //check for trigger window (beginning of TAMEX MBS)
     TRIGGER_WINDOW* window = (TRIGGER_WINDOW*) pdata;
     Pre_Trigger_Window = window->PRE_TRIGG;
@@ -34,7 +53,7 @@ void PLASTIC_Detector_System::Process_MBS(int* pdata){
     //move to next word
     pdata++;
     //skip padding in stream
-    skip_padding();
+    skip_padding(pdata);
 
     //get tamex_id, sfp_id and trigger type
     TAMEX_CHANNEL_HEADER* head = (TAMEX_CHANNEL_HEADER*) pdata;
@@ -62,22 +81,24 @@ void PLASTIC_Detector_System::Process_MBS(int* pdata){
     pdata++;
 
     //get trigger 
-    get_trigger();
+    get_trigger(pdata);
 
     //move on to leading and trailing edges
-    get_edges();
+    get_edges(pdata);
 
     //check errors
-    check_error();
+    check_error(pdata);
 
+    //checking trailer
+    check_trailer(pdata);
 
-
-
+    //calibrate times
+    calibrate();
 }
 
 //---------------------------------------------------------------
 
-void PLASTIC_Detector_System::skip_padding(){
+void PLASTIC_Detector_System::skip_padding(int* pdata){
     //skip padding by checking words for add
     bool still_padding = true;
     while(still_padding){
@@ -89,7 +110,7 @@ void PLASTIC_Detector_System::skip_padding(){
 
 //---------------------------------------------------------------
 
-void PLASTIC_Detector_System::get_trigger(){
+void PLASTIC_Detector_System::get_trigger(int* pdata){
     //check place holder in stream
     PLACE_HOLDER* hold = (PLACE_HOLDER*) pdata;
     if(hold->six_eight != six_eight){
@@ -108,7 +129,7 @@ void PLASTIC_Detector_System::get_trigger(){
 
 //---------------------------------------------------------------
 
-void PLASTIC_Detector_System::get_edges(){
+void PLASTIC_Detector_System::get_edges(int* pdata){
     //set iterator of edges to 0
     iterator = 0;
 
@@ -147,4 +168,34 @@ void PLASTIC_Detector_System::get_edges(){
 
 //---------------------------------------------------------------
 
-void PLASTIC_Detector_System::check_error
+void PLASTIC_Detector_System::check_error(int* pdata){
+    //next word
+    pdata++;
+
+    TAMEX_ERROR* error = (TAMEX_ERROR*) pdata;
+    if(error->error != error_code){
+        cerr << "wrong error header in TAMEX!" << endl;
+        exit(0);
+    }
+    if(error->err_code != 0){
+        cerr << "Error (not known) in TAMEX occured" << endl;
+        exit(0);
+    }
+}
+
+//---------------------------------------------------------------
+
+void PLASTIC_Detector_System::check_trailer(int* pdata){
+    //next word
+    pdata++;
+
+    TAMEX_TRAILER* trailer = (TAMEX_TRAILER*) pdata;
+
+    if(trailer->trailer != trailer_code){
+        cerr << "Unknown TAMEX trailer format!" << endl;
+        exit(0);
+    }
+
+}
+
+//---------------------------------------------------------------
