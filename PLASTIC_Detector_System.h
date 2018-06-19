@@ -15,6 +15,9 @@ class PLASTIC_Detector_System : public Detector_System{
 
 private:
 
+    const int add = 2781;
+    const int aa = 170;
+
     double** data_stream;
 
     TAMEX* tamex;
