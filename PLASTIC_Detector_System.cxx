@@ -32,8 +32,9 @@ PLASTIC_Detector_System::~PLASTIC_Detector_System(){
 
 //---------------------------------------------------------------
 
-void PLASTIC_Detector_System::get_Event_data(PLASTIC_Data_Stream* data_stream){
+void PLASTIC_Detector_System::get_Event_data(Data_Stream* data_stream){
     //return important information of event
+    data_stream->set_ID("PLASTIC");
     data_stream->set_amount_of_Events(iterator);
     data_stream->set_event_data(coarse_T,fine_T,ch_ID,coarse_T_trigger,fine_T_trigger);
 }

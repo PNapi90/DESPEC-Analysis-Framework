@@ -1,6 +1,7 @@
 #ifndef FATIMA_DET_H
 #define FATIMA_DET_H
 
+#include "Data_Stream.h"
 #include "Detector_System.cxx"
 #include "QDC_TDC_FATIMA.h"
 
@@ -11,8 +12,6 @@ private:
     int am_QDCs,am_TDCs,fired_amount;
 
     QDC_TDC_FATIMA* QDC_TDC;
-
-    double** data_stream;    
 
 public:
     FATIMA_Detector_System();
