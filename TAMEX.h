@@ -20,7 +20,7 @@ struct PADDING
 struct TAMEX_FIRED
 {
     unsigned int am_fired   : 8;
-    unsigned long empty     : 16;
+    unsigned long empty     : 24;
 };
 
 struct TAMEX_CHANNEL_HEADER
@@ -36,19 +36,19 @@ struct TAMEX_BEGIN
 {
     unsigned long empty     : 24;
     unsigned int aa         : 8;
-}
-
+};
+/*
 struct TAMEX_FIRED
 {
     unsigned long empty     : 24;
     unsigned int start      : 8;
 };
-
+*/
 struct PLACE_HOLDER
 {
     unsigned long empty     : 24;
     unsigned int six_eight  : 8;
-}
+};
 
 struct TAMEX_DATA
 {
@@ -62,7 +62,7 @@ struct TAMEX_DATA
 
 struct TAMEX_ERROR
 {
-    unsigned long err_code  : 24
+    unsigned long err_code  : 24;
     unsigned int error      : 8;
 
 };

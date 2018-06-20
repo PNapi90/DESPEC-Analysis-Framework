@@ -4,8 +4,7 @@ using namespace std;
 
 //----------------------------------------------------------
 
-FATIMA_Energy_Calibration::FATIMA_Energy_Calibration(string filename){
-    this->filename = filename;
+FATIMA_Energy_Calibration::FATIMA_Energy_Calibration(){
     load_Calibration_File();
 }
 
@@ -17,7 +16,10 @@ FATIMA_Energy_Calibration::~FATIMA_Energy_Calibration(){}
 
 void FATIMA_Energy_Calibration::load_Calibration_File(){
     
-    ifstream calib_file(filename);
+    const char* format = "%d %lf %lf %lf %lf %lf";
+
+
+    ifstream calib_file("Configuration_Files/FATIMA_Energy_Calibration.txt");
 
     if(calib_file.fail()){
         cerr << "Could not find Fatima Energy Calibration file" << endl;

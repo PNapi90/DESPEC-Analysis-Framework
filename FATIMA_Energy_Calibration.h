@@ -9,8 +9,6 @@ class FATIMA_Energy_Calibration{
 
 private:
 
-    const char* format = "%d %lf %lf %lf %lf %lf";
-
     double calib_coeffs[100][5];
 
     std::string filename;
@@ -19,7 +17,7 @@ private:
 
 
 public:
-    FATIMA_Energy_Calibration(std::string);
+    FATIMA_Energy_Calibration();
     ~FATIMA_Energy_Calibration();
     
     double Calibrate(double,int);

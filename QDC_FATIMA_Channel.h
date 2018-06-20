@@ -2,6 +2,7 @@
 #define QDC_FATIMA_CHANNEL_H
 
 #include "FATIMA_Energy_Calibration.h"
+#include "FATIMA_Time_Calibration.h"
 
 class QDC_FATIMA_Channel{
 
@@ -28,7 +29,7 @@ public:
     void set_QShort_Raw(double);
     void set_QDC_Time(double);
 
-    void Calibrate(FATIMA_Energy_Calibration*);
+    void Calibrate(FATIMA_Energy_Calibration*,FATIMA_Time_Calibration*);
     
     double** get_Data();
 };

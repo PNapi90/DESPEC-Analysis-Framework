@@ -9,20 +9,18 @@ class FATIMA_Time_Calibration{
 
 private:
 
-    const char* format = "%d %lf";
-
     double calib_coeffs[36];
-
-    std::string filename;
+    double calib_coeffs_QDC[36];
 
     void load_Calibration_File();
 
 
 public:
-    FATIMA_Time_Calibration(std::string);
+    FATIMA_Time_Calibration();
     ~FATIMA_Time_Calibration();
     
     double Calibrate(double,int);
+    double Calibrate_QDC(double,int);
 };
 
 

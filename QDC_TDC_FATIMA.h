@@ -18,6 +18,8 @@
 #include "FATIMA_Energy_Calibration.h"
 #include "FATIMA_Time_Calibration.h"
 
+#include "Data_Stream.h"
+
 typedef unsigned long long ULong64_t;
 
 class QDC_TDC_FATIMA{
@@ -26,10 +28,8 @@ private:
 
     //Setup_Specifier* setup;
 
-    const int amount_of_FAT_DETS = 36;
-    const char* format = "%d %d %d";
-
-    bool shared_WR;
+    int amount_of_FAT_DETS;
+    
 
     int QDC_amount,TDC_amount;
 
@@ -69,7 +69,7 @@ public:
     void Run_FATIMA_MBS(int*);
 
     int get_amount_of_fired_Dets();
-    double** get_Detector_Data();
+    void get_Detector_Data(Data_Stream*);
 };
 
 

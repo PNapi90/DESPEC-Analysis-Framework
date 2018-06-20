@@ -1,38 +1,6 @@
-#include "Riostream.h"
+#include "First_Test.h"  // Defines Histograms //
 
-// Root Includes //
-#include "TROOT.h"
-#include "TH1.h"
-#include "TF1.h"
-#include "TH2.h"
-#include "TCutG.h"
-#include "TArc.h"
-#include "TTree.h"
-
-#include <time.h>
-#include <math.h>
-#include <iomanip>
-
-// Go4 Includes //
-#include "TGo4UserException.h"
-#include "TGo4Picture.h"
-#include "TGo4MbsEvent.h"
-
-// General Includes //
-#include <fstream>
-#include <vector>
-#include <time.h>
-#include <math.h>
-#include <iomanip>
-
-
-#include "calibration.h" // Defines how calibration variables are read //
-#include "gating.h" // Defines gates //
-#include "channels.h" // Defines gates //
-
-
-#include "Analysis_v5.h"  // Defines Histograms //
-#include "TSCNUnpackEvent.h"
+using namespace std;
 
 
 //----------------------------------------------------------
@@ -125,14 +93,14 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	// all non used systems intialized as nullptr 
 	//-> calling uninitialized system will cause an error !
-	Detector_Systems[0] = !Used_Systems[0] ? nullptr : new FRS_Detector_System();
-	Detector_Systems[1] = !Used_Systems[1] ? nullptr : new AIDA_Detector_System();
+	//Detector_Systems[0] = !Used_Systems[0] ? nullptr : new FRS_Detector_System();
+	//Detector_Systems[1] = !Used_Systems[1] ? nullptr : new AIDA_Detector_System();
 	Detector_Systems[2] = !Used_Systems[2] ? nullptr : new PLASTIC_Detector_System();
 	Detector_Systems[3] = !Used_Systems[3] ? nullptr : new FATIMA_Detector_System();
-	Detector_Systems[4] = !Used_Systems[4] ? nullptr : new GALILEO_Detector_System();
+	//Detector_Systems[4] = !Used_Systems[4] ? nullptr : new GALILEO_Detector_System();
 
 	//create data stream object using Used_Systems configuration
-	data_stream = new Data_Stream(Used_Systems);
+	data_stream = new Data_Stream();
 }
 
 
@@ -142,7 +110,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 TSCNUnpackProc::~TSCNUnpackProc()
 {
 
-	for(int i = 0;i < USED_SYSTEMS;++i) if(detector_Systems[i]) delete Detector_Systems[i];
+	for(int i = 0;i < 6;++i) if(Detector_Systems[i]) delete Detector_Systems[i];
 	delete[] Detector_Systems;
 	
 	delete data_stream;
@@ -196,10 +164,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 	
-		if ( PrcID_Conv == FATIMA_ID )  //It's the QDC. // coco LaBr3 in S4 //
+		if ( PrcID_Conv == 20 )  //It's the QDC. // coco LaBr3 in S4 //
 		{
 
-			Detector_Systems[PrcID_Conv]->process_MBS(pdata);
+			Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
 			Detector_Systems[PrcID_Conv]->get_Event_data(data_stream);
 
 			
@@ -223,7 +191,9 @@ void TSCNUnpackProc::load_PrcID_File(){
 		exit(0);
 	}
 	int i = 0;
-	string line,s_tmp;
+	int id = 0;
+	string line;
+	char s_tmp[100];
 	while(data.good()){
 		getline(data,line,'\n');
 		if(line[0] == '#') continue;
@@ -238,7 +208,7 @@ Int_t TSCNUnpackProc::get_Conversion(Int_t PrcID){
 
 	for(int i = 0;i < 6;++i) if(PrcID == PrcID_Array[i]) return i;
 	cerr << "ProcID not known!" << endl;
-	exit(0);s
+	exit(0);
 }
 
 void TSCNUnpackProc::get_used_Systems(){
@@ -248,7 +218,9 @@ void TSCNUnpackProc::get_used_Systems(){
 		exit(0);
 	}
 	int i = 0;
-	string line,s_tmp;
+	int id = 0;
+	string line;
+	char s_tmp[100];
 	while(data.good()){
 		getline(data,line,'\n');
 		if(line[0] == '#') continue;

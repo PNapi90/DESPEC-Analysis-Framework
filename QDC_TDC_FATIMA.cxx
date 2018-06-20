@@ -4,12 +4,12 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-QDC_TDC_FATIMA::QDC_TDC_FATIMA(int QDC_amount,int TDC_amount,bool shared_WR){
+QDC_TDC_FATIMA::QDC_TDC_FATIMA(int QDC_amount,int TDC_amount){
 
     //amount of QDCs and TDCs used for FATIMA setup
     this->QDC_amount = QDC_amount;
     this->TDC_amount = TDC_amount;
-
+    amount_of_FAT_DETS = 36;
     //possible special setup (more information like Fine Time,...)
     //setup = new Setup_Specifier();
     
@@ -17,8 +17,8 @@ QDC_TDC_FATIMA::QDC_TDC_FATIMA(int QDC_amount,int TDC_amount,bool shared_WR){
     load_board_channel_file();
 
     //initialize calibration objects
-    FATIMA_T_CALIB = new FATIMA_Time_Calibration("Configuration_Files/FATIMA/calib_QDC.txt");
-    FATIMA_E_CALIB = new FATIMA_Energy_Calibration("Configuration_Files/FATIMA/calib_TDC.txt");
+    FATIMA_T_CALIB = new FATIMA_Time_Calibration();
+    FATIMA_E_CALIB = new FATIMA_Energy_Calibration();
     
     //create QDC channel objects -> each object belongs to one detector
     QDC_Channels = new QDC_FATIMA_Channel**[QDC_amount];
@@ -75,6 +75,8 @@ QDC_TDC_FATIMA::~QDC_TDC_FATIMA(){
 
 
 void QDC_TDC_FATIMA::load_board_channel_file(){
+
+    const char* format = "%d %d %d";
 
     //initialize with -1 (-> id not possible)
     for(int i = 0;i < 100;++i){
@@ -291,7 +293,7 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(int* pdata,QDC_Header* QDChead){
 
         QDC_Channels[active_board][active_Channel]->set_QLong_Raw(d->QL); // Gets Q Long data //
         QDC_Channels[active_board][active_Channel]->set_QShort_Raw(d->QS); // Gets Q Short data //
-        QDC_Channels[active_board][active_Channel]->Calibrate(FATIMA_E_CALIB);
+        QDC_Channels[active_board][active_Channel]->Calibrate(FATIMA_E_CALIB,FATIMA_T_CALIB);
 
     }
 
@@ -384,18 +386,28 @@ int QDC_TDC_FATIMA::get_amount_of_fired_Dets(){return fired_Dets;}
 
 //---------------------------------------------------------------
 
-double** QDC_TDC_FATIMA::get_Detector_Data(){
-    //not yet implemented (if you would not have guessed yourself)
-    return nullptr;
+void QDC_TDC_FATIMA::get_Detector_Data(Data_Stream* data_stream){
+    //return Fatima Detector data to FATIMA_Detector_System object
+    
+    ULong raw_T,raw_QDC_T;
+    double raw_E;
+    int am_hits_det = 0;
+    int am_hits_total = 0;
+
+    int j = 0;
+    int iter = 0;
+    for(int i = 0;i < fired_Dets;++i){
+        j = fired_Detectors_QDC[i];
+        k = FATIMA_Detectors[j]->get_am_of_hits();
+        for(int o = 0;o < k;++o){
+            raw_E = FATIMA_Detectors[j]->get_E(o);
+            raw_T = FATIMA_Detectors[j]->get_T(o);
+            raw_QDC_T = FATIMA_Detectors[j]->get_QDC_T(o);
+            am_hits_total = j;
+            am_hits_det = k;
+            data_stream->set_event_data(raw_E,raw_T,raw_QDC_T,am_hits_total,am_hits_det);
+        }
+    }
 }
 
 //---------------------------------------------------------------
-
-
-void QDC_TDC_FATIMA::check_PLASTIC_HEADER(int* pdata){
-    //check if data includes PLASIC HEADER (if shared_WR)
-    PHeader* phead = (PHeader*) pdata;
-
-    //check if plastic header (value not known yet)
-    PLASITC_HEADER = (phead->identifier == 0);
-}

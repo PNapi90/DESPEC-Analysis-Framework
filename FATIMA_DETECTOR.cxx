@@ -60,3 +60,15 @@ double** FATIMA_DETECTOR::get_Data(){
 }
 
 //---------------------------------------------------------------
+
+double FATIMA_DETECTOR::get_E(int i){return Energy[i];}
+
+//---------------------------------------------------------------
+
+double FATIMA_DETECTOR::get_T(int i){return Time[i];}
+
+//---------------------------------------------------------------
+
+double FATIMA_DETECTOR::get_QDC_T(int i){return QDC_Time[i];}
+
+//---------------------------------------------------------------

@@ -19,7 +19,7 @@ public:
 
     //functions from abstract class Detector_System
     void Process_MBS(int*);
-    double** get_Event_data();
+    void get_Event_data(Data_Stream*);
     
 };
 

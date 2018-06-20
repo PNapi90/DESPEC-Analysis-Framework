@@ -5,6 +5,11 @@ using namespace std;
 //---------------------------------------------------------------
 
 PLASTIC_Detector_System::PLASTIC_Detector_System(){
+
+    add = 2781;
+    aa = 170;
+    six_eight = 104
+    trailer_code = 3138451013;
     
     coarse_T = new unsigned long*[100];
     fine_T = new unsigned long*[100];

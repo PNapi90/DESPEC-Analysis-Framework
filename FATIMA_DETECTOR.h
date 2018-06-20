@@ -25,6 +25,10 @@ public:
     int get_amount_of_hits();
     double** get_Data();
 
+    double get_E(int);
+    double get_T(int);
+    double get_QDC_T(int);
+
 };
 
 #endif
