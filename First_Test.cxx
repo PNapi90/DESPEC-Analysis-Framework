@@ -1,4 +1,44 @@
 #include "First_Test.h"  // Defines Histograms //
+#include "Riostream.h"
+
+// Root Includes //
+#include "TROOT.h"
+#include "TH1.h"
+#include "TF1.h"
+#include "TH2.h"
+#include "TCutG.h"
+#include "TArc.h"
+#include "TTree.h"
+
+#include <time.h>
+#include <math.h>
+#include <iomanip>
+
+// Go4 Includes //
+#include "TGo4UserException.h"
+#include "TGo4Picture.h"
+#include "TGo4MbsEvent.h"
+
+// General Includes //
+#include <fstream>
+#include <vector>
+#include <time.h>
+#include <math.h>
+#include <iomanip>
+
+
+
+
+#include "TSCNUnpackEvent.h"
+
+#include "Detector_System.cxx"
+#include "FATIMA_Detector_System.h"
+#include "PLASTIC_Detector_System.h"
+#include "Data_Stream.h"
+#include "White_Rabbit.h"
+
+#include <string>
+
 
 using namespace std;
 
@@ -88,19 +128,28 @@ TGo4EventProcessor(name) // Histograms defined here //
 	//used_systems
 	get_used_Systems();
 
+	//create White Rabbit obj
+	WR = new White_Rabbit();
+
+
 	//create Detector Systems
 	Detector_Systems = new Detector_System*[6];
 
-	// all non used systems intialized as nullptr 
+	// all non used systems intialized as NULL 
 	//-> calling uninitialized system will cause an error !
-	//Detector_Systems[0] = !Used_Systems[0] ? nullptr : new FRS_Detector_System();
-	//Detector_Systems[1] = !Used_Systems[1] ? nullptr : new AIDA_Detector_System();
-	Detector_Systems[2] = !Used_Systems[2] ? nullptr : new PLASTIC_Detector_System();
-	Detector_Systems[3] = !Used_Systems[3] ? nullptr : new FATIMA_Detector_System();
-	//Detector_Systems[4] = !Used_Systems[4] ? nullptr : new GALILEO_Detector_System();
+	//Detector_Systems[0] = !Used_Systems[0] ? NULL : new FRS_Detector_System();
+	//Detector_Systems[1] = !Used_Systems[1] ? NULL : new AIDA_Detector_System();
+	Detector_Systems[2] = !Used_Systems[2] ? NULL : new PLASTIC_Detector_System();
+	Detector_Systems[3] = !Used_Systems[3] ? NULL : new FATIMA_Detector_System();
+	//Detector_Systems[4] = !Used_Systems[4] ? NULL : new GALILEO_Detector_System();
+
+	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) Detector_Systems[i] = NULL;
 
 	//create data stream object using Used_Systems configuration
 	data_stream = new Data_Stream();
+
+	load_PrcID_File();
+	White_Rabbbit_old = 0;
 }
 
 
@@ -152,7 +201,11 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	// |                                                    | //
 	// ------------------------------------------------------ //
 	
+	double E0,E1;
+	int fat_hits = 0;
 	
+	
+
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
 		
@@ -163,15 +216,32 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		Int_t PrcID=psubevt->GetProcid();
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
-	
-		if ( PrcID_Conv == 20 )  //It's the QDC. // coco LaBr3 in S4 //
-		{
 
+
+		ULong64_t White_Rabbbit = WR->get_White_Rabbit(pdata);
+		
+		cout << White_Rabbbit << " " << White_Rabbbit - White_Rabbbit_old  << " " << endl;
+		
+		White_Rabbbit_old = White_Rabbbit;
+	
+		if ( PrcID_Conv == 3 )  //It's the QDC. // coco LaBr3 in S4 //
+		{
 			Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
 			Detector_Systems[PrcID_Conv]->get_Event_data(data_stream);
 
+			fat_hits = data_stream->get_FATIMA_Hits();
+			cout << fat_hits << endl;
+			if(fat_hits == 2){
+				E0 = data_stream->get_FATIMA_E(0);
+				E1 = data_stream->get_FATIMA_E(1);
+				FAT_E->Fill(E0+E1);
+				FAT_MAT->Fill(E0,E1);
+
+			}
 			
 		} // End of If ProcID == 20 //
+		
+		//FAT_E->Fill(10);
 		
 	} // End of While Subevent // 
 

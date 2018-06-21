@@ -69,3 +69,11 @@ void Data_Stream::set_event_data(ULong* coarse_T,ULong* fine_T,UInt* ch_ID,ULong
 }
 
 //---------------------------------------------------------------
+
+int Data_Stream::get_FATIMA_Hits(){return FATIMA_Event_Length;}
+
+//---------------------------------------------------------------
+
+double Data_Stream::get_FATIMA_E(int i){return FATIMA_E[i];}
+
+//---------------------------------------------------------------

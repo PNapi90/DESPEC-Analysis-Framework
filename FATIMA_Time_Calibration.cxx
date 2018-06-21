@@ -1,5 +1,7 @@
 #include "FATIMA_Time_Calibration.h"
 
+#include <cstdlib>
+
 using namespace std;
 
 //----------------------------------------------------------
@@ -23,7 +25,7 @@ void FATIMA_Time_Calibration::load_Calibration_File(){
 
     if(calib_file.fail()){
         cerr << "Could not find Fatima Time Calibration file" << endl;
-        //exit(0);
+        exit(0);
     }
     string line;
 
@@ -45,7 +47,7 @@ void FATIMA_Time_Calibration::load_Calibration_File(){
 
     if(calib_file.fail()){
         cerr << "Could not find Fatima QDC Time Calibration file" << endl;
-        //exit(0);
+        exit(0);
     }
 
     while(calib_file.good()){

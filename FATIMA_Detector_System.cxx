@@ -7,7 +7,7 @@ using namespace std;
 FATIMA_Detector_System::FATIMA_Detector_System(){
 
     //set amount of QDCs and TDCs
-    am_QDCs = 5;
+    am_QDCs = 20;
     am_TDCs = 20;
 
     //initialize White Rabbit and QDC_TDC objects

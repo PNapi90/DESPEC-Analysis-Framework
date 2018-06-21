@@ -1,3 +1,6 @@
+#ifndef WR_HEADER_H
+#define WR_HEADER_H
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -23,3 +26,5 @@ struct WR_Data
 };
 
 // ############################################## //
+
+#endif

@@ -1,0 +1,2 @@
+Library.Tx7_Param:                          libGo4UserAnalysis.so libGo4Analysis.so libGo4AnalBase.so libGo4TaskHandler.so libGo4ThreadManager.so libGo4Base.so libGo4Fit.so libSpectrum.so libXMLIO.so libGpad.so libTree.so libMinuit.so libThread.so
+Library.Tx7_Proc:                           libGo4UserAnalysis.so libGo4Analysis.so libGo4AnalBase.so libGo4TaskHandler.so libGo4ThreadManager.so libGo4Base.so libGo4Fit.so libSpectrum.so libXMLIO.so libGpad.so libTree.so libMinuit.so libThread.so

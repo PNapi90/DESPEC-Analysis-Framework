@@ -22,11 +22,15 @@ White_Rabbit::~White_Rabbit(){}
 //---------------------------------------------------------------
 
 void White_Rabbit::load_config_file(){
-    
+    return;
+
+    const char* format = "%d %d %d %d %d";
+
+
     ifstream config_file("Configuration_Files/White_Rabbit_Map.dat");
     if(config_file.fail()){
         cerr << "Could not find White_rabbit map!" << endl;
-        //exit(0);
+        exit(0);
     }
 
     //load file (and skip header)
@@ -66,7 +70,7 @@ void White_Rabbit::process_White_Rabbit(int* pdata){
     //check for White Rabbit header in pdata 
     WR_Header *wrh = (WR_Header*) pdata;
     int WR_d = wrh->check_wr;
-    set_triggered_detector(WR_d);
+    //set_triggered_detector(WR_d);
 
     //calculate White Rabbit Time stamp
     double white_rabbit[4] = {0,0,0,0};
@@ -86,6 +90,7 @@ void White_Rabbit::process_White_Rabbit(int* pdata){
 
 ULong64_t White_Rabbit::get_White_Rabbit(int* pdata){
     process_White_Rabbit(pdata);
+    pdata++;
     return WR_Time;
 }
 

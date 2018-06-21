@@ -50,8 +50,10 @@
 #include "FATIMA_Detector_System.h"
 #include "PLASTIC_Detector_System.h"
 #include "Data_Stream.h"
+#include "White_Rabbit.h"
 
 #include <string>
+
 
 using namespace std;
 
@@ -83,12 +85,14 @@ using namespace std;
 		private:
 			Bool_t ffill;
 			Int_t fshift;
+			ULong64_t White_Rabbbit_old;
 
 			Int_t PrcID_Array[10];
 			bool Used_Systems[10];
 
 			Detector_System** Detector_Systems;
 			Data_Stream* data_stream;
+			White_Rabbit* WR;
 
 			Int_t get_Conversion(Int_t);
 			void get_used_Systems();

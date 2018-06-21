@@ -44,6 +44,9 @@ public:
 	void set_event_data(double,ULong,ULong,int,int,int);
     void set_event_data(ULong*,ULong*,UInt*,ULong,ULong);
 
+    int get_FATIMA_Hits();
+    double get_FATIMA_E(int);
+
 };
 
 

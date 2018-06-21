@@ -1,3 +1,7 @@
+#ifndef TDC_HEADER_H
+#define TDC_HEADER_H
+
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -63,3 +67,5 @@ struct TDC_Error
 	unsigned int empty_4	: 5;
 	
 };
+
+#endif

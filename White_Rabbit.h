@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <cstdlib>
 
 #include "WR_Structure.h"
 
@@ -15,7 +16,6 @@ class White_Rabbit{
 
 private:
 
-    const char* format = "%d %d %d %d %d";
 
     int DETECTORS[5];
 

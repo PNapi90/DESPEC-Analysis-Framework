@@ -1,9 +1,12 @@
+#ifndef QDC_HEADERS_H
+#define QDC_HEADERS_H
+
+
 #include <iostream>
 #include <string>
 #include <sstream>
 using namespace std;
 
-// ############################################## //
 
 struct QDC_Header
 {  
@@ -36,7 +39,7 @@ struct QDC_Format_Size
 struct QDC_Time
 {
 
-	unsigned long trigger_tag:32;
+	unsigned long trigger_tag : 32;
 
 };
 
@@ -80,4 +83,4 @@ struct QDC_End
   unsigned int check:3;
   unsigned int geo:5;
 };
-
+#endif

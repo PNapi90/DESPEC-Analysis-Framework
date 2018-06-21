@@ -1,5 +1,7 @@
 #include "QDC_FATIMA_Channel.h"
 
+using namespace std;
+
 //---------------------------------------------------------------
 
 QDC_FATIMA_Channel::QDC_FATIMA_Channel(int det_id,int board_ID,int Ch_Num){
@@ -41,14 +43,16 @@ void QDC_FATIMA_Channel::set_QLong_Raw(double QLong_tmp){
 
 void QDC_FATIMA_Channel::set_QShort_Raw(double QShort_tmp){
     QShort[iterator] = QShort_tmp;
-    iterator++;
+    
 }
 
 //---------------------------------------------------------------
 
 void QDC_FATIMA_Channel::Calibrate(FATIMA_Energy_Calibration* FAT_E,FATIMA_Time_Calibration* FAT_T){
     Energy[iterator] = FAT_E->Calibrate(QLong[iterator],det_id);
+    cout << " -> E cal " << Energy[iterator]  << " " << QLong[iterator] << " " << det_id<< endl;
     QDC_Time[iterator] = FAT_T->Calibrate_QDC(QDC_Time[iterator],det_id);
+    iterator++;
 }
 
 //---------------------------------------------------------------

@@ -1,3 +1,6 @@
+#ifndef TAMEX_HEADER_H
+#define TAMEX_HEADER_H
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -25,11 +28,11 @@ struct TAMEX_FIRED
 
 struct TAMEX_CHANNEL_HEADER
 {
-    unsigned int empty1     : 8;
+    unsigned int identify   : 8;
     unsigned int trigger_t  : 4;
     unsigned int sfp_id     : 4;
     unsigned int Tamex_id   : 8;
-    unsigned int empty2     : 8;
+    unsigned int empty      : 8;
 };
 
 struct TAMEX_BEGIN
@@ -69,5 +72,8 @@ struct TAMEX_ERROR
 
 struct TAMEX_TRAILER
 {
-    unsigned long trailer   : 32;
+    unsigned long empty     : 24;
+    unsigned long trailer   : 8;
 };
+
+#endif

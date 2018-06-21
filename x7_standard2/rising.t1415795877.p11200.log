@@ -1,0 +1,7 @@
+*** log file: ./rising.t1415795877.p11200.log, client: R4-39
+    begin date 2014/11/12, time 13:37:57
+-I- Create file /data.local/li_test/file_0001.lmd
+    output file /data.local/li_test/file_0001.lmd: 50364416 bytes written
+-I- Create file /data.local/li_test/file_0002.lmd
+    output file /data.local/li_test/file_0002.lmd: 21004288 bytes written
+    end   date 2014/11/12, time 13:39:34

@@ -1,5 +1,7 @@
 #include "FATIMA_DETECTOR.h"
 
+#include <cstdlib>
+
 using namespace std;
 
 //---------------------------------------------------------------
@@ -33,7 +35,7 @@ void FATIMA_DETECTOR::set_Data(double** data_QDC,double** data_TDC){
     if(am_of_hits != am_of_hits_TDC){
         cerr << "FATIMA_DETECTOR " << det_id << " -> mismatch of ";
         cerr << "hits in TDC and QDC ! " << endl;
-        //exit(0);
+        exit(0);
     }
 
     //if correct -> write Energies and Times in detector
