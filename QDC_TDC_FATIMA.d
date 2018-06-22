@@ -1,1 +1,0 @@
-QDC_TDC_FATIMA.d QDC_TDC_FATIMA.o: QDC_TDC_FATIMA.h QDC_751.h TDC_1290.h QDC_FATIMA_Channel.h FATIMA_Energy_Calibration.h FATIMA_Time_Calibration.h TDC_FATIMA_Channel.h FATIMA_DETECTOR.h Data_Stream.h

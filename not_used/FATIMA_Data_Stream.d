@@ -1,1 +1,0 @@
-FATIMA_Data_Stream.d FATIMA_Data_Stream.o: FATIMA_Data_Stream.h Detector_System_Data_Stream.cxx
