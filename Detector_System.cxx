@@ -14,6 +14,8 @@ public:
     
     virtual void get_Event_data(Data_Stream*) = 0;
 
+    virtual int* get_pdata() = 0;
+
 };
 
 #endif

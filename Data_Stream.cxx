@@ -29,6 +29,7 @@ void Data_Stream::set_ID(string ID){
 	for(int i = 0;i < 5;++i) if(Known_ID[i] == ID){
 		ID_int = i;
 		fat_iter = 0;
+		mismatch = false;
 		return;
 	}
 	cerr << "Detector System not known to Data_Stream obj!";
@@ -75,5 +76,13 @@ int Data_Stream::get_FATIMA_Hits(){return FATIMA_Event_Length;}
 //---------------------------------------------------------------
 
 double Data_Stream::get_FATIMA_E(int i){return FATIMA_E[i];}
+
+//---------------------------------------------------------------
+
+void Data_Stream::set_mismatch(){mismatch = true;}
+
+//---------------------------------------------------------------
+
+bool Data_Stream::get_mismatch(){return mismatch;}
 
 //---------------------------------------------------------------

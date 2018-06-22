@@ -120,8 +120,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 	*/
 	
 	
-	FAT_E = MakeTH1('D',"FATIMA_E","FATIMA_E",4001,0,4000);
-	FAT_MAT = MakeTH2('D',"FAT_MAT","FAT_MAT",4001,0,4000,4001,0,4000);
+	FAT_E = MakeTH1('D',"FATIMA_E","FATIMA_E",2001,0,4000);
+	FAT_MAT = MakeTH2('D',"FAT_MAT","FAT_MAT",1001,0,4000,1001,0,4000);
 
 	hit_mat = MakeTH2('D',"hitmat","hitmat",37,0,36,37,0,36);
 
@@ -150,6 +150,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	load_PrcID_File();
 	White_Rabbbit_old = 0;
+	count = 0;
 }
 
 
@@ -173,7 +174,8 @@ TSCNUnpackProc::~TSCNUnpackProc()
 
 Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 {
-	
+	count++;
+	if(count > 500000) return kTRUE;
 	Bool_t isValid=kFALSE; // validity of output event //
   
 	TGo4MbsEvent* inp_evt = (TGo4MbsEvent* ) GetInputEvent(); // from this //
@@ -205,10 +207,15 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	int fat_hits = 0;
 	
 	
+	int subevent_iter = 0;
+
+	bool used[5];
+	for(int i = 0;i < 5;++i) used[i] = false;
 
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
-		
+		subevent_iter++;
+
 		Int_t* pdata=psubevt->GetDataField();
 
 		Int_t lwords = psubevt->GetIntLen();
@@ -219,31 +226,47 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 
 		ULong64_t White_Rabbbit = WR->get_White_Rabbit(pdata);
-		
-		cout << White_Rabbbit << " " << White_Rabbbit - White_Rabbbit_old  << " " << endl;
-		
-		White_Rabbbit_old = White_Rabbbit;
-	
-		if ( PrcID_Conv == 3 )  //It's the QDC. // coco LaBr3 in S4 //
-		{
-			Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
-			Detector_Systems[PrcID_Conv]->get_Event_data(data_stream);
+		pdata += WR->get_increase();
 
+		if(PrcID_Conv == 2){
+			cout << "---------------------\n";
+			for(int i = 0;i < lwords;++i){
+				cout << hex <<*(pdata + i) << " ";
+				if(i % 5 == 0 && i > 0) cout << endl;
+			}
+			cout << "\n---------------------\n";
+		}
+
+		//send subevent to respective unpacker
+		Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
+		
+		//get mbs stream data from unpacker (pointer copy solution)
+		pdata = Detector_Systems[PrcID_Conv]->get_pdata();
+		
+		//get data from subevent
+		Detector_Systems[PrcID_Conv]->get_Event_data(data_stream);
+		
+		//temporary
+		used[PrcID_Conv] = true;
+
+		if(PrcID_Conv == 3){
+			//if FATIMA mismatch -> don't use data
+			if(data_stream->get_mismatch()) continue;
+			
 			fat_hits = data_stream->get_FATIMA_Hits();
-			cout << fat_hits << endl;
+			E0 = data_stream->get_FATIMA_E(0);
+			FAT_E->Fill(E0);
 			if(fat_hits == 2){
-				E0 = data_stream->get_FATIMA_E(0);
 				E1 = data_stream->get_FATIMA_E(1);
-				FAT_E->Fill(E0+E1);
 				FAT_MAT->Fill(E0,E1);
 
 			}
-			
-		} // End of If ProcID == 20 //
-		
-		//FAT_E->Fill(10);
-		
-	} // End of While Subevent // 
+		}
+
+		if(used[2] && used[3]){
+
+		}
+	}
 
 	out_evt->SetValid(isValid);
 	

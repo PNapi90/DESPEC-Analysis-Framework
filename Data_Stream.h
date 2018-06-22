@@ -18,6 +18,9 @@ private:
 
 	int FATIMA_Det_ID[100];
 	double FATIMA_E[100];
+
+	bool mismatch;
+
 	ULong FATIMA_T[100];
 	ULong FATIMA_QDC_T[100];
 	int FATIMA_hits_det[100];
@@ -46,6 +49,10 @@ public:
 
     int get_FATIMA_Hits();
     double get_FATIMA_E(int);
+
+    void set_mismatch();
+
+    bool get_mismatch();
 
 };
 

@@ -9,6 +9,9 @@ class FATIMA_Detector_System : public Detector_System{
 
 private:
 
+	int* pdata;
+
+	int increase;
     int am_QDCs,am_TDCs,fired_amount;
 
     QDC_TDC_FATIMA* QDC_TDC;
@@ -20,6 +23,8 @@ public:
     //functions from abstract class Detector_System
     void Process_MBS(int*);
     void get_Event_data(Data_Stream*);
+
+    int* get_pdata();
     
 };
 

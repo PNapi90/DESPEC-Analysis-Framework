@@ -14,6 +14,8 @@ private:
     double Time[100];
     double QDC_Time[100];
 
+    bool mismatch;
+
     double** data_stream;
 
 public:
@@ -28,6 +30,8 @@ public:
     double get_E(int);
     double get_T(int);
     double get_QDC_T(int);
+
+    bool get_mismatch();
 
 };
 

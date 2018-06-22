@@ -29,12 +29,20 @@ private:
     //Setup_Specifier* setup;
 
     int amount_of_FAT_DETS;
-    
+    int increase;
+    bool exiter;
+    int* pdata;
+
+    bool no_data;
 
     int QDC_amount,TDC_amount;
 
-    int det_num[100][8];
+    int det_num[100][100];
     int det_num_tdc[100][100];
+
+
+    int fired_Detectors_QDC[100];
+    int fired_Detectors_TDC[100];
 
     int Fired_QDC_Channels[100][2];
     int Fired_TDC_Channels[100][2];
@@ -52,8 +60,8 @@ private:
     TDC_FATIMA_Channel*** TDC_Channels;
 
     void load_board_channel_file();
-    void Check_QDC_DATA(int*,QDC_Header*);
-    void Check_TDC_DATA(int*);
+    void Check_QDC_DATA(QDC_Header*);
+    void Check_TDC_DATA();
     void reset_fired_channels();
     void Merge_To_Detectors();
 
@@ -70,6 +78,9 @@ public:
 
     int get_amount_of_fired_Dets();
     void get_Detector_Data(Data_Stream*);
+    int get_increase();
+
+    int* get_pdata();
 };
 
 

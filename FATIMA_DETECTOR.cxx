@@ -33,10 +33,14 @@ void FATIMA_DETECTOR::set_Data(double** data_QDC,double** data_TDC){
     int am_of_hits_TDC = (int) data_TDC[0][1];
 
     if(am_of_hits != am_of_hits_TDC){
+        mismatch = true;
+        return;
         cerr << "FATIMA_DETECTOR " << det_id << " -> mismatch of ";
         cerr << "hits in TDC and QDC ! " << endl;
+        cout << "QDC " << am_of_hits << "   TDC " << am_of_hits_TDC << endl;  
         exit(0);
     }
+    mismatch = false;
 
     //if correct -> write Energies and Times in detector
     for(int i = 0;i < am_of_hits;++i){
@@ -57,6 +61,7 @@ double** FATIMA_DETECTOR::get_Data(){
         data_stream[i][0] = Energy[i];
         data_stream[i][1] = Time[i];
         data_stream[i][2] = QDC_Time[i];
+        
     }
     return data_stream;
 }
@@ -74,3 +79,5 @@ double FATIMA_DETECTOR::get_T(int i){return Time[i];}
 double FATIMA_DETECTOR::get_QDC_T(int i){return QDC_Time[i];}
 
 //---------------------------------------------------------------
+
+bool FATIMA_DETECTOR::get_mismatch(){return mismatch;}

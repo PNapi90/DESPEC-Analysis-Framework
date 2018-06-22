@@ -23,19 +23,24 @@ private:
 
     bool tamex_end;
 
+    bool no_edges[100];
+
+    int* pdata;
+
+    int increase;
     int add;
     int aa;
-    int six_eight;
+    int six_eight,six_f;
     int error_code;
     int tamex_identifier;
 
     unsigned long trailer_code;
 
-    int am_fired[2];
-    int sfp_id[2];
-    int trigger_type[2];
-    int iterator[2];
-    int tamex_id[2];
+    int am_fired[100];
+    int sfp_id[100];
+    int trigger_type[100];
+    int iterator[100];
+    int tamex_id[100];
 
     int tamex_iter;
 
@@ -49,12 +54,12 @@ private:
     unsigned long* coarse_T_Trigger;
     unsigned long* fine_T_Trigger;
 
-    void check_error(int*);
-    void check_trailer(int*);
-    void get_edges(int*);
-    void get_trigger(int*);
-    void skip_padding(int*);
-
+    void check_error();
+    void check_trailer();
+    void get_edges();
+    void get_trigger();
+    void skip_padding();
+    void Process_TAMEX();
     void calibrate();
 
 public:
@@ -63,8 +68,11 @@ public:
 
     //functions from abstract class Detector_System
     void Process_MBS(int*);
-    void Process_TAMEX(int*);
+
     void get_Event_data(Data_Stream*);
+
+    int* get_pdata();
+
 };
 
 

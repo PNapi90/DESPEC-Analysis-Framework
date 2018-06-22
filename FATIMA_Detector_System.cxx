@@ -26,8 +26,6 @@ FATIMA_Detector_System::~FATIMA_Detector_System(){
 void FATIMA_Detector_System::get_Event_data(Data_Stream* data_stream){
 
     //return important information of event (energies,triggered detectors,multiplicity,...)
-    data_stream->set_ID("FATIMA");
-    data_stream->set_amount_of_Events(fired_amount);
     QDC_TDC->get_Detector_Data(data_stream);
 }
 
@@ -35,10 +33,18 @@ void FATIMA_Detector_System::get_Event_data(Data_Stream* data_stream){
 
 void FATIMA_Detector_System::Process_MBS(int* pdata){
 
+    this->pdata = pdata;
     //extract QDC and TDC informations from MBS and assign to detectors
     QDC_TDC->Run_FATIMA_MBS(pdata);
 
     //get amount of fired detectors
     fired_amount = QDC_TDC->get_amount_of_fired_Dets();
 }
+//---------------------------------------------------------------
+
+int* FATIMA_Detector_System::get_pdata(){
+    pdata = QDC_TDC->get_pdata();
+    return pdata;
+}
+
 //---------------------------------------------------------------

@@ -16,7 +16,7 @@ class White_Rabbit{
 
 private:
 
-
+    int increase;
     int DETECTORS[5];
 
     int detector_id;
@@ -39,6 +39,8 @@ public:
 
     ULong64_t get_White_Rabbit(int*);
     int get_Detector_id();
+
+    int get_increase();
 
     
 };

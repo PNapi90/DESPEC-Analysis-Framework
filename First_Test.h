@@ -99,6 +99,7 @@ using namespace std;
 
 			void load_PrcID_File();
 
+			int count;
 
 			ClassDef(TSCNUnpackProc,1)
 	};

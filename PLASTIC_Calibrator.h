@@ -28,6 +28,7 @@ public:
 	
 	void calibrate(ULong**,ULong**,UInt**,int,int);
 	void calibrate(ULong,ULong,ULong*,int);
+
 };
 
 #endif

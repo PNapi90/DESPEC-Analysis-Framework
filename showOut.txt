@@ -1,0 +1,437 @@
+GO4-*> Reading library: libGo4UserAnalysis  
+GO4-*> Find user analysis class TSCNAnalysis  
+GO4-*> !!! Find constructor with prototype TSCNAnalysis::TSCNAnalysis(int, char**)  
+GO4-*> Process: new TSCNAnalysis(1, (char**)0x7fff8f1982c0)  
+GO4-*> Welcome to Go4 Analysis Framework Release v5.3.0 (build 50300) !  
+**** TSCNAnalysis: Create Go4Analysis
+GO4-*> Analysis: Added analysis step Unpack  
+GO4-*> Analysis: Added analysis step Calibration  
+GO4-*> Analysis: Added analysis step Analysis  
+GO4-*> Main: starting analysis in batch mode ...    
+GO4-*> Opening AutoSave file Go4AnalysisASF.root with READ mode  
+GO4-*> Analysis LoadObjects: Loading from autosave file Go4AnalysisASF.root   
+GO4-*> Updated parameter SCNParameter from parameter SCNParameter  
+GO4-*> AutoSave file Go4AnalysisASF.root was closed.  
+GO4-*> TGo4MbsFile: Open file data/fatima_bplast_wr.lmd  
+GO4-*> UnpackFactory: Create input event for MBS  
+GO4-*> Event MbsEvent101 has source data/fatima_bplast_wr.lmd class: TGo4MbsFile  
+GO4-*> UnpackFactory: Create event processor UnpackProc  
+**** TSCNUnpackProc: Create
+0 6 0 9 0
+1 7 1 9 1
+2 0 0 9 2
+3 8 0 9 3
+4 8 1 9 4
+5 6 5 9 5
+6 6 6 9 6
+7 0 7 9 7
+8 6 8 9 8
+9 6 9 9 9
+10 6 10 9 10
+11 6 11 9 11
+12 6 12 9 12
+13 6 13 9 13
+14 6 14 9 14
+15 6 15 9 15
+16 0 16 0 16
+17 0 17 0 17
+18 0 18 0 18
+19 0 19 0 19
+20 0 20 0 20
+21 0 21 0 21
+22 0 22 0 22
+23 0 23 0 23
+24 0 24 0 24
+25 0 25 0 25
+26 0 26 0 26
+27 0 27 0 27
+28 0 28 0 28
+29 0 29 0 29
+30 0 30 0 30
+31 0 31 0 31
+32 0 32 0 32
+33 0 33 0 33
+34 0 34 0 34
+35 0 35 0 35
+35 0 35 0 35
+GO4-*> UnpackFactory: Create output event UnpackEvent  
+GO4-*> Event UnpackEvent has source UnpackProc class: TSCNUnpackProc  
+GO4-*> CalibrationFactory: Create input event UnpackEvent  
+GO4-!> Event UnpackEvent has no data source  
+GO4-*> CalibrationFactory: Create event processor CalProc  
+**** TSCNCalProc: Create
+No parameters file. Using default constructor
+GO4-*> CalibrationFactory: Create output event CalEvent  
+GO4-*> Event CalEvent has source CalProc class: TSCNCalProc  
+GO4-*> AnalysisFactory: Create input event CalEvent  
+GO4-!> Event CalEvent has no data source  
+GO4-*> AnalysisFactory: Create event processor AnlProc  
+**** TSCNAnlProc: Create
+GO4-*> AnalysisFactory: Create output event AnlEvent  
+GO4-*> Event AnlEvent has source AnlProc class: TSCNAnlProc  
+GO4-*> Analysis --  Initializing EventClasses done.  
+**** TSCNAnalysis: PreLoop
+----------------------------------------------  
+++++++ Status of Go4Analysis ++++++
+First Analysis Step index: 	0
+Last Analysis Step index: 	2
+Autosave Interval: 		500 s
+Autosave File: 		Go4AnalysisASF.root 
+Autosave File compression: 	5 
+Autosave overwrite mode: 	0 
+Autosave enabled: 		1 
+----------------------------------------------  
+ ++++ Analysis Step Unpack ++++	 
+  Eventsource: TGo4MbsFile 
+    Name: 	data/fatima_bplast_wr.lmd 
+    Timeout: 	1 s
+    Startevent: 	0	 Stopevent: 	0 
+    Event interval: 	0
+Tagfile: GO4-NOLMDTAG 
+  EventStore is disabled.
+  Process Status: -1717986919
+ ----------------------------------------------  
+ ++++ Analysis Step Calibration ++++	 
+  EventSource is disabled. 
+  EventStore is disabled.
+  Process Status: -1717986919
+ ----------------------------------------------  
+ ++++ Analysis Step Analysis ++++	 
+  EventSource is disabled. 
+  EventStore is disabled.
+  Process Status: -1717986919
+ ----------------------------------------------  
+----------------------------------------------  
+
+**************************************
+GO4-*> Analysis loop is starting...  
+GO4-*> Start file: data/fatima_bplast_wr.lmd tagfile:none first:0 last:0 delta:0  
+
+First event #: 63758
+---------------------
+9c409c4 add00100 1134 14 aa10a8c7 6f95ac4d 
+800bdc36 ee000000 bb10a8c7 11134 24 
+aa10a8c7 6f95ad60 8015686e 6f95ad60 87519861 
+6f95ad60 8784c861 ee000000 bb10a8c7 36 
+1000a 10000 f919 2e 
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa11a8c8 6f95af21 
+800a4b25 ee000000 bb11a8c8 11134 28 
+aa11a8c8 6f95b033 80038f5e 6f95b033 87596f52 
+874c9f59 6f95b033 8796ff59 ee000000 bb11a8c8 
+36 1000a 10000 f924 2e 
+
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 1134 14 aa10a8c9 6f95b14e 800a4bf5 
+ee000000 bb10a8c9 11134 24 aa10a8c9 
+6f95b261 801a2830 6f95b261 8759c823 6f95b261 
+87946827 ee000000 bb10a8c9 36 1000a 
+10000 f931 2e 
+---------------------
+9c409c4
+1134
+14
+FIRED: 3
+aa10a8c9
+6f95b14e
+800a4bf5
+ee000000
+ee000000
+ee000000
+ee000000
+bb10a8c9
+Checked trailer 
+- - - - - - -
+11134
+24
+FIRED: 7
+aa10a8c9
+6f95b261
+801a2830
+6f95b261
+ee000000
+ee000000
+ee000000
+bb10a8c9
+Checked trailer 
+- - - - - - -
+36
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa11a8ca 6f95b18b 
+80140a0d ee000000 bb11a8ca 11134 28 
+aa11a8ca 6f95b29d 80039e47 6f95b29d 87420e3a 
+87490e42 6f95b29d 8790ce42 ee000000 bb11a8ca 
+36 1000a 10000 f93e 2e 
+
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 1134 14 aa10a8cb 6f95b4c2 800c1d98 
+ee000000 bb10a8cb 11134 24 aa10a8cb 
+6f95b5d5 800189d4 6f95b5d5 874589c7 6f95b5d5 
+878769ca ee000000 bb10a8cb 36 1000a 
+10000 f940 2e 
+---------------------
+9c409c4
+1134
+14
+FIRED: 3
+aa10a8cb
+6f95b4c2
+800c1d98
+ee000000
+ee000000
+ee000000
+ee000000
+bb10a8cb
+Checked trailer 
+- - - - - - -
+11134
+24
+FIRED: 7
+aa10a8cb
+6f95b5d5
+800189d4
+6f95b5d5
+ee000000
+ee000000
+ee000000
+bb10a8cb
+Checked trailer 
+- - - - - - -
+36
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa11a8cc 6f95b4d1 
+80039f5e ee000000 bb11a8cc 11134 24 
+aa11a8cc 6f95b5e4 80144b9b 6f95b5e4 87562b8f 
+6f95b5e4 878beb90 ee000000 bb11a8cc 36 
+1000a 10000 f954 2e 
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa10a8cd 6f95b61c 
+80063c39 ee000000 bb10a8cd 11134 28 
+aa10a8cd 6f95b72f 80028876 6f95b72f 8749b86a 
+87425870 6f95b72f 8782c86e ee000000 bb10a8cd 
+36 1000a 10000 f956 2e 
+
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 1134 14 aa11a8ce 6f95b79e 801c6ab6 
+ee000000 bb11a8ce 11134 24 aa11a8ce 
+6f95b8b0 801deef4 6f95b8b0 875b6ee7 6f95b8b0 
+879e1eec ee000000 bb11a8ce 36 1000a 
+10000 f95e 2e 
+---------------------
+9c409c4
+1134
+14
+FIRED: 3
+aa11a8ce
+6f95b79e
+801c6ab6
+ee000000
+ee000000
+ee000000
+ee000000
+bb11a8ce
+Checked trailer 
+- - - - - - -
+11134
+24
+FIRED: 7
+aa11a8ce
+6f95b8b0
+801deef4
+6f95b8b0
+ee000000
+ee000000
+ee000000
+bb11a8ce
+Checked trailer 
+- - - - - - -
+36
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa10a8cf 6f95bb28 
+80172b6f ee000000 bb10a8cf 11134 24 
+aa10a8cf 6f95bc3a 80198faf 6f95bc3a 87516fa3 
+6f95bc3a 87922fa4 ee000000 bb10a8cf 36 
+1000a 10000 f963 2e 
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa11a8d0 6f95bbbf 
+80138a1e ee000000 bb11a8d0 11134 24 
+aa11a8d0 6f95bcd1 800c2e5e 6f95bcd1 874bee52 
+6f95bcd1 87828e52 ee000000 bb11a8d0 36 
+1000a 10000 f977 2e 
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa10a8d1 6f95bc8e 
+800dae5b ee000000 bb10a8d1 11134 28 
+aa10a8d1 6f95bda1 80160a9c 6f95bda1 875c4a90 
+87490a98 6f95bda1 87913a98 ee000000 bb10a8d1 
+36 1000a 10000 f97f 2e 
+
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 1134 14 aa11a8d2 6f95bd0c 8005defa 
+ee000000 bb11a8d2 11134 24 aa11a8d2 
+6f95be1f 80060b3b 6f95be1f 8759db2f 6f95be1f 
+878b9b2f ee000000 bb11a8d2 36 1000a 
+10000 f986 2e 
+---------------------
+9c409c4
+1134
+14
+FIRED: 3
+aa11a8d2
+6f95bd0c
+8005defa
+ee000000
+ee000000
+ee000000
+ee000000
+bb11a8d2
+Checked trailer 
+- - - - - - -
+11134
+24
+FIRED: 7
+aa11a8d2
+6f95be1f
+80060b3b
+6f95be1f
+ee000000
+ee000000
+ee000000
+bb11a8d2
+Checked trailer 
+- - - - - - -
+36
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa10a8d3 6f95bdb0 
+8009e85e ee000000 bb10a8d3 11134 24 
+aa10a8d3 6f95bec2 801ceca0 6f95bec2 874c9c93 
+6f95bec2 879d2c94 ee000000 bb10a8d3 36 
+1000a 10000 f988 2e 
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa11a8d4 6f95c207 
+8003aca9 ee000000 bb11a8d4 11134 24 
+aa11a8d4 6f95c31a 800a48ed 6f95c31a 8742f8e1 
+6f95c31a 879a88e5 ee000000 bb11a8d4 36 
+1000a 10000 f98b 2e 
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa10a8d5 6f95c276 
+800a3d97 ee000000 bb10a8d5 11134 24 
+aa10a8d5 6f95c389 800a49db 6f95c389 874279ce 
+6f95c389 879589cf ee000000 bb10a8d5 3c 
+1000a 10000 f9ab 34 
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa11a8d6 6f95c432 
+801928bd ee000000 bb11a8d6 11134 24 
+aa11a8d6 6f95c544 801aad02 6f95c544 87444cf4 
+6f95c544 8798acfc ee000000 bb11a8d6 36 
+1000a 10000 f9ac 2e 
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa10a8d7 6f95c569 
+801329b3 ee000000 bb10a8d7 11134 24 
+aa10a8d7 6f95c67b 801dadf9 6f95c67b 87566dec 
+6f95c67b 878b8dec ee000000 bb10a8d7 36 
+1000a 10000 f9b4 2e 
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa11a8d8 6f95c65c 
+8007bec6 ee000000 bb11a8d8 11134 24 
+aa11a8d8 6f95c76f 8002cb0c 6f95c76f 875c8b00 
+6f95c76f 87917b00 ee000000 bb11a8d8 36 
+1000a 10000 f9c1 2e 
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 add00100 1134 14 aa10a8d9 6f95cc22 
+80150f1e ee000000 bb10a8d9 11134 28 
+aa10a8d9 6f95cd35 800a4b67 6f95cd35 87460b5b 
+87583b62 6f95cd35 879d9b62 ee000000 bb10a8d9 
+36 1000a 10000 f9c5 2e 
+
+---------------------
+9c409c4
+add00100
+- - - - - - -
+---------------------
+9c409c4 1134 14 aa11a8da 6f95cedf 80158cc2 
+ee000000 bb11a8da 11134 28 aa11a8da 
+6f95cff2 8018a90d 6f95cff2 87510901 87444908 
+6f95cff2 8781e906 ee000000 bb11a8da 36 
+1000a 10000 f9e1 2e 
+---------------------
+9c409c4
+1134
+14
+FIRED: 3
+aa11a8da
+6f95cedf
+80158cc2
+ee000000
+ee000000
+ee000000
+ee000000
+bb11a8da
+Checked trailer 
+- - - - - - -
+11134
+28
+FIRED: 8
+aa11a8da
+6f95cff2
+8018a90d
+6f95cff2
