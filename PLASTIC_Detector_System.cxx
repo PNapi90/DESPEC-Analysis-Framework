@@ -16,19 +16,19 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
     tamex_identifier = 52;
     
 
-    coarse_T_Trigger = new unsigned long[100];
-    fine_T_Trigger = new unsigned long[100];
+    coarse_T_Trigger = new ULong[100];
+    fine_T_Trigger = new ULong[100];
 
-    coarse_T = new unsigned long**[100];
-    fine_T = new unsigned long**[100];
+    coarse_T = new ULong**[100];
+    fine_T = new ULong**[100];
     ch_ID = new unsigned int**[100];
     for(int o = 0;o < 100;++o){
-        coarse_T[o] = new unsigned long*[100];
-        fine_T[o] = new unsigned long*[100];
+        coarse_T[o] = new ULong*[100];
+        fine_T[o] = new ULong*[100];
         ch_ID[o] = new unsigned int*[100];
         for(int i = 0;i < 100;++i){
-            coarse_T[o][i] = new unsigned long[2];
-            fine_T[o][i] = new unsigned long[2];
+            coarse_T[o][i] = new ULong[2];
+            fine_T[o][i] = new ULong[2];
             ch_ID[o][i] = new unsigned int[2];
         }
     }
@@ -57,10 +57,10 @@ PLASTIC_Detector_System::~PLASTIC_Detector_System(){
 
 //---------------------------------------------------------------
 
-void PLASTIC_Detector_System::get_Event_data(Data_Stream* data_stream){
+void PLASTIC_Detector_System::get_Event_data(PLASTIC_Data_Stream* data_stream){
     return;
     //return important information of event
-    //data_stream->set_ID("PLASTIC");
+    //data_stream->reset();
     //data_stream->set_amount_of_Events(iterator[tamex_iter]);
     //data_stream->set_event_data(coarse_T,fine_T,ch_ID,coarse_T_Trigger,fine_T_Trigger);
 }

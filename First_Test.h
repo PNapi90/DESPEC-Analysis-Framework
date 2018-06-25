@@ -49,8 +49,11 @@
 #include "Detector_System.cxx"
 #include "FATIMA_Detector_System.h"
 #include "PLASTIC_Detector_System.h"
-#include "Data_Stream.h"
+#include "Data_Stream.cxx"
 #include "White_Rabbit.h"
+
+#include "PLASTIC_Data_Stream.h"
+#include "FATIMA_Data_Stream.h"
 
 #include <string>
 
@@ -91,7 +94,7 @@ using namespace std;
 			bool Used_Systems[10];
 
 			Detector_System** Detector_Systems;
-			Data_Stream* data_stream;
+			Data_Stream** data_stream;
 			White_Rabbit* WR;
 
 			Int_t get_Conversion(Int_t);

@@ -145,8 +145,18 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) Detector_Systems[i] = NULL;
 
-	//create data stream object using Used_Systems configuration
-	data_stream = new Data_Stream();
+	//Create data streams
+	data_stream = new Data_Stream*[6];
+
+	// all non used data streams intialized as NULL 
+	//-> calling uninitialized system will cause an error !
+	//Detector_Systems[0] = !Used_Systems[0] ? NULL : new FRS_Detector_System();
+	//Detector_Systems[1] = !Used_Systems[1] ? NULL : new AIDA_Detector_System();
+	data_stream[2] = !Used_Systems[2] ? NULL : new PLASTIC_Data_Stream();
+	data_stream[3] = !Used_Systems[3] ? NULL : new FATIMA_Data_Stream();
+	//Detector_Systems[4] = !Used_Systems[4] ? NULL : new GALILEO_Detector_System();
+
+	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) data_stream[i] = NULL;
 
 	load_PrcID_File();
 	White_Rabbbit_old = 0;
@@ -160,10 +170,13 @@ TGo4EventProcessor(name) // Histograms defined here //
 TSCNUnpackProc::~TSCNUnpackProc()
 {
 
-	for(int i = 0;i < 6;++i) if(Detector_Systems[i]) delete Detector_Systems[i];
+	for(int i = 0;i < 6;++i){
+		if(Detector_Systems[i]) delete Detector_Systems[i];
+		if(data_stream[i]) delete data_stream[i];
+	}
 	delete[] Detector_Systems;
 	
-	delete data_stream;
+	delete[] data_stream;
 
 	cout << "**** TSCNUnpackProc: Delete" << endl;
 }
@@ -244,20 +257,20 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		pdata = Detector_Systems[PrcID_Conv]->get_pdata();
 		
 		//get data from subevent
-		Detector_Systems[PrcID_Conv]->get_Event_data(data_stream);
+		Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
 		
 		//temporary
 		used[PrcID_Conv] = true;
 
 		if(PrcID_Conv == 3){
 			//if FATIMA mismatch -> don't use data
-			if(data_stream->get_mismatch()) continue;
+			if(data_stream[PrcID_Conv]->get_mismatch()) continue;
 			
-			fat_hits = data_stream->get_FATIMA_Hits();
-			E0 = data_stream->get_FATIMA_E(0);
+			fat_hits = data_stream[PrcID_Conv]->get_FATIMA_Hits();
+			E0 = data_stream[PrcID_Conv]->get_FATIMA_E(0);
 			FAT_E->Fill(E0);
 			if(fat_hits == 2){
-				E1 = data_stream->get_FATIMA_E(1);
+				E1 = data_stream[PrcID_Conv]->get_FATIMA_E(1);
 				FAT_MAT->Fill(E0,E1);
 
 			}

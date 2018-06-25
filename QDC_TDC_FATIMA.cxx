@@ -390,10 +390,10 @@ int QDC_TDC_FATIMA::get_amount_of_fired_Dets(){return fired_Dets;}
 
 //---------------------------------------------------------------
 
-void QDC_TDC_FATIMA::get_Detector_Data(Data_Stream* data_stream){
+void QDC_TDC_FATIMA::get_Detector_Data(FATIMA_Data_Stream* data_stream){
 
 
-    data_stream->set_ID("FATIMA");
+    data_stream->reset();
     //return Fatima Detector data to FATIMA_Detector_System object
     ULong raw_T,raw_QDC_T;
     double raw_E;

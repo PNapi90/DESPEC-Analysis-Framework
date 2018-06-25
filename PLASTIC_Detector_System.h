@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "Detector_System.cxx"
-#include "Data_Stream.h"
+#include "PLASTIC_Data_Stream.h"
 #include "PLASTIC_Calibrator.h"
 
 #include "TAMEX.h"
@@ -12,7 +12,7 @@
 
 
 typedef unsigned long long ULong64_t;
-
+typedef unsigned long ULong;
 
 class PLASTIC_Detector_System : public Detector_System{
 
@@ -34,7 +34,7 @@ private:
     int error_code;
     int tamex_identifier;
 
-    unsigned long trailer_code;
+    ULong trailer_code;
 
     int am_fired[100];
     int sfp_id[100];
@@ -44,15 +44,15 @@ private:
 
     int tamex_iter;
 
-    unsigned long Pre_Trigger_Window;
-    unsigned long Post_Trigger_Window;
+    ULong Pre_Trigger_Window;
+    ULong Post_Trigger_Window;
 
-    unsigned long*** coarse_T;
-    unsigned long*** fine_T;
+    ULong*** coarse_T;
+    ULong*** fine_T;
     unsigned int*** ch_ID;
 
-    unsigned long* coarse_T_Trigger;
-    unsigned long* fine_T_Trigger;
+    ULong* coarse_T_Trigger;
+    ULong* fine_T_Trigger;
 
     void check_error();
     void check_trailer();
@@ -69,7 +69,7 @@ public:
     //functions from abstract class Detector_System
     void Process_MBS(int*);
 
-    void get_Event_data(Data_Stream*);
+    void get_Event_data(PLASTIC_Data_Stream*);
 
     int* get_pdata();
 
