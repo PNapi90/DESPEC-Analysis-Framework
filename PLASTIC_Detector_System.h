@@ -25,6 +25,10 @@ private:
 
     bool no_edges[100];
 
+    bool CALIBRATE,Calibration_Done;
+    
+    int cal_count;
+
     int* pdata;
 
     int increase;
@@ -47,12 +51,13 @@ private:
     ULong Pre_Trigger_Window;
     ULong Post_Trigger_Window;
 
-    ULong*** coarse_T;
-    ULong*** fine_T;
-    unsigned int*** ch_ID;
+    ULong*** edge_coarse;
+    ULong*** edge_fine;
+    unsigned int*** ch_ID_edge;
 
-    ULong* coarse_T_Trigger;
-    ULong* fine_T_Trigger;
+    ULong* coarse_T;
+    ULong* fine_T;
+    unsigned int* ch_ID;
 
     void check_error();
     void check_trailer();

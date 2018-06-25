@@ -9,25 +9,41 @@ typedef unsigned int UInt;
 #include <cstdlib>
 #include <string>
 
+
+#include <TFile.h>
+#include <TH1.h>
+
 class PLASTIC_Calibrator{
 
 private:
 
-	int am_fired;
+    bool ONLINE;
 
-	ULong cal_arr_c[100][100][2];
-	ULong cal_arr_f[100][100][2];
+	int am_fired,iter;
+    int am_bins;
+
+    double min_val,max_val;
+
+    bool** fired;
+
+    double* bins_x_arr;
+    double*** Cal_arr;
+
+    TH1*** Fine_Hist;
 
 	void load_Calibration_File();
 
 
 
 public:
-	PLASTIC_Calibrator();
+	PLASTIC_Calibrator(bool);
 	~PLASTIC_Calibrator();
 	
 	void calibrate(ULong**,ULong**,UInt**,int,int);
 	void calibrate(ULong,ULong,ULong*,int);
+
+    void ONLINE_CALIBRATION();
+    void OFFLINE_CALIBRATION();
 
 };
 

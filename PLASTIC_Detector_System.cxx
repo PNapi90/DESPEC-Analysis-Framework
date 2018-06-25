@@ -6,6 +6,9 @@ using namespace std;
 
 PLASTIC_Detector_System::PLASTIC_Detector_System(){
 
+    //calibration enabled?
+    CALIBRATE = true;
+
     // different codes for PLASTIC MBS words
     add = 2781;
     aa = 170;
@@ -16,20 +19,21 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
     tamex_identifier = 52;
     
 
-    coarse_T_Trigger = new ULong[100];
-    fine_T_Trigger = new ULong[100];
+    coarse_T = new ULong[100];
+    fine_T = new ULong[100];
+    ch_ID = new unsigned int[100];
 
-    coarse_T = new ULong**[100];
-    fine_T = new ULong**[100];
-    ch_ID = new unsigned int**[100];
+    edge_coarse = new ULong**[100];
+    edge_fine = new ULong**[100];
+    ch_ID_edge = new unsigned int**[100];
     for(int o = 0;o < 100;++o){
-        coarse_T[o] = new ULong*[100];
-        fine_T[o] = new ULong*[100];
-        ch_ID[o] = new unsigned int*[100];
+        edge_coarse[o] = new ULong*[100];
+        edge_fine[o] = new ULong*[100];
+        ch_ID_edge[o] = new unsigned int*[100];
         for(int i = 0;i < 100;++i){
-            coarse_T[o][i] = new ULong[2];
-            fine_T[o][i] = new ULong[2];
-            ch_ID[o][i] = new unsigned int[2];
+            edge_coarse[o][i] = new ULong[2];
+            edge_fine[o][i] = new ULong[2];
+            ch_ID_edge[o][i] = new unsigned int[2];
         }
     }
 }
@@ -39,30 +43,33 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
 PLASTIC_Detector_System::~PLASTIC_Detector_System(){
     for(int i = 0;i < 100;++i){
         for(int j = 0;j < 100;++j){
-            delete[] coarse_T[i][j];
-            delete[] fine_T[i][j];
-            delete[] ch_ID[i][j];
+            delete[] edge_coarse[i][j];
+            delete[] edge_fine[i][j];
+            delete[] ch_ID_edge[i][j];
         }
-        delete[] coarse_T[i];
-        delete[] fine_T[i];
-        delete[] ch_ID[i];
+        delete[] edge_coarse[i];
+        delete[] edge_fine[i];
+        delete[] ch_ID_edge[i];
     }
+    delete[] edge_coarse;
+    delete[] edge_fine;
+    delete[] ch_ID_edge;
+
     delete[] coarse_T;
     delete[] fine_T;
     delete[] ch_ID;
-
-    delete[] coarse_T_Trigger;
-    delete[] fine_T_Trigger;
 }
 
 //---------------------------------------------------------------
 
 void PLASTIC_Detector_System::get_Event_data(PLASTIC_Data_Stream* data_stream){
+    if(CALIBRATE) calibrate_active();
+    else calibrate_passive();
     return;
     //return important information of event
     //data_stream->reset();
     //data_stream->set_amount_of_Events(iterator[tamex_iter]);
-    //data_stream->set_event_data(coarse_T,fine_T,ch_ID,coarse_T_Trigger,fine_T_Trigger);
+    //data_stream->set_event_data(coarse_T,fine_T,ch_ID,coarse_T,fine_T);
 }
 
 //---------------------------------------------------------------
@@ -182,8 +189,9 @@ void PLASTIC_Detector_System::get_trigger(){
 
     //extract data
     TAMEX_DATA* data = (TAMEX_DATA*) pdata;
-    coarse_T_Trigger[tamex_iter] = data->coarse_T;
-    fine_T_Trigger[tamex_iter] = data->fine_T;
+    coarse_T[tamex_iter] = data->coarse_T;
+    fine_T[tamex_iter] = data->fine_T;
+    ch_ID[tamex_iter] = data->ch_ID;
 
     //next word
     pdata++;
@@ -214,9 +222,9 @@ void PLASTIC_Detector_System::get_edges(){
         //extract data
         TAMEX_DATA* data = (TAMEX_DATA*) pdata;
 
-        coarse_T[tamex_iter][iterator[tamex_iter]][lead] = data->coarse_T;
-        fine_T[tamex_iter][iterator[tamex_iter]][lead] = data->fine_T;
-        ch_ID[tamex_iter][iterator[tamex_iter]][lead] = data->ch_ID;
+        edge_coarse[tamex_iter][iterator[tamex_iter]][lead] = data->coarse_T;
+        edge_fine[tamex_iter][iterator[tamex_iter]][lead] = data->fine_T;
+        ch_ID_edge[tamex_iter][iterator[tamex_iter]][lead] = data->ch_ID;
 
         lead++;
         if(lead == 2){
@@ -266,16 +274,24 @@ void PLASTIC_Detector_System::check_trailer(){
 
 //---------------------------------------------------------------
 
-void PLASTIC_Detector_System::calibrate(){
-    return;
+void PLASTIC_Detector_System::calibrate_online(){
+
+    //
+    PLASTIC_Calibration->get_data(edge_fine,ch_ID_edge,tamex_iter,iterator);
+
+    cal_count++;
+    if(cal_count > 50000){
+        PLASTIC_Calibration->ONLINE_CALIBRATION();
+        Calibration_Done = true;
+    }
     /*
     ULong* tmp_container = new ULong[2];
 
     PLASTIC_Calibration->calibrate(coarse_T,fine_T,ch_ID,am_fired,tamex_id);
-    PLASTIC_Calibration->calibrate(coarse_T_Trigger,fine_T_Trigger,tmp_container,tamex_id);
+    PLASTIC_Calibration->calibrate(coarse_T,fine_T,tmp_container,tamex_id);
 
-    coarse_T_Trigger = tmp_container[0];
-    fine_T_Trigger = tmp_container[1];
+    coarse_T = tmp_container[0];
+    fine_T = tmp_container[1];
 
     delete[] tmp_container;
     tmp_container = NULL;
@@ -287,3 +303,4 @@ void PLASTIC_Detector_System::calibrate(){
 int* PLASTIC_Detector_System::get_pdata(){return pdata;}
 
 //---------------------------------------------------------------
+

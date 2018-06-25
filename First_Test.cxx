@@ -238,7 +238,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 
 
-		ULong64_t White_Rabbbit = WR->get_White_Rabbit(pdata);
+		ULong64_t White_Rabbit = WR->get_White_Rabbit(pdata);
 		pdata += WR->get_increase();
 
 		if(PrcID_Conv == 2){
