@@ -4,6 +4,8 @@
 #include "FATIMA_Energy_Calibration.h"
 #include "FATIMA_Time_Calibration.h"
 
+#include <cstdlib>
+
 class QDC_FATIMA_Channel{
 
 private:

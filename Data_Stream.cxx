@@ -13,6 +13,8 @@ public:
 
     virtual int get_amount_Hits() = 0;
 
+    virtual double get_E(int) = 0;
+
 };
 
 #endif

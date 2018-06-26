@@ -6,10 +6,10 @@ using namespace std;
 
 PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
 
-	this->ONLINE = ONLINE;
+	this->ONLINE = false;//ONLINE;
 
 
-	am_bin = 1000;
+	nbins = 1000;
 
 	//only for ONLINE CALIBRATION
 	if(ONLINE){
@@ -21,12 +21,12 @@ PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
 
 		char tmp_name[1000];
 
-		Fine_Hist = new TH1**[100];
+		Fine_Hist = new TH1D**[100];
 		for(int i = 0;i < 100;++i){
-			Fine_Hist[i] = new TH1*[100];
+			Fine_Hist[i] = new TH1D*[100];
 			for(int j = 0;j < 100;++j){
 				sprintf(tmp_name,"PDF_%d_%d",i,j);
-				Fine_Hist[i][j] = new TH1(tmp_name,tmp_name,nbins,min_val,max_val);
+				Fine_Hist[i][j] = new TH1D(tmp_name,tmp_name,nbins,min_val,max_val);
 			}
 		}
 	}
@@ -55,7 +55,9 @@ PLASTIC_Calibrator::~PLASTIC_Calibrator(){
 		for(int i = 0;i < iter;++i){
 			for(int j = 0;j < 100;++j) if(Cal_arr[i][j]) delete[] Cal_arr[i][j];
 			delete[] Cal_arr[i];
+			delete[] wired_tamex_ch[i];
 		}
+		delete[] wired_tamex_ch;
 		delete[] Cal_arr;
 		delete[] bins_x_arr;
 	}
@@ -82,6 +84,12 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 	int used_ids[100][100];
 	iter = 0;
 
+	wired_tamex_ch = new bool*[100];
+	for(int i = 0;i < 100;++i){
+		wired_tamex_ch[i] = new bool[100];
+		for(int j = 0;j < 100;++j) wired_tamex_ch[i][j] = false;
+	}
+
 	while(map_file.good()){
 		getline(map_file,line,'\n');
 		if(line[0] == '#') continue;
@@ -102,6 +110,8 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 	double bin,val;
 
 	Cal_arr = new double**[iter];
+
+	const char* format = "%d %d";
 
 	bool first = true;
 
@@ -149,11 +159,13 @@ void PLASTIC_Calibrator::OFFLINE_CALIBRATION(ULong* fine_T,int tamex_id,int ch_i
 
 //---------------------------------------------------------------
 
-void PLASTIC_Calibrator::get_data(ULong*** fine_T,int*** ch_id,int tamex_iter,int* iterator){
+void PLASTIC_Calibrator::get_data(ULong*** fine_T,UInt*** ch_id,int tamex_iter,int* iterator){
 	//write into corresponding root histograms
 	for(int i = 0;i < tamex_iter;++i){
-		for(int j = 0;j < iterator[i];++j) Fine_Hist[i][ch_id[i][j][0]]->Fill(fine_T[i][j][0]);
-		fired[i][ch_id[i][j][0]] = true;
+		for(int j = 0;j < iterator[i];++j){
+			Fine_Hist[i][ch_id[i][j][0]]->Fill(fine_T[i][j][0]);
+			fired[i][ch_id[i][j][0]] = true;
+		}
 	}
 }
 
@@ -182,6 +194,10 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 	double full_sum = 0;
 	cout << "Running... ";
 	cout.flush();
+
+	//bining array
+	double bins_x[nbins];
+	for(int i = 0;i < nbins;++i) bins_x[i] = (max_val - min_val)/((double) nbins)*(i+1);
 
 	//loop over all tamex modules and their respective channels
 	for(int i = 0;i < 100;++i){

@@ -27,13 +27,14 @@ public:
 
     void set_event_data(ULong*,ULong*,UInt*,ULong,ULong);
 
-    void set_amount_of_Events();
+    void set_amount_of_Events(int);
 
     void set_mismatch();
     bool get_mismatch();
 
     void reset();
-    void get_amount_Hits();
+    int get_amount_Hits();
+    double get_E(int);
     
 
 };

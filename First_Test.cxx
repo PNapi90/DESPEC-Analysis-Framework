@@ -34,7 +34,7 @@
 #include "Detector_System.cxx"
 #include "FATIMA_Detector_System.h"
 #include "PLASTIC_Detector_System.h"
-#include "Data_Stream.h"
+#include "Data_Stream.cxx"
 #include "White_Rabbit.h"
 
 #include <string>
@@ -117,19 +117,33 @@ TGo4EventProcessor(name) // Histograms defined here //
 		QLongE_Vs_QDC_dT[i]  = MakeTH2('D', Form("QLongE_Vs_QDC_dT/QLongE_Vs_QDC_dT channels%2d",i),Form("QLong Vs QDC Timestamp Difference %2d",i+1), 20, 0., 4000., 400, -200., 200.);
 
 	}
+	
+	mat = new TH1**[20];
+	for(int i = 0;i < 20;++i){
+		mat[i] = new TH1*[20];
+		for(int j = 0;j < 20;++j){
+			mat[i][j] = MakeTH1('D', Form("mat_%d_%d",i,j),Form("mat_%d_%d",i,j), 2000, -500., 500.);
+		}
+	}
 	*/
-	
-	
+
+	all =  MakeTH1('D', "je","hey", 2000, -500., 500.);
+
+
 	FAT_E = MakeTH1('D',"FATIMA_E","FATIMA_E",2001,0,4000);
 	FAT_MAT = MakeTH2('D',"FAT_MAT","FAT_MAT",1001,0,4000,1001,0,4000);
 
 	hit_mat = MakeTH2('D',"hitmat","hitmat",37,0,36,37,0,36);
+
+	C_t = MakeTH1('D',"pl","pl",1001,0,1000);
 
 	//used_systems
 	get_used_Systems();
 
 	//create White Rabbit obj
 	WR = new White_Rabbit();
+
+	WR_HIST = MakeTH1('D',"WR","WR",2001,-200,200);
 
 
 	//create Detector Systems
@@ -161,6 +175,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	load_PrcID_File();
 	White_Rabbbit_old = 0;
 	count = 0;
+	iterator = 0;
 }
 
 
@@ -188,7 +203,7 @@ TSCNUnpackProc::~TSCNUnpackProc()
 Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 {
 	count++;
-	if(count > 500000) return kTRUE;
+	//if(count > 500000) return kTRUE;
 	Bool_t isValid=kFALSE; // validity of output event //
   
 	TGo4MbsEvent* inp_evt = (TGo4MbsEvent* ) GetInputEvent(); // from this //
@@ -224,7 +239,9 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 	bool used[5];
 	for(int i = 0;i < 5;++i) used[i] = false;
+	
 
+	if(iterator >= 2) iterator = 0;
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
 		subevent_iter++;
@@ -238,8 +255,17 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 
 
-		ULong64_t White_Rabbit = WR->get_White_Rabbit(pdata);
+		WR_tmp[iterator] = WR->get_White_Rabbit(pdata);
+		if(PrcID_Conv == 3) WR_tmp[iterator] /= 8;
+		called[iterator] = PrcID_Conv;
 		pdata += WR->get_increase();
+
+		//cout << WR_tmp[iterator] << " " << iterator << endl;
+
+		iterator++;
+		if(iterator > 2) iterator = 0;
+
+		//continue;
 
 		if(PrcID_Conv == 2){
 			cout << "---------------------\n";
@@ -257,8 +283,9 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		pdata = Detector_Systems[PrcID_Conv]->get_pdata();
 		
 		//get data from subevent
-		Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
+		if(PrcID == 3) Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
 		
+		//continue;
 		//temporary
 		used[PrcID_Conv] = true;
 
@@ -266,24 +293,53 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			//if FATIMA mismatch -> don't use data
 			if(data_stream[PrcID_Conv]->get_mismatch()) continue;
 			
-			fat_hits = data_stream[PrcID_Conv]->get_FATIMA_Hits();
-			E0 = data_stream[PrcID_Conv]->get_FATIMA_E(0);
+			fat_hits = data_stream[PrcID_Conv]->get_amount_Hits();
+			E0 = data_stream[PrcID_Conv]->get_E(0);
 			FAT_E->Fill(E0);
 			if(fat_hits == 2){
-				E1 = data_stream[PrcID_Conv]->get_FATIMA_E(1);
+				E1 = data_stream[PrcID_Conv]->get_E(1);
 				FAT_MAT->Fill(E0,E1);
 
 			}
 		}
 
-		if(used[2] && used[3]){
+		if(PrcID_Conv == 2){
+			int a_h = Detector_Systems[PrcID_Conv]->tmp_get_am_hits();
+			unsigned int*** chid = Detector_Systems[PrcID_Conv]->tmp_get_chID();
+			int* itit = Detector_Systems[PrcID_Conv]->tmp_get_iterator();
+			unsigned long*** tmp = Detector_Systems[PrcID_Conv]->tmp_get_coarse_T();
+			cout << dec << itit[0] << " " << itit[1]  << " " << a_h<< endl;
+			cout << "-DASd" << endl;
+			for(int i = 0;i < a_h;++i){
+				for(int j = 0;j < itit[i];++j){
+					for(int k = 0;k < itit[i];++k){
+						if(k > j){
+							all->Fill((tmp[i+1][j][0] - tmp[i+1][j][1])*5000);
+							cout << dec << "hehehe " << tmp[i+1][j][0]  << " " <<  tmp[i+1][j][1] << endl;
+							//mat[chid[i][j][0]][chid[i][k][0]]->Fill((tmp[i][j][0] - tmp[i][j][1])*5000);
+						}
+					}
+				}
+			}
+
+
+			if(a_h == 2) C_t->Fill(tmp[0]-tmp[1]);
+			cout <<dec << " tmp "<< tmp[0] << endl;
 
 		}
-	}
 
+	//		if(used[2] && used[3]){
+	//	}
+	}
+	if(iterator == 2 && called[0] != called[1]){
+		cout << WR_tmp[0]  << " " << WR_tmp[1] << " " << WR_tmp[0] - WR_tmp[1] << endl;
+		WR_HIST->Fill((WR_tmp[0] - WR_tmp[1]));
+		iterator = 0;
+		
+	}
 	out_evt->SetValid(isValid);
 	
-	
+	if(iterator >= 2) iterator = 0;
 	return isValid;
 	
 }

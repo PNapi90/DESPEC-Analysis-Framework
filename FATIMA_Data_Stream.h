@@ -34,11 +34,12 @@ public:
 
     void set_event_data(double,ULong,ULong,int,int,int);
     
-    double get_FATIMA_E(int);
+    double get_E(int);
     
     //inherited
     void reset();
     bool get_mismatch();
+    void set_mismatch();
     int get_amount_Hits();    
 };
 

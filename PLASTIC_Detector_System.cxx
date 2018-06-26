@@ -7,17 +7,18 @@ using namespace std;
 PLASTIC_Detector_System::PLASTIC_Detector_System(){
 
     //calibration enabled?
-    CALIBRATE = true;
+    CALIBRATE = false;
 
     // different codes for PLASTIC MBS words
     add = 2781;
     aa = 170;
     six_eight = 104;
-    six_f = 111;
+    six_f = 6;
     trailer_code = 187;
     error_code = 238;
     tamex_identifier = 52;
     
+    iterator = new int[100];
 
     coarse_T = new ULong[100];
     fine_T = new ULong[100];
@@ -62,10 +63,32 @@ PLASTIC_Detector_System::~PLASTIC_Detector_System(){
 
 //---------------------------------------------------------------
 
-void PLASTIC_Detector_System::get_Event_data(PLASTIC_Data_Stream* data_stream){
-    if(CALIBRATE) calibrate_active();
-    else calibrate_passive();
-    return;
+
+ULong*** PLASTIC_Detector_System::tmp_get_coarse_T(){return edge_coarse;}
+
+
+
+//---------------------------------------------------------------
+
+int PLASTIC_Detector_System::tmp_get_am_hits(){return tamex_iter;}
+
+//---------------------------------------------------------------
+
+unsigned int*** PLASTIC_Detector_System::tmp_get_chID(){return ch_ID_edge;}
+
+int* PLASTIC_Detector_System::tmp_get_iterator(){return iterator;}
+
+//---------------------------------------------------------------
+
+void PLASTIC_Detector_System::get_Event_data(Data_Stream* data_stream){
+    if(CALIBRATE) calibrate_ONLINE();
+    else calibrate_OFFLINE();
+
+    //data_stream = (PLASTIC_Data_Stream*) data_stream;
+
+    //data_stream->set_event_data(coarse_T,fine_T,ch_ID,0,0);
+
+    
     //return important information of event
     //data_stream->reset();
     //data_stream->set_amount_of_Events(iterator[tamex_iter]);
@@ -96,9 +119,11 @@ void PLASTIC_Detector_System::Process_TAMEX(){
     iterator[tamex_iter] = 0;
     no_edges[tamex_iter] = false;
     
+    written = false;
+
     //check for trigger window (beginning of TAMEX MBS)
     if(tamex_iter == 0){
-        cout << hex << *pdata << endl;
+        cout << hex << *pdata << " 0 "<< endl;
         TRIGGER_WINDOW* window = (TRIGGER_WINDOW*) pdata;
         Pre_Trigger_Window = window->PRE_TRIGG;
         Post_Trigger_Window = window->POST_TRIGG;
@@ -108,21 +133,29 @@ void PLASTIC_Detector_System::Process_TAMEX(){
         //skip padding in stream
         skip_padding();
     }
-    cout << hex << *pdata << endl;
+    cout << hex << *pdata << " 1 " << endl;
     //get tamex_id, sfp_id and trigger type
     TAMEX_CHANNEL_HEADER* head = (TAMEX_CHANNEL_HEADER*) pdata;
     //check if end of TAMEX MBS reached
-    if(head->identify != tamex_identifier){
+    if(head->identify != tamex_identifier || head->identify_2 != 0){
         tamex_end = true;
         return;
     }
+
+    if(tamex_id > 0){
+        if(head->Tamex_id <= tamex_id[tamex_iter-1]){
+            tamex_end = true;
+            return;
+        }
+    }
+
     sfp_id[tamex_iter] = head->sfp_id;
     trigger_type[tamex_iter] = head->trigger_t;
     tamex_id[tamex_iter] = head->Tamex_id;
 
     //next word
     pdata++;
-    cout << hex << *pdata << endl;
+    cout << hex << *pdata<< " 2 " << endl;
     //get amount of fired tdcs (without last trailing words)
     TAMEX_FIRED* fire = (TAMEX_FIRED*) pdata;
     am_fired[tamex_iter] = (fire->am_fired)/4 - 2;
@@ -131,7 +164,7 @@ void PLASTIC_Detector_System::Process_TAMEX(){
 
     //next word
     pdata++;
-    cout << hex << *pdata << endl;
+    cout << hex << *pdata << " 3 " << endl;
     //begin of data header
     TAMEX_BEGIN* begin = (TAMEX_BEGIN*) pdata;
     if(begin->aa != aa){
@@ -141,22 +174,25 @@ void PLASTIC_Detector_System::Process_TAMEX(){
 
     //next word
     pdata++;
-    cout << hex << *pdata << endl;
+    cout << hex << *pdata<< " 4" << endl;
     //get trigger 
     get_trigger();
     cout << hex << *pdata << endl;
     //move on to leading and trailing edges
     if(am_fired[tamex_iter] > 3) get_edges();
-    else no_edges[tamex_iter] = true;
-    cout << hex << *pdata << endl;
+    else{
+        cout << "-> no edges" << endl;
+        no_edges[tamex_iter] = true;
+    }
+    cout << hex << *pdata << " 5 "<< endl;
     //check errors
-    //if(no_edges[tamex_iter]) pdata++;
-    cout << hex << *pdata << endl;
+    //if(!no_edges[tamex_iter]) pdata++;
+    cout << hex << *pdata << " 6 "<< endl;
     check_error();
-    cout << hex << *pdata << endl;
+    cout << hex << *pdata << " 7 "<< endl;
     //checking trailer
     check_trailer();
-    cout << hex << *pdata << endl;
+    cout << hex << *pdata << " 8 "<< endl;
     cout << "Checked trailer " << endl;
 }
 
@@ -177,7 +213,8 @@ void PLASTIC_Detector_System::skip_padding(){
 void PLASTIC_Detector_System::get_trigger(){
     //check place holder in stream
     PLACE_HOLDER* hold = (PLACE_HOLDER*) pdata;
-    if(hold->six_eight != six_f){
+    
+    if(hold->six_eight != six_f && false){
         cerr << dec << hold->six_eight << endl;
         cerr << "PLACE_HOLDER error (trigger) in TAMEX!" << endl;
         exit(0);
@@ -185,7 +222,7 @@ void PLASTIC_Detector_System::get_trigger(){
 
     //next word 
     pdata++;
-    cout << hex << *pdata << endl;
+    cout << hex << *pdata << " t1 "<< endl;
 
     //extract data
     TAMEX_DATA* data = (TAMEX_DATA*) pdata;
@@ -207,10 +244,21 @@ void PLASTIC_Detector_System::get_edges(){
     int lead = 0;
     //loop over remaining words (getting leading and trailing edge data)
     int loops = 0;
-    while(loops < (am_fired[tamex_iter]-3)/2){
+    cout << hex << *pdata << " e1 "<< endl;
+    written = false;
+    while(no_error_reached()){
         //check place holder in stream
         PLACE_HOLDER* hold = (PLACE_HOLDER*) pdata;
-        if(hold->six_eight != six_f){
+
+        if(hold->six_eight != six_f && written){
+            cerr << "Multiple single channel fire!" << endl;
+            //written = false;
+            pdata++;
+            continue;
+        }
+        else if(hold->six_eight == six_f) written = false;
+
+        if(hold->six_eight != six_f ){
             cerr << dec << hold->six_eight << endl;
             cerr << "PLACE_HOLDER error (edges) in TAMEX!" << endl;
             exit(0);
@@ -218,6 +266,8 @@ void PLASTIC_Detector_System::get_edges(){
 
         //next word 
         pdata++;
+        cout << hex << *pdata << " e "<< endl;
+
 
         //extract data
         TAMEX_DATA* data = (TAMEX_DATA*) pdata;
@@ -226,17 +276,30 @@ void PLASTIC_Detector_System::get_edges(){
         edge_fine[tamex_iter][iterator[tamex_iter]][lead] = data->fine_T;
         ch_ID_edge[tamex_iter][iterator[tamex_iter]][lead] = data->ch_ID;
 
+        cout << dec << "edge " << edge_coarse[tamex_iter][iterator[tamex_iter]][lead] << " " << ch_ID_edge[tamex_iter][iterator[tamex_iter]][lead] << endl;
+
         lead++;
         if(lead == 2){
             //move to next pair of edges
             lead = 0;
             iterator[tamex_iter]++;
         }
+        
+        written = true;
 
         //next word
         pdata++;
+        cout << hex << *pdata << " e "<< endl;
         loops++;
     }
+}
+
+//---------------------------------------------------------------
+
+bool PLASTIC_Detector_System::no_error_reached(){
+
+    TAMEX_ERROR* error = (TAMEX_ERROR*) pdata;
+    return error->error != error_code;
 }
 
 //---------------------------------------------------------------
@@ -246,7 +309,7 @@ void PLASTIC_Detector_System::check_error(){
     //pdata++;
 
     TAMEX_ERROR* error = (TAMEX_ERROR*) pdata;
-
+    
     if(error->error != error_code){
         cerr << "wrong error header in TAMEX!" << endl;
         exit(0);
@@ -274,7 +337,7 @@ void PLASTIC_Detector_System::check_trailer(){
 
 //---------------------------------------------------------------
 
-void PLASTIC_Detector_System::calibrate_online(){
+void PLASTIC_Detector_System::calibrate_ONLINE(){
 
     //
     PLASTIC_Calibration->get_data(edge_fine,ch_ID_edge,tamex_iter,iterator);
@@ -296,6 +359,12 @@ void PLASTIC_Detector_System::calibrate_online(){
     delete[] tmp_container;
     tmp_container = NULL;
     */
+}
+
+//---------------------------------------------------------------
+
+void PLASTIC_Detector_System::calibrate_OFFLINE(){
+
 }
 
 //---------------------------------------------------------------

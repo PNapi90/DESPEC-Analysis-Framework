@@ -45,6 +45,6 @@ int FATIMA_Data_Stream::get_amount_Hits(){return fat_iter;}
 
 //---------------------------------------------------------------
 
-double Data_Stream::get_FATIMA_E(int i){return FATIMA_E[i];}
+double FATIMA_Data_Stream::get_E(int i){return FATIMA_E[i];}
 
 //---------------------------------------------------------------

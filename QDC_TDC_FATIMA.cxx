@@ -260,7 +260,7 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(QDC_Header* QDChead){
         pdata++; // Moves to 3rd data value
       
         //if (setup->get_extras() == 1) pdata++; // Moves to 4th data value
-        pdata++;
+        pdata++; // extras == 1! IMPLEMENT!
         
 
         QDC_Time* t = (QDC_Time*) pdata;
@@ -287,7 +287,7 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(QDC_Header* QDChead){
                     
         }
         */
-        pdata++; // Moves to 6th data value
+        pdata++; // Moves to 6th data value87454dda
       
         QDC_Data* d = (QDC_Data*) pdata;
         
@@ -369,7 +369,7 @@ void QDC_TDC_FATIMA::print_match_error(int i){
     cerr << Fired_QDC_Channels[board_ID_tmp][1] << " -> no TDC match found!" << endl;
     cerr << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 
-    exit(0);
+    //exit(0);
 }
 
 //---------------------------------------------------------------

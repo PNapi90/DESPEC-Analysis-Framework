@@ -6,6 +6,7 @@
 #include "Detector_System.cxx"
 #include "PLASTIC_Data_Stream.h"
 #include "PLASTIC_Calibrator.h"
+#include "Data_Stream.cxx"
 
 #include "TAMEX.h"
 
@@ -25,6 +26,8 @@ private:
 
     bool no_edges[100];
 
+    bool written;
+
     bool CALIBRATE,Calibration_Done;
     
     int cal_count;
@@ -43,7 +46,7 @@ private:
     int am_fired[100];
     int sfp_id[100];
     int trigger_type[100];
-    int iterator[100];
+    int* iterator;
     int tamex_id[100];
 
     int tamex_iter;
@@ -65,7 +68,11 @@ private:
     void get_trigger();
     void skip_padding();
     void Process_TAMEX();
-    void calibrate();
+    void calibrate_ONLINE();
+    void calibrate_OFFLINE();
+
+    bool no_error_reached();
+    
 
 public:
     PLASTIC_Detector_System();
@@ -74,9 +81,16 @@ public:
     //functions from abstract class Detector_System
     void Process_MBS(int*);
 
-    void get_Event_data(PLASTIC_Data_Stream*);
+    void get_Event_data(Data_Stream*);
 
     int* get_pdata();
+
+    ULong*** tmp_get_coarse_T();
+    int tmp_get_am_hits();
+
+    unsigned int*** tmp_get_chID();
+
+    int* tmp_get_iterator();
 
 };
 

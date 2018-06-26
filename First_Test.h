@@ -82,7 +82,11 @@ using namespace std;
 			TH2* FAT_MAT;
 			TH2* hit_mat;
 
-			
+			TH1* WR_HIST;
+			TH1* C_t;
+
+			TH1*** mat;
+			TH1* all;
 			//for the SIS modules
 
 		private:
@@ -103,6 +107,10 @@ using namespace std;
 			void load_PrcID_File();
 
 			int count;
+			int called[2];
+			int iterator;
+
+			ULong64_t WR_tmp[2];
 
 			ClassDef(TSCNUnpackProc,1)
 	};

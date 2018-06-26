@@ -46,3 +46,7 @@ bool PLASTIC_Data_Stream::get_mismatch(){return mismatch;}
 int PLASTIC_Data_Stream::get_amount_Hits(){return amount;}
 
 //---------------------------------------------------------------
+
+double PLASTIC_Data_Stream::get_E(int i){return 0;}
+
+//---------------------------------------------------------------

@@ -32,7 +32,7 @@ struct TAMEX_CHANNEL_HEADER
     unsigned int trigger_t  : 4;
     unsigned int sfp_id     : 4;
     unsigned int Tamex_id   : 8;
-    unsigned int empty      : 8;
+    unsigned int identify_2 : 8;
 };
 
 struct TAMEX_BEGIN
@@ -49,8 +49,8 @@ struct TAMEX_FIRED
 */
 struct PLACE_HOLDER
 {
-    unsigned long empty     : 24;
-    unsigned int six_eight  : 8;
+    unsigned long empty     : 28;
+    unsigned int six_eight  : 4;
 };
 
 struct TAMEX_DATA

@@ -20,18 +20,19 @@ private:
     bool ONLINE;
 
 	int am_fired,iter;
-    int am_bins;
+    int nbins;
 
     double min_val,max_val;
 
     bool** fired;
-
+    bool** wired_tamex_ch;
+    
     double* bins_x_arr;
     double*** Cal_arr;
 
-    TH1*** Fine_Hist;
+    TH1D*** Fine_Hist;
 
-	void load_Calibration_File();
+	void load_Calibration_Files();
 
 
 
@@ -42,8 +43,10 @@ public:
 	void calibrate(ULong**,ULong**,UInt**,int,int);
 	void calibrate(ULong,ULong,ULong*,int);
 
+    void get_data(ULong***,UInt***,int,int*);
+
     void ONLINE_CALIBRATION();
-    void OFFLINE_CALIBRATION();
+    void OFFLINE_CALIBRATION(ULong*,int,int);
 
 };
 
