@@ -6,13 +6,15 @@ using namespace std;
 
 PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
 
-	this->ONLINE = false;//ONLINE;
+	this->ONLINE = ONLINE;
 
 
-	nbins = 1000;
+	nbins = 3000;
+	min_val = 0;
+	max_val = 3000;
 
 	//only for ONLINE CALIBRATION
-	if(ONLINE){
+	if(this->ONLINE){
 		fired = new bool*[100];
 		for(int i = 0;i < 100;++i){
 			fired[i] = new bool[100];
@@ -161,9 +163,12 @@ void PLASTIC_Calibrator::OFFLINE_CALIBRATION(ULong* fine_T,int tamex_id,int ch_i
 
 void PLASTIC_Calibrator::get_data(ULong*** fine_T,UInt*** ch_id,int tamex_iter,int* iterator){
 	//write into corresponding root histograms
+	cout << dec << "IN CAL " << tamex_iter << " " << iterator[0] << " " << iterator[1] << endl;
 	for(int i = 0;i < tamex_iter;++i){
 		for(int j = 0;j < iterator[i];++j){
+			cout << "CHid " << ch_id[i][j][0] << " " << fine_T[i][j][0]<< endl;
 			Fine_Hist[i][ch_id[i][j][0]]->Fill(fine_T[i][j][0]);
+			cout << "Written" << endl;
 			fired[i][ch_id[i][j][0]] = true;
 		}
 	}
@@ -195,8 +200,10 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 	cout << "Running... ";
 	cout.flush();
 
+	int max_bin = 0;
+
 	//bining array
-	double bins_x[nbins];
+	double bins_x[nbins],val;
 	for(int i = 0;i < nbins;++i) bins_x[i] = (max_val - min_val)/((double) nbins)*(i+1);
 
 	//loop over all tamex modules and their respective channels
@@ -212,16 +219,30 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 				sprintf(filename,"Configuration_Files/Calibration_PLASTIC/Calib_%d_%d.dat",i,j);
 				cal_file.open(filename);
 
+				if(cal_file.fail()){
+					cerr << "Could not open " << filename << endl;
+					exit(0);
+				}
+
 				cal_file << "# Calibration file of tamex_id " << i << " @ channel " << j << endl;
+				cal_file << "# fine_T bin\t\t Calibration value" << endl;
 
 				//calculating cdf for "real" case
 				sum_arr[0] = Fine_Hist[i][j]->GetBinContent(1);
-				for(int k = 1;k < nbins;++k) sum_arr[k] = Fine_Hist[i][j]->GetBinContent(k+1) + sum_arr[k-1];
-				
+				for(int k = 1;k < nbins;++k){
+					sum_arr[k] = Fine_Hist[i][j]->GetBinContent(k+1) + sum_arr[k-1];
+					if(Fine_Hist[i][j]->GetBinContent(k+1) > 0) max_bin = k;
+				}
+
+				for(int k = 0;k < max_bin;++k) perfect[k] = (k+1)/((double) max_bin);
+
 				//normalize cdf to 1 and calculate difference to perfect scenario
 				//write everything into calibration file (name of file = filename)
 				full_sum = sum_arr[nbins-1];
-				for(int k = 0;k < nbins;++k) cal_file << bins_x[k] << " " <<  sum_arr[k]/full_sum - perfect[k] << endl;
+				for(int k = 0;k < nbins;++k){
+					val = (k < max_bin) ? (sum_arr[k]/full_sum - perfect[k]) : 0;
+					cal_file << bins_x[k] << "\t\t" << val << endl;
+				}
 				
 				cal_file.close();
 				cal_file.clear();
@@ -237,5 +258,7 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 	cout << "-> PLEASE SWITCH BACK TO OFFLINE CALIBRATION <-" << endl;
 
 	ROOT_FILE->Write();
-	ROOT_FILE->Close();
+	
+	//closing does not work!
+	//ROOT_FILE->Close();
 }

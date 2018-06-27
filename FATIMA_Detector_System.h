@@ -33,6 +33,8 @@ public:
     unsigned int*** tmp_get_chID(){return NULL;};
 
     int* tmp_get_iterator(){return NULL;};
+
+    bool calibration_done(){return false;}
 };
 
 

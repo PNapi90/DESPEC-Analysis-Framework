@@ -16,8 +16,8 @@ struct TRIGGER_WINDOW
 
 struct PADDING
 {
-    unsigned int  add        : 12;
     unsigned long empty      : 20;
+    unsigned int  add        : 12;
 };
 
 struct TAMEX_FIRED

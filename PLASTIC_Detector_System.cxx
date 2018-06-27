@@ -9,6 +9,8 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
     //calibration enabled?
     CALIBRATE = false;
 
+    PLASTIC_Calibration = new PLASTIC_Calibrator(CALIBRATE);
+
     // different codes for PLASTIC MBS words
     add = 2781;
     aa = 170;
@@ -19,6 +21,9 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
     tamex_identifier = 52;
     
     iterator = new int[100];
+    for(int i = 0;i < 100;++i) iterator[i] = 0;
+
+    tamex_iter = 0;
 
     coarse_T = new ULong[100];
     fine_T = new ULong[100];
@@ -70,7 +75,11 @@ ULong*** PLASTIC_Detector_System::tmp_get_coarse_T(){return edge_coarse;}
 
 //---------------------------------------------------------------
 
-int PLASTIC_Detector_System::tmp_get_am_hits(){return tamex_iter;}
+int PLASTIC_Detector_System::tmp_get_am_hits(){
+    int h = 0;
+    for(int i = 0;i < tamex_iter-1;++i) h += iterator[i];
+    return h;
+}
 
 //---------------------------------------------------------------
 
@@ -83,16 +92,6 @@ int* PLASTIC_Detector_System::tmp_get_iterator(){return iterator;}
 void PLASTIC_Detector_System::get_Event_data(Data_Stream* data_stream){
     if(CALIBRATE) calibrate_ONLINE();
     else calibrate_OFFLINE();
-
-    //data_stream = (PLASTIC_Data_Stream*) data_stream;
-
-    //data_stream->set_event_data(coarse_T,fine_T,ch_ID,0,0);
-
-    
-    //return important information of event
-    //data_stream->reset();
-    //data_stream->set_amount_of_Events(iterator[tamex_iter]);
-    //data_stream->set_event_data(coarse_T,fine_T,ch_ID,coarse_T,fine_T);
 }
 
 //---------------------------------------------------------------
@@ -100,15 +99,19 @@ void PLASTIC_Detector_System::get_Event_data(Data_Stream* data_stream){
 void PLASTIC_Detector_System::Process_MBS(int* pdata){
 
     this->pdata = pdata;
+    //reset old iterator array
+    for(int i = 0;i < tamex_iter;++i) iterator[i] = 0;
 
     tamex_end = false;
     tamex_iter = 0;
     while(!tamex_end){
         Process_TAMEX();
-        cout << "- - - - - - -" <<endl;
         tamex_iter++;
         this->pdata++;
     }
+    
+    if(CALIBRATE) calibrate_ONLINE();
+    else calibrate_OFFLINE();
 }
 
 //---------------------------------------------------------------
@@ -123,7 +126,6 @@ void PLASTIC_Detector_System::Process_TAMEX(){
 
     //check for trigger window (beginning of TAMEX MBS)
     if(tamex_iter == 0){
-        cout << hex << *pdata << " 0 "<< endl;
         TRIGGER_WINDOW* window = (TRIGGER_WINDOW*) pdata;
         Pre_Trigger_Window = window->PRE_TRIGG;
         Post_Trigger_Window = window->POST_TRIGG;
@@ -133,16 +135,17 @@ void PLASTIC_Detector_System::Process_TAMEX(){
         //skip padding in stream
         skip_padding();
     }
-    cout << hex << *pdata << " 1 " << endl;
     //get tamex_id, sfp_id and trigger type
     TAMEX_CHANNEL_HEADER* head = (TAMEX_CHANNEL_HEADER*) pdata;
+    
     //check if end of TAMEX MBS reached
-    if(head->identify != tamex_identifier || head->identify_2 != 0){
+    bool ongoing = (head->identify == tamex_identifier && head->identify_2 == 0);
+    
+    if(!ongoing){
         tamex_end = true;
         return;
     }
-
-    if(tamex_id > 0){
+    if(tamex_iter > 0){
         if(head->Tamex_id <= tamex_id[tamex_iter-1]){
             tamex_end = true;
             return;
@@ -155,45 +158,33 @@ void PLASTIC_Detector_System::Process_TAMEX(){
 
     //next word
     pdata++;
-    cout << hex << *pdata<< " 2 " << endl;
     //get amount of fired tdcs (without last trailing words)
     TAMEX_FIRED* fire = (TAMEX_FIRED*) pdata;
     am_fired[tamex_iter] = (fire->am_fired)/4 - 2;
 
-    cout << dec <<  "FIRED: " << am_fired[tamex_iter] << endl;
-
+    
     //next word
     pdata++;
-    cout << hex << *pdata << " 3 " << endl;
     //begin of data header
     TAMEX_BEGIN* begin = (TAMEX_BEGIN*) pdata;
     if(begin->aa != aa){
-        cerr << "error in TAMEX format! aa not found after fired amount!" << endl;
+        cerr << "error in TAMEX format! 0xaa...... word not found after fired amount!" << endl;
         exit(0);
     }
 
     //next word
     pdata++;
-    cout << hex << *pdata<< " 4" << endl;
     //get trigger 
     get_trigger();
-    cout << hex << *pdata << endl;
     //move on to leading and trailing edges
     if(am_fired[tamex_iter] > 3) get_edges();
-    else{
-        cout << "-> no edges" << endl;
-        no_edges[tamex_iter] = true;
-    }
-    cout << hex << *pdata << " 5 "<< endl;
+    else no_edges[tamex_iter] = true;
+    
     //check errors
     //if(!no_edges[tamex_iter]) pdata++;
-    cout << hex << *pdata << " 6 "<< endl;
     check_error();
-    cout << hex << *pdata << " 7 "<< endl;
     //checking trailer
     check_trailer();
-    cout << hex << *pdata << " 8 "<< endl;
-    cout << "Checked trailer " << endl;
 }
 
 //---------------------------------------------------------------
@@ -222,7 +213,6 @@ void PLASTIC_Detector_System::get_trigger(){
 
     //next word 
     pdata++;
-    cout << hex << *pdata << " t1 "<< endl;
 
     //extract data
     TAMEX_DATA* data = (TAMEX_DATA*) pdata;
@@ -244,15 +234,13 @@ void PLASTIC_Detector_System::get_edges(){
     int lead = 0;
     //loop over remaining words (getting leading and trailing edge data)
     int loops = 0;
-    cout << hex << *pdata << " e1 "<< endl;
     written = false;
     while(no_error_reached()){
         //check place holder in stream
         PLACE_HOLDER* hold = (PLACE_HOLDER*) pdata;
 
         if(hold->six_eight != six_f && written){
-            cerr << "Multiple single channel fire!" << endl;
-            //written = false;
+            //cerr << "***Multiple single channel fire***" << endl;
             pdata++;
             continue;
         }
@@ -266,8 +254,6 @@ void PLASTIC_Detector_System::get_edges(){
 
         //next word 
         pdata++;
-        cout << hex << *pdata << " e "<< endl;
-
 
         //extract data
         TAMEX_DATA* data = (TAMEX_DATA*) pdata;
@@ -275,8 +261,6 @@ void PLASTIC_Detector_System::get_edges(){
         edge_coarse[tamex_iter][iterator[tamex_iter]][lead] = data->coarse_T;
         edge_fine[tamex_iter][iterator[tamex_iter]][lead] = data->fine_T;
         ch_ID_edge[tamex_iter][iterator[tamex_iter]][lead] = data->ch_ID;
-
-        cout << dec << "edge " << edge_coarse[tamex_iter][iterator[tamex_iter]][lead] << " " << ch_ID_edge[tamex_iter][iterator[tamex_iter]][lead] << endl;
 
         lead++;
         if(lead == 2){
@@ -289,7 +273,6 @@ void PLASTIC_Detector_System::get_edges(){
 
         //next word
         pdata++;
-        cout << hex << *pdata << " e "<< endl;
         loops++;
     }
 }
@@ -297,7 +280,6 @@ void PLASTIC_Detector_System::get_edges(){
 //---------------------------------------------------------------
 
 bool PLASTIC_Detector_System::no_error_reached(){
-
     TAMEX_ERROR* error = (TAMEX_ERROR*) pdata;
     return error->error != error_code;
 }
@@ -340,25 +322,20 @@ void PLASTIC_Detector_System::check_trailer(){
 void PLASTIC_Detector_System::calibrate_ONLINE(){
 
     //
-    PLASTIC_Calibration->get_data(edge_fine,ch_ID_edge,tamex_iter,iterator);
+    PLASTIC_Calibration->get_data(edge_fine,ch_ID_edge,2,iterator);
 
     cal_count++;
-    if(cal_count > 50000){
+    if(cal_count % 100 == 0){
+        cout << dec << "=========================\n";
+        cout << cal_count << endl;
+        cout << dec << "=========================" << endl;
+    }
+    Calibration_Done = false;
+
+    if(cal_count > 10000){
         PLASTIC_Calibration->ONLINE_CALIBRATION();
         Calibration_Done = true;
     }
-    /*
-    ULong* tmp_container = new ULong[2];
-
-    PLASTIC_Calibration->calibrate(coarse_T,fine_T,ch_ID,am_fired,tamex_id);
-    PLASTIC_Calibration->calibrate(coarse_T,fine_T,tmp_container,tamex_id);
-
-    coarse_T = tmp_container[0];
-    fine_T = tmp_container[1];
-
-    delete[] tmp_container;
-    tmp_container = NULL;
-    */
 }
 
 //---------------------------------------------------------------
@@ -373,3 +350,6 @@ int* PLASTIC_Detector_System::get_pdata(){return pdata;}
 
 //---------------------------------------------------------------
 
+bool PLASTIC_Detector_System::calibration_done(){return Calibration_Done;}
+
+//---------------------------------------------------------------

@@ -1,0 +1,6 @@
+#PLASTIC Calibration map
+#Map of used Tamex ids and their channels (if stated, used = True)
+#
+#tamex ids (0 or 1)	vs Channel Num.
+#
+1	29

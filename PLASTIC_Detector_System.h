@@ -92,6 +92,8 @@ public:
 
     int* tmp_get_iterator();
 
+    bool calibration_done();
+
 };
 
 

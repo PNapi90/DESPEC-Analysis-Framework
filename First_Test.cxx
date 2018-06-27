@@ -127,8 +127,10 @@ TGo4EventProcessor(name) // Histograms defined here //
 	}
 	*/
 
-	all =  MakeTH1('D', "je","hey", 2000, -500., 500.);
-
+	all =  MakeTH1('D', "je","hey", 2000, 0.,10000);
+	
+	
+	all2 = MakeTH1('D',"2","2",60,-30,30);
 
 	FAT_E = MakeTH1('D',"FATIMA_E","FATIMA_E",2001,0,4000);
 	FAT_MAT = MakeTH2('D',"FAT_MAT","FAT_MAT",1001,0,4000,1001,0,4000);
@@ -176,6 +178,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	White_Rabbbit_old = 0;
 	count = 0;
 	iterator = 0;
+	cals_done = false;
 }
 
 
@@ -203,6 +206,7 @@ TSCNUnpackProc::~TSCNUnpackProc()
 Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 {
 	count++;
+	if(cals_done) return kTRUE; //BAD!!!!
 	//if(count > 500000) return kTRUE;
 	Bool_t isValid=kFALSE; // validity of output event //
   
@@ -241,6 +245,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	for(int i = 0;i < 5;++i) used[i] = false;
 	
 
+
 	if(iterator >= 2) iterator = 0;
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -267,7 +272,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 2){
+		if(PrcID_Conv == 2 && false){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex <<*(pdata + i) << " ";
@@ -284,7 +289,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		//get data from subevent
 		if(PrcID == 3) Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
-		
+		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
+		if(cals_done) break;
 		//continue;
 		//temporary
 		used[PrcID_Conv] = true;
@@ -308,31 +314,20 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			unsigned int*** chid = Detector_Systems[PrcID_Conv]->tmp_get_chID();
 			int* itit = Detector_Systems[PrcID_Conv]->tmp_get_iterator();
 			unsigned long*** tmp = Detector_Systems[PrcID_Conv]->tmp_get_coarse_T();
-			cout << dec << itit[0] << " " << itit[1]  << " " << a_h<< endl;
-			cout << "-DASd" << endl;
-			for(int i = 0;i < a_h;++i){
-				for(int j = 0;j < itit[i];++j){
-					for(int k = 0;k < itit[i];++k){
-						if(k > j){
-							all->Fill((tmp[i+1][j][0] - tmp[i+1][j][1])*5000);
-							cout << dec << "hehehe " << tmp[i+1][j][0]  << " " <<  tmp[i+1][j][1] << endl;
-							//mat[chid[i][j][0]][chid[i][k][0]]->Fill((tmp[i][j][0] - tmp[i][j][1])*5000);
-						}
-					}
-				}
+			for(int i = 0;i < itit[1];++i){
+				all2->Fill((int) tmp[1][i][1] - (int) tmp[1][i][0]);
+				all->Fill(tmp[1][i][0]);
+				cout << "DIFFS " << (int) tmp[1][i][0] - (int) tmp[1][i][1] << " " << tmp[1][i][0] <<" "<< tmp[1][i][1] << endl;
 			}
 
-
 			if(a_h == 2) C_t->Fill(tmp[0]-tmp[1]);
-			cout <<dec << " tmp "<< tmp[0] << endl;
-
 		}
 
 	//		if(used[2] && used[3]){
 	//	}
 	}
 	if(iterator == 2 && called[0] != called[1]){
-		cout << WR_tmp[0]  << " " << WR_tmp[1] << " " << WR_tmp[0] - WR_tmp[1] << endl;
+		//cout << WR_tmp[0]  << " " << WR_tmp[1] << " " << WR_tmp[0] - WR_tmp[1] << endl;
 		WR_HIST->Fill((WR_tmp[0] - WR_tmp[1]));
 		iterator = 0;
 		

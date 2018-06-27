@@ -87,6 +87,7 @@ using namespace std;
 
 			TH1*** mat;
 			TH1* all;
+			TH1* all2;
 			//for the SIS modules
 
 		private:
@@ -96,6 +97,8 @@ using namespace std;
 
 			Int_t PrcID_Array[10];
 			bool Used_Systems[10];
+
+			bool cals_done;
 
 			Detector_System** Detector_Systems;
 			Data_Stream** data_stream;
