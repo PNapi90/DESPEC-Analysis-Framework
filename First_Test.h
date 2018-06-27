@@ -83,6 +83,7 @@ using namespace std;
 			TH2* hit_mat;
 
 			TH1* WR_HIST;
+			TH1* WR_HIST2;
 			TH1* C_t;
 
 			TH1*** mat;
@@ -98,7 +99,7 @@ using namespace std;
 			Int_t PrcID_Array[10];
 			bool Used_Systems[10];
 
-			bool cals_done;
+			bool cals_done,WR_used;
 
 			Detector_System** Detector_Systems;
 			Data_Stream** data_stream;
@@ -106,6 +107,7 @@ using namespace std;
 
 			Int_t get_Conversion(Int_t);
 			void get_used_Systems();
+			void get_WR_Config();
 
 			void load_PrcID_File();
 

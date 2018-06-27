@@ -163,12 +163,9 @@ void PLASTIC_Calibrator::OFFLINE_CALIBRATION(ULong* fine_T,int tamex_id,int ch_i
 
 void PLASTIC_Calibrator::get_data(ULong*** fine_T,UInt*** ch_id,int tamex_iter,int* iterator){
 	//write into corresponding root histograms
-	cout << dec << "IN CAL " << tamex_iter << " " << iterator[0] << " " << iterator[1] << endl;
 	for(int i = 0;i < tamex_iter;++i){
 		for(int j = 0;j < iterator[i];++j){
-			cout << "CHid " << ch_id[i][j][0] << " " << fine_T[i][j][0]<< endl;
 			Fine_Hist[i][ch_id[i][j][0]]->Fill(fine_T[i][j][0]);
-			cout << "Written" << endl;
 			fired[i][ch_id[i][j][0]] = true;
 		}
 	}
@@ -254,8 +251,11 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 	}
 	cout << "\r";
 	cout << "Running... DONE" << endl;
-	cout << "\n-> Exiting program after calibration <-\n";
-	cout << "-> PLEASE SWITCH BACK TO OFFLINE CALIBRATION <-" << endl;
+	cout << "-----------------------------------------------------------------" << endl;
+	cout << "-> Exiting program after calibration <-\n" << endl;
+	cout << "-> run program again to use new calibration <-" << endl;
+	cout << "-----------------------------------------------------------------" << endl;
+	cout << endl;
 
 	ROOT_FILE->Write();
 	

@@ -2,6 +2,7 @@
 #define PLASTIC_DETECTOR_SYSTEM_H
 
 #include <iostream>
+#include <string>
 
 #include "Detector_System.cxx"
 #include "PLASTIC_Data_Stream.h"
@@ -70,6 +71,8 @@ private:
     void Process_TAMEX();
     void calibrate_ONLINE();
     void calibrate_OFFLINE();
+
+    void get_Calib_type();
 
     bool no_error_reached();
     

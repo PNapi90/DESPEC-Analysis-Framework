@@ -7,7 +7,7 @@ using namespace std;
 PLASTIC_Detector_System::PLASTIC_Detector_System(){
 
     //calibration enabled?
-    CALIBRATE = false;
+    get_Calib_type();
 
     PLASTIC_Calibration = new PLASTIC_Calibrator(CALIBRATE);
 
@@ -139,7 +139,7 @@ void PLASTIC_Detector_System::Process_TAMEX(){
     TAMEX_CHANNEL_HEADER* head = (TAMEX_CHANNEL_HEADER*) pdata;
     
     //check if end of TAMEX MBS reached
-    bool ongoing = (head->identify == tamex_identifier && head->identify_2 == 0);
+    bool ongoing = (head->identify == tamex_identifier) && (head->identify_2 == 0);
     
     if(!ongoing){
         tamex_end = true;
@@ -232,8 +232,8 @@ void PLASTIC_Detector_System::get_edges(){
 
     //lead = 0 -> leading edge, lead = 1 -> trailing edge
     int lead = 0;
+
     //loop over remaining words (getting leading and trailing edge data)
-    int loops = 0;
     written = false;
     while(no_error_reached()){
         //check place holder in stream
@@ -273,7 +273,6 @@ void PLASTIC_Detector_System::get_edges(){
 
         //next word
         pdata++;
-        loops++;
     }
 }
 
@@ -321,17 +320,19 @@ void PLASTIC_Detector_System::check_trailer(){
 
 void PLASTIC_Detector_System::calibrate_ONLINE(){
 
-    //
+    //send data to ROOT histograms in Calibrator object
     PLASTIC_Calibration->get_data(edge_fine,ch_ID_edge,2,iterator);
 
     cal_count++;
-    if(cal_count % 100 == 0){
+    if(cal_count % 1000 == 0){
         cout << dec << "=========================\n";
         cout << cal_count << endl;
         cout << dec << "=========================" << endl;
     }
     Calibration_Done = false;
 
+    //if critical amount of calibration data reached
+    //=> do ONLINE calibration and quit program
     if(cal_count > 10000){
         PLASTIC_Calibration->ONLINE_CALIBRATION();
         Calibration_Done = true;
@@ -351,5 +352,54 @@ int* PLASTIC_Detector_System::get_pdata(){return pdata;}
 //---------------------------------------------------------------
 
 bool PLASTIC_Detector_System::calibration_done(){return Calibration_Done;}
+
+//---------------------------------------------------------------
+
+void PLASTIC_Detector_System::get_Calib_type(){
+    ifstream data("Configuration_Files/PLASTIC_CALIB_FILE.txt");
+    if(data.fail()){
+        cerr << "Could not find Calibration type file for PLASTIC" << endl;
+        exit(0);
+    }
+    string line;
+    const char* format = "%s %d";
+    char s[100];
+    int val;
+
+    bool FORCE = false;
+
+    while(data.good()){
+        getline(data,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format,&s,&val);
+        if(string(s) == string("ONLINE")) CALIBRATE = (val == 1);
+        if(string(s) == string("FORCE")) FORCE = (val == 1);
+    }
+    data.close();
+
+    //only FORCE possible, if ONLINE active
+    FORCE = (CALIBRATE) ? FORCE : false;
+
+    //if FORCE == false -> rewrite config file to OFFLINE mode
+    if(!FORCE){
+        ofstream out("Configuration_Files/PLASTIC_CALIB_FILE.txt");
+        out << "#PLASTIC calibration type file" << endl;
+        out << "#The file will be changed to OFFLINE after its been read" << endl;
+        out << "#-> to force multiple ONLINE calibrations, set FORCE to 1" << endl;
+        out << "#ONLINE Calibration and FORCE (1 = yes, 0 = no)" << endl;
+        out << "ONLINE\t\t0" << endl;
+        out << "FORCE\t\t0" << endl;
+        out.close(); 
+    }
+    else{
+        cout << endl;
+        cout << "######################################################################" << endl;
+        cout << "!!! ONLINE ANALYSIS IN FORCED MODE" << endl;
+        cout << "!!! TO DISABLE, CHECK PLASTIC_CALIB_FILE IN Configuration_Files" << endl;
+        cout << "######################################################################" << endl;
+        cout << endl;
+    }
+
+}
 
 //---------------------------------------------------------------

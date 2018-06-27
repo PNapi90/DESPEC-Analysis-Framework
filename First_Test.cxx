@@ -139,13 +139,17 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	C_t = MakeTH1('D',"pl","pl",1001,0,1000);
 
+	WR_used = false;
+
 	//used_systems
 	get_used_Systems();
+	get_WR_Config();
 
 	//create White Rabbit obj
-	WR = new White_Rabbit();
+	WR = WR_used ? new White_Rabbit() : NULL;
 
-	WR_HIST = MakeTH1('D',"WR","WR",2001,-200,200);
+	WR_HIST = MakeTH1('D',"WR","WR",2001,-1,4);
+	WR_HIST2 = MakeTH1('D',"WR2","WR2",2001,-10,4000);
 
 
 	//create Detector Systems
@@ -179,6 +183,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	count = 0;
 	iterator = 0;
 	cals_done = false;
+
 }
 
 
@@ -246,7 +251,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 
 
-	if(iterator >= 2) iterator = 0;
+	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
 		subevent_iter++;
@@ -261,7 +266,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 
 		WR_tmp[iterator] = WR->get_White_Rabbit(pdata);
-		if(PrcID_Conv == 3) WR_tmp[iterator] /= 8;
+
+		
 		called[iterator] = PrcID_Conv;
 		pdata += WR->get_increase();
 
@@ -317,7 +323,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			for(int i = 0;i < itit[1];++i){
 				all2->Fill((int) tmp[1][i][1] - (int) tmp[1][i][0]);
 				all->Fill(tmp[1][i][0]);
-				cout << "DIFFS " << (int) tmp[1][i][0] - (int) tmp[1][i][1] << " " << tmp[1][i][0] <<" "<< tmp[1][i][1] << endl;
+				//cout << "DIFFS " << (int) tmp[1][i][0] - (int) tmp[1][i][1] << " " << tmp[1][i][0] <<" "<< tmp[1][i][1] << endl;
 			}
 
 			if(a_h == 2) C_t->Fill(tmp[0]-tmp[1]);
@@ -327,14 +333,21 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	//	}
 	}
 	if(iterator == 2 && called[0] != called[1]){
-		//cout << WR_tmp[0]  << " " << WR_tmp[1] << " " << WR_tmp[0] - WR_tmp[1] << endl;
-		WR_HIST->Fill((WR_tmp[0] - WR_tmp[1]));
+		//cout << WR_tmp[0]  << " " << WR_tmp[1] << " " << WR_tmp[1] - WR_tmp[0] << endl;
+
+		if((WR_tmp[1] - WR_tmp[0])/1000.  <= 10) WR_HIST->Fill( (WR_tmp[1] - WR_tmp[0])/1000. );
+		WR_HIST2->Fill( (WR_tmp[1] - WR_tmp[0])/1000. );
 		iterator = 0;
 		
 	}
 	out_evt->SetValid(isValid);
 	
-	if(iterator >= 2) iterator = 0;
+	if(iterator >= 2){
+		//cout << (WR_tmp[1] - WR_tmp[0])/1000. << endl;
+		if( (WR_tmp[1] - WR_tmp[0])/1000.  <= 10) cout <<"HEHEHEH" << endl;
+		//WR_HIST->Fill((WR_tmp[1] - WR_tmp[0])/1000.)
+		iterator = 0;
+	}
 	return isValid;
 	
 }
@@ -390,6 +403,23 @@ void TSCNUnpackProc::get_used_Systems(){
 
 
 
+void TSCNUnpackProc::get_WR_Config(){
+	ifstream data("Configuration_Files/White_Rabbit.txt");
+	if(data.fail()){
+		cerr << "Could not find White_Rabbit config file!" << endl;
+		exit(0);
+	}
+	int i = 0;
+	int id = 0;
+	string line;
+	char s_tmp[100];
+	while(data.good()){
+		getline(data,line,'\n');
+		if(line[0] == '#') continue;
+		sscanf(line.c_str(),"%s %d",s_tmp,&id);
+		WR_used = (id == 1);
+	}
+}
 
 
 
