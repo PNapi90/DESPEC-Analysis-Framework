@@ -33,6 +33,15 @@ EVENTBUILDER:
 
 =======================================================================
 
+TEMPORARY:
+  - To get data into Go4 processing class use Raw_Event class
+  - Inside Raw_Event class, FATIMA and PLASITC data for each subev. is saved (but only stored for one subev.)
+  - use getters of Raw_Event to get data (e.g. get_E(int i),... (see code))
+  - ONLY define histograms in Go4 processing class
+  - hint: PrcID_Conv of Fatima = 3, Plastic = 2
+
+=======================================================================
+
 EXPECTED DATA FORMATS BY double** data_stream (White Rabbit TS already known by EVENTBUILDER):
   - FATIMA: data_stream[i] = {E[i],T[i],detID[i],am_hits}
   - GALILEO: data_stream[i] = {E[i],T[i],detID[i],am_hits}
