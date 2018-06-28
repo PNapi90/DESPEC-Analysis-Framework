@@ -439,6 +439,38 @@ void QDC_TDC_FATIMA::get_Detector_Data(FATIMA_Data_Stream* data_stream){
 
 //---------------------------------------------------------------
 
+void QDC_TDC_FATIMA::get_Detector_Data(Raw_Event* RAW){
+
+    double* raw_E = new double[fired_Dets];
+    ULong* raw_T = new ULong[fired_Dets];
+    ULong* raw_QDC_T = new ULong[fired_Dets];
+    ULong* raw_QDC_T_Fine = new ULong[fired_Dets];
+    int* det_ids = new int[fired_Dets];
+
+    int j = 0;
+
+    for(int i = 0;i < fired_Dets;++i){
+        j = fired_Detectors_QDC[i];
+        raw_E[i] = FATIMA_Detectors[j]->get_E(i);
+        raw_T[i] = FATIMA_Detectors[j]->get_T(i);
+        raw_QDC_T[i] = FATIMA_Detectors[j]->get_QDC_T(i);
+        raw_QDC_T_Fine[i] = FATIMA_Detectors[j]->get_QDC_FT(i);
+        det_ids[i] = j;
+    }
+
+    RAW->set_DATA_FATIMA(fired_Dets,raw_E,raw_T,raw_QDC_T,raw_QDC_T_Fine,det_ids);
+
+    delete[] raw_E;
+    delete[] raw_T;
+    delete[] raw_QDC_T;
+    delete[] raw_QDC_T_Fine;
+    delete[] det_ids;
+}
+
+
+
+//---------------------------------------------------------------
+
 int QDC_TDC_FATIMA::get_increase(){return increase;}
 
 //---------------------------------------------------------------

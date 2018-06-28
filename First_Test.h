@@ -108,6 +108,9 @@ using namespace std;
 			White_Rabbit* WR;
 			Raw_Event* RAW;
 
+			double fatima_E_save[4];
+			int am_FATIMA_hits;
+
 			Int_t get_Conversion(Int_t);
 			void get_used_Systems();
 			void get_WR_Config();

@@ -19,6 +19,7 @@
 #include "FATIMA_Time_Calibration.h"
 
 #include "FATIMA_Data_Stream.h"
+#include "Raw_Event.h"
 
 typedef unsigned long long ULong64_t;
 
@@ -78,6 +79,8 @@ public:
 
     int get_amount_of_fired_Dets();
     void get_Detector_Data(FATIMA_Data_Stream*);
+    void get_Detector_Data(Raw_Event*);
+
     int get_increase();
 
     int* get_pdata();

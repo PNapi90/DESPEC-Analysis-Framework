@@ -63,18 +63,18 @@ void QDC_FATIMA_Channel::Calibrate(FATIMA_Energy_Calibration* FAT_E,FATIMA_Time_
 //---------------------------------------------------------------
 
 double** QDC_FATIMA_Channel::get_Data(){
-    cout << "-----------------------------" << endl;
+    //cout << "-----------------------------" << endl;
     for(int i = 0;i < iterator;++i){
         data_stream[i][0] = Energy[i];
         data_stream[i][1] = QDC_Time[i];
         data_stream[i][2] = iterator;
         data_stream[i][3] = QDC_Fine_Time[i];
-        for(int j = 0;j < 4;++j) cout << dec << data_stream[i][j] << " ";
-        cout <<" <- "<< i  <<endl;
+        //for(int j = 0;j < 4;++j) cout << dec << data_stream[i][j] << " ";
+       // cout <<" <- "<< i  <<endl;
     } 
     first_call = true;
 
-    cout << "-----------------------------" << endl;
+   // cout << "-----------------------------" << endl;
 
     return data_stream;
 }

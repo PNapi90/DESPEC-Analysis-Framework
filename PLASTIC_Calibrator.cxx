@@ -103,7 +103,7 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 		used_ids[iter][0] = tamex_id;
 		used_ids[iter][1] = ch_id;
 
-		cout << used_ids[iter][0] << " " << used_ids[iter][1]  << endl;
+		//cout << used_ids[iter][0] << " " << used_ids[iter][1]  << endl;
 
 		wired_tamex_ch[tamex_id][ch_id] = true;
 
@@ -126,7 +126,7 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 
 		tamex_id = used_ids[i][0];
 		ch_id = used_ids[i][1];
-		cout << tamex_id << " " << ch_id << endl;
+		//cout << tamex_id << " " << ch_id << endl;
 		//Cal_arr[tamex_id] = new double*[100];
 
 		b_iter = 0;

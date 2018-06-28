@@ -59,80 +59,13 @@ TGo4EventProcessor(name) // Histograms defined here //
 		
 	cout << "**** TSCNUnpackProc: Create" << endl;
 	
-	/*for( int i=0; i<SCN_NUM_CHAN+1; i++ ) // Makes histogram for each channel  //
-	{
-		
-		// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
-		//                   FOR ONLINE ONLY                      //
-		// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
-		
-		if (setup.get_online() == 1 && false)
-		{
-		
-		
-			QShort_Raw[i] = MakeTH1('D', Form("QShort_Raw/QShort_Raw%2d",i), Form("QDC Short Raw %2d",i+1), 15000, 1., 15001.);
-			QLong_Raw[i]  = MakeTH1('D', Form("QLong_Raw/QLong_Raw%2d",i), Form("QDC Long Raw %2d",i+1), 15000, 1., 15001.);
-
-			QDC_T[i]  = MakeTH1('D', Form("QDC_T/QDC_T%2d",i), Form("QDC Timestamp channel %2d",i+1), 2000, 1., 100000.);
-
-			TDC_T[i]  = MakeTH1('D', Form("TDC_T/TDC_T%2d",i), Form("TDC Time channel %2d",i+1), 10000, 0., 100000.);
-
-			TDC_dT_Trig[i]  = MakeTH1('D', Form("TDC_dT_Trig/TDC_dT_Trig%3d",i), Form("TDC dT for Trigger channel %2d",i+1), 4000, 50., 150.);
-			TDC_dT_Misc[i]  = MakeTH1('D', Form("TDC_dT_Misc/TDC_dT_Misc%3d",i), Form("TDC dT for Miscellaneous channel %2d",i+1), 4000, 80., 180.);
-
-
-
-			if(setup.get_time_calib() == 1)
-			{
-
-				for( int j=0; j<SCN_NUM_CHAN+1; j++ ) // Makes histogram for each channel  //
-				{
-					TDC_dT_All[i][j]  = MakeTH1('D', Form("TDC_dT_All/TDC_dT%3d/Time_dT_All%3d %3d",i,i,j), Form("TDC Diff Time channel %2d",j+1), 4000, -50., 50.);
-				}
-				
-			}
-
-			if(setup.get_time_calib() == 0)
-			{
-				 TDC_dT[i]  = MakeTH1('D', Form("TDC_dT/TDC_dT%3d",i), Form("TDC Diff Time channel %2d",i+1), 4000, -50., 50.);
-			}
-
-			TDC_dT_Vs_QDC_dT[i]  = MakeTH2('D', Form("TDC_dT_Vs_QDC_dT/TDC_dT_Vs_QDC_dT%2d",i), Form("QDC Diff Vs TDC Diff channels %2d", i+1), 400, -200., 200., 8000, -1000., 1000.);
-
-			TDC_T_Vs_QDC_T[i]  = MakeTH2('D', Form("TDC_T_Vs_QDC_T/TDC_T_Vs_QDC_T%2d",i),Form("TDC Vs QDC Timestamp %2d",i+1), 320, -4000., 4000., 2000, -10000000., 10000000.);
-
-		}
-		// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
-		// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
-		// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
-		
-		
-		QShortE[i] = MakeTH1('D', Form("QShortE/QShortE%2d",i), Form("QDC Short Calibrated %2d",i+1), 2000, 1., 2001.);
-
-		QLongE[i]  = MakeTH1('D', Form("QLongE/QLongE%2d",i), Form("QDC Long Calibrated %2d",i+1), 2000, 1., 2001.);
-
-		QDC_dT[i]  = MakeTH1('D', Form("QDC_dT/QDC_dT%2d",i), Form("QDC Timestamp Difference channel %2d",i+1), 400, -200., 200.);
-
-		QLongE_Vs_TDC_dT[i]  = MakeTH2('D', Form("QLongE_Vs_TDC_dT/QLongE_Vs_TDC_dT channels%2d",i),Form("QLong Vs TDC Timestamp Difference %2d",i+1), 20, 0., 4000., 4000, -50., 50.);
-		QLongE_Vs_QDC_dT[i]  = MakeTH2('D', Form("QLongE_Vs_QDC_dT/QLongE_Vs_QDC_dT channels%2d",i),Form("QLong Vs QDC Timestamp Difference %2d",i+1), 20, 0., 4000., 400, -200., 200.);
-
-	}
 	
-	mat = new TH1**[20];
-	for(int i = 0;i < 20;++i){
-		mat[i] = new TH1*[20];
-		for(int j = 0;j < 20;++j){
-			mat[i][j] = MakeTH1('D', Form("mat_%d_%d",i,j),Form("mat_%d_%d",i,j), 2000, -500., 500.);
-		}
-	}
-	*/
-
 	all =  MakeTH1('D', "je","hey", 2000, 0.,10000);
 	
 	
 	all2 = MakeTH1('D',"2","2",60,-30,30);
 
-	FAT_E = MakeTH1('D',"FATIMA_E","FATIMA_E",2001,0,4000);
+	FAT_E = MakeTH1('D',"FATIMA_E","FATIMA_E",2001,0,8000);
 	FAT_MAT = MakeTH2('D',"FAT_MAT","FAT_MAT",1001,0,4000,1001,0,4000);
 
 	hit_mat = MakeTH2('D',"hitmat","hitmat",37,0,36,37,0,36);
@@ -182,6 +115,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	RAW = new Raw_Event();
 
 	load_PrcID_File();
+
 	White_Rabbbit_old = 0;
 	count = 0;
 	iterator = 0;
@@ -253,7 +187,6 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	for(int i = 0;i < 5;++i) used[i] = false;
 	
 
-
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -276,8 +209,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//cout << WR_tmp[iterator] << " " << iterator << endl;
 
-		iterator++;
-		if(iterator > 2) iterator = 0;
+		
 
 		//continue;
 
@@ -298,7 +230,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		//get data from subevent
 		Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
-		if(PrcID_Conv == 3) Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
+		//if(PrcID_Conv == 3) Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
 
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
 		if(cals_done) break;
@@ -306,56 +238,80 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		//temporary
 		used[PrcID_Conv] = true;
 
+		//FATIMA CASE
 		if(PrcID_Conv == 3){
-			//if FATIMA mismatch -> don't use data
-			//if(data_stream[PrcID_Conv]->get_mismatch()) continue;
-			
-			fat_hits = data_stream[PrcID_Conv]->get_amount_Hits();
-			E0 = data_stream[PrcID_Conv]->get_E(0);
-			FAT_E->Fill(E0);
-			if(fat_hits == 2){
-				E1 = data_stream[PrcID_Conv]->get_E(1);
-				FAT_MAT->Fill(E0,E1);
-
+			//to get histograms (e.g.)
+			am_FATIMA_hits = RAW->get_FATIMA_am_Fired();
+			double sum = 0;
+			for(int i = 0;i < am_FATIMA_hits;++i){
+				//e,g, sum spectrum
+				sum += RAW->get_FATIMA_E(i);
 			}
+			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);
 		}
 
 		if(PrcID_Conv == 2){
-			int a_h = Detector_Systems[PrcID_Conv]->tmp_get_am_hits();
-			unsigned int*** chid = Detector_Systems[PrcID_Conv]->tmp_get_chID();
-			int* itit = Detector_Systems[PrcID_Conv]->tmp_get_iterator();
-			unsigned long*** tmp = Detector_Systems[PrcID_Conv]->tmp_get_coarse_T();
-			for(int i = 0;i < itit[1];++i){
-				all2->Fill((int) tmp[1][i][1] - (int) tmp[1][i][0]);
-				all->Fill(tmp[1][i][0]);
-				//cout << "DIFFS " << (int) tmp[1][i][0] - (int) tmp[1][i][1] << " " << tmp[1][i][0] <<" "<< tmp[1][i][1] << endl;
-			}
+			//do something here
 
-			if(a_h == 2) C_t->Fill(tmp[0]-tmp[1]);
 		}
 
-	//		if(used[2] && used[3]){
-	//	}
+		iterator++;
 	}
-	if(iterator == 2 && called[0] != called[1]){
-		//cout << WR_tmp[0]  << " " << WR_tmp[1] << " " << WR_tmp[1] - WR_tmp[0] << endl;
 
+	
+
+	//========================================================
+	//	the White rabbit time difference of coincident events
+	//	in FATIMA and PLASTIC is roughly (222 +- 8) ns
+	//========================================================
+
+	//rudimentary event builder
+	if(iterator == 2 && called[0] != called[1]){
+
+		//White rabbit histograms
 		if((WR_tmp[1] - WR_tmp[0])/1000.  <= 10){
 			if(called[0] == 3) WR_HIST->Fill( (WR_tmp[1] - WR_tmp[0])/1000. );
 			else WR_HIST->Fill( (WR_tmp[0] - WR_tmp[1])/1000. );
 		}
+
 		WR_HIST2->Fill( (WR_tmp[1] - WR_tmp[0])/1000. );
-		iterator = 0;
-		
+
+
+		//========================================================
+		//	"EVENTBUILDER" IS HERE!!!
+		//========================================================
+
+		//"coincident" events -> reset iterator
+		if(abs((WR_tmp[1] - WR_tmp[0]) - 222 ) <= 8){
+			//do all things related to coincidence analysis here
+
+
+			iterator = 0;
+		}
+		else{
+			//sets second fired system to first (for time differences)
+
+			//========================================================
+			//change of variables (e.g. x[0] = x[1] also needed!)
+			//========================================================
+			WR_tmp[0] = WR_tmp[1];
+			called[0] = called[1];
+			iterator = 1;
+		}
+				
 	}
+
+	if(called[0] == called[1]){
+		//========================================================
+		//change of variables (e.g. x[0] = x[1] also needed!)
+		//========================================================
+		WR_tmp[0] = WR_tmp[1];
+		called[0] = called[1];
+		iterator = 1;
+	}
+
 	out_evt->SetValid(isValid);
 	
-	if(iterator >= 2){
-		//cout << (WR_tmp[1] - WR_tmp[0])/1000. << endl;
-		if( (WR_tmp[1] - WR_tmp[0])/1000.  <= 10) cout <<"HEHEHEH" << endl;
-		//WR_HIST->Fill((WR_tmp[1] - WR_tmp[0])/1000.)
-		iterator = 0;
-	}
 	return isValid;
 	
 }
