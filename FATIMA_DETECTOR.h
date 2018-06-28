@@ -13,6 +13,7 @@ private:
     double Energy[100];
     double Time[100];
     double QDC_Time[100];
+    double QDC_Fine_Time[100];
 
     bool mismatch;
 
@@ -30,6 +31,8 @@ public:
     double get_E(int);
     double get_T(int);
     double get_QDC_T(int);
+    double get_QDC_FT(int);
+
 
     bool get_mismatch();
 

@@ -31,6 +31,12 @@ void QDC_FATIMA_Channel::set_QDC_Time(double QDC_Time_tmp){
 
 //---------------------------------------------------------------
 
+void QDC_FATIMA_Channel::set_QDC_Fine_Time(double QDC_Fine_Time_tmp){
+    QDC_Fine_Time[iterator] = QDC_Fine_Time_tmp;
+}
+
+//---------------------------------------------------------------
+
 void QDC_FATIMA_Channel::set_QLong_Raw(double QLong_tmp){
     if(first_call){
         iterator = 0;
@@ -61,6 +67,8 @@ double** QDC_FATIMA_Channel::get_Data(){
         data_stream[i][0] = Energy[i];
         data_stream[i][1] = QDC_Time[i];
         data_stream[i][2] = iterator;
+        data_stream[i][3] = QDC_Fine_Time[i];
+	
     }
     first_call = true;
 

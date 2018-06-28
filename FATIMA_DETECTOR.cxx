@@ -46,6 +46,7 @@ void FATIMA_DETECTOR::set_Data(double** data_QDC,double** data_TDC){
     for(int i = 0;i < am_of_hits;++i){
         Energy[i] = data_QDC[i][0];
         QDC_Time[i] = data_QDC[i][1];
+	QDC_Fine_Time[i] = data_QDC[i][3];
         Time[i] = data_TDC[i][0];
     }
 }
@@ -61,7 +62,8 @@ double** FATIMA_DETECTOR::get_Data(){
         data_stream[i][0] = Energy[i];
         data_stream[i][1] = Time[i];
         data_stream[i][2] = QDC_Time[i];
-        
+	data_stream[i][3] = QDC_Fine_Time[i];
+
     }
     return data_stream;
 }
@@ -77,6 +79,10 @@ double FATIMA_DETECTOR::get_T(int i){return Time[i];}
 //---------------------------------------------------------------
 
 double FATIMA_DETECTOR::get_QDC_T(int i){return QDC_Time[i];}
+
+//---------------------------------------------------------------
+
+double FATIMA_DETECTOR::get_QDC_FT(int i){return QDC_Fine_Time[i];}
 
 //---------------------------------------------------------------
 

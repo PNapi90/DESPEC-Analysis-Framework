@@ -244,6 +244,7 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(QDC_Header* QDChead){
     //int size = 0;
     int active_Channel = 0;
     int active_board = 0;
+    double fine_time = 0;
 
     for(int i = 0;i < fired_QDC_amount;++i){
         //set active board_ID and channel #
@@ -270,23 +271,23 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(QDC_Header* QDChead){
 
         pdata++;
       
-        //pdata++;
-        
-        /*
-        if (setup->get_extras() == 1){
+        pdata++;
 
-            pdata++; // Moves to Extras
-            QDC_Extras *e=(QDC_Extras*)pdata;
-                    
-            fatima.set_QDC_Fine_Time(chNo,((Double_t)(e->fine_time)/1024.));
-            fatima.set_QDC_Ext_Time(chNo, (e->ext_trig));
+        pdata++; // Moves to Extras
+        QDC_Extras *e=(QDC_Extras*)pdata;
+	
+	//fine_time = (t->trigger_tag + (e->ext_trig)<<32) + ((double)(e->fine_time)/1024.);
+	
+	fine_time = (((t->trigger_tag)+((e->ext_trig)<<32))) + ((double)(e->fine_time)/1024.);
+	
+        QDC_Channels[active_board][active_Channel]->set_QDC_Fine_Time(fine_time);
+        //QDC_Channels[active_board][active_Channel]->set_QDC_Ext_Time(chNo, (e->ext_trig));
                     
                                 
-            fatima.set_QDC_Ext_Time(chNo,((fatima.get_QDC_Time(chNo))+((fatima.get_QDC_Ext_Time(chNo))<<32)));
-            fatima.set_QDC_Fine_Time(chNo,((fatima.get_QDC_Ext_Time(chNo))+(fatima.get_QDC_Fine_Time(chNo))));
-                    
-        }
-        */
+        //fatima.set_QDC_Ext_Time(chNo,((fatima.get_QDC_Time(chNo))+((fatima.get_QDC_Ext_Time(chNo))<<32)));
+        //fatima.set_QDC_Fine_Time(chNo,((fatima.get_QDC_Ext_Time(chNo))+(fatima.get_QDC_Fine_Time(chNo))));
+                  
+		  
         pdata++; // Moves to 6th data value87454dda
       
         QDC_Data* d = (QDC_Data*) pdata;
