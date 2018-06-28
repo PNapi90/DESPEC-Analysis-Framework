@@ -47,6 +47,13 @@ public:
 	ULong get_FATIMA_QDC_T_Coarse(int);
 	ULong get_FATIMA_QDC_T_Fine(int);
 	int get_FATIMA_det_id(int);
+
+	//temporary PLASTIC getters
+	int get_PLASTIC_am_Fired(int);
+	double get_PLASTIC_trigger_T(int);
+	int get_PLASTIC_CH_ID(int,int);
+	double get_PLASTIC_lead_T(int,int);
+	double get_PLASTIC_trail_T(int,int);
 };
 
 

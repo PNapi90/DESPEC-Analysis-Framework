@@ -45,6 +45,10 @@ void Raw_Event::set_DATA_PLASTIC(int* it,ULong*** Edge_Coarse,ULong*** Edge_fine
 	}
 }
 
+//TEMPORARY GETTERS FOR FATIMA AND PLASTIC
+
+//FATIMA
+
 //---------------------------------------------------------------
 
 int Raw_Event::get_FATIMA_am_Fired(){return FAT_FIRED;}
@@ -70,3 +74,32 @@ ULong Raw_Event::get_FATIMA_QDC_T_Fine(int i){return QDC_t_fine[i];}
 int Raw_Event::get_FATIMA_det_id(int i){return Det_Nums[i];}
 
 //---------------------------------------------------------------
+
+//PLASTIC
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_PLASTIC_am_Fired(int i){return iterator[i];}
+
+//---------------------------------------------------------------
+
+double Raw_Event::get_PLASTIC_trigger_T(int i){return (double) (trigger_coarse[i] - trigger_fine[i]);}
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_PLASTIC_CH_ID(int i,int j){return ch_ID[i][j];}
+
+//---------------------------------------------------------------
+
+double Raw_Event::get_PLASTIC_lead_T(int i,int j){
+	return (double)(coarse_T_edge_lead[i][j] - fine_T_edge_lead[i][j]);
+}
+
+//---------------------------------------------------------------
+
+double Raw_Event::get_PLASTIC_trail_T(int i,int j){
+	return (double)(coarse_T_edge_trail[i][j] - fine_T_edge_trail[i][j]);
+}
+
+//---------------------------------------------------------------
+
