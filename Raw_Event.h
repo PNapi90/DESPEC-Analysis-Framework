@@ -11,6 +11,7 @@ private:
 
 	//FATIMA
 	int FAT_FIRED;
+	int Det_Nums[36];
 	double E[36];
 	double QShort[36];
 	ULong TDC_timestamp[36];
@@ -37,6 +38,15 @@ public:
 
 	void set_DATA_FATIMA(int,double*,double*,ULong*,ULong*,ULong*);
 	void set_DATA_PLASTIC(int*,ULong***,ULong***,UInt***,ULong*,ULong*);
+
+
+	//temporary FATIMA getters
+	int get_FATIMA_am_Fired();
+	double get_FATIMA_E(int);
+	ULong get_FATIMA_TDC_T(int);
+	ULong get_FATIMA_QDC_T_Coarse(int);
+	ULong get_FATIMA_QDC_T_Fine(int);
+	int get_FATIMA_det_id(int);
 };
 
 
