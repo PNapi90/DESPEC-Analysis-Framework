@@ -1,5 +1,7 @@
 #include "TDC_FATIMA_Channel.h"
 
+using namespace std;
+
 //---------------------------------------------------------------
 
 TDC_FATIMA_Channel::TDC_FATIMA_Channel(int det_id,int board_ID,int Ch_num){
@@ -40,6 +42,7 @@ void TDC_FATIMA_Channel::set_TDC_Time(double TDC_Time_tmp){
         iterator = 0;
         first_call = false;
     }
+    cout << "iti " << iterator << endl;
     TDC_Time[iterator] = TDC_Time_tmp;
 }
 
@@ -52,7 +55,6 @@ void TDC_FATIMA_Channel::Calibrate(FATIMA_Time_Calibration* FAT_T){
 
 //---------------------------------------------------------------
 
-
 double** TDC_FATIMA_Channel::get_Data(){
     for(int i = 0;i < iterator;++i){
         data_stream[i][0] = Time[i];
@@ -62,3 +64,12 @@ double** TDC_FATIMA_Channel::get_Data(){
     fired = false;
     return data_stream;
 }
+
+//---------------------------------------------------------------
+
+void TDC_FATIMA_Channel::reset(){
+    iterator = 0;
+    first_call = true;
+}
+
+//---------------------------------------------------------------

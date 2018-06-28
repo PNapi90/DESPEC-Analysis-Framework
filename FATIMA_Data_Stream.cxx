@@ -12,7 +12,7 @@ FATIMA_Data_Stream::~FATIMA_Data_Stream(){}
 
 //---------------------------------------------------------------
 
-void FATIMA_Data_Stream::set_event_data(double E,ULong T,ULong QDC_T,int total_hits,int hits_det,int det_ID){
+void FATIMA_Data_Stream::set_event_data(double E,ULong T,ULong QDC_T,int total_hits,int hits_det,int det_ID,ULong QDC_FT){
     FATIMA_Det_ID[fat_iter] = det_ID;
     FATIMA_E[fat_iter] = E;
     FATIMA_T[fat_iter] = T;

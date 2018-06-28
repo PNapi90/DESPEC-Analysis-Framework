@@ -33,6 +33,8 @@ public:
     void set_QDC_Time(double);
     void set_QDC_Fine_Time(double); // Extras //
 
+    void reset();
+
     void Calibrate(FATIMA_Energy_Calibration*,FATIMA_Time_Calibration*);
     
     double** get_Data();

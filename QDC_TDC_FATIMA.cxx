@@ -153,6 +153,8 @@ void QDC_TDC_FATIMA::Check_TDC_DATA(){
     int tdc_board_ID = 0;
     int TDC_ch = 0;
 
+    no_data = true;
+
     while(!trail){
         
         pdata++;
@@ -274,11 +276,11 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(QDC_Header* QDChead){
         pdata++;
 
         pdata++; // Moves to Extras
-        QDC_Extras *e=(QDC_Extras*)pdata;
+        QDC_Extras* e = (QDC_Extras*) pdata;
 	
-	//fine_time = (t->trigger_tag + (e->ext_trig)<<32) + ((double)(e->fine_time)/1024.);
+	   //fine_time = (t->trigger_tag + (e->ext_trig)<<32) + ((double)(e->fine_time)/1024.);
 	
-	fine_time = (((t->trigger_tag)+((e->ext_trig)<<32))) + ((double)(e->fine_time)/1024.);
+	    fine_time = (((t->trigger_tag)+((e->ext_trig)<<32))) + ((double)(e->fine_time)/1024.);
 	
         QDC_Channels[active_board][active_Channel]->set_QDC_Fine_Time(fine_time);
         //QDC_Channels[active_board][active_Channel]->set_QDC_Ext_Time(chNo, (e->ext_trig));
@@ -358,6 +360,19 @@ void QDC_TDC_FATIMA::Merge_To_Detectors(){
         //no match found -> exiting (perhaps normal?)
         if(!match_found) print_match_error(i);
     }
+    for(int i = 0;i < fired_QDC_amount;++i){
+        //reset data arrays in channels
+        for(int j = 0;j < fired_TDC_amount;++j){
+            board_ID_tmp = Fired_QDC_Channels[i][0];
+            Ch_num_tmp = Fired_QDC_Channels[i][1];
+
+            board_ID_tmp_TDC = Fired_TDC_Channels[j][0];
+            Ch_num_tmp_TDC = Fired_TDC_Channels[j][1];
+            
+            TDC_Channels[board_ID_tmp_TDC][Ch_num_tmp_TDC]->reset();
+            QDC_Channels[board_ID_tmp][Ch_num_tmp]->reset();
+        }
+    }
 }
 
 //---------------------------------------------------------------
@@ -396,7 +411,7 @@ void QDC_TDC_FATIMA::get_Detector_Data(FATIMA_Data_Stream* data_stream){
 
     data_stream->reset();
     //return Fatima Detector data to FATIMA_Detector_System object
-    ULong raw_T,raw_QDC_T;
+    ULong raw_T,raw_QDC_T,raw_QDC_T_Fine;
     double raw_E;
     int am_hits_det = 0;
     int am_hits_total = 0;
@@ -415,9 +430,10 @@ void QDC_TDC_FATIMA::get_Detector_Data(FATIMA_Data_Stream* data_stream){
             raw_E = FATIMA_Detectors[j]->get_E(o);
             raw_T = FATIMA_Detectors[j]->get_T(o);
             raw_QDC_T = FATIMA_Detectors[j]->get_QDC_T(o);
+            raw_QDC_T_Fine = FATIMA_Detectors[j]->get_QDC_FT(o);
             am_hits_total = j;
             am_hits_det = k;
-            data_stream->set_event_data(raw_E,raw_T,raw_QDC_T,am_hits_total,am_hits_det,j);
+            data_stream->set_event_data(raw_E,raw_T,raw_QDC_T,am_hits_total,am_hits_det,j,raw_QDC_T_Fine);
         }
     }
 }

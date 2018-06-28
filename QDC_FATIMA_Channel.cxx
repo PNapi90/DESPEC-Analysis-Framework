@@ -10,7 +10,7 @@ QDC_FATIMA_Channel::QDC_FATIMA_Channel(int det_id,int board_ID,int Ch_Num){
     this->Ch_Num = Ch_Num;
 
     data_stream = new double*[100];
-    for(int i = 0;i < 100;++i) data_stream[i] = new double[3];
+    for(int i = 0;i < 100;++i) data_stream[i] = new double[10];
 }
 
 //---------------------------------------------------------------
@@ -63,14 +63,27 @@ void QDC_FATIMA_Channel::Calibrate(FATIMA_Energy_Calibration* FAT_E,FATIMA_Time_
 //---------------------------------------------------------------
 
 double** QDC_FATIMA_Channel::get_Data(){
+    cout << "-----------------------------" << endl;
     for(int i = 0;i < iterator;++i){
         data_stream[i][0] = Energy[i];
         data_stream[i][1] = QDC_Time[i];
         data_stream[i][2] = iterator;
         data_stream[i][3] = QDC_Fine_Time[i];
-	
-    }
+        for(int j = 0;j < 4;++j) cout << dec << data_stream[i][j] << " ";
+        cout <<" <- "<< i  <<endl;
+    } 
     first_call = true;
+
+    cout << "-----------------------------" << endl;
 
     return data_stream;
 }
+
+//---------------------------------------------------------------
+
+void QDC_FATIMA_Channel::reset(){
+    iterator = 0;
+    first_call = true;
+}
+
+//---------------------------------------------------------------

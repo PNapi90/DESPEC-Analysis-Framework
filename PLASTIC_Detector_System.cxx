@@ -348,8 +348,8 @@ void PLASTIC_Detector_System::calibrate_OFFLINE(){
         if(iterator[i] > 0){
             for(int j = 0;j < iterator[i];++j){
                 channel_ID_tmp = (int) ch_ID_edge[i][j][0];
-                edge_fine[i][j][0] += PLASTIC_Calibration->get_Calibration_val(i,channel_ID_tmp,0);
-                edge_fine[i][j][1] += PLASTIC_Calibration->get_Calibration_val(i,channel_ID_tmp,1);
+                edge_fine[i][j][0] += PLASTIC_Calibration->get_Calibration_val(edge_fine[i][j][0],i,channel_ID_tmp);
+                edge_fine[i][j][1] += PLASTIC_Calibration->get_Calibration_val(edge_fine[i][j][1],i,channel_ID_tmp);
             }
         }
     }

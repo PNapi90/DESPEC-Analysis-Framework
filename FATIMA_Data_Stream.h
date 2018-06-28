@@ -33,7 +33,7 @@ public:
     FATIMA_Data_Stream();
     ~FATIMA_Data_Stream();
 
-    void set_event_data(double,ULong,ULong,int,int,int);
+    void set_event_data(double,ULong,ULong,int,int,int,ULong);
     
     double get_E(int);
     

@@ -99,11 +99,12 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 		used_ids[iter][0] = tamex_id;
 		used_ids[iter][1] = ch_id;
 
+		cout << used_ids[iter][0] << " " << used_ids[iter][1]  << endl;
+
 		wired_tamex_ch[tamex_id][ch_id] = true;
 
 		iter++;
 	}
-
 	//Load all wired Calibration files specified by MAP
 	char filename[1000];
 	ifstream file;
@@ -155,8 +156,20 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 
 //---------------------------------------------------------------
 
-double PLASTIC_Calibrator::get_Calibration_val(int tamex_id_tmp,int ch_id_tmp,int lead_or_trail){
-	return Cal_arr[tamex_id_tmp][ch_id_tmp][lead_or_trail];
+double PLASTIC_Calibrator::get_Calibration_val(ULong value,int tamex_id_tmp,int ch_id_tmp){
+	double return_val = 0;
+	double value_t = (double) value;
+	double tmp,tmp2;
+
+	for(int i = 0;i < nbins;++i){
+		tmp = Cal_arr[tamex_id_tmp][ch_id_tmp][i];
+		tmp2 = Cal_arr[tamex_id_tmp][ch_id_tmp][i+1];
+		if(value >= bins_x_arr[i] && value < bins_x_arr[i+1]){
+			return_val = (tmp2 - tmp)/(bins_x_arr[i+1] - bins_x_arr[i])*(value_t - bins_x_arr[i]) + tmp;
+			break;
+		}
+	}
+	return return_val;
 }
 
 //---------------------------------------------------------------

@@ -27,7 +27,7 @@ public:
     void set_TDC_Fired();
 
     bool get_TDC_Fired();
-
+    void reset();
 
     double** get_Data();
 };

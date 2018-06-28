@@ -2,5 +2,5 @@
 #The file will be changed to OFFLINE after its been read
 #-> to force multiple ONLINE calibrations, set FORCE to 1
 #ONLINE Calibration and FORCE (1 = yes, 0 = no)
-ONLINE		0
-FORCE		0
+ONLINE		1
+FORCE		1
