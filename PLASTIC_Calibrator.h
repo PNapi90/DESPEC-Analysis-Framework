@@ -46,7 +46,7 @@ public:
     void get_data(ULong***,UInt***,int,int*);
 
     void ONLINE_CALIBRATION();
-    void OFFLINE_CALIBRATION(ULong*,int,int);
+    double get_Calibration_val(int,int,int);
 
 };
 

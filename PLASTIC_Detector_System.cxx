@@ -64,6 +64,8 @@ PLASTIC_Detector_System::~PLASTIC_Detector_System(){
     delete[] coarse_T;
     delete[] fine_T;
     delete[] ch_ID;
+
+    delete PLASTIC_Calibration;
 }
 
 //---------------------------------------------------------------
@@ -341,7 +343,14 @@ void PLASTIC_Detector_System::calibrate_ONLINE(){
 //---------------------------------------------------------------
 
 void PLASTIC_Detector_System::calibrate_OFFLINE(){
-
+    for(int i = 0;i < 4;++i){
+        if(iterator[i] > 0){
+            for(int j = 0;j < iterator[i];++j){
+                edge_fine[i][j][0] += PLASTIC_Calibration->get_Calibration_val(i,j,0);
+                edge_fine[i][j][1] += PLASTIC_Calibration->get_Calibration_val(i,j,1);
+            }
+        }
+    }
 }
 
 //---------------------------------------------------------------

@@ -154,9 +154,9 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 }
 
 //---------------------------------------------------------------
-//DO IT!
-void PLASTIC_Calibrator::OFFLINE_CALIBRATION(ULong* fine_T,int tamex_id,int ch_id){
 
+double PLASTIC_Calibrator::get_Calibration_val(int tamex_id_tmp,int ch_id_tmp,int lead_or_trail){
+	return Cal_arr[tamex_id_tmp][ch_id_tmp][lead_or_trail];
 }
 
 //---------------------------------------------------------------
