@@ -34,7 +34,11 @@ PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
 	}
 	else{
 		bins_x_arr = new double[nbins];
-
+		Cal_arr = new double**[10];
+		for(int i = 0;i < 10;++i){
+			Cal_arr[i] = new double*[100];
+			for(int j = 0;j < 100;++j) Cal_arr[i][j] = new double[nbins];
+		}
 		fired = NULL;
 		Fine_Hist = NULL;
 		load_Calibration_Files();
@@ -112,22 +116,22 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 	int b_iter = 0;
 	double bin,val;
 
-	Cal_arr = new double**[iter];
+	//Cal_arr = new double**[10];
 
-	const char* format = "%d %d";
+	const char* format = "%lf %lf";
 
 	bool first = true;
 
 	for(int i = 0;i < iter;++i){
 
-		Cal_arr[i] = new double*[100];
+		tamex_id = used_ids[i][0];
+		ch_id = used_ids[i][1];
+		cout << tamex_id << " " << ch_id << endl;
+		//Cal_arr[tamex_id] = new double*[100];
 
 		b_iter = 0;
 
-		tamex_id = used_ids[i][0];
-		ch_id = used_ids[i][1];
-
-		Cal_arr[tamex_id][ch_id] = new double[nbins];
+		//Cal_arr[tamex_id][ch_id] = new double[nbins];
 
 		sprintf(filename,"Configuration_Files/Calibration_PLASTIC/Calib_%d_%d.dat",tamex_id,ch_id);
 		file.open(filename);
@@ -139,10 +143,10 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 		while(file.good()){
 			getline(file,line,'\n');
 			if(line[0] == '#') continue;
+			cout << line << endl;
 			sscanf(line.c_str(),format,&bin,&val);
 			if(first) bins_x_arr[b_iter] = bin;
 			Cal_arr[tamex_id][ch_id][b_iter] = val;
-
 			b_iter++;
 		}
 
@@ -161,9 +165,11 @@ double PLASTIC_Calibrator::get_Calibration_val(ULong value,int tamex_id_tmp,int 
 	double value_t = (double) value;
 	double tmp,tmp2;
 
-	for(int i = 0;i < nbins;++i){
+	for(int i = 0;i < nbins-1;++i){
+
 		tmp = Cal_arr[tamex_id_tmp][ch_id_tmp][i];
 		tmp2 = Cal_arr[tamex_id_tmp][ch_id_tmp][i+1];
+		//cout << "calib "<<tmp << " " << tmp2 << " " << value << " " << bins_x_arr[i]<<endl;
 		if(value >= bins_x_arr[i] && value < bins_x_arr[i+1]){
 			return_val = (tmp2 - tmp)/(bins_x_arr[i+1] - bins_x_arr[i])*(value_t - bins_x_arr[i]) + tmp;
 			break;

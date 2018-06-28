@@ -158,6 +158,7 @@ void QDC_TDC_FATIMA::Check_TDC_DATA(){
     while(!trail){
         
         pdata++;
+        
 
         TDC_Check*p = (TDC_Check*) pdata;
         check = p->type;
@@ -219,7 +220,6 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(QDC_Header* QDChead){
   
     pdata++; // Moves to 2nd header value //
 
-  
     QDC_Header_2 *QDChead_2 = (QDC_Header_2*) pdata;
 
 
@@ -239,6 +239,7 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(QDC_Header* QDChead){
         }
     }
     if(fired_QDC_amount == 2) exiter = true;
+
     pdata++; // Moves to 3rd header value //
   
     pdata++; // Moves to 4th header value //
@@ -247,7 +248,6 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(QDC_Header* QDChead){
     int active_Channel = 0;
     int active_board = 0;
     double fine_time = 0;
-
     for(int i = 0;i < fired_QDC_amount;++i){
         //set active board_ID and channel #
         active_board = Fired_QDC_Channels[i][0];
@@ -257,11 +257,10 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(QDC_Header* QDChead){
       
         QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
         //size = fs->size - 6;
-                
         pdata++; // Moves to 2nd data value
-      
+
         pdata++; // Moves to 3rd data value
-      
+
         //if (setup->get_extras() == 1) pdata++; // Moves to 4th data value
         pdata++; // extras == 1! IMPLEMENT!
         
@@ -270,14 +269,14 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(QDC_Header* QDChead){
         
 
         QDC_Channels[active_board][active_Channel]->set_QDC_Time(t->trigger_tag);
-
-        pdata++;
-      
-        pdata++;
-
+        
+        //pdata++;
+        //pdata++;
+        
         pdata++; // Moves to Extras
+        
         QDC_Extras* e = (QDC_Extras*) pdata;
-	
+
 	   //fine_time = (t->trigger_tag + (e->ext_trig)<<32) + ((double)(e->fine_time)/1024.);
 	
 	    fine_time = (((t->trigger_tag)+((e->ext_trig)<<32))) + ((double)(e->fine_time)/1024.);
@@ -291,7 +290,7 @@ void QDC_TDC_FATIMA::Check_QDC_DATA(QDC_Header* QDChead){
                   
 		  
         pdata++; // Moves to 6th data value87454dda
-      
+
         QDC_Data* d = (QDC_Data*) pdata;
         
         QDC_Channels[active_board][active_Channel]->set_QLong_Raw(d->QL); // Gets Q Long data //

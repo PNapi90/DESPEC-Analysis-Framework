@@ -375,7 +375,7 @@ void PLASTIC_Detector_System::get_Calib_type(){
     const char* format = "%s %d";
     char s[100];
     int val;
-
+    CALIBRATE = false;
     bool FORCE = false;
 
     while(data.good()){

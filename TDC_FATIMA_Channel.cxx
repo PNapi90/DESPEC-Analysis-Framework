@@ -42,7 +42,7 @@ void TDC_FATIMA_Channel::set_TDC_Time(double TDC_Time_tmp){
         iterator = 0;
         first_call = false;
     }
-    cout << "iti " << iterator << endl;
+    //cout << "iti " << iterator << endl;
     TDC_Time[iterator] = TDC_Time_tmp;
 }
 
