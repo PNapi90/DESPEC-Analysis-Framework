@@ -9,9 +9,9 @@ PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
 	this->ONLINE = ONLINE;
 
 
-	nbins = 3000;
+	nbins = 4000;
 	min_val = 0;
-	max_val = 3000;
+	max_val = 1000;
 
 	//only for ONLINE CALIBRATION
 	if(this->ONLINE){

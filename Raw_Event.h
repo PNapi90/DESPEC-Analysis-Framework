@@ -36,7 +36,7 @@ public:
 	Raw_Event();
 	~Raw_Event();
 
-	void set_DATA_FATIMA(int,double*,double*,ULong*,ULong*,ULong*);
+	void set_DATA_FATIMA(int,double*,double*,ULong*,ULong*,ULong*,int*);
 	void set_DATA_PLASTIC(int*,ULong***,ULong***,UInt***,ULong*,ULong*);
 
 

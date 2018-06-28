@@ -340,7 +340,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	if(iterator == 2 && called[0] != called[1]){
 		//cout << WR_tmp[0]  << " " << WR_tmp[1] << " " << WR_tmp[1] - WR_tmp[0] << endl;
 
-		if((WR_tmp[1] - WR_tmp[0])/1000.  <= 10) WR_HIST->Fill( (WR_tmp[1] - WR_tmp[0])/1000. );
+		if((WR_tmp[1] - WR_tmp[0])/1000.  <= 10){
+			if(called[0] == 3) WR_HIST->Fill( (WR_tmp[1] - WR_tmp[0])/1000. );
+			else WR_HIST->Fill( (WR_tmp[0] - WR_tmp[1])/1000. );
+		}
 		WR_HIST2->Fill( (WR_tmp[1] - WR_tmp[0])/1000. );
 		iterator = 0;
 		

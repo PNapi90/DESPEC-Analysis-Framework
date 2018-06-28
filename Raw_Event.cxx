@@ -47,7 +47,7 @@ void Raw_Event::set_DATA_PLASTIC(int* it,ULong*** Edge_Coarse,ULong*** Edge_fine
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_FATIMA_am_Fired(){return FAT_FIREDM;}
+int Raw_Event::get_FATIMA_am_Fired(){return FAT_FIRED;}
 
 //---------------------------------------------------------------
 

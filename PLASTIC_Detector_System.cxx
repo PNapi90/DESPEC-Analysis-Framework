@@ -107,7 +107,7 @@ void PLASTIC_Detector_System::Process_MBS(int* pdata){
     tamex_iter = 0;
     while(!tamex_end){
         Process_TAMEX();
-        tamex_iter++;
+        if(!tamex_end) tamex_iter++;
         this->pdata++;
     }
     
@@ -343,11 +343,13 @@ void PLASTIC_Detector_System::calibrate_ONLINE(){
 //---------------------------------------------------------------
 
 void PLASTIC_Detector_System::calibrate_OFFLINE(){
+    int channel_ID_tmp = 0;
     for(int i = 0;i < 4;++i){
         if(iterator[i] > 0){
             for(int j = 0;j < iterator[i];++j){
-                edge_fine[i][j][0] += PLASTIC_Calibration->get_Calibration_val(i,j,0);
-                edge_fine[i][j][1] += PLASTIC_Calibration->get_Calibration_val(i,j,1);
+                channel_ID_tmp = (int) ch_ID_edge[i][j][0];
+                edge_fine[i][j][0] += PLASTIC_Calibration->get_Calibration_val(i,channel_ID_tmp,0);
+                edge_fine[i][j][1] += PLASTIC_Calibration->get_Calibration_val(i,channel_ID_tmp,1);
             }
         }
     }
