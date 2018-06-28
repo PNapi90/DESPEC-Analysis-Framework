@@ -23,13 +23,13 @@ The general idea of DEAF:
   - for each physical event -> create "interesting" histograms and matrices
 
 EVENTBUILDER:
-  - the pointer double** data_stream includes all necessary data from each system:
+  - get important informations from RAW_EVENT class obj:
   - FATIMA: E[ ], T[ ], hitID[ ]
   - GALILEO: E[ ], T[ ], hitID[ ]
   - PLASTIC: T,... (what else necessary ?)
   - AIDA: X[ ], Y[ ], E[ ], T[ ], GRID_ADRESS[ ]
   - FRS: ?
-  - buffer events for few seconds (experimental seconds)
+  - buffer events for few seconds (experimental seconds) => in Raw_Event_Storage class
 
 =======================================================================
 
@@ -49,24 +49,12 @@ where i represents the index over the amount of hits am_hits (different for each
 To do (UNPACKING):
   - FRS
   - AIDA
-  - beta-Plastic
   - GALILEO 
 
 =======================================================================
 
 To do (EVENTBUILDING):
-  - Define general data stream structure of each detector
-  - Write abstract data stream class and inheriting detector system classes
   - Write EventBuilder class
   - How to build physical events?
 
-
-
-
-
 =======================================================================
-
-!!! Go4 linking (access to data via Int_t* pdata) still missing !!!
-
-=======================================================================
-
