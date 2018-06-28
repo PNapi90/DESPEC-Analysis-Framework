@@ -29,6 +29,15 @@ void FATIMA_Detector_System::get_Event_data(Data_Stream* data_stream){
     QDC_TDC->get_Detector_Data((FATIMA_Data_Stream*) data_stream);
 }
 
+
+//---------------------------------------------------------------
+
+void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
+
+    //return important information of event (energies,triggered detectors,multiplicity,...)
+    //QDC_TDC->get_Detector_Data((FATIMA_Data_Stream*) data_stream);
+}
+
 //---------------------------------------------------------------
 
 void FATIMA_Detector_System::Process_MBS(int* pdata){

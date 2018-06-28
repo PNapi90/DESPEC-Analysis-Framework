@@ -1,7 +1,7 @@
 GO4-*> Reading library: libGo4UserAnalysis  
 GO4-*> Find user analysis class TSCNAnalysis  
 GO4-*> !!! Find constructor with prototype TSCNAnalysis::TSCNAnalysis(int, char**)  
-GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffcffeac7e0)  
+GO4-*> Process: new TSCNAnalysis(1, (char**)0x7fffa9605dd0)  
 GO4-*> Welcome to Go4 Analysis Framework Release v5.3.0 (build 50300) !  
 **** TSCNAnalysis: Create Go4Analysis
 GO4-*> Analysis: Added analysis step Unpack  
@@ -108,44 +108,6 @@ GO4-*> Analysis loop is starting...
 GO4-*> Start file: data/fatima_bplast_wr.lmd tagfile:none first:0 last:0 delta:0  
 
 First event #: 63758
-=========================
-1000
-=========================
-=========================
-2000
-=========================
-=========================
-3000
-=========================
-=========================
-4000
-=========================
-=========================
-5000
-=========================
-=========================
-6000
-=========================
-=========================
-7000
-=========================
-=========================
-8000
-=========================
-=========================
-9000
-=========================
-=========================
-10000
-=========================
-ONLINE CALIBRATION FOR PLASTIC INITIALIZED
-Running... Running... 0 % 				Running... 1 % 				Running... 2 % 				Running... 3 % 				Running... 4 % 				Running... 5 % 				Running... 6 % 				Running... 7 % 				Running... 8 % 				Running... 9 % 				Running... 10 % 				Running... 11 % 				Running... 12 % 				Running... 13 % 				Running... 14 % 				Running... 15 % 				Running... 16 % 				Running... 17 % 				Running... 18 % 				Running... 19 % 				Running... 20 % 				Running... 21 % 				Running... 22 % 				Running... 23 % 				Running... 24 % 				Running... 25 % 				Running... 26 % 				Running... 27 % 				Running... 28 % 				Running... 29 % 				Running... 30 % 				Running... 31 % 				Running... 32 % 				Running... 33 % 				Running... 34 % 				Running... 35 % 				Running... 36 % 				Running... 37 % 				Running... 38 % 				Running... 39 % 				Running... 40 % 				Running... 41 % 				Running... 42 % 				Running... 43 % 				Running... 44 % 				Running... 45 % 				Running... 46 % 				Running... 47 % 				Running... 48 % 				Running... 49 % 				Running... 50 % 				Running... 51 % 				Running... 52 % 				Running... 53 % 				Running... 54 % 				Running... 55 % 				Running... 56 % 				Running... 57 % 				Running... 58 % 				Running... 59 % 				Running... 60 % 				Running... 61 % 				Running... 62 % 				Running... 63 % 				Running... 64 % 				Running... 65 % 				Running... 66 % 				Running... 67 % 				Running... 68 % 				Running... 69 % 				Running... 70 % 				Running... 71 % 				Running... 72 % 				Running... 73 % 				Running... 74 % 				Running... 75 % 				Running... 76 % 				Running... 77 % 				Running... 78 % 				Running... 79 % 				Running... 80 % 				Running... 81 % 				Running... 82 % 				Running... 83 % 				Running... 84 % 				Running... 85 % 				Running... 86 % 				Running... 87 % 				Running... 88 % 				Running... 89 % 				Running... 90 % 				Running... 91 % 				Running... 92 % 				Running... 93 % 				Running... 94 % 				Running... 95 % 				Running... 96 % 				Running... 97 % 				Running... 98 % 				Running... 99 % 				Running... DONE
------------------------------------------------------------------
--> Exiting program after calibration <-
-
--> run program again to use new calibration <-
------------------------------------------------------------------
-
 GO4-*> End of event source TGo4MbsFile: name:data/fatima_bplast_wr.lmd msg:-I-f_evt: no more event file:data/fatima_bplast_wr.lmd  
 **** TSCNAnalysis: PostLoop
 Last event: 0 Total events: 698632

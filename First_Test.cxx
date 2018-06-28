@@ -178,6 +178,9 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) data_stream[i] = NULL;
 
+	//Raw_Event object to handle data
+	RAW = new Raw_Event();
+
 	load_PrcID_File();
 	White_Rabbbit_old = 0;
 	count = 0;
@@ -200,7 +203,7 @@ TSCNUnpackProc::~TSCNUnpackProc()
 	delete[] Detector_Systems;
 	
 	delete[] data_stream;
-
+	delete RAW;
 	cout << "**** TSCNUnpackProc: Delete" << endl;
 }
 
@@ -294,7 +297,9 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		pdata = Detector_Systems[PrcID_Conv]->get_pdata();
 		
 		//get data from subevent
-		if(PrcID == 3) Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
+		Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
+		if(PrcID_Conv == 3) Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
+
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
 		if(cals_done) break;
 		//continue;
@@ -303,7 +308,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		if(PrcID_Conv == 3){
 			//if FATIMA mismatch -> don't use data
-			if(data_stream[PrcID_Conv]->get_mismatch()) continue;
+			//if(data_stream[PrcID_Conv]->get_mismatch()) continue;
 			
 			fat_hits = data_stream[PrcID_Conv]->get_amount_Hits();
 			E0 = data_stream[PrcID_Conv]->get_E(0);

@@ -5,6 +5,7 @@
 #include "FATIMA_Data_Stream.h"
 #include "Detector_System.cxx"
 #include "QDC_TDC_FATIMA.h"
+#include "Raw_Event.h"
 
 class FATIMA_Detector_System : public Detector_System{
 
@@ -23,7 +24,9 @@ public:
 
     //functions from abstract class Detector_System
     void Process_MBS(int*);
+    void get_Event_data(Raw_Event*);
     void get_Event_data(Data_Stream*);
+
 
     int* get_pdata();
     

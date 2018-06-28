@@ -43,6 +43,7 @@ extern void G__set_cpp_environmentG__SCN();
 #include "./QDC_751.h"
 #include "./QDC_FATIMA_Channel.h"
 #include "./QDC_TDC_FATIMA.h"
+#include "./Raw_Event.h"
 #include "./TAMEX.h"
 #include "./TDC_1290.h"
 #include "./TDC_FATIMA_Channel.h"
@@ -72,6 +73,7 @@ extern G__linked_taginfo G__G__SCNLN_reverse_iteratorlEvectorlEROOTcLcLTSchemaHe
 extern G__linked_taginfo G__G__SCNLN_vectorlETVirtualArraymUcOallocatorlETVirtualArraymUgRsPgR;
 extern G__linked_taginfo G__G__SCNLN_reverse_iteratorlEvectorlETVirtualArraymUcOallocatorlETVirtualArraymUgRsPgRcLcLiteratorgR;
 extern G__linked_taginfo G__G__SCNLN_Data_Stream;
+extern G__linked_taginfo G__G__SCNLN_Raw_Event;
 extern G__linked_taginfo G__G__SCNLN_Detector_System;
 extern G__linked_taginfo G__G__SCNLN_iteratorlEbidirectional_iterator_tagcOTObjectmUcOlongcOconstsPTObjectmUmUcOconstsPTObjectmUaNgR;
 extern G__linked_taginfo G__G__SCNLN_TVectorTlEfloatgR;

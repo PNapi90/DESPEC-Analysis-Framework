@@ -8,6 +8,7 @@
 #include "PLASTIC_Data_Stream.h"
 #include "PLASTIC_Calibrator.h"
 #include "Data_Stream.cxx"
+#include "Raw_Event.h"
 
 #include "TAMEX.h"
 
@@ -84,7 +85,9 @@ public:
     //functions from abstract class Detector_System
     void Process_MBS(int*);
 
-    void get_Event_data(Data_Stream*);
+    void get_Event_data(Raw_Event*);
+    void get_Event_data(Data_Stream*){return;};
+
 
     int* get_pdata();
 
