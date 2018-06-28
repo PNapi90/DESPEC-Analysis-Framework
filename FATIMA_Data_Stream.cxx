@@ -17,6 +17,7 @@ void FATIMA_Data_Stream::set_event_data(double E,ULong T,ULong QDC_T,int total_h
     FATIMA_E[fat_iter] = E;
     FATIMA_T[fat_iter] = T;
     FATIMA_QDC_T[fat_iter] = QDC_T;
+    FATIMA_QDC_FT[fat_iter] = QDC_FT;
     FATIMA_hits_det[fat_iter] = hits_det;
     fat_iter++;
 

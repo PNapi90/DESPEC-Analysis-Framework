@@ -20,6 +20,7 @@ private:
 
     ULong FATIMA_T[100];
     ULong FATIMA_QDC_T[100];
+    ULong FATIMA_QDC_FT[100];
     int FATIMA_hits_det[100];
 
     int fat_iter;
