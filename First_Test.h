@@ -55,6 +55,8 @@
 #include "PLASTIC_Data_Stream.h"
 #include "FATIMA_Data_Stream.h"
 
+#include "Raw_Event.h"
+
 #include <string>
 
 
@@ -104,6 +106,7 @@ using namespace std;
 			Detector_System** Detector_Systems;
 			Data_Stream** data_stream;
 			White_Rabbit* WR;
+			Raw_Event* RAW;
 
 			Int_t get_Conversion(Int_t);
 			void get_used_Systems();

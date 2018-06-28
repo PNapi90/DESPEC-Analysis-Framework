@@ -89,9 +89,8 @@ int* PLASTIC_Detector_System::tmp_get_iterator(){return iterator;}
 
 //---------------------------------------------------------------
 
-void PLASTIC_Detector_System::get_Event_data(Data_Stream* data_stream){
-    if(CALIBRATE) calibrate_ONLINE();
-    else calibrate_OFFLINE();
+void PLASTIC_Detector_System::get_Event_data(Raw_Event* RAW){
+    RAW->set_DATA_PLASTIC(iterator,edge_coarse,edge_fine,ch_ID_edge,coarse_T,fine_T); 
 }
 
 //---------------------------------------------------------------

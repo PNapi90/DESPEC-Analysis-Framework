@@ -2,6 +2,8 @@
 #ifndef DETECTOR_SYSTEM_H
 #define DETECTOR_SYSTEM_H 
 
+#include "Raw_Event.h"
+
 #include "Data_Stream.cxx"
 
 class Detector_System{
@@ -12,6 +14,8 @@ public:
 
     virtual void Process_MBS(int*) = 0;
     
+    virtual void get_Event_data(Raw_Event*) = 0;
+
     virtual void get_Event_data(Data_Stream*) = 0;
 
     virtual unsigned long*** tmp_get_coarse_T() = 0;
