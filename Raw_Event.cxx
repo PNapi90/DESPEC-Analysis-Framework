@@ -12,12 +12,12 @@ Raw_Event::~Raw_Event(){}
 
 //---------------------------------------------------------------
 
-void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,double* Ql,ULong* TDC,ULong* QDC_c,ULong* QDC_f,int* det_ids){
+void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,double* Ql,double* Qs,ULong* TDC,ULong* QDC_c,ULong* QDC_f,int* det_ids){
 	this->FAT_FIRED = FAT_FIRED;
 	for(int i = 0;i < FAT_FIRED;++i){
 		Det_Nums[i] = det_ids[i];
 		E[i] = Ql[i];
-		//QShort[i] = Qs[i]; still missing!
+		QShort[i] = Qs[i];
 		TDC_timestamp[i] = TDC[i];
 		QDC_t_coarse[i] = QDC_c[i];
 		QDC_t_fine[i] = QDC_f[i];

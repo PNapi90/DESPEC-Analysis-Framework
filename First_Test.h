@@ -91,6 +91,9 @@ using namespace std;
 			TH1*** mat;
 			TH1* all;
 			TH1* all2;
+			TH1* hit_hist;
+			TH1* am_hits;
+			TH1* WR_F;
 			//for the SIS modules
 
 		private:

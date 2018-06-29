@@ -70,6 +70,9 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	hit_mat = MakeTH2('D',"hitmat","hitmat",37,0,36,37,0,36);
 
+	hit_hist = MakeTH1('D',"hits","hits",37,0,36);
+	am_hits = MakeTH1('D',"hits_a","hits_a",51,0,50);
+
 	C_t = MakeTH1('D',"pl","pl",1001,0,1000);
 
 	WR_used = false;
@@ -81,8 +84,9 @@ TGo4EventProcessor(name) // Histograms defined here //
 	//create White Rabbit obj
 	WR = WR_used ? new White_Rabbit() : NULL;
 
-	WR_HIST = MakeTH1('D',"WR","WR",2001,-1,4);
+	WR_HIST = MakeTH1('D',"WR","WR",2001,-1,40);
 	WR_HIST2 = MakeTH1('D',"WR2","WR2",2001,-10,4000);
+	WR_F = MakeTH1('D',"WRf","WRf",2001,-10,4000);
 
 
 	//create Detector Systems
@@ -213,7 +217,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 3 && false){
+		if(PrcID_Conv == 2 && false){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex <<*(pdata + i) << " ";
@@ -242,11 +246,17 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		if(PrcID_Conv == 3){
 			//to get histograms (e.g.)
 			am_FATIMA_hits = RAW->get_FATIMA_am_Fired();
+			am_hits->Fill(am_FATIMA_hits);
+
 			double sum = 0;
+			double tmpE[2];
 			for(int i = 0;i < am_FATIMA_hits;++i){
 				//e,g, sum spectrum
-				sum += RAW->get_FATIMA_E(i);
+				tmpE[i] = RAW->get_FATIMA_E(i);
+				sum += tmpE[i];
+				hit_hist->Fill(RAW->get_FATIMA_det_id(i));
 			}
+			if(am_FATIMA_hits == 2) FAT_MAT->Fill(tmpE[0],tmpE[1]);
 			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);
 		}
 
@@ -266,29 +276,38 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	//========================================================
 
 	//rudimentary event builder
-	if(iterator == 2 && called[0] != called[1]){
+	if(iterator == 2){
+		if(called[0] != called[1]){
+			//White rabbit histograms
+			if((WR_tmp[1] - WR_tmp[0])/1000.  <= 10){
+				if(called[0] == 3) WR_HIST->Fill( ((double)(WR_tmp[1] - WR_tmp[0]))/1000. );
+				else WR_HIST->Fill( ((double)(WR_tmp[0] - WR_tmp[1]))/1000. );
+			}
 
-		//White rabbit histograms
-		if((WR_tmp[1] - WR_tmp[0])/1000.  <= 10){
-			if(called[0] == 3) WR_HIST->Fill( (WR_tmp[1] - WR_tmp[0])/1000. );
-			else WR_HIST->Fill( (WR_tmp[0] - WR_tmp[1])/1000. );
+			if(called[0] == 3) WR_HIST2->Fill( ((double)(WR_tmp[1] - WR_tmp[0]))/1000. );
+			else WR_HIST2->Fill( ((double)(WR_tmp[0] - WR_tmp[1]))/1000.);
+
+			//========================================================
+			//	"EVENTBUILDER" IS HERE!!!
+			//========================================================
+
+			//"coincident" events -> reset iterator
+			if(abs((WR_tmp[1] - WR_tmp[0]) - 222 ) <= 8){
+				//do all things related to coincidence analysis here
+
+
+				iterator = 0;
+			}
+			else{
+				WR_tmp[0] = WR_tmp[1];
+				called[0] = called[1];
+				iterator = 1;
+			}
 		}
-
-		WR_HIST2->Fill( (WR_tmp[1] - WR_tmp[0])/1000. );
-
-
-		//========================================================
-		//	"EVENTBUILDER" IS HERE!!!
-		//========================================================
-
-		//"coincident" events -> reset iterator
-		if(abs((WR_tmp[1] - WR_tmp[0]) - 222 ) <= 8){
-			//do all things related to coincidence analysis here
-
-
-			iterator = 0;
+		else if(called[0] == 3){
+			WR_F->Fill(((double)(WR_tmp[1] - WR_tmp[0]))/1000.);
 		}
-		else{
+		if(called[0] == called[1]){
 			//sets second fired system to first (for time differences)
 
 			//========================================================
@@ -300,15 +319,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		}
 				
 	}
+	if(iterator > 2) iterator = 0;
 
-	if(called[0] == called[1]){
-		//========================================================
-		//change of variables (e.g. x[0] = x[1] also needed!)
-		//========================================================
-		WR_tmp[0] = WR_tmp[1];
-		called[0] = called[1];
-		iterator = 1;
-	}
 
 	out_evt->SetValid(isValid);
 	

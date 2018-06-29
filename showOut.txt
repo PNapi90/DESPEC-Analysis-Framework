@@ -1,7 +1,7 @@
 GO4-*> Reading library: libGo4UserAnalysis  
 GO4-*> Find user analysis class TSCNAnalysis  
 GO4-*> !!! Find constructor with prototype TSCNAnalysis::TSCNAnalysis(int, char**)  
-GO4-*> Process: new TSCNAnalysis(1, (char**)0x7fff4bd48860)  
+GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffc60cd38b0)  
 GO4-*> Welcome to Go4 Analysis Framework Release v5.3.0 (build 50300) !  
 **** TSCNAnalysis: Create Go4Analysis
 GO4-*> Analysis: Added analysis step Unpack  
@@ -12,9 +12,9 @@ GO4-*> Opening AutoSave file Go4AnalysisASF.root with READ mode
 GO4-*> Analysis LoadObjects: Loading from autosave file Go4AnalysisASF.root   
 GO4-*> Updated parameter SCNParameter from parameter SCNParameter  
 GO4-*> AutoSave file Go4AnalysisASF.root was closed.  
-GO4-*> TGo4MbsFile: Open file data/fatima_bplast_wr.lmd  
+GO4-*> TGo4MbsFile: Open file ../pl_fat_0003.lmd  
 GO4-*> UnpackFactory: Create input event for MBS  
-GO4-*> Event MbsEvent101 has source data/fatima_bplast_wr.lmd class: TGo4MbsFile  
+GO4-*> Event MbsEvent101 has source ../pl_fat_0003.lmd class: TGo4MbsFile  
 GO4-*> UnpackFactory: Create event processor UnpackProc  
 **** TSCNUnpackProc: Create
 0.25		-0.00052521
@@ -8019,43 +8019,6 @@ GO4-*> UnpackFactory: Create event processor UnpackProc
 999.75		0
 1000		0
 
-0 6 0 9 0
-1 7 1 9 1
-2 0 0 9 2
-3 8 0 9 3
-4 8 1 9 4
-5 6 5 9 5
-6 6 6 9 6
-7 0 7 9 7
-8 6 8 9 8
-9 6 9 9 9
-10 6 10 9 10
-11 6 11 9 11
-12 6 12 9 12
-13 6 13 9 13
-14 6 14 9 14
-15 6 15 9 15
-16 0 16 0 16
-17 0 17 0 17
-18 0 18 0 18
-19 0 19 0 19
-20 0 20 0 20
-21 0 21 0 21
-22 0 22 0 22
-23 0 23 0 23
-24 0 24 0 24
-25 0 25 0 25
-26 0 26 0 26
-27 0 27 0 27
-28 0 28 0 28
-29 0 29 0 29
-30 0 30 0 30
-31 0 31 0 31
-32 0 32 0 32
-33 0 33 0 33
-34 0 34 0 34
-35 0 35 0 35
-35 0 35 0 35
 GO4-*> UnpackFactory: Create output event UnpackEvent  
 GO4-*> Event UnpackEvent has source UnpackProc class: TSCNUnpackProc  
 GO4-*> CalibrationFactory: Create input event UnpackEvent  
@@ -8085,7 +8048,7 @@ Autosave enabled: 		1
 ----------------------------------------------  
  ++++ Analysis Step Unpack ++++	 
   Eventsource: TGo4MbsFile 
-    Name: 	data/fatima_bplast_wr.lmd 
+    Name: 	../pl_fat_0003.lmd 
     Timeout: 	1 s
     Startevent: 	0	 Stopevent: 	0 
     Event interval: 	0
@@ -8107,20 +8070,20 @@ Tagfile: GO4-NOLMDTAG
 
 **************************************
 GO4-*> Analysis loop is starting...  
-GO4-*> Start file: data/fatima_bplast_wr.lmd tagfile:none first:0 last:0 delta:0  
+GO4-*> Start file: ../pl_fat_0003.lmd tagfile:none first:0 last:0 delta:0  
 
-First event #: 63758
-GO4-*> End of event source TGo4MbsFile: name:data/fatima_bplast_wr.lmd msg:-I-f_evt: no more event file:data/fatima_bplast_wr.lmd  
+First event #: 8913338
+GO4-*> End of event source TGo4MbsFile: name:../pl_fat_0003.lmd msg:-I-f_evt: no more event file:../pl_fat_0003.lmd  
 **** TSCNAnalysis: PostLoop
-Last event: 0 Total events: 698632
+Last event: 0 Total events: 3334755
 
-Input file was: fatima_bplast_wr.lmd
-Tapelabel:	DISK
+Input file was: /data.local/WR_plastic_FAT/pl_fat_0003.lmd
+Tapelabel:	RFIO:X86L-5
 UserName:	rising
 RunID:	
 	Explanation: 
 	Comments: 
-GO4-*> Go4 EventEndException  appeared in 698632 cycle.  
+GO4-*> Go4 EventEndException  appeared in 3334755 cycle.  
 **** TSCNAnalysis: Delete
 GO4-*> Opening AutoSave file Go4AnalysisASF.root with RECREATE mode  
 GO4-*> AutoSave file Go4AnalysisASF.root was closed.  

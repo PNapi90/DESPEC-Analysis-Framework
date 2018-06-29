@@ -140,7 +140,7 @@ void PLASTIC_Detector_System::Process_TAMEX(){
     TAMEX_CHANNEL_HEADER* head = (TAMEX_CHANNEL_HEADER*) pdata;
     
     //check if end of TAMEX MBS reached
-    bool ongoing = (head->identify == tamex_identifier) && (head->identify_2 == 0);
+    bool ongoing = (head->identify == tamex_identifier) && (head->identify_2 == 0) && (head->sfp_id == 1);
     
     if(!ongoing){
         tamex_end = true;
@@ -170,6 +170,7 @@ void PLASTIC_Detector_System::Process_TAMEX(){
     TAMEX_BEGIN* begin = (TAMEX_BEGIN*) pdata;
     if(begin->aa != aa){
         cerr << "error in TAMEX format! 0xaa...... word not found after fired amount!" << endl;
+        cerr << "TAMEX WORD: " << hex << *pdata << endl;
         exit(0);
     }
 
