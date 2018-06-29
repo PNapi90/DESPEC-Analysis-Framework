@@ -75,6 +75,14 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	C_t = MakeTH1('D',"pl","pl",1001,0,1000);
 
+	tamex_Mult_lead = new TH1*[4];
+	tamex_Mult_trail = new TH1*[4];
+
+	for(int i = 0;i < 4;++i){
+		tamex_Mult_lead[i] = MakeTH1('D',Form("tamex_lead_%d",i),Form("tamex_lead_%d",i),100,0,100);
+		tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),Form("tamex_trail_%d",i),100,0,100);
+	}
+
 	WR_used = false;
 
 	//used_systems
@@ -87,6 +95,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 	WR_HIST = MakeTH1('D',"WR","WR",2001,-1,40);
 	WR_HIST2 = MakeTH1('D',"WR2","WR2",2001,-10,4000);
 	WR_F = MakeTH1('D',"WRf","WRf",2001,-10,4000);
+
+	tdc_hist = MakeTH1('D',"tdc","tdc",1000,-60,1000000);
 
 
 	//create Detector Systems
@@ -217,7 +227,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 2 && false){
+		if(PrcID_Conv == 3 && false){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex <<*(pdata + i) << " ";
@@ -255,6 +265,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				tmpE[i] = RAW->get_FATIMA_E(i);
 				sum += tmpE[i];
 				hit_hist->Fill(RAW->get_FATIMA_det_id(i));
+				tdc_hist->Fill(RAW->get_FATIMA_TDC_T(i));
 			}
 			if(am_FATIMA_hits == 2) FAT_MAT->Fill(tmpE[0],tmpE[1]);
 			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);
@@ -262,7 +273,21 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		if(PrcID_Conv == 2){
 			//do something here
-
+			int fired_pl[4];
+			int pl_iter = 0;
+			int sum_l = 0;
+			int sum_t = 0;
+			for(int i = 0;i < 4;++i){
+				sum_l = 0;
+				sum_t = 0;
+				pl_iter = RAW->get_PLASTIC_am_Fired(i);
+				for(int j = 0;j < 1;++j){
+					sum_l += RAW->get_PLASTIC_lead_hits(i);
+					sum_t += RAW->get_PLASTIC_trail_hits(i);
+				}
+				tamex_Mult_lead[i]->Fill(sum_l);
+				tamex_Mult_trail[i]->Fill(sum_t);
+			}
 		}
 
 		iterator++;

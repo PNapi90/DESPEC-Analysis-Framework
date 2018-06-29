@@ -26,7 +26,7 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,double* Ql,double* Qs,ULong* TDC,U
 
 //---------------------------------------------------------------
 
-void Raw_Event::set_DATA_PLASTIC(int* it,ULong*** Edge_Coarse,ULong*** Edge_fine,UInt*** ch_ed,ULong* Coarse_Trigger,ULong* Fine_Trigger){
+void Raw_Event::set_DATA_PLASTIC(int* it,ULong** Edge_Coarse,ULong** Edge_fine,UInt** ch_ed,ULong* Coarse_Trigger,ULong* Fine_Trigger){
 
 	//loop over all 4 tamex modules
 	for(int i = 0;i < 4;++i){
@@ -34,14 +34,21 @@ void Raw_Event::set_DATA_PLASTIC(int* it,ULong*** Edge_Coarse,ULong*** Edge_fine
 		trigger_coarse[i] = Coarse_Trigger[i];
 		trigger_fine[i] = Fine_Trigger[i];
 		fired_tamex[i] = (iterator[i] > 0);
+		leading_hits[i] = 0;
+		trailing_hits[i] = 0;
 		for(int j = 0;j < iterator[i];++j){
-			ch_ID[i][j] = ch_ed[i][j][0];
-			coarse_T_edge_lead[i][j] = Edge_Coarse[i][j][0];
-			coarse_T_edge_trail[i][j] = Edge_Coarse[i][j][1];
-
-			fine_T_edge_lead[i][j] = Edge_fine[i][j][0];
-			fine_T_edge_trail[i][j] = Edge_fine[i][j][1];	
-		}
+			ch_ID[i][j] = ch_ed[i][j];
+			if(ch_ID[i][j] % 2 == 1){
+				coarse_T_edge_lead[i][j] = Edge_Coarse[i][j];
+				fine_T_edge_lead[i][j] = Edge_fine[i][j];
+				leading_hits[i]++;
+			}
+			else{
+				coarse_T_edge_trail[i][j] = Edge_Coarse[i][j];
+				trailing_hits[i]++;
+				fine_T_edge_trail[i][j] = Edge_fine[i][j];	
+			}
+		}	
 	}
 }
 
@@ -103,3 +110,10 @@ double Raw_Event::get_PLASTIC_trail_T(int i,int j){
 
 //---------------------------------------------------------------
 
+int Raw_Event::get_PLASTIC_trail_hits(int i){return trailing_hits[i];}
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_PLASTIC_lead_hits(int i){return leading_hits[i];}
+
+//---------------------------------------------------------------

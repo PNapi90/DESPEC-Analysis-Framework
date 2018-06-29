@@ -23,6 +23,9 @@ private:
 	ULong trigger_coarse[100];
 	ULong trigger_fine[100];
 
+	int leading_hits[4];
+	int trailing_hits[4];
+
 	ULong coarse_T_edge_lead[4][100];
 	ULong coarse_T_edge_trail[4][100];
 	ULong fine_T_edge_lead[4][100];
@@ -37,7 +40,7 @@ public:
 	~Raw_Event();
 
 	void set_DATA_FATIMA(int,double*,double*,ULong*,ULong*,ULong*,int*);
-	void set_DATA_PLASTIC(int*,ULong***,ULong***,UInt***,ULong*,ULong*);
+	void set_DATA_PLASTIC(int*,ULong**,ULong**,UInt**,ULong*,ULong*);
 
 
 	//temporary FATIMA getters
@@ -54,6 +57,8 @@ public:
 	int get_PLASTIC_CH_ID(int,int);
 	double get_PLASTIC_lead_T(int,int);
 	double get_PLASTIC_trail_T(int,int);
+	int get_PLASTIC_trail_hits(int);
+	int get_PLASTIC_lead_hits(int);
 };
 
 

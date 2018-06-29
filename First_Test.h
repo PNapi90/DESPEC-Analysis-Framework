@@ -87,12 +87,15 @@ using namespace std;
 			TH1* WR_HIST;
 			TH1* WR_HIST2;
 			TH1* C_t;
+			TH1** tamex_Mult_lead;
+			TH1** tamex_Mult_trail;
 
 			TH1*** mat;
 			TH1* all;
 			TH1* all2;
 			TH1* hit_hist;
 			TH1* am_hits;
+			TH1* tdc_hist;
 			TH1* WR_F;
 			//for the SIS modules
 

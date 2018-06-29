@@ -261,11 +261,16 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
         else if( check == 0 ){
             TDC_Measurement* m = (TDC_Measurement*) pdata;
             TDC_ch = m->channel;
-            
+            if(TDC_ch > 2){
+                //HERE
+                cout << dec << "bid " << tdc_board_ID << " " << TDC_ch << endl;
+           }
             if (!wired_TDC(tdc_board_ID,TDC_ch)) continue;
             
             else{
+                if(TDC_ch > 2) cout << dec << "bid " << tdc_board_ID << " " << TDC_ch << endl;
                 active_det = det_ID_TDC[tdc_board_ID][TDC_ch];
+
                 fired_TDC_amount++;
 
                 TDC_Time[active_det] = (25.*(m->measurement)); // 25x to convert into Picoseconds //

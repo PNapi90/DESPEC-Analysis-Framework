@@ -180,12 +180,12 @@ double PLASTIC_Calibrator::get_Calibration_val(ULong value,int tamex_id_tmp,int 
 
 //---------------------------------------------------------------
 
-void PLASTIC_Calibrator::get_data(ULong*** fine_T,UInt*** ch_id,int tamex_iter,int* iterator){
+void PLASTIC_Calibrator::get_data(ULong** fine_T,UInt** ch_id,int tamex_iter,int* iterator){
 	//write into corresponding root histograms
 	for(int i = 0;i < tamex_iter;++i){
 		for(int j = 0;j < iterator[i];++j){
-			Fine_Hist[i][ch_id[i][j][0]]->Fill(fine_T[i][j][0]);
-			fired[i][ch_id[i][j][0]] = true;
+			Fine_Hist[i][ch_id[i][j]]->Fill(fine_T[i][j]);
+			fired[i][ch_id[i][j]] = true;
 		}
 	}
 }
