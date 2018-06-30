@@ -270,7 +270,6 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
             
             else{
                 active_det = det_ID_TDC[tdc_board_ID][TDC_ch];
-                if(check_additional(active_det))
 
                 fired_TDC_amount++;
 

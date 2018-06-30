@@ -275,7 +275,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				if(RAW->get_FATIMA_det_id(i) < 50){
 					det_iter = RAW->get_FATIMA_det_id(i);
 					TDC_times[i] = RAW->get_FATIMA_TDC_T(i);
-					cout << "YES! " << det_iter << " " << TDC_times[i] << endl;
+					//cout << "YES! " << det_iter << " " << TDC_times[i] << endl;
 				}
 				else if(RAW->get_FATIMA_det_id(i) == 51){
 					cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << endl;
