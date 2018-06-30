@@ -275,7 +275,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 					tmpE[i] = RAW->get_FATIMA_E(i);
 					sum += tmpE[i];
 					hit_hist->Fill(RAW->get_FATIMA_det_id(i));
-					tdc_hist->Fill(RAW->get_FATIMA_TDC_T(i));
+					tdc_hist->Fill(RAW->get_FATIMA_TDC_T(i)*1e-6);
 					if(RAW->get_FATIMA_det_id(i) < 50){
 						det_iter = RAW->get_FATIMA_det_id(i);
 						TDC_times[i] = RAW->get_FATIMA_TDC_T(i);
