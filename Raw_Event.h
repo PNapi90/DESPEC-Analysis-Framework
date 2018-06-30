@@ -10,7 +10,7 @@ class Raw_Event{
 private:
 
 	//FATIMA
-	int FAT_FIRED;
+	int FAT_FIRED,TDC_FIRED;
 	int Det_Nums[36];
 	double E[36];
 	double QShort[36];
