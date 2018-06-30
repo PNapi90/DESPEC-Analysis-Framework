@@ -11,12 +11,13 @@ private:
 
 	//FATIMA
 	int FAT_FIRED,TDC_FIRED;
-	int Det_Nums[36];
-	double E[36];
-	double QShort[36];
-	ULong TDC_timestamp[36];
-	ULong QDC_t_coarse[36];
-	ULong QDC_t_fine[36];
+	int Det_Nums[50];
+	double E[50];
+	double QShort[50];
+	ULong TDC_timestamp[50];
+	ULong QDC_t_coarse[50];
+	ULong QDC_t_fine[50];
+	bool used_for_QDC[50];
 
 	//PLASTIC
 	int iterator[4];
@@ -39,7 +40,7 @@ public:
 	Raw_Event();
 	~Raw_Event();
 
-	void set_DATA_FATIMA(int,int,double*,double*,ULong*,ULong*,ULong*,int*);
+	void set_DATA_FATIMA(int,int,double*,double*,ULong*,ULong*,ULong*,int*,int*);
 	void set_DATA_PLASTIC(int*,ULong**,ULong**,UInt**,ULong*,ULong*);
 
 
