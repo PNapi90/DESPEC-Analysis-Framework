@@ -97,6 +97,8 @@ using namespace std;
 			TH1* am_hits;
 			TH1* tdc_hist;
 			TH1* WR_F;
+			TH1** DIFF_ARR;
+
 			//for the SIS modules
 
 		private:

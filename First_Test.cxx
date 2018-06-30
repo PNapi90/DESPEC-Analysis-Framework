@@ -83,6 +83,9 @@ TGo4EventProcessor(name) // Histograms defined here //
 		tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),Form("tamex_trail_%d",i),100,0,100);
 	}
 
+	DIFF_ARR = new TH1*[2];
+	for(int i = 0;i < 2;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),1000,-100,100);
+
 	WR_used = false;
 
 	//used_systems
@@ -260,12 +263,23 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 			double sum = 0;
 			double tmpE[2];
+			double TDC_times[2] = {0,0};
+			double TDC_time_6 = 0;
+			int d_iter = 0;
 			for(int i = 0;i < am_FATIMA_hits;++i){
 				//e,g, sum spectrum
 				tmpE[i] = RAW->get_FATIMA_E(i);
 				sum += tmpE[i];
 				hit_hist->Fill(RAW->get_FATIMA_det_id(i));
 				tdc_hist->Fill(RAW->get_FATIMA_TDC_T(i));
+				if(RAW->get_FATIMA_det_id(i) < 50){
+					det_iter = RAW->get_FATIMA_det_id(i);
+					TDC_times[i] = RAW->get_FATIMA_TDC_T(i);
+				}
+				else if(RAW->get_FATIMA_det_id(i) == 51) TDC_time_6 = RAW->get_FATIMA_TDC_T(i);
+			}
+			if(TDC_time_6 > 0 && TDC_times[det_iter] > 0){
+				DIFF_ARR[det_iter]->Fill(TDC_time_6 - TDC_times[det_iter]);
 			}
 			if(am_FATIMA_hits == 2) FAT_MAT->Fill(tmpE[0],tmpE[1]);
 			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);

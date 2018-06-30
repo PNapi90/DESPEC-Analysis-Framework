@@ -35,6 +35,7 @@ private:
 
 	bool exiter;
 	bool no_data;
+    bool QDC_DATA;
 
     int Fired_QDC_Channels[100][2];
     int fired_QDC_amount,fired_TDC_amount;
