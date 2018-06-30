@@ -283,7 +283,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				}
 				else{
 					if(RAW->get_FATIMA_det_id(i) == 50){
-						cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << endl;
+						cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << " " << TDC_times[det_iter] << endl;
 						TDC_time_6 = RAW->get_FATIMA_TDC_T(i);
 					}
 				}
