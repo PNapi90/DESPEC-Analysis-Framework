@@ -265,7 +265,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			double tmpE[2];
 			double TDC_times[2] = {0,0};
 			double TDC_time_6 = 0;
-			int d_iter = 0;
+			int det_iter = 0;
 			for(int i = 0;i < am_FATIMA_hits;++i){
 				//e,g, sum spectrum
 				tmpE[i] = RAW->get_FATIMA_E(i);

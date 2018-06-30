@@ -50,6 +50,8 @@ private:
 	bool wired_QDC(int,int);
 	bool wired_TDC(int,int);
 
+    bool check_additional(int);
+
     FATIMA_Time_Calibration* FATIMA_T_CALIB;
     FATIMA_Energy_Calibration* FATIMA_E_CALIB;
 
