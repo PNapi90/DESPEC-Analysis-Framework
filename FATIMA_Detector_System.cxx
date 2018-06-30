@@ -175,7 +175,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 
     int board_ID = QDChead_2->geo; // Gets Geographical Address //
     int num_Channels = QDChead_2->channels; // Gets Channels fired 0011 means 1&2 fired //
-            
+    int tmp_tmp = QDChead_2->channels & 0xf;
      // Loop retrieves channels fired from integer value //
     for(int j = 7; j >= 0; j--){
         if(num_Channels >= pow(2, j)){
@@ -188,6 +188,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
             num_Channels -= pow(2, j);
         }
     }
+    if(tmp_tmp == 3) cout << hex << *pdata << " " << tmp_tmp << endl;
     if(fired_QDC_amount == 2) exiter = true;
 
     pdata += 2; // Moves from 2nd to 4th header value //
@@ -275,6 +276,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
 
                 det_ids_TDC[fired_TDC_amount] = active_det;
                 if(active_det == 50){
+                    cout << "HE" << endl;
                     cout << dec << QLong[0] << " " << QLong[1] << " " << QDC_Time_Coarse[0] << " " << QDC_Time_Coarse[1] << endl;
                     cout <<  25*m->measurement << endl;
                 }
