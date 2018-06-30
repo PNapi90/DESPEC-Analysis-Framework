@@ -267,6 +267,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			double TDC_times[2] = {0,0};
 			double TDC_time_6 = 0;
 			int det_iter = 0;
+			bool called_link = false;
 			for(int i = 0;i < tdc_hits;++i){
 
 				if(RAW->get_FATIMA_QDC_TDC_LINKED(i)){
@@ -280,9 +281,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 						TDC_times[i] = RAW->get_FATIMA_TDC_T(i);
 					//cout << "YES! " << det_iter << " " << TDC_times[i] << endl;
 					}
+					called_link = true;
 				}
 				else{
-					if(RAW->get_FATIMA_det_id(i) == 50){
+					if(RAW->get_FATIMA_det_id(i) == 50 && called_link){
 						cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << " " << TDC_times[det_iter] << endl;
 						TDC_time_6 = RAW->get_FATIMA_TDC_T(i);
 					}
