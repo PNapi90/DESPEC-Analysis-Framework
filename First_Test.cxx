@@ -230,10 +230,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 3 && false){
+		if(PrcID_Conv == 3){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
-				cout << hex <<*(pdata + i) << " ";
+				cout << hex << *(pdata + i) << " ";
 				if(i % 5 == 0 && i > 0) cout << endl;
 			}
 			cout << "\n---------------------\n";
@@ -285,7 +285,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				}
 				else{
 					if(RAW->get_FATIMA_det_id(i) == 50 && called_link){
-						cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << " " << TDC_times[det_iter] << endl;
+						//cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << " " << TDC_times[det_iter] << endl;
 						TDC_time_6 = RAW->get_FATIMA_TDC_T(i);
 					}
 				}
