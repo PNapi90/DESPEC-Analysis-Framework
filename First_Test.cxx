@@ -259,6 +259,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		if(PrcID_Conv == 3){
 			//to get histograms (e.g.)
 			am_FATIMA_hits = RAW->get_FATIMA_am_Fired();
+			int tdc_hits = RAW->get_FATIMA_am_Fired_TDC();
 			am_hits->Fill(am_FATIMA_hits);
 
 			double sum = 0;
@@ -266,20 +267,25 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			double TDC_times[2] = {0,0};
 			double TDC_time_6 = 0;
 			int det_iter = 0;
-			for(int i = 0;i < am_FATIMA_hits;++i){
-				//e,g, sum spectrum
-				tmpE[i] = RAW->get_FATIMA_E(i);
-				sum += tmpE[i];
-				hit_hist->Fill(RAW->get_FATIMA_det_id(i));
-				tdc_hist->Fill(RAW->get_FATIMA_TDC_T(i));
-				if(RAW->get_FATIMA_det_id(i) < 50){
-					det_iter = RAW->get_FATIMA_det_id(i);
-					TDC_times[i] = RAW->get_FATIMA_TDC_T(i);
+			for(int i = 0;i < tdc_hits;++i){
+
+				if(RAW->get_FATIMA_QDC_TDC_LINKED(i)){
+					//e,g, sum spectrum
+					tmpE[i] = RAW->get_FATIMA_E(i);
+					sum += tmpE[i];
+					hit_hist->Fill(RAW->get_FATIMA_det_id(i));
+					tdc_hist->Fill(RAW->get_FATIMA_TDC_T(i));
+					if(RAW->get_FATIMA_det_id(i) < 50){
+						det_iter = RAW->get_FATIMA_det_id(i);
+						TDC_times[i] = RAW->get_FATIMA_TDC_T(i);
 					//cout << "YES! " << det_iter << " " << TDC_times[i] << endl;
+					}
 				}
-				else if(RAW->get_FATIMA_det_id(i) == 50){
-					cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << endl;
-					TDC_time_6 = RAW->get_FATIMA_TDC_T(i);
+				else{
+					if(RAW->get_FATIMA_det_id(i) == 50){
+						cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << endl;
+						TDC_time_6 = RAW->get_FATIMA_TDC_T(i);
+					}
 				}
 			}
 			if(TDC_time_6 > 0 && TDC_times[det_iter] > 0){

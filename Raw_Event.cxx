@@ -90,6 +90,14 @@ int Raw_Event::get_FATIMA_am_Fired(){return FAT_FIRED;}
 
 //---------------------------------------------------------------
 
+int Raw_Event::get_FATIMA_am_Fired_TDC(){return TDC_FIRED;}
+
+//---------------------------------------------------------------
+
+bool Raw_Event::get_FATIMA_QDC_TDC_LINKED(int i ){return used_for_QDC[i];}
+
+//---------------------------------------------------------------
+
 double Raw_Event::get_FATIMA_E(int i){return E[i];}
 
 //---------------------------------------------------------------
