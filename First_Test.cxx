@@ -99,7 +99,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	WR_HIST2 = MakeTH1('D',"WR2","WR2",2001,-10,4000);
 	WR_F = MakeTH1('D',"WRf","WRf",2001,-10,4000);
 
-	tdc_hist = MakeTH1('D',"tdc","tdc",1000,-60,1000000);
+	tdc_hist = MakeTH1('D',"tdc","tdc",1000,-60,1000);
 
 
 	//create Detector Systems
