@@ -19,7 +19,7 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 	this->TDC_FIRED = TDC_FIRED;
 
 	int position = 0;
-
+	for(int i = 0;i < 50;++i) used_for_QDC[i] = false;
 	//all correlated tdcs and qdcs
 	for(int i = 0;i < FAT_FIRED;++i){
 		used_for_QDC[i] = false;
