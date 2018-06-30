@@ -276,7 +276,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                 det_ids_TDC[fired_TDC_amount] = active_det;
 
                 fired_TDC_amount++;
-                det_ID_TDC
+                
                 TDC_Time[active_det] = (25.*(m->measurement)); // 25x to convert into Picoseconds //
                 
                 Calibrate_TDC(active_det);
