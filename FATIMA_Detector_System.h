@@ -29,7 +29,9 @@ private:
 	ULong* QDC_Time_Fine;
 	ULong* TDC_Time;
 
-	int* det_ids;
+	int* det_ids_QDC;
+    int* det_ids_TDC;
+
 	int** det_ID;
 	int** det_ID_TDC;
 

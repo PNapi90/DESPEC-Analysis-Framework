@@ -22,7 +22,8 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
 
     TDC_Time = new ULong[max_am_dets];
 
-    det_ids = new int[36];
+    det_ids_QDC = new int[max_am_dets];
+    det_ids_TDC = new int[max_am_dets];
 
     det_ID = new int*[100];
     det_ID_TDC = new int*[100];
@@ -51,7 +52,8 @@ FATIMA_Detector_System::~FATIMA_Detector_System(){
 	delete[] det_ID_TDC;
 	delete[] det_ID;
 
-	delete[] det_ids;
+	delete[] det_ids_QDC;
+    delete[] det_ids_TDC;
 
 	delete[] QLong;
 	delete[] QShort;
@@ -99,7 +101,7 @@ void FATIMA_Detector_System::load_board_channel_file(){
 //---------------------------------------------------------------
 
 void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
-	RAW->set_DATA_FATIMA(fired_QDC_amount,fired_TDC_amount,QLong,QShort,TDC_Time,QDC_Time_Coarse,QDC_Time_Fine,det_ids);
+	RAW->set_DATA_FATIMA(fired_QDC_amount,fired_TDC_amount,QLong,QShort,TDC_Time,QDC_Time_Coarse,QDC_Time_Fine,det_ids_QDC,det_ids_TDC);
     //QDC_TDC->get_Detector_Data(RAW);
 }
 
@@ -202,7 +204,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
         active_Channel = Fired_QDC_Channels[i][1];
 
         active_det = det_ID[active_board][active_Channel];
-        det_ids[i] = active_det;
+        det_ids_QDC[i] = active_det;
                                 
         pdata++; // Moves to 1st data value
       
@@ -271,13 +273,16 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
             else{
                 active_det = det_ID_TDC[tdc_board_ID][TDC_ch];
 
-                fired_TDC_amount++;
+                det_ids_TDC[fired_TDC_amount] = active_det;
 
+                fired_TDC_amount++;
+                det_ID_TDC
                 TDC_Time[active_det] = (25.*(m->measurement)); // 25x to convert into Picoseconds //
                 
                 Calibrate_TDC(active_det);
 
                 no_data = false;
+
             }
         }
         // TDC Trailer Condition // 
