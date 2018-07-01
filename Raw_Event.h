@@ -33,7 +33,7 @@ private:
 	ULong fine_T_edge_trail[4][100];
 	UInt ch_ID[4][100];
 	bool fired_tamex[4];
-
+	bool ch51;
 
 
 public:
@@ -53,6 +53,7 @@ public:
 	int get_FATIMA_det_id(int);
 	int get_FATIMA_am_Fired_TDC();
 	bool get_FATIMA_QDC_TDC_LINKED(int);
+	bool CH_51_FIRED();
 
 	//temporary PLASTIC getters
 	int get_PLASTIC_am_Fired(int);

@@ -43,9 +43,13 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 		QDC_t_fine[i] = QDC_f[active_det];
 		TDC_timestamp[i] = TDC[position];
 	}
+
+	ch51 = false;
+
 	//remaining tdcs
 	for(int i = 0;i < TDC_FIRED;++i){
 		active_det = det_ids_TDC[i];
+		if(!ch51 && active_det == 51) ch51 = true;
 		if(!used_for_QDC[active_det]){
 			Det_Nums[i+FAT_FIRED] = det_ids_TDC[active_det];
 			TDC_timestamp[i+FAT_FIRED] = TDC[active_det];
@@ -95,6 +99,10 @@ void Raw_Event::set_DATA_PLASTIC(int* it,ULong** Edge_Coarse,ULong** Edge_fine,U
 //---------------------------------------------------------------
 
 int Raw_Event::get_FATIMA_am_Fired(){return FAT_FIRED;}
+
+//---------------------------------------------------------------
+
+bool Raw_Event::CH_51_FIRED(){return ch51;};
 
 //---------------------------------------------------------------
 
