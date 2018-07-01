@@ -112,7 +112,7 @@ void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
     if(called){
         for(int i = 0;i < fired_TDC_amount;++i){
             a = det_ids_TDC[i];
-            if(a == 51) cout << "VALUES " << a << " " << TDC_Time[a] << " " << (double) (TDC_Time[a]) - (double)(TDC_Time[0]) << endl;
+            if(a == 51) cout << "VALUES " << a << " " << TDC_Time[a] << " " << TDC_Time[0] << " " <<TDC_Time[1] << <<  " " << (double) (TDC_Time[a]) - (double)(TDC_Time[0]) << endl;
         }
         cout << "END" << endl;
     }
