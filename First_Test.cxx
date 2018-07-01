@@ -85,7 +85,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 
 	DIFF_ARR = new TH1*[2];
-	for(int i = 0;i < 2;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),1000,-400000,400000);
+	for(int i = 0;i < 2;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),1000,80e3,140e3);
 
 	WR_used = false;
 
