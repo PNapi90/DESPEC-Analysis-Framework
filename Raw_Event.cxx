@@ -49,6 +49,7 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 		if(!used_for_QDC[active_det]){
 			Det_Nums[i+FAT_FIRED] = det_ids_TDC[active_det];
 			TDC_timestamp[i+FAT_FIRED] = TDC[active_det];
+			cout << TDC_timestamp[i+FAT_FIRED] << " " << active_det << TDC_timestamp[0] << endl;
 		}
 	}
 	if(TDC_FIRED != FAT_FIRED && false){
