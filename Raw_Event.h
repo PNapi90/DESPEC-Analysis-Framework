@@ -11,13 +11,13 @@ private:
 
 	//FATIMA
 	int FAT_FIRED,TDC_FIRED;
-	int Det_Nums[50];
-	double E[50];
-	double QShort[50];
-	ULong TDC_timestamp[50];
-	ULong QDC_t_coarse[50];
-	ULong QDC_t_fine[50];
-	bool used_for_QDC[50];
+	int Det_Nums[100];
+	double E[100];
+	double QShort[100];
+	ULong TDC_timestamp[100];
+	ULong QDC_t_coarse[100];
+	ULong QDC_t_fine[100];
+	bool used_for_QDC[100];
 	double time_difference;
 
 	//PLASTIC
