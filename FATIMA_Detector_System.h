@@ -18,6 +18,8 @@
 class FATIMA_Detector_System : public Detector_System{
 
 private:
+
+    int he_iter;
 	int max_am_dets;
 
 	int* pdata;

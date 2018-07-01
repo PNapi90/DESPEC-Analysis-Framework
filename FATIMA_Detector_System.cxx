@@ -36,7 +36,7 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
     FATIMA_E_CALIB = new FATIMA_Energy_Calibration();
 
     load_board_channel_file();
-
+    he_iter = 0;
     
 }
 
@@ -277,9 +277,10 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                 det_ids_TDC[fired_TDC_amount] = active_det;
                 //cout << "DET!" << active_det << endl;
                 if(active_det >= 50){
-                    cout << "HE" << endl;
+                    cout << "HE " << he_iter << endl;
                     cout << dec << QLong[0] << " " << QLong[1] << " " << QDC_Time_Coarse[0] << " " << QDC_Time_Coarse[1] << endl;
                     cout <<  25*m->measurement << endl;
+                    he_iter++;
                 }
 
                 fired_TDC_amount++;
