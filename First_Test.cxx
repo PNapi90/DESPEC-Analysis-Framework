@@ -293,7 +293,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				vals[val_it] = t[1] - t[0];
 				val_it++;
 				
-				if(id_tmp[0] < 50){
+				if(id_tmp[0] < 50 && t[0] > 0 && id_tmp[1] >= 50){
 					cout << "WRITE: " << id_tmp[0] << " " << t[pos] << " " << t[0] << endl;
 					DIFF_ARR[id_tmp[0]]->Fill(t[pos] - t[0]);
 				}
