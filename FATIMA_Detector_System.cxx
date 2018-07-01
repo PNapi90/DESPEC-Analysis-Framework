@@ -301,7 +301,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
 
                 fired_TDC_amount++;
 
-                 
+                TDC_Time[active_det] = 25*m->measurement;
                 Calibrate_TDC(active_det);
 
                 no_data = false;
