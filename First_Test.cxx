@@ -83,10 +83,9 @@ TGo4EventProcessor(name) // Histograms defined here //
 		tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),Form("tamex_trail_%d",i),100,0,100);
 	}
 
-	double offset = 510000000;
 
 	DIFF_ARR = new TH1*[2];
-	for(int i = 0;i < 2;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),1000,-100000-offset,100000-offset);
+	for(int i = 0;i < 2;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),1000,-1000000,1000000);
 
 	WR_used = false;
 
@@ -272,13 +271,14 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			bool called_link = false;
 
 			if(tdc_hits == 3){
+				double offset = 510000000;
 				double t[3] = {0,0,0};
 				for(int i = 0;i < 3;++i){
 					hit_hist->Fill(RAW->get_FATIMA_det_id(i));
 					t[i] = (double) RAW->get_FATIMA_TDC_T(i);
 				}
-				DIFF_ARR[0]->Fill(t[1] - t[0]);
-				DIFF_ARR[1]->Fill(t[2] - t[0]);
+				DIFF_ARR[0]->Fill(t[1] - t[0] + offset);
+				DIFF_ARR[1]->Fill(t[2] - t[0] + offset);
 			}
 			int tdc_iter = 0;
 			for(int i = 0;i < tdc_hits;++i){
