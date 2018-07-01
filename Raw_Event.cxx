@@ -18,7 +18,7 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 	this->FAT_FIRED = FAT_FIRED;
 	this->TDC_FIRED = TDC_FIRED;
 
-	int position = 0;
+	int position = -5;
 	int active_det = 0;
 
 	for(int i = 0;i < 50;++i) used_for_QDC[i] = false;
@@ -49,7 +49,7 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 	//remaining tdcs
 	for(int i = 0;i < TDC_FIRED;++i){
 		active_det = det_ids_TDC[i];
-		if(!ch51 && active_det == 51) ch51 = true;
+		if(!ch51 && active_det == 50 && position != -5) ch51 = true;
 		if(!used_for_QDC[active_det]){
 			Det_Nums[i+FAT_FIRED] = det_ids_TDC[active_det];
 			TDC_timestamp[i+FAT_FIRED] = TDC[active_det];
