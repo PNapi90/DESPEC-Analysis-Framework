@@ -280,7 +280,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			int det_iter = 0;
 			bool called_link = false;
 
-			if(RAW->CH_51_FIRED() && am_FATIMA_hits == 1){
+			if(RAW->CH_51_FIRED() && tdc_hits == 3){
 				int id_tmp = RAW->get_FATIMA_det_id(0);
 				double tdiff = RAW->get_FATIMA_Time_Diff();
 				DIFF_ARR[id_tmp]->Fill(tdiff);
