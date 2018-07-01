@@ -83,8 +83,10 @@ TGo4EventProcessor(name) // Histograms defined here //
 		tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),Form("tamex_trail_%d",i),100,0,100);
 	}
 
+	double offset = 510000000;
+
 	DIFF_ARR = new TH1*[2];
-	for(int i = 0;i < 2;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),1000,-100,100);
+	for(int i = 0;i < 2;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),1000,-100000-offset,100000-offset);
 
 	WR_used = false;
 
@@ -265,7 +267,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			double sum = 0;
 			double tmpE[2];
 			double TDC_times[2] = {0,0};
-			double TDC_time_6 = 0;
+			double TDC_time_6[2];
 			int det_iter = 0;
 			bool called_link = false;
 
