@@ -269,7 +269,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			int det_iter = 0;
 			bool called_link = false;
 			for(int i = 0;i < tdc_hits;++i){
-
+				hit_hist->Fill(RAW->get_FATIMA_det_id(i));
 				if(RAW->get_FATIMA_QDC_TDC_LINKED(i)){
 					//e,g, sum spectrum
 					tmpE[i] = RAW->get_FATIMA_E(i);

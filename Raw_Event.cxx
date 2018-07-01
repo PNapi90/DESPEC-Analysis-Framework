@@ -19,9 +19,13 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 	this->TDC_FIRED = TDC_FIRED;
 
 	int position = 0;
+	int active_det = 0;
 	for(int i = 0;i < 50;++i) used_for_QDC[i] = false;
 	//all correlated tdcs and qdcs
 	for(int i = 0;i < FAT_FIRED;++i){
+
+		active_det = det_ids_QDC[i];
+
 		used_for_QDC[i] = false;
 		for(int j = 0;j < TDC_FIRED;++j){
 			if(det_ids_QDC[i] == det_ids_TDC[j]){
@@ -32,17 +36,18 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 			}
 		}
 		Det_Nums[i] = det_ids_QDC[i];
-		E[i] = Ql[i];
-		QShort[i] = Qs[i];
-		QDC_t_coarse[i] = QDC_c[i];
-		QDC_t_fine[i] = QDC_f[i];
-		TDC_timestamp[i] = TDC[i];
+		E[i] = Ql[active_det];
+		QShort[i] = Qs[active_det];
+		QDC_t_coarse[i] = QDC_c[active_det];
+		QDC_t_fine[i] = QDC_f[active_det];
+		TDC_timestamp[i] = TDC[active_det];
 	}
 	//remaining tdcs
 	for(int i = 0;i < TDC_FIRED;++i){
+		active_det = det_ids_TDC[i];
 		if(!used_for_QDC[i]){
-			Det_Nums[i+FAT_FIRED] = det_ids_TDC[i];
-			TDC_timestamp[i+FAT_FIRED] = TDC[i];
+			Det_Nums[i+FAT_FIRED] = det_ids_TDC[active_det];
+			TDC_timestamp[i+FAT_FIRED] = TDC[active_det];
 		}
 	}
 	if(TDC_FIRED != FAT_FIRED && false){
