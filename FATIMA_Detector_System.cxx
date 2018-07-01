@@ -101,6 +101,22 @@ void FATIMA_Detector_System::load_board_channel_file(){
 //---------------------------------------------------------------
 
 void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
+    bool called = false;
+    int a = 0;
+    for(int i = 0;i < fired_TDC_amount;++i){
+        a = det_ids_TDC[i];
+        if(a == 50 || a == 51) called = true;
+        if(called) break;
+    }
+
+    if(called){
+        for(int i = 0;i < fired_TDC_amount;++i){
+            a = det_ids_TDC[i];
+            cout << "VALUES " << a << " " << TDC_Time[a] << endl;
+        }
+        cout << "END" << endl;
+    }
+
 	RAW->set_DATA_FATIMA(fired_QDC_amount,fired_TDC_amount,QLong,QShort,TDC_Time,QDC_Time_Coarse,QDC_Time_Fine,det_ids_QDC,det_ids_TDC);
     //QDC_TDC->get_Detector_Data(RAW);
 }
@@ -285,8 +301,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
 
                 fired_TDC_amount++;
 
-                TDC_Time[active_det] = (25.*(m->measurement)); // 25x to convert into Picoseconds //
-                
+                 
                 Calibrate_TDC(active_det);
 
                 no_data = false;
