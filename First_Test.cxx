@@ -70,7 +70,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	hit_mat = MakeTH2('D',"hitmat","hitmat",37,0,36,37,0,36);
 
-	hit_hist = MakeTH1('D',"hits","hits",37,0,36);
+	hit_hist = MakeTH1('D',"hits","hits",60,0,60);
 	am_hits = MakeTH1('D',"hits_a","hits_a",51,0,50);
 
 	C_t = MakeTH1('D',"pl","pl",1001,0,1000);
