@@ -138,6 +138,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	count = 0;
 	iterator = 0;
 	cals_done = false;
+	val_it = 0;
 
 }
 
@@ -147,6 +148,15 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 TSCNUnpackProc::~TSCNUnpackProc()
 {
+
+	double mean = 0;
+	for(int i = 0;i < val_it;++i) mean += vals[i];
+	mean /= (double) val_it;
+	double sq = 0;
+	for(int i = 0;i < val_it;++i) sq += pow(mean - vals[i],2);
+	sq = sqrt(sq)/((double) val_it);
+	cout << "MEAN " << mean << " +- " << sq << endl;
+
 
 	for(int i = 0;i < 6;++i){
 		if(Detector_Systems[i]) delete Detector_Systems[i];
@@ -277,8 +287,11 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 					hit_hist->Fill(RAW->get_FATIMA_det_id(i));
 					t[i] = (double) RAW->get_FATIMA_TDC_T(i);
 				}
+				vals[val_it] = t[1] - t[0];
+				val_it++;
 				DIFF_ARR[0]->Fill(t[1] - t[0] + offset);
 				DIFF_ARR[1]->Fill(t[2] - t[0] + offset);
+
 			}
 			int tdc_iter = 0;
 			for(int i = 0;i < tdc_hits;++i){

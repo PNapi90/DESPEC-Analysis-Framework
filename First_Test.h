@@ -109,6 +109,8 @@ using namespace std;
 			Int_t PrcID_Array[10];
 			bool Used_Systems[10];
 
+			double vals[100000];
+
 			bool cals_done,WR_used;
 
 			Detector_System** Detector_Systems;
