@@ -289,8 +289,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				}
 				vals[val_it] = t[1] - t[0];
 				val_it++;
-				DIFF_ARR[0]->Fill(t[1] - t[0] + offset);
-				DIFF_ARR[1]->Fill(t[2] - t[0] + offset);
+				DIFF_ARR[0]->Fill(t[1] - t[0]);
+				DIFF_ARR[1]->Fill(t[2] - t[0]);
 
 			}
 			int tdc_iter = 0;
