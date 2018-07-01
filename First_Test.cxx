@@ -268,8 +268,18 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			double TDC_time_6 = 0;
 			int det_iter = 0;
 			bool called_link = false;
+
+			/*if(tdc_hits == 3){
+				double t[3] = {0,0,0};
+				for(int i = 0;i < 3;++i){
+					hit_hist->Fill(RAW->get_FATIMA_det_id(i));
+					t[i] = (double) RAW->get_FATIMA_TDC_T(i);
+				}
+				DIFF_ARR[]
+			}*/
+			int tdc_iter = 0;
 			for(int i = 0;i < tdc_hits;++i){
-				hit_hist->Fill(RAW->get_FATIMA_det_id(i));
+				//hit_hist->Fill(RAW->get_FATIMA_det_id(i));
 				if(RAW->get_FATIMA_QDC_TDC_LINKED(i)){
 					//e,g, sum spectrum
 					tmpE[i] = RAW->get_FATIMA_E(i);
@@ -278,20 +288,21 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 					tdc_hist->Fill(RAW->get_FATIMA_TDC_T(i)*1e-6);
 					if(RAW->get_FATIMA_det_id(i) < 50){
 						det_iter = RAW->get_FATIMA_det_id(i);
-						TDC_times[i] = RAW->get_FATIMA_TDC_T(i);
+						TDC_times[i] = (double) RAW->get_FATIMA_TDC_T(i);
 					//cout << "YES! " << det_iter << " " << TDC_times[i] << endl;
 					}
 					called_link = true;
 				}
 				else{
-					if(RAW->get_FATIMA_det_id(i) == 50 && called_link){
+					if(RAW->get_FATIMA_det_id(i) >= 50 && called_link){
 						//cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << " " << TDC_times[det_iter] << endl;
-						TDC_time_6 = RAW->get_FATIMA_TDC_T(i);
+						TDC_time_6[tdc_iter] = (double) RAW->get_FATIMA_TDC_T(i);
+						tdc_iter++;
 					}
 				}
 			}
-			if(TDC_time_6 > 0 && TDC_times[det_iter] > 0){
-				DIFF_ARR[det_iter]->Fill(TDC_time_6 - TDC_times[det_iter]);
+			for(int i = 0;i < tdc_iter;++i){
+				if(TDC_time_6[i] > 0 && TDC_times[0] > 0) DIFF_ARR[i]->Fill(TDC_time_6[i] - TDC_times[0]);
 			}
 			if(am_FATIMA_hits == 2) FAT_MAT->Fill(tmpE[0],tmpE[1]);
 			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);
