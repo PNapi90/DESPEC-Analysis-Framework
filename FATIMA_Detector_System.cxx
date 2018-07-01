@@ -110,7 +110,7 @@ void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
     }
 
     if(called){
-        double show_val = 0;
+        int show_val = 0;
         for(int i = 0;i < fired_TDC_amount;++i){
             a = det_ids_TDC[i];  
             if(TDC_Time[0] > 0) show_val = 0;
