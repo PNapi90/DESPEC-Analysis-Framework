@@ -30,8 +30,8 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 		used_for_QDC[active_det] = false;
 		for(int j = 0;j < TDC_FIRED;++j){
 			if(det_ids_QDC[i] == det_ids_TDC[j]){
-				position = j;
-				used_for_QDC[det_ids_TDC[j]] = true;
+				position = det_ids_TDC[j];
+				used_for_QDC[position] = true;
 				//cout << "USED POS " << j << endl;
 				break;
 			}
