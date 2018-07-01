@@ -18,6 +18,7 @@ private:
 	ULong QDC_t_coarse[50];
 	ULong QDC_t_fine[50];
 	bool used_for_QDC[50];
+	double time_difference;
 
 	//PLASTIC
 	int iterator[4];
@@ -54,6 +55,7 @@ public:
 	int get_FATIMA_am_Fired_TDC();
 	bool get_FATIMA_QDC_TDC_LINKED(int);
 	bool CH_51_FIRED();
+	double get_FATIMA_Time_Diff();
 
 	//temporary PLASTIC getters
 	int get_PLASTIC_am_Fired(int);

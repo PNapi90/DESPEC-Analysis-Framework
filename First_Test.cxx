@@ -280,23 +280,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			int det_iter = 0;
 			bool called_link = false;
 
-			if(RAW->CH_51_FIRED() && am_FATIMA_hits == 1 && tdc_hits == 3){
-				double t[3] = {0,0,0};
-				int id_tmp[3];
-				int pos = 0;
-				for(int i = 0;i < tdc_hits;++i){
-					id_tmp[i] = RAW->get_FATIMA_det_id(i);
-					if(id_tmp[i] == 51) pos = i;
-					hit_hist->Fill(id_tmp[i]);
-					t[i] = (double) RAW->get_FATIMA_TDC_T(i);
-				}
-				vals[val_it] = t[1] - t[0];
-				val_it++;
-				cout << "IN HIST " << id_tmp[0] << " " << id_tmp[1] << " " << id_tmp[2] << pos << endl;
-				if(id_tmp[0] < 50 && t[0] > 0 && id_tmp[1] >= 50){
-					cout << "WRITE: " << id_tmp[0] << " " << t[pos] << " " << t[0] << endl;
-					DIFF_ARR[id_tmp[0]]->Fill(t[pos] - t[0]);
-				}
+			if(RAW->CH_51_FIRED() && am_FATIMA_hits == 1){
+				int id_tmp = RAW->get_FATIMA_det_id(0);
+				double tdiff = RAW->get_FATIMA_Time_Diff();
+				DIFF_ARR[id_tmp]->Fill(tdiff);
 			}
 			int tdc_iter = 0;
 			for(int i = 0;i < tdc_hits;++i){
@@ -323,7 +310,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				}
 			}
 			for(int i = 0;i < tdc_iter*0;++i){
-				if(TDC_time_6[i] > 0 && TDC_times[0] > 0) DIFF_ARR[i]->Fill(TDC_time_6[i] - TDC_times[0]);
+				//if(TDC_time_6[i] > 0 && TDC_times[0] > 0) DIFF_ARR[i]->Fill(TDC_time_6[i] - TDC_times[0]);
 			}
 			if(am_FATIMA_hits == 2) FAT_MAT->Fill(tmpE[0],tmpE[1]);
 			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);
