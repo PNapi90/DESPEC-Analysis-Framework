@@ -294,7 +294,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                 //cout << "DET!" << active_det << endl;
                 if(active_det >= 50){
                     cout << "HE " << active_det << " " <<  he_iter << endl;
-                    cout << dec << QLong[det_ids_QDC[0]] << " " << QLong[det_ids_QDC[0]] << " " << TDC_Time[det_ids_QDC[0]] << " " << TDC_Time[det_ids_QDC[1]]  << endl;
+                    cout << dec << QLong[0] << " " << QLong[1] << " " << TDC_Time[0] << " " << TDC_Time[1]  << endl;
                     cout <<  25*m->measurement << endl;
                     he_iter++;
                 }
