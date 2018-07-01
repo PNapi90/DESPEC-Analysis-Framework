@@ -280,7 +280,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			int det_iter = 0;
 			bool called_link = false;
 
-			if(tdc_hits == 3){
+			if(tdc_hits == 3 || tdc_hits == 2){
 				double t[3] = {0,0,0};
 				int id_tmp[3];
 				int pos = 0;
@@ -293,7 +293,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				vals[val_it] = t[1] - t[0];
 				val_it++;
 				
-				if(id_tmp[0] < 50) DIFF_ARR[id_tmp[0]]->Fill(t[pos] - t[0]);
+				if(id_tmp[0] < 50){
+					cout << "WRITE: " << id_tmp[0] << " " << t[pos] << " " << t[0] << endl;
+					DIFF_ARR[id_tmp[0]]->Fill(t[pos] - t[0]);
+				}
 			}
 			int tdc_iter = 0;
 			for(int i = 0;i < tdc_hits;++i){
