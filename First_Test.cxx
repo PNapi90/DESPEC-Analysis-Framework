@@ -280,7 +280,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			int det_iter = 0;
 			bool called_link = false;
 
-			if(tdc_hits == 3 || tdc_hits == 2){
+			if((tdc_hits == 3 || tdc_hits == 2) && am_FATIMA_hits == 1){
 				double t[3] = {0,0,0};
 				int id_tmp[3];
 				int pos = 0;
