@@ -283,6 +283,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			if(RAW->CH_51_FIRED() && tdc_hits == 3){
 				int id_tmp = RAW->get_FATIMA_det_id(0);
 				double tdiff = RAW->get_FATIMA_Time_Diff();
+				cout << "IN FUNTION! " << id_tmp << " " << tdiff << endl;
 				DIFF_ARR[id_tmp]->Fill(tdiff);
 			}
 			int tdc_iter = 0;

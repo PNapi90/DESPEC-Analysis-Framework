@@ -46,6 +46,7 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 
 	ch51 = false;
 	if(FAT_FIRED == 0) return;
+	
 	//remaining tdcs
 	for(int i = FAT_FIRED;i < TDC_FIRED;++i){
 		active_det = det_ids_TDC[i];
