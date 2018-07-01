@@ -110,6 +110,7 @@ using namespace std;
 			bool Used_Systems[10];
 
 			double vals[100000];
+			int val_it;
 
 			bool cals_done,WR_used;
 
