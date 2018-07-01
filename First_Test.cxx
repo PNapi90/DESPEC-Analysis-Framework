@@ -280,18 +280,18 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			int det_iter = 0;
 			bool called_link = false;
 
-			if(tdc_hits == 2){
+			if(tdc_hits >= 2){
 				double t[3] = {0,0,0};
-				int id_tmp[2];
-				for(int i = 0;i < 2;++i){
+				int id_tmp[3];
+				for(int i = 0;i < tdc_hits;++i){
 					id_tmp[i] = RAW->get_FATIMA_det_id(i);
 					hit_hist->Fill(id_tmp[i]);
 					t[i] = (double) RAW->get_FATIMA_TDC_T(i);
 				}
 				vals[val_it] = t[1] - t[0];
 				val_it++;
-
-				if(id_tmp[0] < 50) DIFF_ARR[id_tmp[0]]->Fill(t[1] - t[0]);
+				int pos = (id_tmp[1] == 51) ? 1 : 2;
+				if(id_tmp[0] < 50 && id_tmp[1] == 51) DIFF_ARR[id_tmp[0]]->Fill(t[pos] - t[0]);
 			}
 			int tdc_iter = 0;
 			for(int i = 0;i < tdc_hits;++i){
