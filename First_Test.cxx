@@ -290,7 +290,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				}
 				vals[val_it] = t[1] - t[0];
 				val_it++;
-				DIFF_ARR[id_tmp[1]]->Fill(t[1] - t[0]);
+
+				if(id_tmp[0] < 50) DIFF_ARR[id_tmp[0]]->Fill(t[1] - t[0]);
 			}
 			int tdc_iter = 0;
 			for(int i = 0;i < tdc_hits;++i){
