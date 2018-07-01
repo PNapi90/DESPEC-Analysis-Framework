@@ -275,7 +275,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                 active_det = det_ID_TDC[tdc_board_ID][TDC_ch];
 
                 det_ids_TDC[fired_TDC_amount] = active_det;
-                cout << "DET!" << active_det << endl;
+                //cout << "DET!" << active_det << endl;
                 if(active_det >= 50){
                     cout << "HE" << endl;
                     cout << dec << QLong[0] << " " << QLong[1] << " " << QDC_Time_Coarse[0] << " " << QDC_Time_Coarse[1] << endl;
