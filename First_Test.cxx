@@ -88,8 +88,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 		tamex_Mult_lead[i] = MakeTH1('D',Form("tamex_lead_%d",i),Form("tamex_lead_%d",i),100,0,100);
 		tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),Form("tamex_trail_%d",i),100,0,100);
 
-		tamex_mult_mat_lead[i] = MakeTH2('D',Form("tamex_mat_lead_%d",i),Form("tamex_mat_lead_%d",i),20,0,20,100,0,100);
-		tamex_mult_mat_trail[i] = MakeTH2('D',Form("tamex_mat_trail_%d",i),Form("tamex_mat_trail_%d",i),20,0,20,100,0,100);
+		tamex_mult_mat_lead[i] = MakeTH2('D',Form("tamex_mat_lead_%d",i),Form("tamex_mat_lead_%d",i),20,0,20,30,0,30);
+		tamex_mult_mat_trail[i] = MakeTH2('D',Form("tamex_mat_trail_%d",i),Form("tamex_mat_trail_%d",i),20,0,20,30,0,30);
 		
 		tamex_Mult_Ch_lead[i] = new TH1*[17];
 		tamex_Mult_Ch_trail[i] = new TH1*[17];
@@ -101,7 +101,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 
 	DIFF_ARR = new TH1*[2];
-	for(int i = 0;i < 2;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),1000,-40000,40000);
+	for(int i = 0;i < 2;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),300,-30000,0);
 
 	WR_used = false;
 
@@ -257,7 +257,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 2 && false){
+		if(PrcID_Conv == 3 && false){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex << *(pdata + i) << " ";
@@ -287,7 +287,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			//to get histograms (e.g.)
 			am_FATIMA_hits = RAW->get_FATIMA_am_Fired();
 			int tdc_hits = RAW->get_FATIMA_am_Fired_TDC();
-			am_hits->Fill(am_FATIMA_hits);
+			if(am_hits > 0) am_hits->Fill(am_FATIMA_hits);
 
 			double sum = 0;
 			double tmpE[2];
@@ -328,7 +328,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			for(int i = 0;i < tdc_iter*0;++i){
 				//if(TDC_time_6[i] > 0 && TDC_times[0] > 0) DIFF_ARR[i]->Fill(TDC_time_6[i] - TDC_times[0]);
 			}
-			if(am_FATIMA_hits == 2) FAT_MAT->Fill(tmpE[0],tmpE[1]);
+			if(am_FATIMA_hits == 2) FAT_MAT->Fill(RAW->get_FATIMA_E(0),RAW->get_FATIMA_E(1));
 			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);
 		}
 
@@ -366,12 +366,12 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				}
 				for(int j = 0;j < pl_iter;++j){
 					if(sum_phys_l[called_channels[j]] > 0){
-						if(!tamex_Mult_Ch_lead[i][called_channels[j]]) tamex_Mult_Ch_lead[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,called_channels[j]),Form("tamex_lead_ch_%d_%d",i,called_channels[j]),100,0,100);
+						if(!tamex_Mult_Ch_lead[i][called_channels[j]]) tamex_Mult_Ch_lead[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,called_channels[j]),Form("tamex_lead_ch_%d_%d",i,called_channels[j]),30,0,30);
 						tamex_Mult_Ch_lead[i][called_channels[j]]->Fill(sum_phys_l[called_channels[j]]);
 						tamex_mult_mat_lead[i]->Fill(called_channels[j],sum_phys_l[called_channels[j]]);
 					}
 					if(sum_phys_t[called_channels[j]] > 0){
-						if(!tamex_Mult_Ch_trail[i][called_channels[j]]) tamex_Mult_Ch_trail[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,called_channels[j]),Form("tamex_trail_ch_%d_%d",i,called_channels[j]),100,0,100);
+						if(!tamex_Mult_Ch_trail[i][called_channels[j]]) tamex_Mult_Ch_trail[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,called_channels[j]),Form("tamex_trail_ch_%d_%d",i,called_channels[j]),30,0,30);
 						tamex_Mult_Ch_trail[i][called_channels[j]]->Fill(sum_phys_t[called_channels[j]]);
 						tamex_mult_mat_trail[i]->Fill(called_channels[j],sum_phys_t[called_channels[j]]);
 					}
@@ -418,9 +418,9 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				iterator = 0;
 			}
 			else{
-				WR_tmp[0] = WR_tmp[1];
-				called[0] = called[1];
-				iterator = 1;
+				//WR_tmp[0] = WR_tmp[1];
+				//called[0] = called[1];
+				iterator = 0;
 			}
 		}
 		else if(called[0] == 3){
@@ -432,9 +432,9 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			//========================================================
 			//change of variables (e.g. x[0] = x[1] also needed!)
 			//========================================================
-			WR_tmp[0] = WR_tmp[1];
-			called[0] = called[1];
-			iterator = 1;
+			//WR_tmp[0] = WR_tmp[1];
+			//called[0] = called[1];
+			iterator = 0;
 		}
 				
 	}

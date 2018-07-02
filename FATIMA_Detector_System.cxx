@@ -25,11 +25,26 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
     det_ids_QDC = new int[max_am_dets];
     det_ids_TDC = new int[max_am_dets];
 
+    for(int i = 0;i < max_am_dets;++i){
+        QLong[i] = 0;
+        QShort[i] = 0;
+        QDC_Time_Coarse[i] = 0;
+        QDC_Time_Fine[i] = 0;
+        TDC_Time[i] = 0;
+        det_ids_QDC[i] = 0;
+        det_ids_TDC[i] = 0;
+    }
+
     det_ID = new int*[100];
     det_ID_TDC = new int*[100];
     for(int i = 0;i < 100;++i){
     	det_ID[i] = new int[100];
     	det_ID_TDC[i] = new int[100];
+        for(int j = 0;j < 100;++j){
+            det_ID[i][j] = -1;
+            det_ID_TDC[i][j] = -1;
+        }
+
     }
 
     FATIMA_T_CALIB = new FATIMA_Time_Calibration();
@@ -89,14 +104,6 @@ void FATIMA_Detector_System::write(){
 void FATIMA_Detector_System::load_board_channel_file(){
 
     const char* format = "%d %d %d %d %d %d";
-
-    //initialize with -1 (-> id not possible)
-    for(int i = 0;i < 100;++i){
-        for(int j = 0;j < 100;++j){
-            det_ID[i][j] = -1;
-            det_ID_TDC[i][j] = -1;
-        }
-    }
 
     ifstream file("Configuration_Files/allocation.txt");
 
@@ -158,9 +165,13 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
     fired_QDC_amount = 0;
     fired_TDC_amount = 0;
 
+
+
     //reset TDC called bool
     bool TDC_Called = false;
     QDC_DATA = false;
+
+    reset_fired_channels();
 
     //loop over FATIMA modules
     while(!TDC_Called){
@@ -175,7 +186,7 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
         else if(TDChead->type == 8) TDC_Called = true;
 
         this->pdata++;
-
+        
         QDChead = (QDC_Header*) this->pdata;
         TDChead = (TDC_Check*) this->pdata;
     }
@@ -184,7 +195,7 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
     this->pdata--;
 
     Check_TDC_DATA(); 
-    if(exiter) exit(0);
+    //if(exiter) exit(0);
 }
 
 //---------------------------------------------------------------
@@ -206,29 +217,30 @@ void FATIMA_Detector_System::reset_fired_channels(){
 
 void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 
-    reset_fired_channels();
+    
 
     pdata++; // Moves to 2nd header value //
+
     QDC_Header_2 *QDChead_2 = (QDC_Header_2*) pdata;
 
 
     int board_ID = QDChead_2->geo; // Gets Geographical Address //
     int num_Channels = QDChead_2->channels; // Gets Channels fired 0011 means 1&2 fired //
     int tmp_tmp = QDChead_2->channels & 0xf;
+    int num_channels_fired = 0;
      // Loop retrieves channels fired from integer value //
     for(int j = 7; j >= 0; j--){
         if(num_Channels >= pow(2, j)){
             //fill Fired_Channel array with corresponding ids
             if(wired_QDC(board_ID,j)){
-                Fired_QDC_Channels[fired_QDC_amount][0] = board_ID; 
-                Fired_QDC_Channels[fired_QDC_amount][1] = j;
-                fired_QDC_amount++;
+                Fired_QDC_Channels[num_channels_fired][0] = board_ID; 
+                Fired_QDC_Channels[num_channels_fired][1] = j;
+                num_channels_fired++;
             }
             num_Channels -= pow(2, j);
         }
     }
-    if(fired_QDC_amount == 2) exiter = true;
-
+    fired_QDC_amount += num_channels_fired;
     pdata += 2; // Moves from 2nd to 4th header value //
     
     //int size = 0;
@@ -237,7 +249,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
     int active_det = 0;
     double fine_time = 0;
 
-    for(int i = 0;i < fired_QDC_amount;++i){
+    for(int i = 0;i < num_channels_fired;++i){
         //set active board_ID and channel #
         active_board = Fired_QDC_Channels[i][0];
         active_Channel = Fired_QDC_Channels[i][1];
@@ -246,17 +258,17 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
         det_ids_QDC[i] = active_det;
                                 
         pdata++; // Moves to 1st data value
-      
+        
         QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
         
         pdata += 3; //Moves to QDC time data
-
+        
         QDC_Time* t = (QDC_Time*) pdata;
         QDC_Time_Coarse[active_det] = t->trigger_tag;
         
         
         pdata++; // Moves to Extras
-        
+       
         QDC_Extras* e = (QDC_Extras*) pdata;	
 
 	    fine_time = (((t->trigger_tag) + ((e->ext_trig) << 32)));
@@ -265,7 +277,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 		QDC_Time_Fine[active_det] = fine_time;
         
         pdata++; // Moves to 6th data value87454dda
-
+        
         QDC_Data* d = (QDC_Data*) pdata;
         
         QLong[active_det] = d->QL; // Gets Q Long data //
@@ -287,11 +299,12 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
     int TDC_ch = 0;
     int active_det = 0;
     no_data = true;
-
+    
+    int loop_counter = 0;
     while(!trail){
-        
+        loop_counter++;
         pdata++;
-
+        
         TDC_Check*p = (TDC_Check*) pdata;
         check = p->type;
         
@@ -308,10 +321,12 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
             TDC_ch = m->channel;
             
             //if (!wired_TDC(tdc_board_ID,TDC_ch) && QDC_DATA) continue;
-            if(false) cout << " " << endl;
+            if(!wired_TDC(tdc_board_ID,TDC_ch)){
+                cout << "TDC " << tdc_board_ID << " ch " << TDC_ch << " not wired " << fired_QDC_amount << endl;
+                no_data = true;
+            }
             else{
                 active_det = det_ID_TDC[tdc_board_ID][TDC_ch];
-
                 det_ids_TDC[fired_TDC_amount] = active_det;
                 //cout << "DET!" << active_det << endl;
                 if(active_det >= 50){
@@ -333,6 +348,11 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
         }
         // TDC Trailer Condition // 
         else if ( check == 16 ) trail = true; 
+
+        if(loop_counter > 100){
+            cerr << "FATIMA TDC loop not reaching trailer! pdata iteration problem possible" << endl;
+            exit(0);
+        }
     }
 }
 

@@ -134,7 +134,7 @@ int Raw_Event::get_FATIMA_am_Fired_TDC(){return TDC_FIRED;}
 
 //---------------------------------------------------------------
 
-bool Raw_Event::get_FATIMA_QDC_TDC_LINKED(int i ){return used_for_QDC[i];}
+bool Raw_Event::get_FATIMA_QDC_TDC_LINKED(int i){return used_for_QDC[i];}
 
 //---------------------------------------------------------------
 
