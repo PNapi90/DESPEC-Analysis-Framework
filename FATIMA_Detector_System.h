@@ -6,6 +6,9 @@
 #include <string>
 #include <cmath>
 
+#include <TFile.h>
+#include <TH1.h>
+
 #include "FATIMA_Energy_Calibration.h"
 #include "FATIMA_Time_Calibration.h"
 
@@ -59,6 +62,8 @@ private:
     FATIMA_Time_Calibration* FATIMA_T_CALIB;
     FATIMA_Energy_Calibration* FATIMA_E_CALIB;
 
+    //tmp root things
+    TH1D** Det_Hist;
 
 public:
 	FATIMA_Detector_System();
@@ -76,6 +81,8 @@ public:
     int* tmp_get_iterator(){return NULL;};
 
     bool calibration_done(){return false;}
+
+    void write();
 
 
 };

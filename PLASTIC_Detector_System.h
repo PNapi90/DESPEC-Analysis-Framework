@@ -107,6 +107,8 @@ public:
 
     bool calibration_done();
 
+    void write(){return;};
+
 };
 
 

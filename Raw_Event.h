@@ -27,6 +27,10 @@ private:
 
 	int leading_hits[4];
 	int trailing_hits[4];
+	int phys_channel[4][17];
+	int leading_hits_ch[4][17];
+	int trailing_hits_ch[4][17];
+	
 
 	ULong coarse_T_edge_lead[4][100];
 	ULong coarse_T_edge_trail[4][100];
@@ -65,6 +69,10 @@ public:
 	double get_PLASTIC_trail_T(int,int);
 	int get_PLASTIC_trail_hits(int);
 	int get_PLASTIC_lead_hits(int);
+	int get_PLASTIC_physical_channel(int,int);
+	int get_PLASTIC_physical_lead_hits(int,int);
+	int get_PLASTIC_physical_trail_hits(int,int);
+	
 };
 
 

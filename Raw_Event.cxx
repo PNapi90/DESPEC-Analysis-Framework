@@ -54,7 +54,7 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 		if(!used_for_QDC[active_det]){
 			Det_Nums[i] = det_ids_TDC[active_det];
 			TDC_timestamp[i] = TDC[active_det];
-			if(active_det >= 50) cout << TDC_timestamp[i] << " " << active_det << " " << TDC_timestamp[0] << endl;
+;
 			if(active_det == 51 && position != -5 && !ch51 && TDC_FIRED == 3){
 				ch51 = true;
 				time_difference = ((double) TDC_timestamp[i]) - ((double) TDC_timestamp[0]);
@@ -73,6 +73,14 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 
 void Raw_Event::set_DATA_PLASTIC(int* it,ULong** Edge_Coarse,ULong** Edge_fine,UInt** ch_ed,ULong* Coarse_Trigger,ULong* Fine_Trigger){
 
+	//reset lead and trail hits
+	for(int i = 0;i < 4;++i){
+		for(int j = 0;j < 17;++j){
+			leading_hits_ch[i][j] = 0;
+			trailing_hits_ch[i][j] = 0;
+		}
+	}
+
 	//loop over all 4 tamex modules
 	for(int i = 0;i < 4;++i){
 		iterator[i] = it[i];
@@ -86,12 +94,19 @@ void Raw_Event::set_DATA_PLASTIC(int* it,ULong** Edge_Coarse,ULong** Edge_fine,U
 			if(ch_ID[i][j] % 2 == 1){
 				coarse_T_edge_lead[i][j] = Edge_Coarse[i][j];
 				fine_T_edge_lead[i][j] = Edge_fine[i][j];
+				
+				phys_channel[i][j] = (ch_ID[i][j]+1)/2;
 				leading_hits[i]++;
+				leading_hits_ch[i][phys_channel[i][j]]++;
 			}
 			else{
 				coarse_T_edge_trail[i][j] = Edge_Coarse[i][j];
+				fine_T_edge_trail[i][j] = Edge_fine[i][j];
+				
 				trailing_hits[i]++;
-				fine_T_edge_trail[i][j] = Edge_fine[i][j];	
+				phys_channel[i][j] = (ch_ID[i][j])/2;
+				trailing_hits_ch[i][phys_channel[i][j]]++;
+
 			}
 		}	
 	}
@@ -176,5 +191,17 @@ int Raw_Event::get_PLASTIC_trail_hits(int i){return trailing_hits[i];}
 //---------------------------------------------------------------
 
 int Raw_Event::get_PLASTIC_lead_hits(int i){return leading_hits[i];}
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_PLASTIC_physical_channel(int i,int j){return phys_channel[i][j];}
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_PLASTIC_physical_lead_hits(int i,int j){return leading_hits_ch[i][j];}
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_PLASTIC_physical_trail_hits(int i,int j){return trailing_hits_ch[i][j];}
 
 //---------------------------------------------------------------

@@ -37,12 +37,21 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
 
     load_board_channel_file();
     he_iter = 0;
+
+    Det_Hist = new TH1D*[2];
+    char name[1000];
+    for(int i = 0;i < 2;++i){
+        sprintf(name,"Det_%d",i);
+        Det_Hist[i] = new TH1D(name,name,1000,-40000,40000);
+    }
     
 }
 
 //---------------------------------------------------------------
 
 FATIMA_Detector_System::~FATIMA_Detector_System(){
+
+
 
 	for(int i = 0;i < 100;++i){
 		delete[] det_ID[i];
@@ -63,6 +72,16 @@ FATIMA_Detector_System::~FATIMA_Detector_System(){
 
 	delete FATIMA_T_CALIB;
 	delete FATIMA_E_CALIB;
+}
+
+//---------------------------------------------------------------
+
+void FATIMA_Detector_System::write(){
+    TFile* file = new TFile("FATROOT.root","RECREATE");
+    for(int i = 0;i < 2;++i) file->Add(Det_Hist[i]);
+    file->Write();
+
+    cout << "written" << endl;
 }
 
 //---------------------------------------------------------------
@@ -115,10 +134,7 @@ void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
             a = det_ids_TDC[i];  
             if(a == 0) show_val = 0;
             if(a == 1) show_val = 1;
-            if(a == 50) cout << "VALUES " << a << " " << TDC_Time[a] << " " << TDC_Time[0] << " " <<TDC_Time[1] <<  " " << (double) (TDC_Time[a]) - (double)(TDC_Time[show_val]) << endl;
-            if(a == 51) cout << "VALUES " << a << " " << TDC_Time[a] << " " << TDC_Time[0] << " " <<TDC_Time[1] <<  " " << (double) (TDC_Time[a]) - (double)(TDC_Time[show_val]) << endl;
         }
-        cout << "END" << endl;
     }
 
 	RAW->set_DATA_FATIMA(fired_QDC_amount,fired_TDC_amount,QLong,QShort,TDC_Time,QDC_Time_Coarse,QDC_Time_Fine,det_ids_QDC,det_ids_TDC);
@@ -138,6 +154,9 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
     //check for QDC and TDC header
     QDC_Header* QDChead  = (QDC_Header*) this->pdata;
     TDC_Check* TDChead = (TDC_Check*) this->pdata;
+
+    fired_QDC_amount = 0;
+    fired_TDC_amount = 0;
 
     //reset TDC called bool
     bool TDC_Called = false;
@@ -208,7 +227,6 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
             num_Channels -= pow(2, j);
         }
     }
-    if(tmp_tmp == 3) cout << hex << *pdata << " " << tmp_tmp << endl;
     if(fired_QDC_amount == 2) exiter = true;
 
     pdata += 2; // Moves from 2nd to 4th header value //
@@ -297,9 +315,10 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                 det_ids_TDC[fired_TDC_amount] = active_det;
                 //cout << "DET!" << active_det << endl;
                 if(active_det >= 50){
-                    cout << "HE " << active_det << " " <<  he_iter << endl;
-                    cout << dec << QLong[0] << " " << QLong[1] << " " << TDC_Time[0] << " " << TDC_Time[1]  << endl;
-                    cout <<  25*m->measurement << endl;
+                    if(fired_QDC_amount == 1 && active_det == 51){
+                        double tmp_val = ((double) m->measurement*25.) - ((double) TDC_Time[det_ids_QDC[0]]);
+                        Det_Hist[det_ids_QDC[0]]->Fill(tmp_val);
+                    }
                     he_iter++;
                 }
 

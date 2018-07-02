@@ -32,7 +32,6 @@ extern void G__set_cpp_environmentG__SCN();
 #include "TObject.h"
 #include "TMemberInspector.h"
 #include "./FATIMA_Data_Stream.h"
-#include "./FATIMA_DETECTOR.h"
 #include "./FATIMA_Detector_System.h"
 #include "./FATIMA_Energy_Calibration.h"
 #include "./FATIMA_Time_Calibration.h"
@@ -70,13 +69,13 @@ extern G__linked_taginfo G__G__SCNLN_reverse_iteratorlEvectorlEROOTcLcLTSchemaHe
 extern G__linked_taginfo G__G__SCNLN_vectorlETVirtualArraymUcOallocatorlETVirtualArraymUgRsPgR;
 extern G__linked_taginfo G__G__SCNLN_reverse_iteratorlEvectorlETVirtualArraymUcOallocatorlETVirtualArraymUgRsPgRcLcLiteratorgR;
 extern G__linked_taginfo G__G__SCNLN_Data_Stream;
-extern G__linked_taginfo G__G__SCNLN_Raw_Event;
-extern G__linked_taginfo G__G__SCNLN_Detector_System;
 extern G__linked_taginfo G__G__SCNLN_iteratorlEbidirectional_iterator_tagcOTObjectmUcOlongcOconstsPTObjectmUmUcOconstsPTObjectmUaNgR;
 extern G__linked_taginfo G__G__SCNLN_TVectorTlEfloatgR;
 extern G__linked_taginfo G__G__SCNLN_TVectorTlEdoublegR;
 extern G__linked_taginfo G__G__SCNLN_TH1D;
 extern G__linked_taginfo G__G__SCNLN_TH1;
+extern G__linked_taginfo G__G__SCNLN_Raw_Event;
+extern G__linked_taginfo G__G__SCNLN_Detector_System;
 extern G__linked_taginfo G__G__SCNLN_TMatrixTBaselEfloatgR;
 extern G__linked_taginfo G__G__SCNLN_TMatrixTBaselEdoublegR;
 extern G__linked_taginfo G__G__SCNLN_TH2;

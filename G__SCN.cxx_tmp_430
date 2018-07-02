@@ -1,0 +1,842 @@
+// Do NOT change. Changes will be lost next time file is generated
+
+#define R__DICTIONARY_FILENAME G__SCN
+
+/*******************************************************************/
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#define G__DICTIONARY
+#include "RConfig.h"
+#include "TClass.h"
+#include "TDictAttributeMap.h"
+#include "TInterpreter.h"
+#include "TROOT.h"
+#include "TBuffer.h"
+#include "TMemberInspector.h"
+#include "TInterpreter.h"
+#include "TVirtualMutex.h"
+#include "TError.h"
+
+#ifndef G__ROOT
+#define G__ROOT
+#endif
+
+#include "RtypesImp.h"
+#include "TIsAProxy.h"
+#include "TFileMergeInfo.h"
+#include <algorithm>
+#include "TCollectionProxyInfo.h"
+/*******************************************************************/
+
+#include "TDataMember.h"
+
+// Since CINT ignores the std namespace, we need to do so in this file.
+namespace std {} using namespace std;
+
+// Header files passed as explicit arguments
+#include "./TSCNUnpackEvent.h"
+#include "./FATIMA_Energy_Calibration.h"
+#include "./PLASTIC_Calibrator.h"
+#include "./PLASTIC_Data_Stream.h"
+#include "./WR_Structure.h"
+#include "./FATIMA_Time_Calibration.h"
+#include "./PLASTIC_Detector_System.h"
+#include "./QDC_751.h"
+#include "./Raw_Event.h"
+#include "./FATIMA_Detector_System.h"
+#include "./TSCNCalProc.h"
+#include "./TAMEX.h"
+#include "./TSCNCalEvent.h"
+#include "./TSCNAnalysis.h"
+#include "./TSCNParameter.h"
+#include "./First_Test.h"
+#include "./FATIMA_Data_Stream.h"
+#include "./TSCNAnlProc.h"
+#include "./TSCNAnlEvent.h"
+#include "./TDC_1290.h"
+#include "./White_Rabbit.h"
+
+// Header files passed via #pragma extra_include
+
+namespace ROOT {
+   static void *new_TSCNUnpackEvent(void *p = 0);
+   static void *newArray_TSCNUnpackEvent(Long_t size, void *p);
+   static void delete_TSCNUnpackEvent(void *p);
+   static void deleteArray_TSCNUnpackEvent(void *p);
+   static void destruct_TSCNUnpackEvent(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::TSCNUnpackEvent*)
+   {
+      ::TSCNUnpackEvent *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TSCNUnpackEvent >(0);
+      static ::ROOT::TGenericClassInfo 
+         instance("TSCNUnpackEvent", ::TSCNUnpackEvent::Class_Version(), "TSCNUnpackEvent.h", 26,
+                  typeid(::TSCNUnpackEvent), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &::TSCNUnpackEvent::Dictionary, isa_proxy, 4,
+                  sizeof(::TSCNUnpackEvent) );
+      instance.SetNew(&new_TSCNUnpackEvent);
+      instance.SetNewArray(&newArray_TSCNUnpackEvent);
+      instance.SetDelete(&delete_TSCNUnpackEvent);
+      instance.SetDeleteArray(&deleteArray_TSCNUnpackEvent);
+      instance.SetDestructor(&destruct_TSCNUnpackEvent);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::TSCNUnpackEvent*)
+   {
+      return GenerateInitInstanceLocal((::TSCNUnpackEvent*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal((const ::TSCNUnpackEvent*)0x0); R__UseDummy(_R__UNIQUE_DICT_(Init));
+} // end of namespace ROOT
+
+namespace ROOT {
+   static void *new_TSCNCalProc(void *p = 0);
+   static void *newArray_TSCNCalProc(Long_t size, void *p);
+   static void delete_TSCNCalProc(void *p);
+   static void deleteArray_TSCNCalProc(void *p);
+   static void destruct_TSCNCalProc(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::TSCNCalProc*)
+   {
+      ::TSCNCalProc *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TSCNCalProc >(0);
+      static ::ROOT::TGenericClassInfo 
+         instance("TSCNCalProc", ::TSCNCalProc::Class_Version(), "TSCNCalProc.h", 26,
+                  typeid(::TSCNCalProc), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &::TSCNCalProc::Dictionary, isa_proxy, 4,
+                  sizeof(::TSCNCalProc) );
+      instance.SetNew(&new_TSCNCalProc);
+      instance.SetNewArray(&newArray_TSCNCalProc);
+      instance.SetDelete(&delete_TSCNCalProc);
+      instance.SetDeleteArray(&deleteArray_TSCNCalProc);
+      instance.SetDestructor(&destruct_TSCNCalProc);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::TSCNCalProc*)
+   {
+      return GenerateInitInstanceLocal((::TSCNCalProc*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal((const ::TSCNCalProc*)0x0); R__UseDummy(_R__UNIQUE_DICT_(Init));
+} // end of namespace ROOT
+
+namespace ROOT {
+   static void *new_TSCNCalEvent(void *p = 0);
+   static void *newArray_TSCNCalEvent(Long_t size, void *p);
+   static void delete_TSCNCalEvent(void *p);
+   static void deleteArray_TSCNCalEvent(void *p);
+   static void destruct_TSCNCalEvent(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::TSCNCalEvent*)
+   {
+      ::TSCNCalEvent *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TSCNCalEvent >(0);
+      static ::ROOT::TGenericClassInfo 
+         instance("TSCNCalEvent", ::TSCNCalEvent::Class_Version(), "TSCNCalEvent.h", 21,
+                  typeid(::TSCNCalEvent), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &::TSCNCalEvent::Dictionary, isa_proxy, 4,
+                  sizeof(::TSCNCalEvent) );
+      instance.SetNew(&new_TSCNCalEvent);
+      instance.SetNewArray(&newArray_TSCNCalEvent);
+      instance.SetDelete(&delete_TSCNCalEvent);
+      instance.SetDeleteArray(&deleteArray_TSCNCalEvent);
+      instance.SetDestructor(&destruct_TSCNCalEvent);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::TSCNCalEvent*)
+   {
+      return GenerateInitInstanceLocal((::TSCNCalEvent*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal((const ::TSCNCalEvent*)0x0); R__UseDummy(_R__UNIQUE_DICT_(Init));
+} // end of namespace ROOT
+
+namespace ROOT {
+   static void *new_TSCNAnalysis(void *p = 0);
+   static void *newArray_TSCNAnalysis(Long_t size, void *p);
+   static void delete_TSCNAnalysis(void *p);
+   static void deleteArray_TSCNAnalysis(void *p);
+   static void destruct_TSCNAnalysis(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::TSCNAnalysis*)
+   {
+      ::TSCNAnalysis *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TSCNAnalysis >(0);
+      static ::ROOT::TGenericClassInfo 
+         instance("TSCNAnalysis", ::TSCNAnalysis::Class_Version(), "TSCNAnalysis.h", 27,
+                  typeid(::TSCNAnalysis), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &::TSCNAnalysis::Dictionary, isa_proxy, 4,
+                  sizeof(::TSCNAnalysis) );
+      instance.SetNew(&new_TSCNAnalysis);
+      instance.SetNewArray(&newArray_TSCNAnalysis);
+      instance.SetDelete(&delete_TSCNAnalysis);
+      instance.SetDeleteArray(&deleteArray_TSCNAnalysis);
+      instance.SetDestructor(&destruct_TSCNAnalysis);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::TSCNAnalysis*)
+   {
+      return GenerateInitInstanceLocal((::TSCNAnalysis*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal((const ::TSCNAnalysis*)0x0); R__UseDummy(_R__UNIQUE_DICT_(Init));
+} // end of namespace ROOT
+
+namespace ROOT {
+   static void *new_TSCNParameter(void *p = 0);
+   static void *newArray_TSCNParameter(Long_t size, void *p);
+   static void delete_TSCNParameter(void *p);
+   static void deleteArray_TSCNParameter(void *p);
+   static void destruct_TSCNParameter(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::TSCNParameter*)
+   {
+      ::TSCNParameter *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TSCNParameter >(0);
+      static ::ROOT::TGenericClassInfo 
+         instance("TSCNParameter", ::TSCNParameter::Class_Version(), "TSCNParameter.h", 19,
+                  typeid(::TSCNParameter), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &::TSCNParameter::Dictionary, isa_proxy, 4,
+                  sizeof(::TSCNParameter) );
+      instance.SetNew(&new_TSCNParameter);
+      instance.SetNewArray(&newArray_TSCNParameter);
+      instance.SetDelete(&delete_TSCNParameter);
+      instance.SetDeleteArray(&deleteArray_TSCNParameter);
+      instance.SetDestructor(&destruct_TSCNParameter);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::TSCNParameter*)
+   {
+      return GenerateInitInstanceLocal((::TSCNParameter*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal((const ::TSCNParameter*)0x0); R__UseDummy(_R__UNIQUE_DICT_(Init));
+} // end of namespace ROOT
+
+namespace ROOT {
+   static void *new_TSCNUnpackProc(void *p = 0);
+   static void *newArray_TSCNUnpackProc(Long_t size, void *p);
+   static void delete_TSCNUnpackProc(void *p);
+   static void deleteArray_TSCNUnpackProc(void *p);
+   static void destruct_TSCNUnpackProc(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::TSCNUnpackProc*)
+   {
+      ::TSCNUnpackProc *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TSCNUnpackProc >(0);
+      static ::ROOT::TGenericClassInfo 
+         instance("TSCNUnpackProc", ::TSCNUnpackProc::Class_Version(), "First_Test.h", 71,
+                  typeid(::TSCNUnpackProc), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &::TSCNUnpackProc::Dictionary, isa_proxy, 4,
+                  sizeof(::TSCNUnpackProc) );
+      instance.SetNew(&new_TSCNUnpackProc);
+      instance.SetNewArray(&newArray_TSCNUnpackProc);
+      instance.SetDelete(&delete_TSCNUnpackProc);
+      instance.SetDeleteArray(&deleteArray_TSCNUnpackProc);
+      instance.SetDestructor(&destruct_TSCNUnpackProc);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::TSCNUnpackProc*)
+   {
+      return GenerateInitInstanceLocal((::TSCNUnpackProc*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal((const ::TSCNUnpackProc*)0x0); R__UseDummy(_R__UNIQUE_DICT_(Init));
+} // end of namespace ROOT
+
+namespace ROOT {
+   static void *new_TSCNAnlProc(void *p = 0);
+   static void *newArray_TSCNAnlProc(Long_t size, void *p);
+   static void delete_TSCNAnlProc(void *p);
+   static void deleteArray_TSCNAnlProc(void *p);
+   static void destruct_TSCNAnlProc(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::TSCNAnlProc*)
+   {
+      ::TSCNAnlProc *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TSCNAnlProc >(0);
+      static ::ROOT::TGenericClassInfo 
+         instance("TSCNAnlProc", ::TSCNAnlProc::Class_Version(), "TSCNAnlProc.h", 29,
+                  typeid(::TSCNAnlProc), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &::TSCNAnlProc::Dictionary, isa_proxy, 4,
+                  sizeof(::TSCNAnlProc) );
+      instance.SetNew(&new_TSCNAnlProc);
+      instance.SetNewArray(&newArray_TSCNAnlProc);
+      instance.SetDelete(&delete_TSCNAnlProc);
+      instance.SetDeleteArray(&deleteArray_TSCNAnlProc);
+      instance.SetDestructor(&destruct_TSCNAnlProc);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::TSCNAnlProc*)
+   {
+      return GenerateInitInstanceLocal((::TSCNAnlProc*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal((const ::TSCNAnlProc*)0x0); R__UseDummy(_R__UNIQUE_DICT_(Init));
+} // end of namespace ROOT
+
+namespace ROOT {
+   static void *new_TSCNAnlEvent(void *p = 0);
+   static void *newArray_TSCNAnlEvent(Long_t size, void *p);
+   static void delete_TSCNAnlEvent(void *p);
+   static void deleteArray_TSCNAnlEvent(void *p);
+   static void destruct_TSCNAnlEvent(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::TSCNAnlEvent*)
+   {
+      ::TSCNAnlEvent *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TSCNAnlEvent >(0);
+      static ::ROOT::TGenericClassInfo 
+         instance("TSCNAnlEvent", ::TSCNAnlEvent::Class_Version(), "TSCNAnlEvent.h", 21,
+                  typeid(::TSCNAnlEvent), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &::TSCNAnlEvent::Dictionary, isa_proxy, 4,
+                  sizeof(::TSCNAnlEvent) );
+      instance.SetNew(&new_TSCNAnlEvent);
+      instance.SetNewArray(&newArray_TSCNAnlEvent);
+      instance.SetDelete(&delete_TSCNAnlEvent);
+      instance.SetDeleteArray(&deleteArray_TSCNAnlEvent);
+      instance.SetDestructor(&destruct_TSCNAnlEvent);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::TSCNAnlEvent*)
+   {
+      return GenerateInitInstanceLocal((::TSCNAnlEvent*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal((const ::TSCNAnlEvent*)0x0); R__UseDummy(_R__UNIQUE_DICT_(Init));
+} // end of namespace ROOT
+
+//______________________________________________________________________________
+atomic_TClass_ptr TSCNUnpackEvent::fgIsA(0);  // static to hold class pointer
+
+//______________________________________________________________________________
+const char *TSCNUnpackEvent::Class_Name()
+{
+   return "TSCNUnpackEvent";
+}
+
+//______________________________________________________________________________
+const char *TSCNUnpackEvent::ImplFileName()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNUnpackEvent*)0x0)->GetImplFileName();
+}
+
+//______________________________________________________________________________
+int TSCNUnpackEvent::ImplFileLine()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNUnpackEvent*)0x0)->GetImplFileLine();
+}
+
+//______________________________________________________________________________
+TClass *TSCNUnpackEvent::Dictionary()
+{
+   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNUnpackEvent*)0x0)->GetClass();
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+TClass *TSCNUnpackEvent::Class()
+{
+   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNUnpackEvent*)0x0)->GetClass(); }
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+atomic_TClass_ptr TSCNCalProc::fgIsA(0);  // static to hold class pointer
+
+//______________________________________________________________________________
+const char *TSCNCalProc::Class_Name()
+{
+   return "TSCNCalProc";
+}
+
+//______________________________________________________________________________
+const char *TSCNCalProc::ImplFileName()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNCalProc*)0x0)->GetImplFileName();
+}
+
+//______________________________________________________________________________
+int TSCNCalProc::ImplFileLine()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNCalProc*)0x0)->GetImplFileLine();
+}
+
+//______________________________________________________________________________
+TClass *TSCNCalProc::Dictionary()
+{
+   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNCalProc*)0x0)->GetClass();
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+TClass *TSCNCalProc::Class()
+{
+   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNCalProc*)0x0)->GetClass(); }
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+atomic_TClass_ptr TSCNCalEvent::fgIsA(0);  // static to hold class pointer
+
+//______________________________________________________________________________
+const char *TSCNCalEvent::Class_Name()
+{
+   return "TSCNCalEvent";
+}
+
+//______________________________________________________________________________
+const char *TSCNCalEvent::ImplFileName()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNCalEvent*)0x0)->GetImplFileName();
+}
+
+//______________________________________________________________________________
+int TSCNCalEvent::ImplFileLine()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNCalEvent*)0x0)->GetImplFileLine();
+}
+
+//______________________________________________________________________________
+TClass *TSCNCalEvent::Dictionary()
+{
+   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNCalEvent*)0x0)->GetClass();
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+TClass *TSCNCalEvent::Class()
+{
+   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNCalEvent*)0x0)->GetClass(); }
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+atomic_TClass_ptr TSCNAnalysis::fgIsA(0);  // static to hold class pointer
+
+//______________________________________________________________________________
+const char *TSCNAnalysis::Class_Name()
+{
+   return "TSCNAnalysis";
+}
+
+//______________________________________________________________________________
+const char *TSCNAnalysis::ImplFileName()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnalysis*)0x0)->GetImplFileName();
+}
+
+//______________________________________________________________________________
+int TSCNAnalysis::ImplFileLine()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnalysis*)0x0)->GetImplFileLine();
+}
+
+//______________________________________________________________________________
+TClass *TSCNAnalysis::Dictionary()
+{
+   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnalysis*)0x0)->GetClass();
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+TClass *TSCNAnalysis::Class()
+{
+   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnalysis*)0x0)->GetClass(); }
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+atomic_TClass_ptr TSCNParameter::fgIsA(0);  // static to hold class pointer
+
+//______________________________________________________________________________
+const char *TSCNParameter::Class_Name()
+{
+   return "TSCNParameter";
+}
+
+//______________________________________________________________________________
+const char *TSCNParameter::ImplFileName()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNParameter*)0x0)->GetImplFileName();
+}
+
+//______________________________________________________________________________
+int TSCNParameter::ImplFileLine()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNParameter*)0x0)->GetImplFileLine();
+}
+
+//______________________________________________________________________________
+TClass *TSCNParameter::Dictionary()
+{
+   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNParameter*)0x0)->GetClass();
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+TClass *TSCNParameter::Class()
+{
+   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNParameter*)0x0)->GetClass(); }
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+atomic_TClass_ptr TSCNUnpackProc::fgIsA(0);  // static to hold class pointer
+
+//______________________________________________________________________________
+const char *TSCNUnpackProc::Class_Name()
+{
+   return "TSCNUnpackProc";
+}
+
+//______________________________________________________________________________
+const char *TSCNUnpackProc::ImplFileName()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNUnpackProc*)0x0)->GetImplFileName();
+}
+
+//______________________________________________________________________________
+int TSCNUnpackProc::ImplFileLine()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNUnpackProc*)0x0)->GetImplFileLine();
+}
+
+//______________________________________________________________________________
+TClass *TSCNUnpackProc::Dictionary()
+{
+   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNUnpackProc*)0x0)->GetClass();
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+TClass *TSCNUnpackProc::Class()
+{
+   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNUnpackProc*)0x0)->GetClass(); }
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+atomic_TClass_ptr TSCNAnlProc::fgIsA(0);  // static to hold class pointer
+
+//______________________________________________________________________________
+const char *TSCNAnlProc::Class_Name()
+{
+   return "TSCNAnlProc";
+}
+
+//______________________________________________________________________________
+const char *TSCNAnlProc::ImplFileName()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnlProc*)0x0)->GetImplFileName();
+}
+
+//______________________________________________________________________________
+int TSCNAnlProc::ImplFileLine()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnlProc*)0x0)->GetImplFileLine();
+}
+
+//______________________________________________________________________________
+TClass *TSCNAnlProc::Dictionary()
+{
+   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnlProc*)0x0)->GetClass();
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+TClass *TSCNAnlProc::Class()
+{
+   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnlProc*)0x0)->GetClass(); }
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+atomic_TClass_ptr TSCNAnlEvent::fgIsA(0);  // static to hold class pointer
+
+//______________________________________________________________________________
+const char *TSCNAnlEvent::Class_Name()
+{
+   return "TSCNAnlEvent";
+}
+
+//______________________________________________________________________________
+const char *TSCNAnlEvent::ImplFileName()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnlEvent*)0x0)->GetImplFileName();
+}
+
+//______________________________________________________________________________
+int TSCNAnlEvent::ImplFileLine()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnlEvent*)0x0)->GetImplFileLine();
+}
+
+//______________________________________________________________________________
+TClass *TSCNAnlEvent::Dictionary()
+{
+   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnlEvent*)0x0)->GetClass();
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+TClass *TSCNAnlEvent::Class()
+{
+   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSCNAnlEvent*)0x0)->GetClass(); }
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+void TSCNUnpackEvent::Streamer(TBuffer &R__b)
+{
+   // Stream an object of class TSCNUnpackEvent.
+
+   if (R__b.IsReading()) {
+      R__b.ReadClassBuffer(TSCNUnpackEvent::Class(),this);
+   } else {
+      R__b.WriteClassBuffer(TSCNUnpackEvent::Class(),this);
+   }
+}
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_TSCNUnpackEvent(void *p) {
+      return  p ? new(p) ::TSCNUnpackEvent : new ::TSCNUnpackEvent;
+   }
+   static void *newArray_TSCNUnpackEvent(Long_t nElements, void *p) {
+      return p ? new(p) ::TSCNUnpackEvent[nElements] : new ::TSCNUnpackEvent[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_TSCNUnpackEvent(void *p) {
+      delete ((::TSCNUnpackEvent*)p);
+   }
+   static void deleteArray_TSCNUnpackEvent(void *p) {
+      delete [] ((::TSCNUnpackEvent*)p);
+   }
+   static void destruct_TSCNUnpackEvent(void *p) {
+      typedef ::TSCNUnpackEvent current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::TSCNUnpackEvent
+
+//______________________________________________________________________________
+void TSCNCalProc::Streamer(TBuffer &R__b)
+{
+   // Stream an object of class TSCNCalProc.
+
+   if (R__b.IsReading()) {
+      R__b.ReadClassBuffer(TSCNCalProc::Class(),this);
+   } else {
+      R__b.WriteClassBuffer(TSCNCalProc::Class(),this);
+   }
+}
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_TSCNCalProc(void *p) {
+      return  p ? new(p) ::TSCNCalProc : new ::TSCNCalProc;
+   }
+   static void *newArray_TSCNCalProc(Long_t nElements, void *p) {
+      return p ? new(p) ::TSCNCalProc[nElements] : new ::TSCNCalProc[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_TSCNCalProc(void *p) {
+      delete ((::TSCNCalProc*)p);
+   }
+   static void deleteArray_TSCNCalProc(void *p) {
+      delete [] ((::TSCNCalProc*)p);
+   }
+   static void destruct_TSCNCalProc(void *p) {
+      typedef ::TSCNCalProc current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::TSCNCalProc
+
+//______________________________________________________________________________
+void TSCNCalEvent::Streamer(TBuffer &R__b)
+{
+   // Stream an object of class TSCNCalEvent.
+
+   if (R__b.IsReading()) {
+      R__b.ReadClassBuffer(TSCNCalEvent::Class(),this);
+   } else {
+      R__b.WriteClassBuffer(TSCNCalEvent::Class(),this);
+   }
+}
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_TSCNCalEvent(void *p) {
+      return  p ? new(p) ::TSCNCalEvent : new ::TSCNCalEvent;
+   }
+   static void *newArray_TSCNCalEvent(Long_t nElements, void *p) {
+      return p ? new(p) ::TSCNCalEvent[nElements] : new ::TSCNCalEvent[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_TSCNCalEvent(void *p) {
+      delete ((::TSCNCalEvent*)p);
+   }
+   static void deleteArray_TSCNCalEvent(void *p) {
+      delete [] ((::TSCNCalEvent*)p);
+   }
+   static void destruct_TSCNCalEvent(void *p) {
+      typedef ::TSCNCalEvent current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::TSCNCalEvent
+
+//______________________________________________________________________________
+void TSCNAnalysis::Streamer(TBuffer &R__b)
+{
+   // Stream an object of class TSCNAnalysis.
+
+   if (R__b.IsReading()) {
+      R__b.ReadClassBuffer(TSCNAnalysis::Class(),this);
+   } else {
+      R__b.WriteClassBuffer(TSCNAnalysis::Class(),this);
+   }
+}
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_TSCNAnalysis(void *p) {
+      return  p ? new(p) ::TSCNAnalysis : new ::TSCNAnalysis;
+   }
+   static void *newArray_TSCNAnalysis(Long_t nElements, void *p) {
+      return p ? new(p) ::TSCNAnalysis[nElements] : new ::TSCNAnalysis[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_TSCNAnalysis(void *p) {
+      delete ((::TSCNAnalysis*)p);
+   }
+   static void deleteArray_TSCNAnalysis(void *p) {
+      delete [] ((::TSCNAnalysis*)p);
+   }
+   static void destruct_TSCNAnalysis(void *p) {
+      typedef ::TSCNAnalysis current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::TSCNAnalysis
+
+//______________________________________________________________________________
+void TSCNParameter::Streamer(TBuffer &R__b)
+{
+   // Stream an object of class TSCNParameter.
+
+   if (R__b.IsReading()) {
+      R__b.ReadClassBuffer(TSCNParameter::Class(),this);
+   } else {
+      R__b.WriteClassBuffer(TSCNParameter::Class(),this);
+   }
+}
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_TSCNParameter(void *p) {
+      return  p ? new(p) ::TSCNParameter : new ::TSCNParameter;
+   }
+   static void *newArray_TSCNParameter(Long_t nElements, void *p) {
+      return p ? new(p) ::TSCNParameter[nElements] : new ::TSCNParameter[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_TSCNParameter(void *p) {
+      delete ((::TSCNParameter*)p);
+   }
+   static void deleteArray_TSCNParameter(void *p) {
+      delete [] ((::TSCNParameter*)p);
+   }
+   static void destruct_TSCNParameter(void *p) {
+      typedef ::TSCNParameter current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::TSCNParameter
+
+//______________________________________________________________________________
+void TSCNUnpackProc::Streamer(TBuffer &R__b)
+{
+   // Stream an object of class TSCNUnpackProc.
+
+   if (R__b.IsReading()) {
+      R__b.ReadClassBuffer(TSCNUnpackProc::Class(),this);
+   } else {
+      R__b.WriteClassBuffer(TSCNUnpackProc::Class(),this);
+   }
+}
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_TSCNUnpackProc(void *p) {
+      return  p ? new(p) ::TSCNUnpackProc : new ::TSCNUnpackProc;
+   }
+   static void *newArray_TSCNUnpackProc(Long_t nElements, void *p) {
+      return p ? new(p) ::TSCNUnpackProc[nElements] : new ::TSCNUnpackProc[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_TSCNUnpackProc(void *p) {
+      delete ((::TSCNUnpackProc*)p);
+   }
+   static void deleteArray_TSCNUnpackProc(void *p) {
+      delete [] ((::TSCNUnpackProc*)p);
+   }
+   static void destruct_TSCNUnpackProc(void *p) {
+      typedef ::TSCNUnpackProc current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::TSCNUnpackProc
+
+//______________________________________________________________________________
+void TSCNAnlProc::Streamer(TBuffer &R__b)
+{
+   // Stream an object of class TSCNAnlProc.
+
+   if (R__b.IsReading()) {
+      R__b.ReadClassBuffer(TSCNAnlProc::Class(),this);
+   } else {
+      R__b.WriteClassBuffer(TSCNAnlProc::Class(),this);
+   }
+}
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_TSCNAnlProc(void *p) {
+      return  p ? new(p) ::TSCNAnlProc : new ::TSCNAnlProc;
+   }
+   static void *newArray_TSCNAnlProc(Long_t nElements, void *p) {
+      return p ? new(p) ::TSCNAnlProc[nElements] : new ::TSCNAnlProc[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_TSCNAnlProc(void *p) {
+      delete ((::TSCNAnlProc*)p);
+   }
+   static void deleteArray_TSCNAnlProc(void *p) {
+      delete [] ((::TSCNAnlProc*)p);
+   }
+   static void destruct_TSCNAnlProc(void *p) {
+      typedef ::TSCNAnlProc current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::TSCNAnlProc
+
+//______________________________________________________________________________
+void TSCNAnlEvent::Streamer(TBuffer &R__b)
+{
+   // Stream an object of class TSCNAnlEvent.
+
+   if (R__b.IsReading()) {
+      R__b.ReadClassBuffer(TSCNAnlEvent::Class(),this);
+   } else {
+      R__b.WriteClassBuffer(TSCNAnlEvent::Class(),this);
+   }
+}
+

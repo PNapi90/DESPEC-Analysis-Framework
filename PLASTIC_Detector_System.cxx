@@ -140,8 +140,8 @@ void PLASTIC_Detector_System::Process_TAMEX(){
     TAMEX_CHANNEL_HEADER* head = (TAMEX_CHANNEL_HEADER*) pdata;
     
     //check if end of TAMEX MBS reached
-    bool ongoing = (head->identify == tamex_identifier) && (head->identify_2 == 0) && (head->sfp_id == 1);
-    
+    bool ongoing = (head->identify == tamex_identifier) && (head->identify_2 == 0) && (head->sfp_id == 1 || head->sfp_id == 0);
+
     if(!ongoing){
         tamex_end = true;
         return;
@@ -207,7 +207,7 @@ void PLASTIC_Detector_System::get_trigger(){
     //check place holder in stream
     PLACE_HOLDER* hold = (PLACE_HOLDER*) pdata;
     
-    if(hold->six_eight != six_f && false){
+    if(hold->six_eight != six_f){
         cerr << dec << hold->six_eight << endl;
         cerr << "PLACE_HOLDER error (trigger) in TAMEX!" << endl;
         exit(0);
@@ -270,7 +270,7 @@ void PLASTIC_Detector_System::get_edges(){
 
         //next word 
         pdata++;
-
+       
         //extract data
         TAMEX_DATA* data = (TAMEX_DATA*) pdata;
             

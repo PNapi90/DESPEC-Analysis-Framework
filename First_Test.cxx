@@ -78,9 +78,25 @@ TGo4EventProcessor(name) // Histograms defined here //
 	tamex_Mult_lead = new TH1*[4];
 	tamex_Mult_trail = new TH1*[4];
 
+	tamex_Mult_Ch_lead = new TH1**[4];
+	tamex_Mult_Ch_trail = new TH1**[4];
+
+	tamex_mult_mat_lead = new TH2*[4];
+	tamex_mult_mat_trail = new TH2*[4];
+
 	for(int i = 0;i < 4;++i){
 		tamex_Mult_lead[i] = MakeTH1('D',Form("tamex_lead_%d",i),Form("tamex_lead_%d",i),100,0,100);
 		tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),Form("tamex_trail_%d",i),100,0,100);
+
+		tamex_mult_mat_lead[i] = MakeTH2('D',Form("tamex_mat_lead_%d",i),Form("tamex_mat_lead_%d",i),20,0,20,100,0,100);
+		tamex_mult_mat_trail[i] = MakeTH2('D',Form("tamex_mat_trail_%d",i),Form("tamex_mat_trail_%d",i),20,0,20,100,0,100);
+		
+		tamex_Mult_Ch_lead[i] = new TH1*[17];
+		tamex_Mult_Ch_trail[i] = new TH1*[17];
+		for(int j = 0;j < 17;++j){
+			tamex_Mult_Ch_lead[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,j),Form("tamex_lead_ch_%d_%d",i,j),100,0,100);
+			tamex_Mult_Ch_trail[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,j),Form("tamex_trail_ch_%d_%d",i,j),100,0,100);
+		}
 	}
 
 
@@ -148,7 +164,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 TSCNUnpackProc::~TSCNUnpackProc()
 {
-
+	Detector_Systems[3]->write();
 	double mean = 0;
 	for(int i = 0;i < val_it;++i) mean += vals[i];
 	mean /= (double) val_it;
@@ -241,7 +257,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 3 && false){
+		if(PrcID_Conv == 2 && false){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex << *(pdata + i) << " ";
@@ -283,7 +299,6 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			if(RAW->CH_51_FIRED() && tdc_hits == 3){
 				int id_tmp = RAW->get_FATIMA_det_id(0);
 				double tdiff = RAW->get_FATIMA_Time_Diff();
-				cout << "IN FUNTION! " << id_tmp << " " << tdiff << endl;
 				DIFF_ARR[id_tmp]->Fill(tdiff);
 			}
 			int tdc_iter = 0;
@@ -323,16 +338,49 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			int pl_iter = 0;
 			int sum_l = 0;
 			int sum_t = 0;
+
+			int phys_ch = 0;
+			int sum_phys_l[17];
+			int sum_phys_t[17];
+			int called_channels[17];
+			for(int i = 0;i < 17;++i){
+				sum_phys_t[i] = 0;
+				sum_phys_l[i] = 0;
+				called_channels[i] = 0;
+			}
+
 			for(int i = 0;i < 4;++i){
 				sum_l = 0;
 				sum_t = 0;
 				pl_iter = RAW->get_PLASTIC_am_Fired(i);
-				for(int j = 0;j < 1;++j){
+				for(int j = 0;j < pl_iter;++j){
+
+					phys_ch = RAW->get_PLASTIC_physical_channel(i,j);
+					called_channels[j] = phys_ch;
+
+					sum_phys_l[phys_ch] += RAW->get_PLASTIC_physical_lead_hits(i,phys_ch);
+					sum_phys_t[phys_ch] += RAW->get_PLASTIC_physical_trail_hits(i,phys_ch);
+
 					sum_l += RAW->get_PLASTIC_lead_hits(i);
 					sum_t += RAW->get_PLASTIC_trail_hits(i);
 				}
-				tamex_Mult_lead[i]->Fill(sum_l);
-				tamex_Mult_trail[i]->Fill(sum_t);
+				for(int j = 0;j < pl_iter;++j){
+					if(sum_phys_l[called_channels[j]] > 0){
+						if(!tamex_Mult_Ch_lead[i][called_channels[j]]) tamex_Mult_Ch_lead[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,called_channels[j]),Form("tamex_lead_ch_%d_%d",i,called_channels[j]),100,0,100);
+						tamex_Mult_Ch_lead[i][called_channels[j]]->Fill(sum_phys_l[called_channels[j]]);
+						tamex_mult_mat_lead[i]->Fill(called_channels[j],sum_phys_l[called_channels[j]]);
+					}
+					if(sum_phys_t[called_channels[j]] > 0){
+						if(!tamex_Mult_Ch_trail[i][called_channels[j]]) tamex_Mult_Ch_trail[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,called_channels[j]),Form("tamex_trail_ch_%d_%d",i,called_channels[j]),100,0,100);
+						tamex_Mult_Ch_trail[i][called_channels[j]]->Fill(sum_phys_t[called_channels[j]]);
+						tamex_mult_mat_trail[i]->Fill(called_channels[j],sum_phys_t[called_channels[j]]);
+					}
+					sum_phys_l[called_channels[j]] = 0;
+					sum_phys_t[called_channels[j]] = 0;
+				}
+				if(sum_l > 0) tamex_Mult_lead[i]->Fill(sum_l);
+				if(sum_t > 0) tamex_Mult_trail[i]->Fill(sum_t);
+
 			}
 		}
 
@@ -424,7 +472,7 @@ void TSCNUnpackProc::load_PrcID_File(){
 Int_t TSCNUnpackProc::get_Conversion(Int_t PrcID){
 
 	for(int i = 0;i < 6;++i) if(PrcID == PrcID_Array[i]) return i;
-	cerr << "ProcID not known!" << endl;
+	cerr << "ProcID " << PrcID << " not known!" << endl;
 	exit(0);
 }
 

@@ -98,7 +98,11 @@ using namespace std;
 			TH1* tdc_hist;
 			TH1* WR_F;
 			TH1** DIFF_ARR;
+			TH1*** tamex_Mult_Ch_lead;
+			TH1*** tamex_Mult_Ch_trail;
 
+			TH2** tamex_mult_mat_lead;
+			TH2** tamex_mult_mat_trail;
 			//for the SIS modules
 
 		private:

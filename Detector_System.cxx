@@ -29,6 +29,8 @@ public:
 	virtual int* tmp_get_iterator() = 0;
 
 	virtual bool calibration_done() = 0;
+
+	virtual void write() = 0;
 };
 
 #endif
