@@ -118,6 +118,17 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	tdc_hist = MakeTH1('D',"tdc","tdc",1000,-60,1000);
 
+	Trail_LEAD = new TH1**[4];
+	//lead_lead = new TH1**[4];
+	for(int i = 0;i < 4;++i){
+		Trail_LEAD[i] = new TH1*[17];
+		//lead_lead[i] = new TH1*[17];
+		for(int j = 0;j < 17;++j){
+			Trail_LEAD[i][j] = NULL;
+		//	lead_lead[i][j] = NULL;
+		}
+	}
+
 
 	//create Detector Systems
 	Detector_Systems = new Detector_System*[6];
@@ -363,6 +374,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 					sum_l += RAW->get_PLASTIC_lead_hits(i);
 					sum_t += RAW->get_PLASTIC_trail_hits(i);
+					if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("lead_trail_%d_%d",i,phys_ch),Form("lead_trail_%d_%d",i,phys_ch),500,0,500);
+					Trail_LEAD[i][phys_ch]->Fill(RAW->get_PLASTIC_trail_T(i,j));//RAW->get_PLASTIC_trail_T(i,j) - RAW->get_PLASTIC_lead_T(i,j)) ;
+
+
 				}
 				for(int j = 0;j < pl_iter;++j){
 					if(sum_phys_l[called_channels[j]] > 0){

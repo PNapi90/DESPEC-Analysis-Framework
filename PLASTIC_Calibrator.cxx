@@ -175,7 +175,7 @@ double PLASTIC_Calibrator::get_Calibration_val(ULong value,int tamex_id_tmp,int 
 			break;
 		}
 	}
-	return return_val;
+	return return_val*5000.;
 }
 
 //---------------------------------------------------------------

@@ -32,10 +32,10 @@ private:
 	int trailing_hits_ch[4][17];
 	
 
-	ULong coarse_T_edge_lead[4][100];
-	ULong coarse_T_edge_trail[4][100];
-	ULong fine_T_edge_lead[4][100];
-	ULong fine_T_edge_trail[4][100];
+	double coarse_T_edge_lead[4][100];
+	double coarse_T_edge_trail[4][100];
+	double fine_T_edge_lead[4][100];
+	double fine_T_edge_trail[4][100];
 	UInt ch_ID[4][100];
 	bool fired_tamex[4];
 	bool ch51;

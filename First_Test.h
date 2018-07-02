@@ -103,6 +103,8 @@ using namespace std;
 
 			TH2** tamex_mult_mat_lead;
 			TH2** tamex_mult_mat_trail;
+
+			TH1*** Trail_LEAD;
 			//for the SIS modules
 
 		private:

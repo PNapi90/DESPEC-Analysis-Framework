@@ -41,6 +41,7 @@ extern void G__set_cpp_environmentG__SCN();
 #include "./PLASTIC_Detector_System.h"
 #include "./QDC_751.h"
 #include "./Raw_Event.h"
+#include "./Raw_Event_Storage.h"
 #include "./TAMEX.h"
 #include "./TDC_1290.h"
 #include "./TSCNAnalysis.h"
