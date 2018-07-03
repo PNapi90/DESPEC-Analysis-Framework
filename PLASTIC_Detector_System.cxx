@@ -25,22 +25,22 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
 
     tamex_iter = 0;
 
+    leading_hits = new int*[100];
+    trailing_hits = new int*[100];
+
     coarse_T = new ULong[100];
     fine_T = new ULong[100];
     ch_ID = new unsigned int[100];
 
-    edge_coarse = new ULong**[100];
-    edge_fine = new ULong**[100];
-    ch_ID_edge = new unsigned int**[100];
+    edge_coarse = new ULong*[100];
+    edge_fine = new ULong*[100];
+    ch_ID_edge = new unsigned int*[100];
     for(int o = 0;o < 100;++o){
-        edge_coarse[o] = new ULong*[100];
-        edge_fine[o] = new ULong*[100];
-        ch_ID_edge[o] = new unsigned int*[100];
-        for(int i = 0;i < 100;++i){
-            edge_coarse[o][i] = new ULong[2];
-            edge_fine[o][i] = new ULong[2];
-            ch_ID_edge[o][i] = new unsigned int[2];
-        }
+        edge_coarse[o] = new ULong[100];
+        edge_fine[o] = new ULong[100];
+        ch_ID_edge[o] = new unsigned int[100];
+        leading_hits[o] = new int[100];
+        trailing_hits[o] = new int[100];
     }
 }
 
@@ -48,14 +48,11 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
 
 PLASTIC_Detector_System::~PLASTIC_Detector_System(){
     for(int i = 0;i < 100;++i){
-        for(int j = 0;j < 100;++j){
-            delete[] edge_coarse[i][j];
-            delete[] edge_fine[i][j];
-            delete[] ch_ID_edge[i][j];
-        }
         delete[] edge_coarse[i];
         delete[] edge_fine[i];
         delete[] ch_ID_edge[i];
+        delete[] leading_hits[i];
+        delete[] trailing_hits[i];
     }
     delete[] edge_coarse;
     delete[] edge_fine;
@@ -71,7 +68,7 @@ PLASTIC_Detector_System::~PLASTIC_Detector_System(){
 //---------------------------------------------------------------
 
 
-ULong*** PLASTIC_Detector_System::tmp_get_coarse_T(){return edge_coarse;}
+ULong** PLASTIC_Detector_System::tmp_get_coarse_T(){return edge_coarse;}
 
 
 
@@ -85,13 +82,16 @@ int PLASTIC_Detector_System::tmp_get_am_hits(){
 
 //---------------------------------------------------------------
 
-unsigned int*** PLASTIC_Detector_System::tmp_get_chID(){return ch_ID_edge;}
+unsigned int** PLASTIC_Detector_System::tmp_get_chID(){return ch_ID_edge;}
+
+//---------------------------------------------------------------
 
 int* PLASTIC_Detector_System::tmp_get_iterator(){return iterator;}
 
 //---------------------------------------------------------------
 
 void PLASTIC_Detector_System::get_Event_data(Raw_Event* RAW){
+
     RAW->set_DATA_PLASTIC(iterator,edge_coarse,edge_fine,ch_ID_edge,coarse_T,fine_T); 
 }
 
@@ -140,8 +140,8 @@ void PLASTIC_Detector_System::Process_TAMEX(){
     TAMEX_CHANNEL_HEADER* head = (TAMEX_CHANNEL_HEADER*) pdata;
     
     //check if end of TAMEX MBS reached
-    bool ongoing = (head->identify == tamex_identifier) && (head->identify_2 == 0) && (head->sfp_id == 1);
-    
+    bool ongoing = (head->identify == tamex_identifier) && (head->identify_2 == 0) && (head->sfp_id == 1 || head->sfp_id == 0);
+
     if(!ongoing){
         tamex_end = true;
         return;
@@ -207,7 +207,7 @@ void PLASTIC_Detector_System::get_trigger(){
     //check place holder in stream
     PLACE_HOLDER* hold = (PLACE_HOLDER*) pdata;
     
-    if(hold->six_eight != six_f && false){
+    if(hold->six_eight != six_f){
         cerr << dec << hold->six_eight << endl;
         cerr << "PLACE_HOLDER error (trigger) in TAMEX!" << endl;
         exit(0);
@@ -228,15 +228,29 @@ void PLASTIC_Detector_System::get_trigger(){
 
 //---------------------------------------------------------------
 
+void PLASTIC_Detector_System::reset_edges(){
+    for(int i = 0;i < 4;++i){
+        for(int j = 0;j < 100;++j){
+            leading_hits[i][j] = 0;
+            trailing_hits[i][j] = 0;
+            edge_coarse[i][j] = 131313;
+            edge_fine[i][j] = 131313;
+            ch_ID_edge[i][j] = 131313;
+        }
+    }
+}
+
+
+//---------------------------------------------------------------
+
 void PLASTIC_Detector_System::get_edges(){
     //set iterator[tamex_iter] of edges to 0
+    reset_edges();
     iterator[tamex_iter] = 0;
-
-    //lead = 0 -> leading edge, lead = 1 -> trailing edge
-    int lead = 0;
 
     //loop over remaining words (getting leading and trailing edge data)
     written = false;
+
     while(no_error_reached()){
         //check place holder in stream
         PLACE_HOLDER* hold = (PLACE_HOLDER*) pdata;
@@ -256,21 +270,18 @@ void PLASTIC_Detector_System::get_edges(){
 
         //next word 
         pdata++;
-
+       
         //extract data
         TAMEX_DATA* data = (TAMEX_DATA*) pdata;
-
-        edge_coarse[tamex_iter][iterator[tamex_iter]][lead] = data->coarse_T;
-        edge_fine[tamex_iter][iterator[tamex_iter]][lead] = data->fine_T;
-        ch_ID_edge[tamex_iter][iterator[tamex_iter]][lead] = data->ch_ID;
-
-        lead++;
-        if(lead == 2){
-            //move to next pair of edges
-            lead = 0;
-            iterator[tamex_iter]++;
-        }
+            
+        edge_coarse[tamex_iter][iterator[tamex_iter]] = data->coarse_T;
+        edge_fine[tamex_iter][iterator[tamex_iter]] = data->fine_T;
+        ch_ID_edge[tamex_iter][iterator[tamex_iter]] = data->ch_ID;
+        lead_arr[tamex_iter][iterator[tamex_iter]] = 1 - (data->ch_ID % 2);;    
         
+        //trailing edge reached
+        iterator[tamex_iter]++;
+
         written = true;
 
         //next word
@@ -346,12 +357,10 @@ void PLASTIC_Detector_System::calibrate_ONLINE(){
 void PLASTIC_Detector_System::calibrate_OFFLINE(){
     int channel_ID_tmp = 0;
     for(int i = 0;i < 4;++i){
-        if(iterator[i] > 0){
-            for(int j = 0;j < iterator[i];++j){
-                channel_ID_tmp = (int) ch_ID_edge[i][j][0];
-                edge_fine[i][j][0] += PLASTIC_Calibration->get_Calibration_val(edge_fine[i][j][0],i,channel_ID_tmp);
-                edge_fine[i][j][1] += PLASTIC_Calibration->get_Calibration_val(edge_fine[i][j][1],i,channel_ID_tmp);
-            }
+        for(int j = 0;j < iterator[i];++j){
+            channel_ID_tmp = (int) ch_ID_edge[i][j];
+            if(edge_coarse[i][j] != 131313) edge_fine[i][j] += PLASTIC_Calibration->get_Calibration_val(edge_fine[i][j],i,channel_ID_tmp);
+            else edge_fine[i][j] = 131313;
         }
     }
 }

@@ -52,8 +52,8 @@ private:
 
 	bool wired_FEBEX(int,int);
 
-    GALILEO_Time_Calibration* GALILEO_T_CALIB;
-    GALILEO_Energy_Calibration* GALILEO_E_CALIB;
+	GALILEO_Time_Calibration* GALILEO_T_CALIB;
+	GALILEO_Energy_Calibration* GALILEO_E_CALIB;
 
 
 public:

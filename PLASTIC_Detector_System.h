@@ -51,14 +51,20 @@ private:
     int* iterator;
     int tamex_id[100];
 
+
     int tamex_iter;
 
     ULong Pre_Trigger_Window;
     ULong Post_Trigger_Window;
 
-    ULong*** edge_coarse;
-    ULong*** edge_fine;
-    unsigned int*** ch_ID_edge;
+    int** leading_hits;
+    int** trailing_hits;
+
+    int lead_arr[4][100];
+
+    ULong** edge_coarse;
+    ULong** edge_fine;
+    unsigned int** ch_ID_edge;
 
     ULong* coarse_T;
     ULong* fine_T;
@@ -74,6 +80,7 @@ private:
     void calibrate_OFFLINE();
 
     void get_Calib_type();
+    void reset_edges();
 
     bool no_error_reached();
     
@@ -91,14 +98,16 @@ public:
 
     int* get_pdata();
 
-    ULong*** tmp_get_coarse_T();
+    ULong** tmp_get_coarse_T();
     int tmp_get_am_hits();
 
-    unsigned int*** tmp_get_chID();
+    unsigned int** tmp_get_chID();
 
     int* tmp_get_iterator();
 
     bool calibration_done();
+
+    void write(){return;};
 
 };
 

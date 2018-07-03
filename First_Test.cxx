@@ -72,10 +72,38 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	hit_mat = MakeTH2('D',"hitmat","hitmat",37,0,36,37,0,36);
 
-	hit_hist = MakeTH1('D',"hits","hits",37,0,36);
+	hit_hist = MakeTH1('D',"hits","hits",60,0,60);
 	am_hits = MakeTH1('D',"hits_a","hits_a",51,0,50);
 
 	C_t = MakeTH1('D',"pl","pl",1001,0,1000);
+
+	tamex_Mult_lead = new TH1*[4];
+	tamex_Mult_trail = new TH1*[4];
+
+	tamex_Mult_Ch_lead = new TH1**[4];
+	tamex_Mult_Ch_trail = new TH1**[4];
+
+	tamex_mult_mat_lead = new TH2*[4];
+	tamex_mult_mat_trail = new TH2*[4];
+
+	for(int i = 0;i < 4;++i){
+		tamex_Mult_lead[i] = MakeTH1('D',Form("tamex_lead_%d",i),Form("tamex_lead_%d",i),100,0,100);
+		tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),Form("tamex_trail_%d",i),100,0,100);
+
+		tamex_mult_mat_lead[i] = MakeTH2('D',Form("tamex_mat_lead_%d",i),Form("tamex_mat_lead_%d",i),20,0,20,30,0,30);
+		tamex_mult_mat_trail[i] = MakeTH2('D',Form("tamex_mat_trail_%d",i),Form("tamex_mat_trail_%d",i),20,0,20,30,0,30);
+		
+		tamex_Mult_Ch_lead[i] = new TH1*[17];
+		tamex_Mult_Ch_trail[i] = new TH1*[17];
+		for(int j = 0;j < 17;++j){
+			tamex_Mult_Ch_lead[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,j),Form("tamex_lead_ch_%d_%d",i,j),100,0,100);
+			tamex_Mult_Ch_trail[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,j),Form("tamex_trail_ch_%d_%d",i,j),100,0,100);
+		}
+	}
+
+
+	DIFF_ARR = new TH1*[2];
+	for(int i = 0;i < 2;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),300,-30000,0);
 
 	WR_used = false;
 
@@ -98,6 +126,19 @@ TGo4EventProcessor(name) // Histograms defined here //
 	GAL_Chan_Time_Diff = MakeTH1('D',"GALILEO_Chan_Time_DIff","GALILEO Channel Time Difference",20001,-5000,5000);
 	GAL_Chan_E = MakeTH1('D',"GALILEO_E","GALILEO Channel Energy",80001,0,800000);
 	GAL_Chan_E_Mat = MakeTH2('D',"GALILEO_E_Mat","GALILEO Chanel Energy Matrix",10001,0,800000,10001,0,800000);
+
+	tdc_hist = MakeTH1('D',"tdc","tdc",1000,-60,1000);
+
+	Trail_LEAD = new TH1**[4];
+	//lead_lead = new TH1**[4];
+	for(int i = 0;i < 4;++i){
+		Trail_LEAD[i] = new TH1*[17];
+		//lead_lead[i] = new TH1*[17];
+		for(int j = 0;j < 17;++j){
+			Trail_LEAD[i][j] = NULL;
+		//	lead_lead[i][j] = NULL;
+		}
+	}
 
 
 	//create Detector Systems
@@ -123,6 +164,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	count = 0;
 	iterator = 0;
 	cals_done = false;
+	val_it = 0;
 
 }
 
@@ -132,6 +174,15 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 TSCNUnpackProc::~TSCNUnpackProc()
 {
+	Detector_Systems[3]->write();
+	double mean = 0;
+	for(int i = 0;i < val_it;++i) mean += vals[i];
+	mean /= (double) val_it;
+	double sq = 0;
+	for(int i = 0;i < val_it;++i) sq += pow(mean - vals[i],2);
+	sq = sqrt(sq)/((double) val_it);
+	cout << "MEAN " << mean << " +- " << sq << endl;
+
 
 	for(int i = 0;i < 6;++i){
 		if(Detector_Systems[i]) delete Detector_Systems[i];
@@ -214,10 +265,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 2 && false){
+		if(PrcID_Conv == 3 && false){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
-				cout << hex <<*(pdata + i) << " ";
+				cout << hex << *(pdata + i) << " ";
 				if(i % 5 == 0 && i > 0) cout << endl;
 			}
 			cout << "\n---------------------\n";
@@ -243,23 +294,106 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		if(PrcID_Conv == 3){
 			//to get histograms (e.g.)
 			am_FATIMA_hits = RAW->get_FATIMA_am_Fired();
-			am_hits->Fill(am_FATIMA_hits);
+			int tdc_hits = RAW->get_FATIMA_am_Fired_TDC();
+			if(am_hits > 0) am_hits->Fill(am_FATIMA_hits);
 
 			double sum = 0;
 			double tmpE[2];
-			for(int i = 0;i < am_FATIMA_hits;++i){
-				//e,g, sum spectrum
-				tmpE[i] = RAW->get_FATIMA_E(i);
-				sum += tmpE[i];
-				hit_hist->Fill(RAW->get_FATIMA_det_id(i));
+			double TDC_times[2] = {0,0};
+			double TDC_time_6[2];
+			int det_iter = 0;
+			bool called_link = false;
+
+			if(RAW->CH_51_FIRED() && tdc_hits == 3){
+				int id_tmp = RAW->get_FATIMA_det_id(0);
+				double tdiff = RAW->get_FATIMA_Time_Diff();
+				DIFF_ARR[id_tmp]->Fill(tdiff);
 			}
-			if(am_FATIMA_hits == 2) FAT_MAT->Fill(tmpE[0],tmpE[1]);
+			int tdc_iter = 0;
+			for(int i = 0;i < tdc_hits;++i){
+				//hit_hist->Fill(RAW->get_FATIMA_det_id(i));
+				if(RAW->get_FATIMA_QDC_TDC_LINKED(i)){
+					//e,g, sum spectrum
+					tmpE[i] = RAW->get_FATIMA_E(i);
+					sum += tmpE[i];
+					hit_hist->Fill(RAW->get_FATIMA_det_id(i));
+					tdc_hist->Fill(RAW->get_FATIMA_TDC_T(i)*1e-6);
+					if(RAW->get_FATIMA_det_id(i) < 50){
+						det_iter = RAW->get_FATIMA_det_id(i);
+						TDC_times[i] = (double) RAW->get_FATIMA_TDC_T(i);
+					//cout << "YES! " << det_iter << " " << TDC_times[i] << endl;
+					}
+					called_link = true;
+				}
+				else{
+					if(RAW->get_FATIMA_det_id(i) >= 50 && called_link && false){
+						//cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << " " << TDC_times[det_iter] << endl;
+						TDC_time_6[tdc_iter] = (double) RAW->get_FATIMA_TDC_T(i);
+						tdc_iter++;
+					}
+				}
+			}
+			for(int i = 0;i < tdc_iter*0;++i){
+				//if(TDC_time_6[i] > 0 && TDC_times[0] > 0) DIFF_ARR[i]->Fill(TDC_time_6[i] - TDC_times[0]);
+			}
+			if(am_FATIMA_hits == 2) FAT_MAT->Fill(RAW->get_FATIMA_E(0),RAW->get_FATIMA_E(1));
 			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);
 		}
 
 		if(PrcID_Conv == 2){
 			//do something here
+			int fired_pl[4];
+			int pl_iter = 0;
+			int sum_l = 0;
+			int sum_t = 0;
 
+			int phys_ch = 0;
+			int sum_phys_l[17];
+			int sum_phys_t[17];
+			int called_channels[17];
+			for(int i = 0;i < 17;++i){
+				sum_phys_t[i] = 0;
+				sum_phys_l[i] = 0;
+				called_channels[i] = 0;
+			}
+
+			for(int i = 0;i < 4;++i){
+				sum_l = 0;
+				sum_t = 0;
+				pl_iter = RAW->get_PLASTIC_am_Fired(i);
+				for(int j = 0;j < pl_iter;++j){
+
+					phys_ch = RAW->get_PLASTIC_physical_channel(i,j);
+					called_channels[j] = phys_ch;
+
+					sum_phys_l[phys_ch] += RAW->get_PLASTIC_physical_lead_hits(i,phys_ch);
+					sum_phys_t[phys_ch] += RAW->get_PLASTIC_physical_trail_hits(i,phys_ch);
+
+					sum_l += RAW->get_PLASTIC_lead_hits(i);
+					sum_t += RAW->get_PLASTIC_trail_hits(i);
+					if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("lead_trail_%d_%d",i,phys_ch),Form("lead_trail_%d_%d",i,phys_ch),500,0,500);
+					Trail_LEAD[i][phys_ch]->Fill(RAW->get_PLASTIC_trail_T(i,j));//RAW->get_PLASTIC_trail_T(i,j) - RAW->get_PLASTIC_lead_T(i,j)) ;
+
+
+				}
+				for(int j = 0;j < pl_iter;++j){
+					if(sum_phys_l[called_channels[j]] > 0){
+						if(!tamex_Mult_Ch_lead[i][called_channels[j]]) tamex_Mult_Ch_lead[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,called_channels[j]),Form("tamex_lead_ch_%d_%d",i,called_channels[j]),30,0,30);
+						tamex_Mult_Ch_lead[i][called_channels[j]]->Fill(sum_phys_l[called_channels[j]]);
+						tamex_mult_mat_lead[i]->Fill(called_channels[j],sum_phys_l[called_channels[j]]);
+					}
+					if(sum_phys_t[called_channels[j]] > 0){
+						if(!tamex_Mult_Ch_trail[i][called_channels[j]]) tamex_Mult_Ch_trail[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,called_channels[j]),Form("tamex_trail_ch_%d_%d",i,called_channels[j]),30,0,30);
+						tamex_Mult_Ch_trail[i][called_channels[j]]->Fill(sum_phys_t[called_channels[j]]);
+						tamex_mult_mat_trail[i]->Fill(called_channels[j],sum_phys_t[called_channels[j]]);
+					}
+					sum_phys_l[called_channels[j]] = 0;
+					sum_phys_t[called_channels[j]] = 0;
+				}
+				if(sum_l > 0) tamex_Mult_lead[i]->Fill(sum_l);
+				if(sum_t > 0) tamex_Mult_trail[i]->Fill(sum_t);
+
+			}
 		}
 		
 		// GALILEO CASE //
@@ -339,9 +473,9 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				iterator = 0;
 			}
 			else{
-				WR_tmp[0] = WR_tmp[1];
-				called[0] = called[1];
-				iterator = 1;
+				//WR_tmp[0] = WR_tmp[1];
+				//called[0] = called[1];
+				iterator = 0;
 			}
 		}
 		else if(called[0] == 3){
@@ -353,9 +487,9 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			//========================================================
 			//change of variables (e.g. x[0] = x[1] also needed!)
 			//========================================================
-			WR_tmp[0] = WR_tmp[1];
-			called[0] = called[1];
-			iterator = 1;
+			//WR_tmp[0] = WR_tmp[1];
+			//called[0] = called[1];
+			iterator = 0;
 		}
 				
 	}
@@ -393,7 +527,7 @@ void TSCNUnpackProc::load_PrcID_File(){
 Int_t TSCNUnpackProc::get_Conversion(Int_t PrcID){
 
 	for(int i = 0;i < 6;++i) if(PrcID == PrcID_Array[i]) return i;
-	cerr << "ProcID not known!" << endl;
+	cerr << "ProcID " << PrcID << " not known!" << endl;
 	exit(0);
 }
 

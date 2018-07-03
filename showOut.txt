@@ -1,7 +1,7 @@
 GO4-*> Reading library: libGo4UserAnalysis  
 GO4-*> Find user analysis class TSCNAnalysis  
 GO4-*> !!! Find constructor with prototype TSCNAnalysis::TSCNAnalysis(int, char**)  
-GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffc60cd38b0)  
+GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffdc1242f00)  
 GO4-*> Welcome to Go4 Analysis Framework Release v5.3.0 (build 50300) !  
 **** TSCNAnalysis: Create Go4Analysis
 GO4-*> Analysis: Added analysis step Unpack  
@@ -12,9 +12,9 @@ GO4-*> Opening AutoSave file Go4AnalysisASF.root with READ mode
 GO4-*> Analysis LoadObjects: Loading from autosave file Go4AnalysisASF.root   
 GO4-*> Updated parameter SCNParameter from parameter SCNParameter  
 GO4-*> AutoSave file Go4AnalysisASF.root was closed.  
-GO4-*> TGo4MbsFile: Open file ../pl_fat_0003.lmd  
+GO4-*> TGo4MbsFile: Open file ../pl_fat_0001.lmd  
 GO4-*> UnpackFactory: Create input event for MBS  
-GO4-*> Event MbsEvent101 has source ../pl_fat_0003.lmd class: TGo4MbsFile  
+GO4-*> Event MbsEvent101 has source ../pl_fat_0001.lmd class: TGo4MbsFile  
 GO4-*> UnpackFactory: Create event processor UnpackProc  
 **** TSCNUnpackProc: Create
 0.25		-0.00052521
@@ -8048,7 +8048,7 @@ Autosave enabled: 		1
 ----------------------------------------------  
  ++++ Analysis Step Unpack ++++	 
   Eventsource: TGo4MbsFile 
-    Name: 	../pl_fat_0003.lmd 
+    Name: 	../pl_fat_0001.lmd 
     Timeout: 	1 s
     Startevent: 	0	 Stopevent: 	0 
     Event interval: 	0
@@ -8070,20 +8070,22 @@ Tagfile: GO4-NOLMDTAG
 
 **************************************
 GO4-*> Analysis loop is starting...  
-GO4-*> Start file: ../pl_fat_0003.lmd tagfile:none first:0 last:0 delta:0  
+GO4-*> Start file: ../pl_fat_0001.lmd tagfile:none first:0 last:0 delta:0  
 
-First event #: 8913338
-GO4-*> End of event source TGo4MbsFile: name:../pl_fat_0003.lmd msg:-I-f_evt: no more event file:../pl_fat_0003.lmd  
+First event #: 1227054
+GO4-*> End of event source TGo4MbsFile: name:../pl_fat_0001.lmd msg:-I-f_evt: no more event file:../pl_fat_0001.lmd  
 **** TSCNAnalysis: PostLoop
-Last event: 0 Total events: 3334755
+Last event: 0 Total events: 3846062
 
-Input file was: /data.local/WR_plastic_FAT/pl_fat_0003.lmd
+Input file was: /data.local/WR_plastic_FAT/pl_fat_0001.lmd
 Tapelabel:	RFIO:X86L-5
 UserName:	rising
 RunID:	
 	Explanation: 
 	Comments: 
-GO4-*> Go4 EventEndException  appeared in 3334755 cycle.  
+GO4-*> Go4 EventEndException  appeared in 3846062 cycle.  
 **** TSCNAnalysis: Delete
 GO4-*> Opening AutoSave file Go4AnalysisASF.root with RECREATE mode  
 GO4-*> AutoSave file Go4AnalysisASF.root was closed.  
+written
+MEAN -nan +- -nan

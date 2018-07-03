@@ -6,6 +6,9 @@
 #include <string>
 #include <cmath>
 
+#include <TFile.h>
+#include <TH1.h>
+
 #include "FATIMA_Energy_Calibration.h"
 #include "FATIMA_Time_Calibration.h"
 
@@ -18,6 +21,8 @@
 class FATIMA_Detector_System : public Detector_System{
 
 private:
+
+    int he_iter;
 	int max_am_dets;
 
 	int* pdata;
@@ -29,12 +34,15 @@ private:
 	ULong* QDC_Time_Fine;
 	ULong* TDC_Time;
 
-	int* det_ids;
+	int* det_ids_QDC;
+    int* det_ids_TDC;
+
 	int** det_ID;
 	int** det_ID_TDC;
 
 	bool exiter;
 	bool no_data;
+    bool QDC_DATA;
 
     int Fired_QDC_Channels[100][2];
     int fired_QDC_amount,fired_TDC_amount;
@@ -49,9 +57,13 @@ private:
 	bool wired_QDC(int,int);
 	bool wired_TDC(int,int);
 
+    bool check_additional(int);
+
     FATIMA_Time_Calibration* FATIMA_T_CALIB;
     FATIMA_Energy_Calibration* FATIMA_E_CALIB;
 
+    //tmp root things
+    TH1D** Det_Hist;
 
 public:
 	FATIMA_Detector_System();
@@ -61,14 +73,16 @@ public:
 	void get_Event_data(Raw_Event*);
 	int* get_pdata();
 
-	unsigned long*** tmp_get_coarse_T(){return NULL;};
+	unsigned long** tmp_get_coarse_T(){return NULL;};
     int tmp_get_am_hits(){return 0;};
 
-    unsigned int*** tmp_get_chID(){return NULL;};
+    unsigned int** tmp_get_chID(){return NULL;};
 
     int* tmp_get_iterator(){return NULL;};
 
     bool calibration_done(){return false;}
+
+    void write();
 
 
 };

@@ -43,7 +43,7 @@ public:
 	void calibrate(ULong**,ULong**,UInt**,int,int);
 	void calibrate(ULong,ULong,ULong*,int);
 
-    void get_data(ULong***,UInt***,int,int*);
+    void get_data(ULong**,UInt**,int,int*);
 
     void ONLINE_CALIBRATION();
     double get_Calibration_val(ULong,int,int);

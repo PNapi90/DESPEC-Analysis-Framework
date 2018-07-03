@@ -92,6 +92,10 @@ void GALILEO_Detector_System::get_Event_data(Raw_Event* RAW){
 
 void GALILEO_Detector_System::Process_MBS(int* pdata){
 
+    reset_fired_channels();
+    
+    int current_det = 0;
+    
     this->pdata = pdata;
     
     bool FEBEX_data_loop = true;
@@ -164,10 +168,10 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 		
 		FEBEX_Chan_Header *fbx_Ch=(FEBEX_Chan_Header*) this->pdata;
 
-		int current_det = GALILEO_map[std::make_pair(board_id, (fbx_Ch->Ch_ID))];
+		current_det = GALILEO_map[std::make_pair(board_id, (fbx_Ch->Ch_ID))];
 		
-		if(fbx_Ch->Ch_ID == 1) cout<<"Board ID = "<<board_id<<"   Channel ID = "<<(fbx_Ch->Ch_ID)<<"    Current Detector = "<<current_det<<endl;
-		
+		//cout<<num_channels<<" "<<board_id<<" "<<fbx_Ch->Ch_ID<<" "<<current_det<<endl;
+				
 		det_ids[i] = current_det;
 		
 		
@@ -189,21 +193,27 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 		FEBEX_En *fbx_Ch_En=(FEBEX_En*) this->pdata; 
 	    
 		Chan_Energy[current_det] = fbx_Ch_En->chan_en;
-		
-		//cout<<"Channel Energy = "<<fbx_Ch_En->chan_en<<endl;
-		
+				
 		Calibrate_FEBEX(current_det);
+		
+		//cout<<"Channel Energy = "<<Chan_Energy[current_det]<<"   Current Detector = "<<current_det<<endl;
 			    
 		this->pdata++; // Moves to Future Use //
 		
 		++fired_FEBEX_amount;
 		
+		
+		this->pdata++; // Moves to next channel //
+
 		// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
                 // @@@@ Traces Would Go Here @@@@@ //
                 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
 		
 			    	    
 	    }
+	    
+	    this->pdata--; // Moves to next channel //
+
 	    
 	    --num_modules;
 	    

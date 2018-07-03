@@ -88,13 +88,24 @@ using namespace std;
 			TH1* WR_HIST;
 			TH1* WR_HIST2;
 			TH1* C_t;
+			TH1** tamex_Mult_lead;
+			TH1** tamex_Mult_trail;
 
 			TH1*** mat;
 			TH1* all;
 			TH1* all2;
 			TH1* hit_hist;
 			TH1* am_hits;
+			TH1* tdc_hist;
 			TH1* WR_F;
+			TH1** DIFF_ARR;
+			TH1*** tamex_Mult_Ch_lead;
+			TH1*** tamex_Mult_Ch_trail;
+
+			TH2** tamex_mult_mat_lead;
+			TH2** tamex_mult_mat_trail;
+
+			TH1*** Trail_LEAD;
 			//for the SIS modules
 			
 			
@@ -117,6 +128,9 @@ using namespace std;
 
 			Int_t PrcID_Array[10];
 			bool Used_Systems[10];
+
+			double vals[100000];
+			int val_it;
 
 			bool cals_done,WR_used;
 
