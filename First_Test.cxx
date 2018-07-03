@@ -130,12 +130,15 @@ TGo4EventProcessor(name) // Histograms defined here //
 	tdc_hist = MakeTH1('D',"tdc","tdc",1000,-60,1000);
 
 	Trail_LEAD = new TH1**[4];
+	Coarse = new TH1**[4];
 	//lead_lead = new TH1**[4];
 	for(int i = 0;i < 4;++i){
 		Trail_LEAD[i] = new TH1*[17];
+		Coarse[i] = new TH1*[17];
 		//lead_lead[i] = new TH1*[17];
 		for(int j = 0;j < 17;++j){
 			Trail_LEAD[i][j] = NULL;
+			Coarse[i][j] = NULL;
 		//	lead_lead[i][j] = NULL;
 		}
 	}
@@ -371,8 +374,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 					sum_l += RAW->get_PLASTIC_lead_hits(i);
 					sum_t += RAW->get_PLASTIC_trail_hits(i);
-					if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("lead_trail_%d_%d",i,phys_ch),Form("lead_trail_%d_%d",i,phys_ch),500,0,500);
-					Trail_LEAD[i][phys_ch]->Fill(RAW->get_PLASTIC_trail_T(i,j));//RAW->get_PLASTIC_trail_T(i,j) - RAW->get_PLASTIC_lead_T(i,j)) ;
+					if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("lead_trail_%d_%d",i,phys_ch),Form("lead_trail_%d_%d",i,phys_ch),500,-500,500);
+					if(pl_iter % 2 == 0) Trail_LEAD[i][phys_ch]->Fill(RAW->get_PLASTIC_trail_T(i,j+1)-RAW->get_PLASTIC_lead_T(i,j)) ;
+					if(!Coarse[i][phys_ch]) Coarse[i][phys_ch] = MakeTH1('D',Form("coarse_%d_%d",i,phys_ch),Form("coarse_%d_%d",i,phys_ch),500,0,5000);
+					if(j % 2 == 0) Coarse[i][phys_ch]->Fill(RAW->get_PLASTIC_coarse_lead(i,j));
 
 
 				}

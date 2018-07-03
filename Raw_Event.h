@@ -22,8 +22,8 @@ private:
 
 	//PLASTIC
 	int iterator[4];
-	ULong trigger_coarse[100];
-	ULong trigger_fine[100];
+	double trigger_coarse[100];
+	double trigger_fine[100];
 
 	int leading_hits[4];
 	int trailing_hits[4];
@@ -38,7 +38,7 @@ private:
 	double fine_T_edge_trail[4][100];
 	UInt ch_ID[4][100];
 	bool fired_tamex[4];
-<<<<<<< HEAD
+
 	
 	//GALILEO
 	int GAL_FIRED;
@@ -49,23 +49,22 @@ private:
 	ULong GALILEO_chan_time[36];
 	double GALILEO_chan_energy[36];
 
-=======
+
 	bool ch51;
->>>>>>> 6b998c4624cf4f21d81814c494c4864e0a622cd5
+
 
 
 public:
 	Raw_Event();
 	~Raw_Event();
 
-<<<<<<< HEAD
-	void set_DATA_FATIMA(int,double*,double*,ULong*,ULong*,ULong*,int*);
-	void set_DATA_PLASTIC(int*,ULong***,ULong***,UInt***,ULong*,ULong*);
+
+
+
 	void set_DATA_GALILEO(int,ULong*,int*,int*,ULong*,double*,int*);
-=======
+
 	void set_DATA_FATIMA(int,int,double*,double*,ULong*,ULong*,ULong*,int*,int*);
-	void set_DATA_PLASTIC(int*,ULong**,ULong**,UInt**,ULong*,ULong*);
->>>>>>> 6b998c4624cf4f21d81814c494c4864e0a622cd5
+	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*);
 
 
 	//temporary FATIMA getters
@@ -86,8 +85,20 @@ public:
 	int get_PLASTIC_CH_ID(int,int);
 	double get_PLASTIC_lead_T(int,int);
 	double get_PLASTIC_trail_T(int,int);
-<<<<<<< HEAD
+
 	
+	
+
+
+
+
+
+	int get_PLASTIC_trail_hits(int);
+	int get_PLASTIC_lead_hits(int);
+	int get_PLASTIC_physical_channel(int,int);
+	int get_PLASTIC_physical_lead_hits(int,int);
+	int get_PLASTIC_physical_trail_hits(int,int);
+	double get_PLASTIC_coarse_lead(int,int);
 	
 	//temporary GALILEO getters
 	int get_GALILEO_am_Fired();
@@ -96,15 +107,6 @@ public:
 	int get_GALILEO_Hit_Pattern(int);
 	ULong get_GALILEO_Chan_T(int);
 	double get_GALILEO_Chan_E(int);
-
-=======
-	int get_PLASTIC_trail_hits(int);
-	int get_PLASTIC_lead_hits(int);
-	int get_PLASTIC_physical_channel(int,int);
-	int get_PLASTIC_physical_lead_hits(int,int);
-	int get_PLASTIC_physical_trail_hits(int,int);
->>>>>>> 6b998c4624cf4f21d81814c494c4864e0a622cd5
-	
 };
 
 

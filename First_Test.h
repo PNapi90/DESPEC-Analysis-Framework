@@ -98,6 +98,7 @@ using namespace std;
 			TH1* am_hits;
 			TH1* tdc_hist;
 			TH1* WR_F;
+			TH1*** Coarse;
 			TH1** DIFF_ARR;
 			TH1*** tamex_Mult_Ch_lead;
 			TH1*** tamex_Mult_Ch_trail;

@@ -71,7 +71,7 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Q
 
 //---------------------------------------------------------------
 
-void Raw_Event::set_DATA_PLASTIC(int* it,ULong** Edge_Coarse,ULong** Edge_fine,UInt** ch_ed,ULong* Coarse_Trigger,ULong* Fine_Trigger){
+void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine,UInt** ch_ed,double* Coarse_Trigger,double* Fine_Trigger){
 
 	//reset lead and trail hits
 	for(int i = 0;i < 4;++i){
@@ -182,7 +182,7 @@ int Raw_Event::get_PLASTIC_am_Fired(int i){return iterator[i];}
 
 //---------------------------------------------------------------
 
-double Raw_Event::get_PLASTIC_trigger_T(int i){return (double) (trigger_coarse[i] - trigger_fine[i]);}
+double Raw_Event::get_PLASTIC_trigger_T(int i){return (trigger_coarse[i] - trigger_fine[i]);}
 
 //---------------------------------------------------------------
 
@@ -191,13 +191,23 @@ int Raw_Event::get_PLASTIC_CH_ID(int i,int j){return ch_ID[i][j];}
 //---------------------------------------------------------------
 
 double Raw_Event::get_PLASTIC_lead_T(int i,int j){
-	return (double)(coarse_T_edge_lead[i][j] - fine_T_edge_lead[i][j]);
+	//cout << "SEND l" << coarse_T_edge_lead[i][j] << " " << fine_T_edge_lead[i][j]  << " " <<  coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j] << endl;
+	return (coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j]);
 }
 
 //---------------------------------------------------------------
 
+double Raw_Event::get_PLASTIC_coarse_lead(int i,int j){
+	//cout << "SEND l" << coarse_T_edge_lead[i][j] << " " << fine_T_edge_lead[i][j]  << " " <<  coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j] << endl;
+	return coarse_T_edge_lead[i][j];
+}
+
+
+//---------------------------------------------------------------
+
 double Raw_Event::get_PLASTIC_trail_T(int i,int j){
-	return (double)(coarse_T_edge_trail[i][j] - fine_T_edge_trail[i][j]);
+	//cout << "SEND t" << coarse_T_edge_trail[i][j] << " " << fine_T_edge_trail[i][j] << endl;
+	return (coarse_T_edge_trail[i][j]*10 - fine_T_edge_trail[i][j]);
 }
 
 //---------------------------------------------------------------
