@@ -31,12 +31,14 @@ extern void G__set_cpp_environmentG__SCN();
 
 #include "TObject.h"
 #include "TMemberInspector.h"
-#include "./FATIMA_Data_Stream.h"
-#include "./FATIMA_DETECTOR.h"
 #include "./FATIMA_Detector_System.h"
 #include "./FATIMA_Energy_Calibration.h"
 #include "./FATIMA_Time_Calibration.h"
+#include "./FEBEX.h"
 #include "./First_Test.h"
+#include "./GALILEO_Detector_System_TEST.h"
+#include "./GALILEO_Energy_Calibration.h"
+#include "./GALILEO_Time_Calibration.h"
 #include "./PLASTIC_Calibrator.h"
 #include "./PLASTIC_Data_Stream.h"
 #include "./PLASTIC_Detector_System.h"
@@ -69,8 +71,8 @@ extern G__linked_taginfo G__G__SCNLN_vectorlEROOTcLcLTSchemaHelpercOallocatorlER
 extern G__linked_taginfo G__G__SCNLN_reverse_iteratorlEvectorlEROOTcLcLTSchemaHelpercOallocatorlEROOTcLcLTSchemaHelpergRsPgRcLcLiteratorgR;
 extern G__linked_taginfo G__G__SCNLN_vectorlETVirtualArraymUcOallocatorlETVirtualArraymUgRsPgR;
 extern G__linked_taginfo G__G__SCNLN_reverse_iteratorlEvectorlETVirtualArraymUcOallocatorlETVirtualArraymUgRsPgRcLcLiteratorgR;
-extern G__linked_taginfo G__G__SCNLN_Data_Stream;
 extern G__linked_taginfo G__G__SCNLN_Raw_Event;
+extern G__linked_taginfo G__G__SCNLN_Data_Stream;
 extern G__linked_taginfo G__G__SCNLN_Detector_System;
 extern G__linked_taginfo G__G__SCNLN_iteratorlEbidirectional_iterator_tagcOTObjectmUcOlongcOconstsPTObjectmUmUcOconstsPTObjectmUaNgR;
 extern G__linked_taginfo G__G__SCNLN_TVectorTlEfloatgR;
@@ -86,6 +88,7 @@ extern G__linked_taginfo G__G__SCNLN_TGo4EventSource;
 extern G__linked_taginfo G__G__SCNLN_TGo4EventElement;
 extern G__linked_taginfo G__G__SCNLN_TGo4MbsEvent;
 extern G__linked_taginfo G__G__SCNLN_TSCNUnpackEvent;
+extern G__linked_taginfo G__G__SCNLN_maplEpairlEintcOintgRcOintcOlesslEpairlEintcOintgRsPgRcOallocatorlEpairlEconstsPpairlEintcOintgRcOintgRsPgRsPgR;
 extern G__linked_taginfo G__G__SCNLN_White_Rabbit;
 extern G__linked_taginfo G__G__SCNLN_TGo4WinCond;
 extern G__linked_taginfo G__G__SCNLN_TGo4Parameter;
