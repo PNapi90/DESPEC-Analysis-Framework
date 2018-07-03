@@ -122,7 +122,7 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 
 		
     
-        if (FEBEXhead->ff == 255){
+        if (FEBEXhead->ff == 255){ // FEBEX module idicator //
 	    
 	
             // FEBEXhead->ff;
@@ -143,14 +143,14 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 
             FEBEX_Half_Time *fbx_hT=(FEBEX_Half_Time*) this->pdata;
 		
-            this->pdata++; // Moves to rest of event timestamp //
+            this->pdata++; // Moves to rest of Event Timestamp //
 			
             FEBEX_Evt_Time *fbx_time=(FEBEX_Evt_Time*) this->pdata;
 			
 	    tmp_Sum_Time = (fbx_time->evt_time)+((fbx_hT->ext_time)<<32);
 			
 			
-            this->pdata++; // Moves to Pileup + Hit Pattern //
+            this->pdata++; // Moves to Pileup & Hit Pattern //
 						
             FEBEX_Flag_Hits *fbx_flag=(FEBEX_Flag_Hits*) this->pdata;
 	    
@@ -161,17 +161,19 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
             this->pdata++; // Moves to DEADBEEF //
     
         }
-	else if (FEBEXhead->ff == 240){
+	else if (FEBEXhead->ff == 240){ // FEBEX channel idicator //
+	    
+	    this->pdata--; // Moves back to DEADBEEF so channel loop functions properly //
+
 	    
 	    for(int i=0; i<num_channels; ++i){
 				
-		
+		this->pdata++; // Moves to channel header //
+
 		FEBEX_Chan_Header *fbx_Ch=(FEBEX_Chan_Header*) this->pdata;
 
 		current_det = GALILEO_map[std::make_pair(board_id, (fbx_Ch->Ch_ID))];
-		
-		//cout<<num_channels<<" "<<board_id<<" "<<fbx_Ch->Ch_ID<<" "<<current_det<<endl;
-				
+						
 		det_ids[i] = current_det;
 		
 		
@@ -195,25 +197,17 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 		Chan_Energy[current_det] = fbx_Ch_En->chan_en;
 				
 		Calibrate_FEBEX(current_det);
-		
-		//cout<<"Channel Energy = "<<Chan_Energy[current_det]<<"   Current Detector = "<<current_det<<endl;
-			    
+					    
 		this->pdata++; // Moves to Future Use //
 		
 		++fired_FEBEX_amount;
 		
-		
-		this->pdata++; // Moves to next channel //
-
 		// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
                 // @@@@ Traces Would Go Here @@@@@ //
                 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
 		
 			    	    
 	    }
-	    
-	    this->pdata--; // Moves to next channel //
-
 	    
 	    --num_modules;
 	    
@@ -226,7 +220,7 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 	    FEBEXhead  = (FEBEX_Header*) this->pdata;
 	    
 	}
-	else FEBEX_data_loop = false;
+	else FEBEX_data_loop = false; // Exits FEBEX Loop //
 	
     }
     
