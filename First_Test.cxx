@@ -241,7 +241,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	bool used[5];
 	for(int i = 0;i < 5;++i) used[i] = false;
 	
-
+	bool WHITE_RABBIT_USED = false;
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -255,12 +255,12 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 
-
-		WR_tmp[iterator] = WR->get_White_Rabbit(pdata);
-
-		
+		if(WHITE_RABBIT_USED){
+			WR_tmp[iterator] = WR->get_White_Rabbit(pdata);
+			pdata += WR->get_increase();
+		}
 		called[iterator] = PrcID_Conv;
-		pdata += WR->get_increase();
+		
 
 		//cout << WR_tmp[iterator] << " " << iterator << endl;
 
