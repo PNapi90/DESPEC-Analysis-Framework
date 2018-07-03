@@ -143,7 +143,6 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 		while(file.good()){
 			getline(file,line,'\n');
 			if(line[0] == '#') continue;
-			cout << line << endl;
 			sscanf(line.c_str(),format,&bin,&val);
 			if(first) bins_x_arr[b_iter] = bin;
 			Cal_arr[tamex_id][ch_id][b_iter] = val;
