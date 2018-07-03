@@ -85,6 +85,7 @@ public:
 	int get_PLASTIC_CH_ID(int,int);
 	double get_PLASTIC_lead_T(int,int);
 	double get_PLASTIC_trail_T(int,int);
+
 	int get_PLASTIC_trail_hits(int);
 	int get_PLASTIC_lead_hits(int);
 	int get_PLASTIC_physical_channel(int,int);
