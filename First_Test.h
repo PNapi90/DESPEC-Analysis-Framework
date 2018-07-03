@@ -49,11 +49,12 @@
 #include "Detector_System.cxx"
 #include "FATIMA_Detector_System.h"
 #include "PLASTIC_Detector_System.h"
+#include "GALILEO_Detector_System_TEST.h"
+
 #include "Data_Stream.cxx"
 #include "White_Rabbit.h"
 
 #include "PLASTIC_Data_Stream.h"
-#include "FATIMA_Data_Stream.h"
 
 #include "Raw_Event.h"
 
@@ -95,6 +96,19 @@ using namespace std;
 			TH1* am_hits;
 			TH1* WR_F;
 			//for the SIS modules
+			
+			
+			// GALILEO Histograms //
+			
+			//TH1* GAL_Evt_Time;
+			TH1* GAL_Pileup;
+			TH1* GAL_Hit_Pat;
+			TH1* GAL_Chan_Time_Diff;
+			TH1* GAL_Chan_E;
+			TH2* GAL_Chan_E_Mat;
+			
+
+			
 
 		private:
 			Bool_t ffill;
@@ -113,6 +127,7 @@ using namespace std;
 
 			double fatima_E_save[4];
 			int am_FATIMA_hits;
+			int am_GALILEO_hits;
 
 			Int_t get_Conversion(Int_t);
 			void get_used_Systems();

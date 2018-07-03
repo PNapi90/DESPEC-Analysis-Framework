@@ -34,6 +34,8 @@
 #include "Detector_System.cxx"
 #include "FATIMA_Detector_System.h"
 #include "PLASTIC_Detector_System.h"
+#include "GALILEO_Detector_System_TEST.h"
+
 #include "Data_Stream.cxx"
 #include "White_Rabbit.h"
 
@@ -87,6 +89,15 @@ TGo4EventProcessor(name) // Histograms defined here //
 	WR_HIST = MakeTH1('D',"WR","WR",2001,-1,40);
 	WR_HIST2 = MakeTH1('D',"WR2","WR2",2001,-10,4000);
 	WR_F = MakeTH1('D',"WRf","WRf",2001,-10,4000);
+	
+	// GALILEO Histograms //
+	
+	//GAL_Evt_Time = MakeTH1('D',"GALILEO_E","GALILEO_E",20001,0,800000);
+	GAL_Pileup = MakeTH1('D',"GALILEO_Pileup","GALILEO Pileup",101,0,100);
+	GAL_Hit_Pat = MakeTH1('D',"GALILEO_Hit_Pat","GALILEO Hit Pattern",101,0,100);
+	GAL_Chan_Time_Diff = MakeTH1('D',"GALILEO_Chan_Time_DIff","GALILEO Channel Time Difference",20001,-5000,5000);
+	GAL_Chan_E = MakeTH1('D',"GALILEO_E","GALILEO Channel Energy",80001,0,800000);
+	GAL_Chan_E_Mat = MakeTH2('D',"GALILEO_E_Mat","GALILEO Chanel Energy Matrix",10001,0,800000,10001,0,800000);
 
 
 	//create Detector Systems
@@ -98,22 +109,10 @@ TGo4EventProcessor(name) // Histograms defined here //
 	//Detector_Systems[1] = !Used_Systems[1] ? NULL : new AIDA_Detector_System();
 	Detector_Systems[2] = !Used_Systems[2] ? NULL : new PLASTIC_Detector_System();
 	Detector_Systems[3] = !Used_Systems[3] ? NULL : new FATIMA_Detector_System();
-	//Detector_Systems[4] = !Used_Systems[4] ? NULL : new GALILEO_Detector_System();
+	Detector_Systems[4] = !Used_Systems[4] ? NULL : new GALILEO_Detector_System();
 
 	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) Detector_Systems[i] = NULL;
 
-	//Create data streams
-	data_stream = new Data_Stream*[6];
-
-	// all non used data streams intialized as NULL 
-	//-> calling uninitialized system will cause an error !
-	//Detector_Systems[0] = !Used_Systems[0] ? NULL : new FRS_Detector_System();
-	//Detector_Systems[1] = !Used_Systems[1] ? NULL : new AIDA_Detector_System();
-	data_stream[2] = !Used_Systems[2] ? NULL : new PLASTIC_Data_Stream();
-	data_stream[3] = !Used_Systems[3] ? NULL : new FATIMA_Data_Stream();
-	//Detector_Systems[4] = !Used_Systems[4] ? NULL : new GALILEO_Detector_System();
-
-	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) data_stream[i] = NULL;
 
 	//Raw_Event object to handle data
 	RAW = new Raw_Event();
@@ -136,11 +135,9 @@ TSCNUnpackProc::~TSCNUnpackProc()
 
 	for(int i = 0;i < 6;++i){
 		if(Detector_Systems[i]) delete Detector_Systems[i];
-		if(data_stream[i]) delete data_stream[i];
 	}
 	delete[] Detector_Systems;
 	
-	delete[] data_stream;
 	delete RAW;
 	cout << "**** TSCNUnpackProc: Delete" << endl;
 }
@@ -264,6 +261,49 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			//do something here
 
 		}
+		
+		// GALILEO CASE //
+		if(PrcID_Conv == 4){
+		    
+		    //cout<<"Something = "<<RAW->get_GALILEO_Chan_E(0)<<endl;
+		    
+		    am_GALILEO_hits = RAW->get_GALILEO_am_Fired();
+		    
+		    double tmpGAL[2];
+
+		    for(int i = 0;i < am_GALILEO_hits;++i){
+			//e,g, sum spectrum
+			
+			//cout<<"Filled Channel Energy = "<<(RAW->get_GALILEO_Chan_E(i))<<endl;
+			
+			tmpGAL[i] = RAW->get_GALILEO_Chan_E(i);
+
+			//cout<<"Something Else = "<<tmpGAL[i]<<endl;
+			
+			GAL_Chan_E->Fill(tmpGAL[i]);
+			GAL_Pileup->Fill(RAW->get_GALILEO_Pileup(i));
+			GAL_Hit_Pat->Fill(RAW->get_GALILEO_Hit_Pattern(i));
+			
+			for(int j = 0;j < am_GALILEO_hits;++j){
+			    
+			    if(i != j){
+				
+				double GAL_chan_time_diff = RAW->get_GALILEO_Chan_T(i) - RAW->get_GALILEO_Chan_T(j);
+
+				GAL_Chan_Time_Diff->Fill(GAL_chan_time_diff);
+				
+			    }
+			    
+			}
+
+			
+		    }
+		    
+		    if(am_GALILEO_hits >= 2){GAL_Chan_E_Mat->Fill(tmpGAL[0],tmpGAL[1]);}
+			
+		}
+		
+		
 
 		iterator++;
 	}

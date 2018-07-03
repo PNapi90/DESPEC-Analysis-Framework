@@ -45,7 +45,23 @@ void Raw_Event::set_DATA_PLASTIC(int* it,ULong*** Edge_Coarse,ULong*** Edge_fine
 	}
 }
 
-//TEMPORARY GETTERS FOR FATIMA AND PLASTIC
+//---------------------------------------------------------------
+
+void Raw_Event::set_DATA_GALILEO(int GAL_FIRED,ULong* sum_time,int* pileup,int* hit_pattern,ULong* chan_time,double* chan_en, int* FEBEX_det_ids){
+	this->GAL_FIRED = GAL_FIRED;
+	    
+	for(int i = 0;i < GAL_FIRED;++i){
+	    
+	    GALILEO_Det_Nums[i] = FEBEX_det_ids[i];
+	    GALILEO_sum_time[i] = sum_time[i];
+	    GALILEO_pileup[i] = pileup[i];
+	    GALILEO_hit_pattern[i] = hit_pattern[i];
+	    GALILEO_chan_time[i] = chan_time[i];
+	    GALILEO_chan_energy[i] = chan_en[i];
+
+	}
+}
+//TEMPORARY GETTERS FOR FATIMA, PLASTIC, and GALILEO
 
 //FATIMA
 
@@ -102,4 +118,40 @@ double Raw_Event::get_PLASTIC_trail_T(int i,int j){
 }
 
 //---------------------------------------------------------------
+
+//GALILEO
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_GALILEO_am_Fired(){return GAL_FIRED;}
+
+//---------------------------------------------------------------
+
+ULong Raw_Event::get_GALILEO_Sum_T(int i){return GALILEO_sum_time[i];}
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_GALILEO_Pileup(int i){return GALILEO_pileup[i];}
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_GALILEO_Hit_Pattern(int i){return GALILEO_hit_pattern[i];}
+
+//---------------------------------------------------------------
+
+ULong Raw_Event::get_GALILEO_Chan_T(int i){return GALILEO_chan_time[i];}
+
+//---------------------------------------------------------------
+
+double Raw_Event::get_GALILEO_Chan_E(int i){return GALILEO_chan_energy[i];}
+
+//---------------------------------------------------------------
+
+
+
+
+
+
+
+
 

@@ -29,6 +29,15 @@ private:
 	ULong fine_T_edge_trail[4][100];
 	UInt ch_ID[4][100];
 	bool fired_tamex[4];
+	
+	//GALILEO
+	int GAL_FIRED;
+	int GALILEO_Det_Nums[36];
+	ULong GALILEO_sum_time[36];
+	int GALILEO_pileup[36];
+	int GALILEO_hit_pattern[36];
+	ULong GALILEO_chan_time[36];
+	double GALILEO_chan_energy[36];
 
 
 
@@ -38,6 +47,7 @@ public:
 
 	void set_DATA_FATIMA(int,double*,double*,ULong*,ULong*,ULong*,int*);
 	void set_DATA_PLASTIC(int*,ULong***,ULong***,UInt***,ULong*,ULong*);
+	void set_DATA_GALILEO(int,ULong*,int*,int*,ULong*,double*,int*);
 
 
 	//temporary FATIMA getters
@@ -54,6 +64,17 @@ public:
 	int get_PLASTIC_CH_ID(int,int);
 	double get_PLASTIC_lead_T(int,int);
 	double get_PLASTIC_trail_T(int,int);
+	
+	
+	//temporary GALILEO getters
+	int get_GALILEO_am_Fired();
+	ULong get_GALILEO_Sum_T(int);
+	int get_GALILEO_Pileup(int);
+	int get_GALILEO_Hit_Pattern(int);
+	ULong get_GALILEO_Chan_T(int);
+	double get_GALILEO_Chan_E(int);
+
+	
 };
 
 
