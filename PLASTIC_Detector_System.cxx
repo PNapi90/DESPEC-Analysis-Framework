@@ -8,6 +8,7 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
 
     //calibration enabled?
     get_Calib_type();
+    cal_count = 0;
 
     PLASTIC_Calibration = new PLASTIC_Calibrator(CALIBRATE);
 
@@ -28,16 +29,16 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
     leading_hits = new int*[100];
     trailing_hits = new int*[100];
 
-    coarse_T = new ULong[100];
-    fine_T = new ULong[100];
+    coarse_T = new double[100];
+    fine_T = new double[100];
     ch_ID = new unsigned int[100];
 
-    edge_coarse = new ULong*[100];
-    edge_fine = new ULong*[100];
+    edge_coarse = new double*[100];
+    edge_fine = new double*[100];
     ch_ID_edge = new unsigned int*[100];
     for(int o = 0;o < 100;++o){
-        edge_coarse[o] = new ULong[100];
-        edge_fine[o] = new ULong[100];
+        edge_coarse[o] = new double[100];
+        edge_fine[o] = new double[100];
         ch_ID_edge[o] = new unsigned int[100];
         leading_hits[o] = new int[100];
         trailing_hits[o] = new int[100];
@@ -68,7 +69,7 @@ PLASTIC_Detector_System::~PLASTIC_Detector_System(){
 //---------------------------------------------------------------
 
 
-ULong** PLASTIC_Detector_System::tmp_get_coarse_T(){return edge_coarse;}
+ULong** PLASTIC_Detector_System::tmp_get_coarse_T(){return (ULong**) edge_coarse;}
 
 
 
@@ -91,7 +92,6 @@ int* PLASTIC_Detector_System::tmp_get_iterator(){return iterator;}
 //---------------------------------------------------------------
 
 void PLASTIC_Detector_System::get_Event_data(Raw_Event* RAW){
-
     RAW->set_DATA_PLASTIC(iterator,edge_coarse,edge_fine,ch_ID_edge,coarse_T,fine_T); 
 }
 
@@ -218,8 +218,8 @@ void PLASTIC_Detector_System::get_trigger(){
 
     //extract data
     TAMEX_DATA* data = (TAMEX_DATA*) pdata;
-    coarse_T[tamex_iter] = data->coarse_T;
-    fine_T[tamex_iter] = data->fine_T;
+    coarse_T[tamex_iter] = (double) data->coarse_T;
+    fine_T[tamex_iter] = (double) data->fine_T;
     ch_ID[tamex_iter] = data->ch_ID;
 
     //next word
@@ -274,8 +274,8 @@ void PLASTIC_Detector_System::get_edges(){
         //extract data
         TAMEX_DATA* data = (TAMEX_DATA*) pdata;
             
-        edge_coarse[tamex_iter][iterator[tamex_iter]] = data->coarse_T;
-        edge_fine[tamex_iter][iterator[tamex_iter]] = data->fine_T;
+        edge_coarse[tamex_iter][iterator[tamex_iter]] = (double) data->coarse_T;
+        edge_fine[tamex_iter][iterator[tamex_iter]] = (double) data->fine_T;
         ch_ID_edge[tamex_iter][iterator[tamex_iter]] = data->ch_ID;
         lead_arr[tamex_iter][iterator[tamex_iter]] = 1 - (data->ch_ID % 2);;    
         
@@ -335,18 +335,18 @@ void PLASTIC_Detector_System::calibrate_ONLINE(){
 
     //send data to ROOT histograms in Calibrator object
     PLASTIC_Calibration->get_data(edge_fine,ch_ID_edge,2,iterator);
-
+    double max_count = 50000.;
     cal_count++;
     if(cal_count % 1000 == 0){
         cout << dec << "=========================\n";
-        cout << cal_count << endl;
+        cout << cal_count << " " << cal_count/max_count*100. << "%" << endl;
         cout << dec << "=========================" << endl;
     }
     Calibration_Done = false;
 
     //if critical amount of calibration data reached
     //=> do ONLINE calibration and quit program
-    if(cal_count > 10000){
+    if(cal_count > 50000){
         PLASTIC_Calibration->ONLINE_CALIBRATION();
         Calibration_Done = true;
     }
@@ -359,7 +359,7 @@ void PLASTIC_Detector_System::calibrate_OFFLINE(){
     for(int i = 0;i < 4;++i){
         for(int j = 0;j < iterator[i];++j){
             channel_ID_tmp = (int) ch_ID_edge[i][j];
-            if(edge_coarse[i][j] != 131313) edge_fine[i][j] += PLASTIC_Calibration->get_Calibration_val(edge_fine[i][j],i,channel_ID_tmp);
+            if(edge_coarse[i][j] != 131313) edge_fine[i][j] = PLASTIC_Calibration->get_Calibration_val(edge_fine[i][j],i,channel_ID_tmp);
             else edge_fine[i][j] = 131313;
         }
     }

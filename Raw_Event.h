@@ -22,8 +22,8 @@ private:
 
 	//PLASTIC
 	int iterator[4];
-	ULong trigger_coarse[100];
-	ULong trigger_fine[100];
+	double trigger_coarse[100];
+	double trigger_fine[100];
 
 	int leading_hits[4];
 	int trailing_hits[4];
@@ -46,7 +46,7 @@ public:
 	~Raw_Event();
 
 	void set_DATA_FATIMA(int,int,double*,double*,ULong*,ULong*,ULong*,int*,int*);
-	void set_DATA_PLASTIC(int*,ULong**,ULong**,UInt**,ULong*,ULong*);
+	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*);
 
 
 	//temporary FATIMA getters
@@ -72,6 +72,7 @@ public:
 	int get_PLASTIC_physical_channel(int,int);
 	int get_PLASTIC_physical_lead_hits(int,int);
 	int get_PLASTIC_physical_trail_hits(int,int);
+	double get_PLASTIC_coarse_lead(int,int);
 	
 };
 

@@ -11,7 +11,7 @@ PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
 
 	nbins = 4000;
 	min_val = 0;
-	max_val = 1000;
+	max_val = 500;
 
 	//only for ONLINE CALIBRATION
 	if(this->ONLINE){
@@ -160,7 +160,7 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 
 //---------------------------------------------------------------
 
-double PLASTIC_Calibrator::get_Calibration_val(ULong value,int tamex_id_tmp,int ch_id_tmp){
+double PLASTIC_Calibrator::get_Calibration_val(double value,int tamex_id_tmp,int ch_id_tmp){
 	double return_val = 0;
 	double value_t = (double) value;
 	double tmp,tmp2;
@@ -175,12 +175,12 @@ double PLASTIC_Calibrator::get_Calibration_val(ULong value,int tamex_id_tmp,int 
 			break;
 		}
 	}
-	return return_val*5000.;
+	return return_val/1000.; // for ns
 }
 
 //---------------------------------------------------------------
 
-void PLASTIC_Calibrator::get_data(ULong** fine_T,UInt** ch_id,int tamex_iter,int* iterator){
+void PLASTIC_Calibrator::get_data(double** fine_T,UInt** ch_id,int tamex_iter,int* iterator){
 	//write into corresponding root histograms
 	for(int i = 0;i < tamex_iter;++i){
 		for(int j = 0;j < iterator[i];++j){
@@ -250,13 +250,13 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 					if(Fine_Hist[i][j]->GetBinContent(k+1) > 0) max_bin = k;
 				}
 
-				for(int k = 0;k < max_bin;++k) perfect[k] = (k+1)/((double) max_bin);
+				//for(int k = 0;k < max_bin;++k) perfect[k] = (k+1)/((double) max_bin);
 
-				//normalize cdf to 1 and calculate difference to perfect scenario
+				//normalize cdf to 1 and calculate fine[i] = cdf[i]/sum*5000*picoseconds
 				//write everything into calibration file (name of file = filename)
 				full_sum = sum_arr[nbins-1];
 				for(int k = 0;k < nbins;++k){
-					val = (k < max_bin) ? (sum_arr[k]/full_sum - perfect[k]) : 0;
+					val = (k < max_bin) ? (sum_arr[k]/full_sum*5000) : 0;
 					cal_file << bins_x[k] << "\t\t" << val << endl;
 				}
 				

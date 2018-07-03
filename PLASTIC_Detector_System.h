@@ -62,12 +62,12 @@ private:
 
     int lead_arr[4][100];
 
-    ULong** edge_coarse;
-    ULong** edge_fine;
+    double** edge_coarse;
+    double** edge_fine;
     unsigned int** ch_ID_edge;
 
-    ULong* coarse_T;
-    ULong* fine_T;
+    double* coarse_T;
+    double* fine_T;
     unsigned int* ch_ID;
 
     void check_error();
