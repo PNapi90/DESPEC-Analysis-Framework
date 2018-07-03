@@ -212,7 +212,28 @@ double Raw_Event::get_PLASTIC_trail_T(int i,int j){
 
 //---------------------------------------------------------------
 
-<<<<<<< HEAD
+
+int Raw_Event::get_PLASTIC_trail_hits(int i){return trailing_hits[i];}
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_PLASTIC_lead_hits(int i){return leading_hits[i];}
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_PLASTIC_physical_channel(int i,int j){return phys_channel[i][j];}
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_PLASTIC_physical_lead_hits(int i,int j){return leading_hits_ch[i][j];}
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_PLASTIC_physical_trail_hits(int i,int j){return trailing_hits_ch[i][j];}
+
+//---------------------------------------------------------------
+
+
 //GALILEO
 
 //---------------------------------------------------------------
@@ -240,33 +261,3 @@ ULong Raw_Event::get_GALILEO_Chan_T(int i){return GALILEO_chan_time[i];}
 double Raw_Event::get_GALILEO_Chan_E(int i){return GALILEO_chan_energy[i];}
 
 //---------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-=======
-int Raw_Event::get_PLASTIC_trail_hits(int i){return trailing_hits[i];}
-
-//---------------------------------------------------------------
-
-int Raw_Event::get_PLASTIC_lead_hits(int i){return leading_hits[i];}
-
-//---------------------------------------------------------------
-
-int Raw_Event::get_PLASTIC_physical_channel(int i,int j){return phys_channel[i][j];}
-
-//---------------------------------------------------------------
-
-int Raw_Event::get_PLASTIC_physical_lead_hits(int i,int j){return leading_hits_ch[i][j];}
-
-//---------------------------------------------------------------
-
-int Raw_Event::get_PLASTIC_physical_trail_hits(int i,int j){return trailing_hits_ch[i][j];}
-
-//---------------------------------------------------------------
->>>>>>> 6b998c4624cf4f21d81814c494c4864e0a622cd5
