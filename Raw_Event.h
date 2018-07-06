@@ -136,6 +136,55 @@ public:
 	void set_DATA_GALILEO(int,ULong*,int*,int*,ULong*,double*,int*);
 
 
+/* ####################################################
+
+	//temporary FRS getters
+	Float_t get_FRS_dE(int);
+	Float_t get_FRS_dE_corr(int);
+	
+	Float_t get_FRS_sci_l(int);
+	Float_t get_FRS_sci_r(int);
+	Float_t get_FRS_sci_e(int);
+	Float_t get_FRS_sci_tx(int);
+	Float_t get_FRS_sci_x(int);
+	
+	Float_t get_FRS_tofll2();
+	Float_t get_FRS_tofll3();
+	Float_t get_FRS_tof2();
+	Float_t get_FRS_tofrr2();
+	Float_t get_FRS_tofrr3();
+	Float_t get_FRS_tof3();
+
+	Float_t get_FRS_x2();
+	Float_t get_FRS_y2();
+	Float_t get_FRS_a2();
+	Float_t get_FRS_b2();
+	
+	Float_t get_FRS_x4();
+	Float_t get_FRS_y4();
+	Float_t get_FRS_a4();
+	Float_t get_FRS_b4();
+
+	Float_t get_FRS_brho(int);
+	Float_t get_FRS_rho(int);
+	
+	Float_t get_FRS_beta();
+	Float_t get_FRS_beta3();
+	Float_t get_FRS_gamma();
+	
+	Float_t get_AoQ();
+	Float_t get_AoQ_corr();
+	Float_t get_z();
+	Float_t get_z2();
+	Float_t get_z3();
+	
+	Float_t get_timestamp();	
+	Float_t get_ts();	
+	Float_t get_ts2();	
+
+#################################################### */
+
+
 	//temporary FATIMA getters
 	int get_FATIMA_am_Fired();
 	double get_FATIMA_E(int);
@@ -169,6 +218,9 @@ public:
 	int get_GALILEO_Hit_Pattern(int);
 	ULong get_GALILEO_Chan_T(int);
 	double get_GALILEO_Chan_E(int);
+	
+	
+	
 };
 
 

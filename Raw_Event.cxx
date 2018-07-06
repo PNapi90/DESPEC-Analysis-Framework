@@ -209,7 +209,57 @@ void Raw_Event::set_DATA_GALILEO(int GAL_FIRED,ULong* sum_time,int* pileup,int* 
 
 	}
 }
-//TEMPORARY GETTERS FOR FATIMA, PLASTIC, and GALILEO
+//TEMPORARY GETTERS FOR FRS, FATIMA, PLASTIC, and GALILEO
+
+/* #############################################################
+
+// FRS
+
+Float_t get_FRS_dE(int i){return dE[i];}
+Float_t get_FRS_dE_corr(int i){return dE_corr[i];}
+
+Float_t get_FRS_sci_l(int i){return sci_l[i];}
+Float_t get_FRS_sci_r(int i){return sci_r[i];}
+Float_t get_FRS_sci_e(int i){return sci_e[i];}
+Float_t get_FRS_sci_tx(int i){return sci_tx[i];}
+Float_t get_FRS_sci_x(int i){return sci_x[i];}
+
+Float_t get_FRS_tofll2(){return tofll2;}
+Float_t get_FRS_tofll3(){return tofll3;}
+Float_t get_FRS_tof2(){return tof2;}
+Float_t get_FRS_tofrr2(){return tofrr2;}
+Float_t get_FRS_tofrr3(){return tofrr3;}
+Float_t get_FRS_tof3(){return tof3;}
+
+Float_t get_FRS_x2(){return x2;}
+Float_t get_FRS_y2(){return y2;}
+Float_t get_FRS_a2(){return a2;}
+Float_t get_FRS_b2(){return b2;}
+
+Float_t get_FRS_x4(){return x4;}
+Float_t get_FRS_y4(){return y4;}
+Float_t get_FRS_a4(){return a4;}
+Float_t get_FRS_b4(){return b4;}
+
+Float_t get_FRS_brho(int i){return brho[i];}
+Float_t get_FRS_rho(int i){return rho[i];}
+
+Float_t get_FRS_beta(){return beta;}
+Float_t get_FRS_beta3(){return beta3;}
+Float_t get_FRS_gamma(){return gamma;}
+
+Float_t get_AoQ(){return AoQ;}
+Float_t get_AoQ_corr(){return AoQ_corr;}
+Float_t get_z(){return z;}
+Float_t get_z2(){return z2;}
+Float_t get_z3(){return z3;}
+
+Float_t get_timestamp(){return timestamp;}
+Float_t get_ts(){return ts;}
+Float_t get_ts2(){return ts2;}
+
+####################################################### */
+
 
 //FATIMA
 
