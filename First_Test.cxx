@@ -241,7 +241,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	bool used[5];
 	for(int i = 0;i < 5;++i) used[i] = false;
 	
-	bool WHITE_RABBIT_USED = false;
+	bool WHITE_RABBIT_USED = true;
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
