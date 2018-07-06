@@ -144,7 +144,7 @@ void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
         }
     }
 
-	RAW->set_DATA_FATIMA(fired_QDC_amount,fired_TDC_amount,QLong,QShort,TDC_Time,QDC_Time_Coarse,QDC_Time_Fine,det_ids_QDC,det_ids_TDC);
+    RAW->set_DATA_FATIMA(fired_QDC_amount,fired_TDC_amount,QLong,QShort,TDC_Time,QDC_Time_Coarse,QDC_Time_Fine,det_ids_QDC,det_ids_TDC);
     //QDC_TDC->get_Detector_Data(RAW);
 }
 

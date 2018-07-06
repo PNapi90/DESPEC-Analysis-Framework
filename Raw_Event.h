@@ -9,6 +9,64 @@ class Raw_Event{
 
 private:
 
+
+	/* ##########################################################
+
+	//FRS
+	// MUSIC PARAMETERS //
+	  
+	Float_t dE[3];      // set_DATA_MUSIC
+	Float_t dE_cor[3];  // set_DATA_MUSIC
+	
+	// SCINTILLATOR PARAMETERS //
+	  
+	Float_t sci_l[12];  // set_DATA_SCI
+	Float_t sci_r[12];  // set_DATA_SCI
+	Float_t sci_e[12];  // set_DATA_SCI
+	Float_t sci_tx[12]; // set_DATA_SCI
+	Float_t sci_x[12];  // set_DATA_SCI
+	  
+	  
+	Float_t sci_tofll2; // set_DATA_SCI_ToF
+	Float_t sci_tofll3; // set_DATA_SCI_ToF
+	Float_t sci_tof2;   // set_DATA_SCI_ToF
+	Float_t sci_tofrr2; // set_DATA_SCI_ToF
+	Float_t sci_tofrr3; // set_DATA_SCI_ToF
+	Float_t sci_tof3;   // set_DATA_SCI_ToF
+	  
+	// ID PARAMETERS //
+	  
+	Float_t ID_x2;      // set_DATA_ID_2_4
+	Float_t ID_y2;      // set_DATA_ID_2_4
+	Float_t ID_a2;      // set_DATA_ID_2_4
+	Float_t ID_b2;      // set_DATA_ID_2_4
+	  
+	Float_t ID_x4;      // set_DATA_ID_2_4
+	Float_t ID_y4;      // set_DATA_ID_2_4
+	Float_t ID_a4;      // set_DATA_ID_2_4
+	Float_t ID_b4;      // set_DATA_ID_2_4
+	  
+	Float_t ID_brho[2]; // set_DATA_ID_Beta_Rho
+	Float_t ID_rho[2];  // set_DATA_ID_Beta_Rho
+	  
+	Float_t beta;       // set_DATA_ID_Beta_Rho
+	Float_t beta3;      // set_DATA_ID_Beta_Rho
+	Float_t gamma;      // set_DATA_ID_Beta_Rho
+
+	Float_t AoQ;        // set_DATA_ID_Z_AoQ
+	Float_t AoQ_corr;   // set_DATA_ID_Z_AoQ
+	  
+	Float_t z;          // set_DATA_ID_Z_AoQ
+	Float_t z2;         // set_DATA_ID_Z_AoQ
+	Float_t z3;         // set_DATA_ID_Z_AoQ
+	  
+	Float_t timestamp;  // set_DATA_ID_Timestamp
+	Float_t ts;         // set_DATA_ID_Timestamp
+	Float_t ts2;        // set_DATA_ID_Timestamp
+
+	
+	########################################################## */
+
 	//FATIMA
 	int FAT_FIRED,TDC_FIRED;
 	int Det_Nums[100];
@@ -59,12 +117,23 @@ public:
 	~Raw_Event();
 
 
+	/* ##########################################################
 
+	// FRS STUFF //
+	void set_DATA_MUSIC(Float_t*,Float_t*);
+	void set_DATA_SCI(Float_t*,Float_t*,Float_t*,Float_t*,Float_t*);
+	void set_DATA_SCI_ToF(Float_t,Float_t,Float_t,Float_t,Float_t,Float_t);
+	void set_DATA_ID_2_4(Float_t,Float_t,Float_t,Float_t,Float_t,Float_t,Float_t,Float_t);
+	void set_DATA_ID_Beta_Rho(Float_t*,Float_t*,Float_t,Float_t,Float_t);
+	void set_DATA_ID_Z_AoQ(Float_t,Float_t,Float_t,Float_t,Float_t);
+	void set_DATA_ID_Timestamp(Float_t,Float_t,Float_t);
+	// FRS STUFF //
 
-	void set_DATA_GALILEO(int,ULong*,int*,int*,ULong*,double*,int*);
+	########################################################## */
 
 	void set_DATA_FATIMA(int,int,double*,double*,ULong*,ULong*,ULong*,int*,int*);
 	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*);
+	void set_DATA_GALILEO(int,ULong*,int*,int*,ULong*,double*,int*);
 
 
 	//temporary FATIMA getters

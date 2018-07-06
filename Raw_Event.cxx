@@ -14,6 +14,87 @@ Raw_Event::~Raw_Event(){}
 
 //---------------------------------------------------------------
 
+/* ################################################################# 
+
+
+void Raw_Event::set_DATA_MUSIC(Float_t* FRS_dE,Float_t* FRS_dE_cor){
+    
+    for(int i; i<3; ++i){
+	
+	de[i] = FRS_dE[i];
+	de_cor[i] = FRS_dE_cor[i];
+	
+    }	    
+
+}
+void Raw_Event::set_DATA_SCI(Float_t* FRS_sci_l,Float_t* FRS_sci_r,Float_t* FRS_sci_e,Float_t* FRS_sci_tx,Float_t* FRS_sci_x){
+    
+    for(int i; i<12; ++i){
+	
+	sci_l[i] = FRS_sci_l[i];
+	sci_r[i] = FRS_sci_r[i];
+	sci_e[i] = FRS_sci_e[i];
+	sci_tx[i] = FRS_sci_tx[i];
+	sci_x[i] = FRS_sci_x[i];
+	
+    }
+
+}
+void Raw_Event::set_DATA_SCI_ToF(Float_t FRS_sci_tofll2,Float_t FRS_sci_tofll3,Float_t FRS_sci_tof2,Float_t FRS_sci_tofrr2,Float_t FRS_sci_tofrr3,Float_t FRS_sci_tof3){
+    
+    sci_tofll2 = FRS_sci_tofll2;
+    sci_tofll3 = FRS_sci_tofll3;
+    sci_tof2   = FRS_sci_tof2;  
+    sci_tofrr2 = FRS_sci_tofrr2; 
+    sci_tofrr3 = FRS_sci_tofrr3; 
+    sci_tof3   = FRS_sci_tof3;
+    
+}
+void Raw_Event::set_DATA_ID_2_4(Float_tID_x2,Float_tID_y2,Float_tID_a2,Float_tID_b2,Float_tID_x4,Float_tID_y4,Float_tID_a4,Float_tID_b4){
+    
+    ID_x2 = FRS_ID_x2;
+    ID_y2 = FRS_ID_y2;
+    ID_a2 = FRS_ID_a2;
+    ID_b2 = FRS_ID_b2;
+    ID_x4 = FRS_ID_x4;
+    ID_y4 = FRS_ID_y4;
+    ID_a4 = FRS_ID_a4;
+    ID_b4 = FRS_ID_b4;
+    
+}
+void Raw_Event::set_DATA_ID_Beta_Rho(Float_t* FRS_ID_brho,Float_t* FRS_ID_rho,Float_t FRS_beta,Float_t FRS_beta,Float_t FRS_gamma){
+    
+    for(int i; i<2; ++i){
+	
+	ID_brho[i] = FRS_ID_brho[i];
+	ID_rho[i] = FRS_ID_rho[i];
+	
+    }
+    
+    beta = FRS_beta;
+    beta3 = FRS_beta3;
+    gamma = FRS_gamma;
+
+}
+void Raw_Event::set_DATA_ID_Z_AoQ(Float_t FRS_AoQ,Float_t FRS_AoQ_corr,Float_t FRS_z,Float_t FRS_z2,Float_t FRS_z3){
+    
+    AoQ = FRS_AoQ;
+    AoQ_corr = FRS_AoQ_corr;
+    z = FRS_z;
+    z2 = FRS_z2;
+    z3 = FRS_z3;    
+    
+}
+void Raw_Event::set_DATA_ID_Timestamp(Float_t FRS_timestamp,Float_t FRS_ts,Float_t FRS_ts2){
+    
+    timestamp = FRS_timestamp;
+    ts = FRS_ts;
+    ts2 = FRS_ts2;
+    
+}
+
+################################################################# */
+
 void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Qs,ULong* TDC,ULong* QDC_c,ULong* QDC_f,int* det_ids_QDC,int* det_ids_TDC){
 	this->FAT_FIRED = FAT_FIRED;
 	this->TDC_FIRED = TDC_FIRED;
