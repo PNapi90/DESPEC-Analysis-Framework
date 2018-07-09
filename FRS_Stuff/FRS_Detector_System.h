@@ -8,6 +8,8 @@
 #include "TTree.h"
 #include "TObject.h"
 
+#include "Detector_System.cxx"
+
 class RawEvent;
 class TFRSSortEvent;
 class TFRSCalibrEvent;
@@ -16,6 +18,9 @@ class TFRSAnlEvent;
 class FRS_Detector_System : public Detector_System {
 
 private:
+
+  int* pdata;
+
     
    // MUSIC PARAMETERS //
   

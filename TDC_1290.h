@@ -10,7 +10,8 @@ using namespace std;
 struct TDC_Check
 {  
 
-	unsigned int no			: 27;
+	unsigned int useful		: 5;
+	unsigned int no			: 22;
 	unsigned int type		: 5;
 	
 

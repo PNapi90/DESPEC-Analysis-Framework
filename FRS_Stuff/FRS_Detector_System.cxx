@@ -39,57 +39,57 @@ void FRS_Detector_System::FRS_Detector_System(){
   for(int i=0; i<12; ++i){
    
   
-      Float_t sci_l[i]  = 0;
-      Float_t sci_r[i]  = 0;
-      Float_t sci_e[i]  = 0;
-      Float_t sci_tx[i] = 0;
-      Float_t sci_x[i]  = 0;
+      sci_l[i]  = 0;
+      sci_r[i]  = 0;
+      sci_e[i]  = 0;
+      sci_tx[i] = 0;
+      sci_x[i]  = 0;
       
   }
       
   
-  Float_t sci_tofll2 = 0;
-  Float_t sci_tofll3 = 0
-  Float_t sci_tof2   = 0;
-  Float_t sci_tofrr2 = 0;
-  Float_t sci_tofrr3 = 0;
-  Float_t sci_tof3   = 0;
+  sci_tofll2 = 0;
+  sci_tofll3 = 0
+  sci_tof2   = 0;
+  sci_tofrr2 = 0;
+  sci_tofrr3 = 0;
+  sci_tof3   = 0;
   
   // ID PARAMETERS //
   
-  Float_t ID_x2 = 0;
-  Float_t ID_y2 = 0;
-  Float_t ID_a2 = 0;
-  Float_t ID_b2 = 0;
+  ID_x2 = 0;
+  ID_y2 = 0;
+  ID_a2 = 0;
+  ID_b2 = 0;
   
-  Float_t ID_x4 = 0;
-  Float_t ID_y4 = 0;
-  Float_t ID_a4 = 0;
-  Float_t ID_b4 = 0;
+  ID_x4 = 0;
+  ID_y4 = 0;
+  ID_a4 = 0;
+  ID_b4 = 0;
   
   brho = new Float_t[2];
   rho  = new Float_t[2];
   
   for(int i=0; i<2; ++i){
 
-      Float_t ID_brho[i] = 0;
-      Float_t ID_rho[i]  = 0;
+      ID_brho[i] = 0;
+      ID_rho[i]  = 0;
 
   }
   
-  Float_t beta      = 0;
-  Float_t beta3     = 0;
-  Float_t gamma     = 0;
-  Float_t AoQ       = 0;
-  Float_t AoQ_corr  = 0;
+  beta      = 0;
+  beta3     = 0;
+  gamma     = 0;
+  AoQ       = 0;
+  AoQ_corr  = 0;
   
-  Float_t z         = 0;
-  Float_t z2        = 0;
-  Float_t z3        = 0;
+  z         = 0;
+  z2        = 0;
+  z3        = 0;
   
-  Float_t timestamp = 0;
-  Float_t ts        = 0;
-  Float_t ts2       = 0;
+  timestamp = 0;
+  ts        = 0;
+  ts2       = 0;
 
 }
 
