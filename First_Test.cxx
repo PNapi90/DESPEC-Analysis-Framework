@@ -77,33 +77,33 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	C_t = MakeTH1('D',"pl","pl",1001,0,1000);
 
-	tamex_Mult_lead = new TH1*[4];
-	tamex_Mult_trail = new TH1*[4];
+	tamex_Mult_lead = new TH1*[50];
+	tamex_Mult_trail = new TH1*[50];
 
-	tamex_Mult_Ch_lead = new TH1**[4];
-	tamex_Mult_Ch_trail = new TH1**[4];
+	tamex_Mult_Ch_lead = new TH1**[50];
+	tamex_Mult_Ch_trail = new TH1**[50];
 
-	tamex_mult_mat_lead = new TH2*[4];
-	tamex_mult_mat_trail = new TH2*[4];
+	tamex_mult_mat_lead = new TH2*[50];
+	tamex_mult_mat_trail = new TH2*[50];
 
-	for(int i = 0;i < 4;++i){
+	for(int i = 0;i < 50;++i){
 		tamex_Mult_lead[i] = MakeTH1('D',Form("tamex_lead_%d",i),Form("tamex_lead_%d",i),100,0,100);
 		tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),Form("tamex_trail_%d",i),100,0,100);
 
 		tamex_mult_mat_lead[i] = MakeTH2('D',Form("tamex_mat_lead_%d",i),Form("tamex_mat_lead_%d",i),20,0,20,30,0,30);
 		tamex_mult_mat_trail[i] = MakeTH2('D',Form("tamex_mat_trail_%d",i),Form("tamex_mat_trail_%d",i),20,0,20,30,0,30);
 		
-		tamex_Mult_Ch_lead[i] = new TH1*[17];
-		tamex_Mult_Ch_trail[i] = new TH1*[17];
-		for(int j = 0;j < 17;++j){
+		tamex_Mult_Ch_lead[i] = new TH1*[50];
+		tamex_Mult_Ch_trail[i] = new TH1*[50];
+		for(int j = 0;j < 50;++j){
 			tamex_Mult_Ch_lead[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,j),Form("tamex_lead_ch_%d_%d",i,j),100,0,100);
 			tamex_Mult_Ch_trail[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,j),Form("tamex_trail_ch_%d_%d",i,j),100,0,100);
 		}
 	}
 
 
-	DIFF_ARR = new TH1*[2];
-	for(int i = 0;i < 2;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),300,-30000,0);
+	DIFF_ARR = new TH1*[36];
+	for(int i = 0;i < 36;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),300,-30000,0);
 
 	WR_used = false;
 
@@ -129,14 +129,14 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	tdc_hist = MakeTH1('D',"tdc","tdc",1000,-60,1000);
 
-	Trail_LEAD = new TH1**[4];
-	Coarse = new TH1**[4];
+	Trail_LEAD = new TH1**[50];
+	Coarse = new TH1**[50];
 	//lead_lead = new TH1**[4];
-	for(int i = 0;i < 4;++i){
-		Trail_LEAD[i] = new TH1*[17];
-		Coarse[i] = new TH1*[17];
+	for(int i = 0;i < 50;++i){
+		Trail_LEAD[i] = new TH1*[50];
+		Coarse[i] = new TH1*[50];
 		//lead_lead[i] = new TH1*[17];
-		for(int j = 0;j < 17;++j){
+		for(int j = 0;j < 50;++j){
 			Trail_LEAD[i][j] = NULL;
 			Coarse[i][j] = NULL;
 		//	lead_lead[i][j] = NULL;
@@ -203,6 +203,11 @@ TSCNUnpackProc::~TSCNUnpackProc()
 Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 {
 	count++;
+	
+	
+	if (count % 100000 == 0) cout<<" Event "<<count<<" Reached!!!";
+	cout<<"\r";
+	
 	if(cals_done) return kTRUE; //BAD!!!!
 	//if(count > 500000) return kTRUE;
 	Bool_t isValid=kFALSE; // validity of output event //
@@ -277,17 +282,25 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			cout << "\n---------------------\n";
 		}
 
+
 		//send subevent to respective unpacker
 		Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
+		
 		
 		//get mbs stream data from unpacker (pointer copy solution)
 		pdata = Detector_Systems[PrcID_Conv]->get_pdata();
 		
+		
 		//get data from subevent
 		Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
+		
+
 		//if(PrcID_Conv == 3) Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
 
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
+		
+
+		
 		if(cals_done) break;
 		//continue;
 		//temporary
@@ -329,7 +342,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 					called_link = true;
 				}
 				else{
-					if(RAW->get_FATIMA_det_id(i) >= 50 && called_link && false){
+					if(RAW->get_FATIMA_det_id(i) >= 17 && called_link && false){
 						//cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << " " << TDC_times[det_iter] << endl;
 						TDC_time_6[tdc_iter] = (double) RAW->get_FATIMA_TDC_T(i);
 						tdc_iter++;
@@ -342,10 +355,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			if(am_FATIMA_hits == 2) FAT_MAT->Fill(RAW->get_FATIMA_E(0),RAW->get_FATIMA_E(1));
 			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);
 		}
-
+		//PLASTIC CASE
 		if(PrcID_Conv == 2){
 			//do something here
-			int fired_pl[4];
+			int fired_pl[17];
 			int pl_iter = 0;
 			int sum_l = 0;
 			int sum_t = 0;
@@ -360,23 +373,32 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				called_channels[i] = 0;
 			}
 
-			for(int i = 0;i < 4;++i){
+
+			for(int i = 0;i < 17;++i){
+			    
 				sum_l = 0;
 				sum_t = 0;
 				pl_iter = RAW->get_PLASTIC_am_Fired(i);
 				for(int j = 0;j < pl_iter;++j){
+
 
 					phys_ch = RAW->get_PLASTIC_physical_channel(i,j);
 					called_channels[j] = phys_ch;
 
 					sum_phys_l[phys_ch] += RAW->get_PLASTIC_physical_lead_hits(i,phys_ch);
 					sum_phys_t[phys_ch] += RAW->get_PLASTIC_physical_trail_hits(i,phys_ch);
+					
 
 					sum_l += RAW->get_PLASTIC_lead_hits(i);
 					sum_t += RAW->get_PLASTIC_trail_hits(i);
+					
+					
 					if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("lead_trail_%d_%d",i,phys_ch),Form("lead_trail_%d_%d",i,phys_ch),500,-500,500);
+					
 					if(pl_iter % 2 == 0) Trail_LEAD[i][phys_ch]->Fill(RAW->get_PLASTIC_trail_T(i,j+1)-RAW->get_PLASTIC_lead_T(i,j)) ;
+					
 					if(!Coarse[i][phys_ch]) Coarse[i][phys_ch] = MakeTH1('D',Form("coarse_%d_%d",i,phys_ch),Form("coarse_%d_%d",i,phys_ch),500,0,5000);
+
 					if(j % 2 == 0) Coarse[i][phys_ch]->Fill(RAW->get_PLASTIC_coarse_lead(i,j));
 
 
