@@ -25,23 +25,12 @@
 #include "TArc.h"
 #include "TTree.h"
 
-#include <time.h>
-#include <math.h>
-#include <iomanip>
+
 
 // Go4 Includes //
 #include "TGo4UserException.h"
 #include "TGo4Picture.h"
 #include "TGo4MbsEvent.h"
-
-// General Includes //
-#include <fstream>
-#include <vector>
-#include <time.h>
-#include <math.h>
-#include <iomanip>
-
-
 
 
 #include "TSCNUnpackEvent.h"
