@@ -247,11 +247,16 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 	}
 	
+<<<<<<< HEAD
 	count++;
 		
 	if (count % 100000 == 0) cout << "Event " << count << " Reached!!!";
 	cout << "\r";
 	        
+=======
+	if (count % 100000 == 0) cout << "Event " << count << " Reached!!!";
+	cout << "\r";
+>>>>>>> 0810f1e59cf78a9e7c783cfd92872bd16d4d42c8
 	
 	if(cals_done) return kTRUE; //BAD!!!!
 	//if(count > 500000) return kTRUE;
