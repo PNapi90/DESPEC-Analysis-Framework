@@ -238,19 +238,13 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
                 Fired_QDC_Channels[num_channels_fired][1] = j;
                 num_channels_fired++;
             }
-	    else
-	    {
-		
-		cout << "QDC " << board_ID << " ch " << j << " not wired " << endl;
-		
-
+            //non wired channels of board ID filled with dummy channel id -1 
+            else{
+                cout << "QDC " << board_ID << " ch " << j << " not wired " << endl;
                 Fired_QDC_Channels[num_channels_fired][0] = board_ID; 
                 Fired_QDC_Channels[num_channels_fired][1] = -1;
-		num_channels_fired++;
-
-
+                num_channels_fired++;
             }
-	    
             num_Channels -= pow(2, j);
         }
     }
@@ -330,22 +324,16 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
 	        
          // Global Header Condition //
         if( check == 8 ){
-	    
-	    
             TDC_Glob_Header* gh = (TDC_Glob_Header*) pdata;
             tdc_board_ID = gh->geo;
-	    
         }
         // TDC Header Condition //
         else if( check == 1 ) {}
         // TDC Measurement Condition //
         else if( check == 0 ){
-	    
-	    
             TDC_Measurement* m = (TDC_Measurement*) pdata;
             TDC_ch = m->channel;
 	    
-
             //if (!wired_TDC(tdc_board_ID,TDC_ch) && QDC_DATA) continue;
             if(!wired_TDC(tdc_board_ID,TDC_ch)){
                 cout << "TDC " << tdc_board_ID << " ch " << TDC_ch << " not wired " << fired_QDC_amount << endl;
@@ -380,6 +368,8 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
 
         if(loop_counter > 100){
             cerr << "FATIMA TDC loop not reaching trailer! pdata iteration problem possible" << endl;
+            cerr << "Exiting program now (if this pdata behaviour is wished, please look into ";
+            cerr << "void FATIMA_Detector_System::Check_TDC_DATA() function" << endl;
             exit(0);
         }
     }

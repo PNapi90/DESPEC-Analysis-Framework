@@ -30,9 +30,9 @@ void FATIMA_Energy_Calibration::load_Calibration_File(){
     }
     string line;
 
-    double tmp_coeffs[5];
+    double tmp_coeffs[5] = {0,0,0,0,0};
 
-    int det_id;
+    int det_id = 0;
 
     while(calib_file.good()){
         getline(calib_file,line,'\n');
@@ -48,7 +48,6 @@ void FATIMA_Energy_Calibration::load_Calibration_File(){
 //----------------------------------------------------------
 
 double FATIMA_Energy_Calibration::Calibrate(double E,int det_id){
-    
     //calibrate using Horner's method (https://en.wikipedia.org/wiki/Horner%27s_method)
     double Energy_c = calib_coeffs[det_id][0];
     for(int i = 1;i < 5;++i) Energy_c = Energy_c*E + calib_coeffs[det_id][i];
