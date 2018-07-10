@@ -107,7 +107,9 @@ using namespace std;
 			TH2** tamex_mult_mat_trail;
 
 			TH1*** Trail_LEAD;
+			TH1**** LEAD_LEAD;
 			//for the SIS modules
+
 			
 			
 			// GALILEO Histograms //

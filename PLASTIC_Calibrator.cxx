@@ -181,8 +181,11 @@ double PLASTIC_Calibrator::get_Calibration_val(double value,int tamex_id_tmp,int
 
 void PLASTIC_Calibrator::get_data(double** fine_T,UInt** ch_id,int tamex_iter,int* iterator){
 	//write into corresponding root histograms
+	cout << "CAL " << tamex_iter << endl;
 	for(int i = 0;i < tamex_iter;++i){
+		cout << iterator[i] << endl;
 		for(int j = 0;j < iterator[i];++j){
+			cout << endl << dec << i << " " << ch_id[i][j] << endl;
 			Fine_Hist[i][ch_id[i][j]]->Fill(fine_T[i][j]);
 			fired[i][ch_id[i][j]] = true;
 		}

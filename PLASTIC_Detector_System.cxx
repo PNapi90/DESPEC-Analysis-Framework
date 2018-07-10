@@ -353,7 +353,7 @@ void PLASTIC_Detector_System::calibrate_ONLINE(){
 
     //if critical amount of calibration data reached
     //=> do ONLINE calibration and quit program
-    if(cal_count > 50000){
+    if(cal_count > 9000){
         PLASTIC_Calibration->ONLINE_CALIBRATION();
         Calibration_Done = true;
     }

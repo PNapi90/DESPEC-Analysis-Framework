@@ -338,7 +338,7 @@ double Raw_Event::get_PLASTIC_coarse_lead(int i,int j){
 
 double Raw_Event::get_PLASTIC_trail_T(int i,int j){
 	//cout << "SEND t" << coarse_T_edge_trail[i][j] << " " << fine_T_edge_trail[i][j] << endl;
-	return (coarse_T_edge_trail[i][j]*10 - fine_T_edge_trail[i][j]);
+	return (coarse_T_edge_trail[i][j]*5 - fine_T_edge_trail[i][j]);
 }
 
 //---------------------------------------------------------------

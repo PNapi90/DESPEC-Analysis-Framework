@@ -86,6 +86,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 	tamex_mult_mat_lead = new TH2*[50];
 	tamex_mult_mat_trail = new TH2*[50];
 
+	LEAD_LEAD = new TH1***[50];
+
 	for(int i = 0;i < 50;++i){
 		
 		tamex_Mult_lead[i] = NULL;
@@ -96,9 +98,12 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 		tamex_Mult_Ch_lead[i] = new TH1*[50];
 		tamex_Mult_Ch_trail[i] = new TH1*[50];
+		LEAD_LEAD[i] = new TH1**[50];
 		for(int j = 0;j < 50;++j){
 			tamex_Mult_Ch_lead[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,j),Form("tamex_lead_ch_%d_%d",i,j),100,0,100);
 			tamex_Mult_Ch_trail[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,j),Form("tamex_trail_ch_%d_%d",i,j),100,0,100);
+			LEAD_LEAD[i][j] = new TH1*[50];
+			for(int k = 0;k < 50;++k) LEAD_LEAD[i][j][k] = NULL;
 		}
 	}
 
@@ -247,7 +252,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	bool used[5];
 	for(int i = 0;i < 5;++i) used[i] = false;
 	
-	bool WHITE_RABBIT_USED = true;
+	bool WHITE_RABBIT_USED = false;
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -365,6 +370,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			int sum_t = 0;
 
 			int phys_ch = 0;
+			int phys_ch_tmp = 0;
 			int sum_phys_l[17];
 			int sum_phys_t[17];
 			int called_channels[17];
@@ -380,6 +386,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				sum_l = 0;
 				sum_t = 0;
 				pl_iter = RAW->get_PLASTIC_am_Fired(i);
+				if(pl_iter > 200) pl_iter = 0;
 				for(int j = 0;j < pl_iter;++j){
 
 					//cout << "i " << i << " j " << j << " ";// << endl; 
@@ -395,9 +402,20 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 					sum_t += RAW->get_PLASTIC_trail_hits(i);
 					
 					
-					if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("lead_trail_%d_%d",i,phys_ch),Form("lead_trail_%d_%d",i,phys_ch),500,-500,500);
+					if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("trail_minus_lead_board%d_ch%d",i,phys_ch),Form("trail_minus_lead_board%d_ch%d",i,phys_ch),500,-50,50);
 					
-					if(pl_iter % 2 == 0) Trail_LEAD[i][phys_ch]->Fill(RAW->get_PLASTIC_trail_T(i,j+1)-RAW->get_PLASTIC_lead_T(i,j)) ;
+					if(pl_iter % 2 == 0){
+						Trail_LEAD[i][phys_ch]->Fill(RAW->get_PLASTIC_trail_T(i,j+1)-RAW->get_PLASTIC_lead_T(i,j));
+						for(int k = 0;k < pl_iter;++k){
+							phys_ch_tmp = RAW->get_PLASTIC_physical_channel(i,k);
+							if(k % 2 == 0 && k != j){
+								cout << "i " << i << " " << j << " " << k << " " << phys_ch << " " << phys_ch_tmp << " " << pl_iter<< endl;
+								if(!LEAD_LEAD[i][phys_ch][phys_ch_tmp]) LEAD_LEAD[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("lead_minus_lead_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),Form("lead_minus_lead_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),500,-1000,1000);
+								LEAD_LEAD[i][phys_ch][phys_ch_tmp]->Fill(RAW->get_PLASTIC_lead_T(i,j) - RAW->get_PLASTIC_lead_T(i,k));
+							}
+						}
+					}
+
 					
 					if(!Coarse[i][phys_ch]) Coarse[i][phys_ch] = MakeTH1('D',Form("coarse_%d_%d",i,phys_ch),Form("coarse_%d_%d",i,phys_ch),500,0,5000);
 
