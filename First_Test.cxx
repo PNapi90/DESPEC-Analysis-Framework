@@ -233,7 +233,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		    
 		    file_end = i;
 		
-		    gain_match_filename = "FATIMA_Gain_Match_Files/" + input_data_path.substr((file_pwd+1),(file_end - file_pwd -1)) + ".gm";
+		    gain_match_filename = "Configuration_Files/FATIMA_Gain_Match_Files/" + input_data_path.substr((file_pwd+1),(file_end - file_pwd -1)) + ".gm";
 		
 		    cout<<"gain_match_filename = "<<gain_match_filename<<endl;
 		    		
