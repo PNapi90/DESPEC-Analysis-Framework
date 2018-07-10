@@ -6,6 +6,8 @@
 
 #include "Data_Stream.cxx"
 
+#include <string>
+
 class Detector_System{
 
 public:
@@ -31,6 +33,8 @@ public:
 	virtual bool calibration_done() = 0;
 
 	virtual void write() = 0;
+	
+	virtual void set_Gain_Match_Filename(std::string) = 0;
 };
 
 #endif

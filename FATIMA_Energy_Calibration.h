@@ -10,7 +10,6 @@ class FATIMA_Energy_Calibration{
 private:
 
     double calib_coeffs[100][5];
-    double gain_match_coeffs[100][5];
 
     std::string filename;
 

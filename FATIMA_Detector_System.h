@@ -11,6 +11,7 @@
 
 #include "FATIMA_Energy_Calibration.h"
 #include "FATIMA_Time_Calibration.h"
+#include "FATIMA_Gain_Match.h"
 
 #include "QDC_751.h"
 #include "TDC_1290.h"
@@ -43,6 +44,8 @@ private:
 	bool exiter;
 	bool no_data;
     bool QDC_DATA;
+    bool gain_match_used = false;
+    std::string gain_match_filename;
 
     int Fired_QDC_Channels[100][2];
     int fired_QDC_amount,fired_TDC_amount;
@@ -52,6 +55,7 @@ private:
 	void Check_QDC_DATA(QDC_Header*);
 	void Check_TDC_DATA();
 	void Calibrate_QDC(int);
+	void Gain_Match_QDC(int);
 	void Calibrate_TDC(int);
 
 	bool wired_QDC(int,int);
@@ -61,6 +65,7 @@ private:
 
     FATIMA_Time_Calibration* FATIMA_T_CALIB;
     FATIMA_Energy_Calibration* FATIMA_E_CALIB;
+    FATIMA_Gain_Match* FATIMA_GAIN_MATCH;
 
     //tmp root things
     TH1D** Det_Hist;
@@ -83,6 +88,8 @@ public:
     bool calibration_done(){return false;}
 
     void write();
+    
+    void set_Gain_Match_Filename(std::string);
 
 
 };

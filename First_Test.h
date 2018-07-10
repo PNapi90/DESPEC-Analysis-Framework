@@ -107,7 +107,9 @@ using namespace std;
 			TH2** tamex_mult_mat_trail;
 
 			TH1*** Trail_LEAD;
+			TH1**** LEAD_LEAD;
 			//for the SIS modules
+
 			
 			
 			// GALILEO Histograms //
@@ -134,6 +136,10 @@ using namespace std;
 			int val_it;
 
 			bool cals_done,WR_used;
+			bool FAT_gain_match_used;
+			bool FAT_gain_match_done;
+			int file_pwd, file_end;
+			std::string gain_match_filename;
 
 			Detector_System** Detector_Systems;
 			Data_Stream** data_stream;

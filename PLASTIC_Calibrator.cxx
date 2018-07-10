@@ -181,8 +181,11 @@ double PLASTIC_Calibrator::get_Calibration_val(double value,int tamex_id_tmp,int
 
 void PLASTIC_Calibrator::get_data(double** fine_T,UInt** ch_id,int tamex_iter,int* iterator){
 	//write into corresponding root histograms
+	cout << "CAL " << tamex_iter << endl;
 	for(int i = 0;i < tamex_iter;++i){
+		cout << iterator[i] << endl;
 		for(int j = 0;j < iterator[i];++j){
+			cout << endl << dec << i << " " << ch_id[i][j] << endl;
 			Fine_Hist[i][ch_id[i][j]]->Fill(fine_T[i][j]);
 			fired[i][ch_id[i][j]] = true;
 		}
@@ -196,8 +199,17 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 	//Root file to check histograms
 	TFile* ROOT_FILE = new TFile("Root_Trees/PLASTIC_TREE.root","RECREATE");
 
-	//output file file stream
+	//output file stream
 	ofstream cal_file;
+
+	//MAP of used TamexIds with Channels 
+	ofstream map_file("Configuration_Files/Calibration_PLASTIC/MAP.dat");
+	map_file << "#PLASTIC Calibration map" << endl;
+	map_file << "#Map of used Tamex ids and their channels (if stated, used = True)" << endl;
+	map_file << "#" << endl;
+	map_file << "#tamex ids (0 or 1)	vs Channel Num." << endl;
+	map_file << "#" << endl;
+
 
 	cout << "ONLINE CALIBRATION FOR PLASTIC INITIALIZED" << endl;
 	
@@ -239,6 +251,10 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 					exit(0);
 				}
 
+				//used channel written in MAP file
+				map_file << i << "\t" << j << endl;
+
+				//header of calibration file
 				cal_file << "# Calibration file of tamex_id " << i << " @ channel " << j << endl;
 				cal_file << "# fine_T bin\t\t Calibration value" << endl;
 
@@ -276,7 +292,9 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 	cout << endl;
 
 	ROOT_FILE->Write();
-	
+		
+	map_file.close();
+
 	//closing does not work!
 	//ROOT_FILE->Close();
 }

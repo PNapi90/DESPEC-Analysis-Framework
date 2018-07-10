@@ -108,6 +108,7 @@ public:
     bool calibration_done();
 
     void write(){return;};
+    void set_Gain_Match_Filename(std::string){return;};
 
 };
 

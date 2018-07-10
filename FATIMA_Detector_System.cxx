@@ -238,13 +238,19 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
                 Fired_QDC_Channels[num_channels_fired][1] = j;
                 num_channels_fired++;
             }
-            //non wired channels of board ID filled with dummy channel id -1 
-            else{
-                cout << "QDC " << board_ID << " ch " << j << " not wired " << endl;
+	    else
+	    {
+		
+		cout << "QDC " << board_ID << " ch " << j << " not wired " << endl;
+		
+
                 Fired_QDC_Channels[num_channels_fired][0] = board_ID; 
                 Fired_QDC_Channels[num_channels_fired][1] = -1;
-                num_channels_fired++;
+		num_channels_fired++;
+
+
             }
+	    
             num_Channels -= pow(2, j);
         }
     }
@@ -261,7 +267,15 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 
     for(int i = 0;i < num_channels_fired;++i){
 	
-	if (Fired_QDC_Channels[num_channels_fired][1] == -1)  pdata += 6; // FIX TO EXCLUDE EXTRAS MAYBE
+	if (Fired_QDC_Channels[num_channels_fired][1] == -1){
+	    
+	    QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
+
+	    int skip = fs->size;
+	    
+	    pdata += skip;
+	      
+	}
 	else{
 	    //set active board_ID and channel #
 	    active_board = Fired_QDC_Channels[i][0];
@@ -296,6 +310,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 	    QLong[active_det] = d->QL; // Gets Q Long data //
 	    QShort[active_det] = d->QS; // Gets Q Short data //
 	    
+	    if (gain_match_used) Gain_Match_QDC(active_det);
 	    Calibrate_QDC(active_det);
 	}
     }
@@ -324,16 +339,22 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
 	        
          // Global Header Condition //
         if( check == 8 ){
+	    
+	    
             TDC_Glob_Header* gh = (TDC_Glob_Header*) pdata;
             tdc_board_ID = gh->geo;
+	    
         }
         // TDC Header Condition //
         else if( check == 1 ) {}
         // TDC Measurement Condition //
         else if( check == 0 ){
+	    
+	    
             TDC_Measurement* m = (TDC_Measurement*) pdata;
             TDC_ch = m->channel;
 	    
+
             //if (!wired_TDC(tdc_board_ID,TDC_ch) && QDC_DATA) continue;
             if(!wired_TDC(tdc_board_ID,TDC_ch)){
                 cout << "TDC " << tdc_board_ID << " ch " << TDC_ch << " not wired " << fired_QDC_amount << endl;
@@ -368,8 +389,6 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
 
         if(loop_counter > 100){
             cerr << "FATIMA TDC loop not reaching trailer! pdata iteration problem possible" << endl;
-            cerr << "Exiting program now (if this pdata behaviour is wished, please look into ";
-            cerr << "void FATIMA_Detector_System::Check_TDC_DATA() function" << endl;
             exit(0);
         }
     }
@@ -404,8 +423,34 @@ void FATIMA_Detector_System::Calibrate_QDC(int id){
 
 //---------------------------------------------------------------
 
+void FATIMA_Detector_System::Gain_Match_QDC(int id){
+	QLong[id] = FATIMA_GAIN_MATCH->Gain_Match(QLong[id],id);
+	QShort[id] = FATIMA_GAIN_MATCH->Gain_Match(QShort[id],id);
+}
+
+//---------------------------------------------------------------
 void FATIMA_Detector_System::Calibrate_TDC(int id){
 	TDC_Time[id] = FATIMA_T_CALIB->Calibrate(TDC_Time[id],id);
+}
+
+//---------------------------------------------------------------
+
+void FATIMA_Detector_System::set_Gain_Match_Filename(string GM_filename){
+	
+	FATIMA_GAIN_MATCH = new FATIMA_Gain_Match(GM_filename);
+	
+	cout<<"BITCH I'M HERE!!!!"<<endl;
+	cout<<"BITCH I'M HERE!!!!"<<endl;
+	cout<<"BITCH I'M HERE!!!!"<<endl;
+	cout<<"BITCH I'M HERE!!!!"<<endl;
+	cout<<"BITCH I'M HERE!!!!"<<endl;
+	cout<<"BITCH I'M HERE!!!!"<<endl;
+	cout<<"BITCH I'M HERE!!!!"<<endl;
+	cout<<"BITCH I'M HERE!!!!"<<endl;
+	cout<<"BITCH I'M HERE!!!!"<<endl;
+	cout<<"BITCH I'M HERE!!!!"<<endl;
+
+	gain_match_used = true;
 }
 
 //---------------------------------------------------------------
