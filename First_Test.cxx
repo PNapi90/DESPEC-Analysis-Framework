@@ -109,7 +109,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 
 	DIFF_ARR = new TH1*[36];
-	for(int i = 0;i < 36;++i) DIFF_ARR[i] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),300,-30000,0);
+	for(int i = 0;i < 36;++i) DIFF_ARR[i] = NULL;//MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),300,-30000,0);
 
 	WR_used = false;
 
@@ -329,6 +329,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			if(RAW->CH_51_FIRED() && tdc_hits == 3){
 				int id_tmp = RAW->get_FATIMA_det_id(0);
 				double tdiff = RAW->get_FATIMA_Time_Diff();
+				if(!DIFF_ARR[id_tmp]) DIFF_ARR[id_tmp] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",id_tmp),Form("TDC_DIFF_CH_6_to_%d",id_tmp),300,-30000,0);
 				DIFF_ARR[id_tmp]->Fill(tdiff);
 			}
 			int tdc_iter = 0;
@@ -404,12 +405,12 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 					
 					if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("trail_minus_lead_board%d_ch%d",i,phys_ch),Form("trail_minus_lead_board%d_ch%d",i,phys_ch),500,-50,50);
 					
-					if(pl_iter % 2 == 0){
+					if(j % 2 == 0){
 						Trail_LEAD[i][phys_ch]->Fill(RAW->get_PLASTIC_trail_T(i,j+1)-RAW->get_PLASTIC_lead_T(i,j));
 						for(int k = 0;k < pl_iter;++k){
 							phys_ch_tmp = RAW->get_PLASTIC_physical_channel(i,k);
 							if(k % 2 == 0 && k != j){
-								cout << "i " << i << " " << j << " " << k << " " << phys_ch << " " << phys_ch_tmp << " " << pl_iter<< endl;
+								//cout << "i " << i << " " << j << " " << k << " " << phys_ch << " " << phys_ch_tmp << " " << pl_iter<< endl;
 								if(!LEAD_LEAD[i][phys_ch][phys_ch_tmp]) LEAD_LEAD[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("lead_minus_lead_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),Form("lead_minus_lead_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),500,-1000,1000);
 								LEAD_LEAD[i][phys_ch][phys_ch_tmp]->Fill(RAW->get_PLASTIC_lead_T(i,j) - RAW->get_PLASTIC_lead_T(i,k));
 							}
