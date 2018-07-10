@@ -342,7 +342,7 @@ void PLASTIC_Detector_System::calibrate_ONLINE(){
 
     //send data to ROOT histograms in Calibrator object
     PLASTIC_Calibration->get_data(edge_fine,ch_ID_edge,2,iterator);
-    double max_count = 50000.;
+    double max_count = 30000.;
     cal_count++;
     if(cal_count % 1000 == 0){
         cout << dec << "=========================\n";
@@ -353,7 +353,7 @@ void PLASTIC_Detector_System::calibrate_ONLINE(){
 
     //if critical amount of calibration data reached
     //=> do ONLINE calibration and quit program
-    if(cal_count > 9000){
+    if(cal_count > max_count){
         PLASTIC_Calibration->ONLINE_CALIBRATION();
         Calibration_Done = true;
     }
