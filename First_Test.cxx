@@ -177,7 +177,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	iterator = 0;
 	cals_done = false;
 	val_it = 0;
-	FAT_gain_match_used = true;
+	FAT_gain_match_used = false;
 	FAT_gain_match_done = false;
 
 }
@@ -233,7 +233,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		    
 		    file_end = i;
 		
-		    gain_match_filename = input_data_path.substr((file_pwd+1),(file_end - file_pwd -1)) + ".gm";
+		    gain_match_filename = "FATIMA_Gain_Match_Files/" + input_data_path.substr((file_pwd+1),(file_end - file_pwd -1)) + ".gm";
 		
 		    cout<<"gain_match_filename = "<<gain_match_filename<<endl;
 		    		
@@ -247,16 +247,11 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 	}
 	
-<<<<<<< HEAD
 	count++;
 		
 	if (count % 100000 == 0) cout << "Event " << count << " Reached!!!";
 	cout << "\r";
-	        
-=======
-	if (count % 100000 == 0) cout << "Event " << count << " Reached!!!";
-	cout << "\r";
->>>>>>> 0810f1e59cf78a9e7c783cfd92872bd16d4d42c8
+	    
 	
 	if(cals_done) return kTRUE; //BAD!!!!
 	//if(count > 500000) return kTRUE;

@@ -264,13 +264,16 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
     int active_board = 0;
     int active_det = 0;
     double fine_time = 0;
+    
+    pdata++; // Moves to 1st data value
+
+    QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
 
     for(int i = 0;i < num_channels_fired;++i){
 	
 	if (Fired_QDC_Channels[num_channels_fired][1] == -1){
-	    
-	    QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
 
+	    
 	    int skip = fs->size;
 	    
 	    pdata += skip;
@@ -283,11 +286,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
     
 	    active_det = det_ID[active_board][active_Channel];
 	    det_ids_QDC[i] = active_det;
-				    
-	    pdata++; // Moves to 1st data value
-	    
-	    QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
-	    
+				    	    	    
 	    pdata += 3; //Moves to QDC time data
 	    
 	    QDC_Time* t = (QDC_Time*) pdata;
