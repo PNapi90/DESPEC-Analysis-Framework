@@ -87,12 +87,13 @@ TGo4EventProcessor(name) // Histograms defined here //
 	tamex_mult_mat_trail = new TH2*[50];
 
 	for(int i = 0;i < 50;++i){
-		tamex_Mult_lead[i] = MakeTH1('D',Form("tamex_lead_%d",i),Form("tamex_lead_%d",i),100,0,100);
-		tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),Form("tamex_trail_%d",i),100,0,100);
-
-		tamex_mult_mat_lead[i] = MakeTH2('D',Form("tamex_mat_lead_%d",i),Form("tamex_mat_lead_%d",i),20,0,20,30,0,30);
-		tamex_mult_mat_trail[i] = MakeTH2('D',Form("tamex_mat_trail_%d",i),Form("tamex_mat_trail_%d",i),20,0,20,30,0,30);
 		
+		tamex_Mult_lead[i] = NULL;
+		tamex_Mult_trail[i] = NULL;
+
+		tamex_mult_mat_lead[i] = NULL;
+		tamex_mult_mat_trail[i] = NULL;
+
 		tamex_Mult_Ch_lead[i] = new TH1*[50];
 		tamex_Mult_Ch_trail[i] = new TH1*[50];
 		for(int j = 0;j < 50;++j){
@@ -407,20 +408,27 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				for(int j = 0;j < pl_iter;++j){
 					if(sum_phys_l[called_channels[j]] > 0){
 						if(!tamex_Mult_Ch_lead[i][called_channels[j]]) tamex_Mult_Ch_lead[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,called_channels[j]),Form("tamex_lead_ch_%d_%d",i,called_channels[j]),30,0,30);
+						if(!tamex_mult_mat_lead[i]) tamex_mult_mat_lead[i] = MakeTH2('D',Form("tamex_mat_lead_%d",i),Form("tamex_mat_lead_%d",i),20,0,20,30,0,30);
 						tamex_Mult_Ch_lead[i][called_channels[j]]->Fill(sum_phys_l[called_channels[j]]);
 						tamex_mult_mat_lead[i]->Fill(called_channels[j],sum_phys_l[called_channels[j]]);
 					}
 					if(sum_phys_t[called_channels[j]] > 0){
 						if(!tamex_Mult_Ch_trail[i][called_channels[j]]) tamex_Mult_Ch_trail[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,called_channels[j]),Form("tamex_trail_ch_%d_%d",i,called_channels[j]),30,0,30);
+						if(!tamex_mult_mat_trail[i]) tamex_mult_mat_trail[i] = MakeTH2('D',Form("tamex_mat_trail_%d",i),Form("tamex_mat_trail_%d",i),20,0,20,30,0,30);
 						tamex_Mult_Ch_trail[i][called_channels[j]]->Fill(sum_phys_t[called_channels[j]]);
 						tamex_mult_mat_trail[i]->Fill(called_channels[j],sum_phys_t[called_channels[j]]);
 					}
 					sum_phys_l[called_channels[j]] = 0;
 					sum_phys_t[called_channels[j]] = 0;
 				}
-				if(sum_l > 0) tamex_Mult_lead[i]->Fill(sum_l);
-				if(sum_t > 0) tamex_Mult_trail[i]->Fill(sum_t);
-
+				if(sum_l > 0){
+					if(!tamex_Mult_lead[i]) tamex_Mult_lead[i] = MakeTH1('D',Form("tamex_lead_%d",i),Form("tamex_lead_%d",i),100,0,100);		
+					tamex_Mult_lead[i]->Fill(sum_l);
+				}
+				if(sum_t > 0){
+					if(!tamex_Mult_trail[i]) tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),Form("tamex_trail_%d",i),100,0,100);
+					tamex_Mult_trail[i]->Fill(sum_t);
+				}
 			}
 		}
 		
