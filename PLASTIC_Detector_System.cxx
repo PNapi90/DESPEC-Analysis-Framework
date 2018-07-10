@@ -100,18 +100,23 @@ void PLASTIC_Detector_System::get_Event_data(Raw_Event* RAW){
 void PLASTIC_Detector_System::Process_MBS(int* pdata){
 
     this->pdata = pdata;
-    //reset old iterator array
-    for(int i = 0;i < tamex_iter;++i) iterator[i] = 0;
 
+    //reset old iterator array and old TAMEX data
+    for(int i = 0;i < tamex_iter;++i) iterator[i] = 0;
+    reset_edges();
     tamex_end = false;
     tamex_iter = 0;
+    
+    //loop over the complete TAMEX data of the subevent
     while(!tamex_end){
         Process_TAMEX();
         if(!tamex_end) tamex_iter++;
         this->pdata++;
     }
     
+    //true -> do "online" calibration and exit program
     if(CALIBRATE) calibrate_ONLINE();
+    //false -> do normal "offline" calibration
     else calibrate_OFFLINE();
 }
 
@@ -245,7 +250,6 @@ void PLASTIC_Detector_System::reset_edges(){
 
 void PLASTIC_Detector_System::get_edges(){
     //set iterator[tamex_iter] of edges to 0
-    reset_edges();
     iterator[tamex_iter] = 0;
 
     //loop over remaining words (getting leading and trailing edge data)
@@ -262,7 +266,7 @@ void PLASTIC_Detector_System::get_edges(){
         }
         else if(hold->six_eight == six_f) written = false;
 
-        if(hold->six_eight != six_f ){
+        if(hold->six_eight != six_f){
             cerr << dec << hold->six_eight << endl;
             cerr << "PLACE_HOLDER error (edges) in TAMEX!" << endl;
             exit(0);
@@ -277,7 +281,10 @@ void PLASTIC_Detector_System::get_edges(){
         edge_coarse[tamex_iter][iterator[tamex_iter]] = (double) data->coarse_T;
         edge_fine[tamex_iter][iterator[tamex_iter]] = (double) data->fine_T;
         ch_ID_edge[tamex_iter][iterator[tamex_iter]] = data->ch_ID;
-        lead_arr[tamex_iter][iterator[tamex_iter]] = 1 - (data->ch_ID % 2);;    
+        lead_arr[tamex_iter][iterator[tamex_iter]] = 1 - (data->ch_ID % 2);
+
+        //cout << "debug edges" << endl;
+        //cout << dec << tamex_iter << " " << data->ch_ID << " " << endl;
         
         //trailing edge reached
         iterator[tamex_iter]++;
@@ -309,7 +316,7 @@ void PLASTIC_Detector_System::check_error(){
         exit(0);
     }
     if(error->err_code != 0){
-        cerr << "Error (not known) in TAMEX occured" << endl;
+        cerr << "Error (not known) in TAMEX occured -> TAMEX WORD: " << hex << *pdata << endl;
         exit(0);
     }
 }

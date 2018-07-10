@@ -205,8 +205,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	count++;
 	
 	
-	if (count % 100000 == 0) cout<<" Event "<<count<<" Reached!!!";
-	cout<<"\r";
+	if (count % 100000 == 0) cout << "Event " << count << " Reached!!!";
+	cout << "\r";
 	
 	if(cals_done) return kTRUE; //BAD!!!!
 	//if(count > 500000) return kTRUE;
@@ -273,7 +273,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 3 && false){
+		if(PrcID_Conv == 2 && false){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex << *(pdata + i) << " ";
@@ -381,8 +381,9 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				pl_iter = RAW->get_PLASTIC_am_Fired(i);
 				for(int j = 0;j < pl_iter;++j){
 
-
+					//cout << "i " << i << " j " << j << " ";// << endl; 
 					phys_ch = RAW->get_PLASTIC_physical_channel(i,j);
+					//cout << "-> phys_ch " << phys_ch << endl;
 					called_channels[j] = phys_ch;
 
 					sum_phys_l[phys_ch] += RAW->get_PLASTIC_physical_lead_hits(i,phys_ch);
