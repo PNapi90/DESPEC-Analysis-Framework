@@ -85,13 +85,25 @@ void Time_EventBuilder::new_Comparison(){
 		if(i != type_of_interest){
 			//loop over all recorded events
 			for(int j = 0;j < non_main_iterator[i];++j){
+				//get time of event
 				non_main_time = Non_Main_Event[i][j]->get_T();
 				time_difference[type_of_interest][i][j] = main_time - non_main_time;
-				if(time_difference[type_of_interest][i][j] < threshold){
-					write_and_clear(type_of_interest,tmp_type,tmp_iter);
-					break;
+				if(time_difference[type_of_interest][i][j] < Minimal_T_Diffs[type_of_interest][j]){
+					min_pos[type_of_interest][i] = j;
+					if(time_difference[type_of_interest][i][j] < threshold){
+						write_and_clear(type_of_interest,i,j);
+						break;
+					}
 				}
 			}
 		}
 	}
 }
+
+//---------------------------------------------------------------
+
+void Time_EventBuilder::write_and_clear(int a,int b,int c){
+	//TO DO
+}
+
+//---------------------------------------------------------------
