@@ -422,7 +422,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			}
 
 
-			for(int i = 0;i < 17;++i){
+			for(int i = 0;i < 4;++i){
 			    
 				sum_l = 0;
 				sum_t = 0;
@@ -443,7 +443,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 					sum_t += RAW->get_PLASTIC_trail_hits(i);
 					
 					
-					if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("trail_minus_lead_board%d_ch%d",i,phys_ch),Form("trail_minus_lead_board%d_ch%d",i,phys_ch),500,-50,50);
+					if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("trail_minus_lead/trail_minus_lead_board%d_ch%d",i,phys_ch),Form("trail_minus_lead_board%d_ch%d",i,phys_ch),500,0,500);
 					
 					if(j % 2 == 0){
 						Trail_LEAD[i][phys_ch]->Fill(RAW->get_PLASTIC_trail_T(i,j+1)-RAW->get_PLASTIC_lead_T(i,j));
@@ -451,7 +451,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 							phys_ch_tmp = RAW->get_PLASTIC_physical_channel(i,k);
 							if(k % 2 == 0 && k != j){
 								//cout << "i " << i << " " << j << " " << k << " " << phys_ch << " " << phys_ch_tmp << " " << pl_iter<< endl;
-								if(!LEAD_LEAD[i][phys_ch][phys_ch_tmp]) LEAD_LEAD[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("lead_minus_lead_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),Form("lead_minus_lead_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),500,-1000,1000);
+								if(!LEAD_LEAD[i][phys_ch][phys_ch_tmp]) LEAD_LEAD[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("lead_minus_lead/lead_minus_lead_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),Form("lead_minus_lead_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),500,-1000,1000);
 								LEAD_LEAD[i][phys_ch][phys_ch_tmp]->Fill(RAW->get_PLASTIC_lead_T(i,j) - RAW->get_PLASTIC_lead_T(i,k));
 							}
 						}
