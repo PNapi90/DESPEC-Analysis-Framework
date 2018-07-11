@@ -47,6 +47,8 @@
 
 #include "Raw_Event.h"
 
+#include "Configurator.h"
+
 #include <string>
 
 
@@ -134,6 +136,7 @@ using namespace std;
 			Data_Stream** data_stream;
 			White_Rabbit* WR;
 			Raw_Event* RAW;
+			Configurator* Conf;
 
 			double fatima_E_save[4];
 			int am_FATIMA_hits;
