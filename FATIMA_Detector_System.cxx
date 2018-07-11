@@ -228,7 +228,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
     int num_Channels = QDChead_2->channels; // Gets Channels fired 0011 means 1&2 fired //
     int tmp_tmp = QDChead_2->channels & 0xf;
     int num_channels_fired = 0;
-    
+        
      // Loop retrieves channels fired from integer value //
     for(int j = 7; j >= 0; j--){
         if(num_Channels >= pow(2, j)){
@@ -265,16 +265,18 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
     int active_det = 0;
     double fine_time = 0;
     
-    pdata++; // Moves to 1st data value
-
-    QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
 
     for(int i = 0;i < num_channels_fired;++i){
 	
-	if (Fired_QDC_Channels[num_channels_fired][1] == -1){
+	pdata++; // Moves to 1st data value
+
+	QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
+	
+	
+	if (Fired_QDC_Channels[num_channels_fired][1] == -1){ /*pdata += 6;*/
 
 	    
-	    int skip = fs->size;
+	    int skip = fs->size - 1;
 	    
 	    pdata += skip;
 	      

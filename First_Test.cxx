@@ -61,7 +61,7 @@ TGo4EventProcessor()
 TSCNUnpackProc::TSCNUnpackProc(const char* name) :
 TGo4EventProcessor(name) // Histograms defined here //
 {
-		
+	
 	cout << "**** TSCNUnpackProc: Create" << endl;
 	
 	
@@ -291,7 +291,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	bool used[5];
 	for(int i = 0;i < 5;++i) used[i] = false;
 	
-	bool WHITE_RABBIT_USED = true;
+	bool WHITE_RABBIT_USED = false;
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -318,7 +318,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 2 && false){
+		if(PrcID_Conv == 3 && false){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex << *(pdata + i) << " ";
