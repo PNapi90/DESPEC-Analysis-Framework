@@ -1,4 +1,4 @@
-# DEspec-Analysis-Framework (DEAF)
+# DEspec-Analysis-Framework
 C++ analysis framwork for the DESPEC campaign @ GSI/FAIR
 
 =======================================================================

@@ -99,9 +99,10 @@ void Event_Storage::save_Raw_Event(Raw_Event* RAW,int type){
     for(int i = 0;i < 3;++i) AIDA_XYZ[i] = -1;
 
     for(int i = 0;i < AIDA_Event_Num;++i){
-        //get X,Y and Z coordinates of AIDA event
+        //get X,Y and Z coordinates, time and type of AIDA event
         RAW->get_AIDA_XYZ(AIDA_XYZ,i);
         time_tmp = RAW->get_AIDA_time(i);
+        type = RAW->get_AIDA_type(i);
 
         //iterator of hit AIDA grid (if multiple hits on same XYZ coordinates)
         iter_tmp = AIDA_iterator[AIDA_XYZ[2]][AIDA_XYZ[0]][AIDA_XYZ[1]];

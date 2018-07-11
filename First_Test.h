@@ -47,6 +47,11 @@
 
 #include "Raw_Event.h"
 
+<<<<<<< HEAD
+=======
+//#include "Configurator.h"
+
+>>>>>>> c6d541f27efd3c077a4f3471129fc973fbe887d1
 #include <string>
 
 
@@ -134,6 +139,10 @@ using namespace std;
 			Data_Stream** data_stream;
 			White_Rabbit* WR;
 			Raw_Event* RAW;
+<<<<<<< HEAD
+=======
+			//Configurator* Conf;
+>>>>>>> c6d541f27efd3c077a4f3471129fc973fbe887d1
 
 			double fatima_E_save[4];
 			int am_FATIMA_hits;
