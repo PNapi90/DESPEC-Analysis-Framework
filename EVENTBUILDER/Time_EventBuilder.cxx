@@ -74,10 +74,26 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 		exit(0);
 	}
 
+	ULong64_t WR = RAW->get_WR();
+
 	//save event in respective store
 	Event_Stores[tmp_type]->store(RAW);
 
+	int hits[6] = {-1,-1,-1,-1,-1,-1};
+
+	//get coincidences
+	for(int i = 0;i < 6;++i) if(i != tmp_type) hits[i] = Event_Stores[i]->Time_Comparison(WR);
 	
+	//check for shared event data and write data
+	for(int i = 0;i < 6;++i){
+		if(hits[i] != -1){
+			
+		}
+	}
+
+
+
+
 
 	//improve!!
 	for(int i = 0;i < ){
