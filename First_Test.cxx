@@ -214,37 +214,25 @@ TSCNUnpackProc::~TSCNUnpackProc()
 Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 {
     
-    	if (Used_Systems[3] && FAT_gain_match_used && !FAT_gain_match_done){
-	    
-	    
-	    TGo4MbsEvent       *fMbsEvent = dynamic_cast<TGo4MbsEvent*>    (GetInputEvent("Unpack"));   // of step "Unpack";
-	
-	    s_filhe* fileheader=fMbsEvent->GetMbsSourceHeader();
+    if(Used_Systems[3] && FAT_gain_match_used && !FAT_gain_match_done){
+
+		TGo4MbsEvent       *fMbsEvent = dynamic_cast<TGo4MbsEvent*>    (GetInputEvent("Unpack"));   // of step "Unpack";
+		s_filhe* fileheader=fMbsEvent->GetMbsSourceHeader();
 
 	    string input_data_path = fileheader->filhe_file;
 	
 	    cout<<"Filename = "<<input_data_path<<endl;
 	    	    
-	    for(int i = 0; i<input_data_path.length(); ++i){
-		
-		
-		if(input_data_path[i] == '/') file_pwd = i;
-		else if(input_data_path[i] == '.'){
-		    
-		    file_end = i;
-		
-		    gain_match_filename = "Configuration_Files/FATIMA_Gain_Match_Files/" + input_data_path.substr((file_pwd+1),(file_end - file_pwd -1)) + ".gm";
-		
-		    cout<<"gain_match_filename = "<<gain_match_filename<<endl;
-		    		
-		}
-		
+	    for(unsigned int i = 0; i<input_data_path.length(); ++i){
+			if(input_data_path[i] == '/') file_pwd = i;
+			else if(input_data_path[i] == '.'){
+		    	file_end = i;
+			    gain_match_filename = "Configuration_Files/FATIMA_Gain_Match_Files/" + input_data_path.substr((file_pwd+1),(file_end - file_pwd -1)) + ".gm";
+				cout<<"gain_match_filename = "<<gain_match_filename<<endl;
+			}
 	    }
-	    
 	    Detector_Systems[3]->set_Gain_Match_Filename(gain_match_filename);
-
 	    FAT_gain_match_done = true;
-
 	}
 	
 	count++;
@@ -282,10 +270,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	// |                                                    | //
 	// ------------------------------------------------------ //
 	
-	double E0,E1;
-	int fat_hits = 0;
-	
-	
+
 	int subevent_iter = 0;
 
 	bool used[5];
@@ -383,29 +368,23 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 					tdc_hist->Fill(RAW->get_FATIMA_TDC_T(i)*1e-6);
 					if(RAW->get_FATIMA_det_id(i) < 50){
 						det_iter = RAW->get_FATIMA_det_id(i);
-						TDC_times[i] = (double) RAW->get_FATIMA_TDC_T(i);
-					//cout << "YES! " << det_iter << " " << TDC_times[i] << endl;
 					}
 					called_link = true;
 				}
 				else{
 					if(RAW->get_FATIMA_det_id(i) >= 17 && called_link && false){
-						//cout << "Oh YEAH " <<  det_iter << " " << RAW->get_FATIMA_TDC_T(i) << " " << TDC_times[det_iter] << endl;
 						TDC_time_6[tdc_iter] = (double) RAW->get_FATIMA_TDC_T(i);
 						tdc_iter++;
 					}
 				}
 			}
-			for(int i = 0;i < tdc_iter*0;++i){
-				//if(TDC_time_6[i] > 0 && TDC_times[0] > 0) DIFF_ARR[i]->Fill(TDC_time_6[i] - TDC_times[0]);
-			}
+			
 			if(am_FATIMA_hits == 2) FAT_MAT->Fill(RAW->get_FATIMA_E(0),RAW->get_FATIMA_E(1));
 			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);
 		}
 		//PLASTIC CASE
 		if(PrcID_Conv == 2){
 			//do something here
-			int fired_pl[17];
 			int pl_iter = 0;
 			int sum_l = 0;
 			int sum_t = 0;
@@ -654,7 +633,7 @@ void TSCNUnpackProc::get_WR_Config(){
 		cerr << "Could not find White_Rabbit config file!" << endl;
 		exit(0);
 	}
-	int i = 0;
+	
 	int id = 0;
 	string line;
 	char s_tmp[100];

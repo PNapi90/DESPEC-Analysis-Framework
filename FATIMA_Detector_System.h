@@ -45,7 +45,7 @@ private:
 	bool exiter;
 	bool no_data;
     bool QDC_DATA;
-    bool gain_match_used = false;
+    bool gain_match_used;
     std::string gain_match_filename;
 
     int Fired_QDC_Channels[100][2];

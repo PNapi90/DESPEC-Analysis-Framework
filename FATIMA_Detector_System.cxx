@@ -8,6 +8,8 @@ using namespace std;
 
 FATIMA_Detector_System::FATIMA_Detector_System(){
 
+    gain_match_used = false;
+
     //set amount of QDCs and TDCs
 
     max_am_dets = 60;
@@ -135,15 +137,6 @@ void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
         if(called) break;
     }
 
-    if(called){
-        int show_val = 0;
-        for(int i = 0;i < fired_TDC_amount;++i){
-            a = det_ids_TDC[i];  
-            if(a == 0) show_val = 0;
-            if(a == 1) show_val = 1;
-        }
-    }
-
     RAW->set_DATA_FATIMA(fired_QDC_amount,fired_TDC_amount,QLong,QShort,TDC_Time,QDC_Time_Coarse,QDC_Time_Fine,det_ids_QDC,det_ids_TDC);
     //QDC_TDC->get_Detector_Data(RAW);
 }
@@ -226,7 +219,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 
     int board_ID = QDChead_2->geo; // Gets Geographical Address //
     int num_Channels = QDChead_2->channels; // Gets Channels fired 0011 means 1&2 fired //
-    int tmp_tmp = QDChead_2->channels & 0xf;
+
     int num_channels_fired = 0;
         
      // Loop retrieves channels fired from integer value //
@@ -238,19 +231,12 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
                 Fired_QDC_Channels[num_channels_fired][1] = j;
                 num_channels_fired++;
             }
-	    else
-	    {
-		
-		cout << "QDC " << board_ID << " ch " << j << " not wired " << endl;
-		
-
+            else{
+                cout << "QDC " << board_ID << " ch " << j << " not wired " << endl;
                 Fired_QDC_Channels[num_channels_fired][0] = board_ID; 
                 Fired_QDC_Channels[num_channels_fired][1] = -1;
-		num_channels_fired++;
-
-
+                num_channels_fired++;
             }
-	    
             num_Channels -= pow(2, j);
         }
     }
