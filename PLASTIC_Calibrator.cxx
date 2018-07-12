@@ -210,12 +210,7 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 
 	cout << "ONLINE CALIBRATION FOR PLASTIC INITIALIZED" << endl;
 	
-	//pdf and cdf for "perfect" binning
-	//pdf: probability distribution funtion, cdf: cummulative distribution function
-	double density_perfect = 1./((double) nbins);
-	double perfect[nbins];
-	for(int i = 0;i < nbins;++i) perfect[i] = (i+1)*density_perfect;
-
+	
 	char filename[1000];
 	
 	//create sum spectra
@@ -261,8 +256,6 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 					sum_arr[k] = Fine_Hist[i][j]->GetBinContent(k+1) + sum_arr[k-1];
 					if(Fine_Hist[i][j]->GetBinContent(k+1) > 0) max_bin = k;
 				}
-
-				//for(int k = 0;k < max_bin;++k) perfect[k] = (k+1)/((double) max_bin);
 
 				//normalize cdf to 1 and calculate fine[i] = cdf[i]/sum*5000*picoseconds
 				//write everything into calibration file (name of file = filename)

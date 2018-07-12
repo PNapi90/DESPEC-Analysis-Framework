@@ -4,96 +4,58 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-Time_EventBuilder::Time_EventBuilder(int type_of_interest){
-	this->type_of_interest = type_of_interest;
+Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tmp,int** interest_array_tmp){
+
+	get_used_Systems();
+
+	//set event stores
+	Event_Stores = new Event_Store*[6];
+
+	// all non used systems intialized as NULL 
+	//-> calling uninitialized system will cause an error !
+	
+	Event_Stores[2] = !Used_Systems[2] ? NULL : new PLASTIC_Event_Store();
+	Event_Stores[3] = !Used_Systems[3] ? NULL : new FATIMA_Event_Store();
+	//Event_Stores[4] = !Used_Systems[4] ? NULL : new GALILEO_Event_Store();
+
+	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) Event_Stores[i] = NULL;
+
+	//get coincidences between Systems of interest defined by interest_array
+	this->amount_interest = amount_interest;
+	length_interest = new int[amount_interest];
+	interest_array = new int*[amount_interest];
+	for(int i = 0;i < amount_interest;++i){
+		length_interest[i] = length_interest_tmp[i];
+		interest_array[i] = new int[length_interest[i]];
+		for(int j = 0;j < length_interest[i];++j) interest_array[i][j] = interest_array_tmp[i][j];
+	}
+	
+	check_kinds_overlap();
+
 }
 
 //---------------------------------------------------------------
 
 Time_EventBuilder::~Time_EventBuilder(){
 
+	for(int i = 0;i < amount_interest;++i) delete[] interest_array[i];
+	delete[] interest_array;
+	delete[] length_interest;
+
 }
 
 //---------------------------------------------------------------
 
-
-void Time_EventBuilder::set_Event(Raw_Event* RAW){
-	//get PrcID from RAW
-	int tmp_type = RAW->get_Type();
-
-	if(tmp_type > 4 || tmp_type < 0){
-		cerr << "Unknown PrcID in Time_EventBuilder. Raw_Event sent wrong ID" << endl;
-		exit(0);
-	}
-
-	//check if type_of_interest
-	if(tmp_type == type_of_interest){
-		Main_Event[main_iterator] = new (RAW);
-		
-		new_Comparison();
-
-		main_iterator++;
-	}
-	else{
-		Non_Main_Event[tmp_type][non_main_iterator[tmp_type]] = new (RAW);
-		
-		existing_Comparison(tmp_type);
-
-		non_main_iterator[tmp_type]++;
-	}
-}
-
-//---------------------------------------------------------------
-
-void Time_EventBuilder::existing_Comparison(int tmp_type){
-
-	//
-	int tmp_iter = non_main_iterator[tmp_type];
-
-	//tmp value
-	double delta_T = 100000;
-
-	//get White Rabbit of non main event
-	double Time_of_Non_Main = Non_Main_Event[tmp_type][tmp_iter]->get_T();
-	
-	//loop over all main events
-	for(int i = 0;i < main_iterator;++i){
-		delta_T = Main_Event[i]->get_T() - Time_of_Non_Main;
-		time_difference[i][tmp_type][tmp_iter] = delta_T;
-		
-		//check if new time difference is smallest
-		if(delta_T < Minimal_T_Diffs[i][tmp_type]){
-			min_pos[i][tmp_type] = tmp_iter;
-			if(delta_T < threshold){
-				write_and_clear(i,tmp_type,tmp_iter);
-				break;
-			}
-		}
-	}
-}
-
-//---------------------------------------------------------------
-
-void Time_EventBuilder::new_Comparison(){
-	
-	//Time of Main Event
-	double main_time = Main_Event[main_iterator]->get_T();
-	double non_main_time = 0;
-
-	//loop over all Detector System unequal to type_of_interest
-	for(int i = 0;i < 5;++i){
-		if(i != type_of_interest){
-			//loop over all recorded events
-			for(int j = 0;j < non_main_iterator[i];++j){
-				//get time of event
-				non_main_time = Non_Main_Event[i][j]->get_T();
-				time_difference[type_of_interest][i][j] = main_time - non_main_time;
-				if(time_difference[type_of_interest][i][j] < Minimal_T_Diffs[type_of_interest][j]){
-					min_pos[type_of_interest][i] = j;
-					if(time_difference[type_of_interest][i][j] < threshold){
-						write_and_clear(type_of_interest,i,j);
-						break;
-					}
+void Time_EventBuilder::check_kinds_overlap(){
+	//loop over all possible Detector Systems
+	for(int i = 0;i < 6;++i){
+		iter[i] = 0;
+		for(int j = 0;j < amount_interest;++j){
+			for(int k = 0;k < length_interest[j];++k){
+				if(interest_array[j][k] == i){
+					overlap_arr[i][iter[i]] = j;
+					iter[i]++;
+					break;
 				}
 			}
 		}
@@ -102,8 +64,80 @@ void Time_EventBuilder::new_Comparison(){
 
 //---------------------------------------------------------------
 
-void Time_EventBuilder::write_and_clear(int a,int b,int c){
-	//TO DO
+void Time_EventBuilder::set_Event(Raw_Event* RAW){
+	//get PrcID from RAW
+	int tmp_type = RAW->get_Type();
+	
+	//PrcID check
+	if(tmp_type > 5 || tmp_type < 0){
+		cerr << "Unknown PrcID in Time_EventBuilder. Raw_Event sent wrong ID" << endl;
+		exit(0);
+	}
+
+	ULong64_t WR = RAW->get_WR();
+
+	//save event in respective store
+	Event_Stores[tmp_type]->store(RAW);
+
+	int hits[6] = {-1,-1,-1,-1,-1,-1};
+
+	//get coincidences
+	for(int i = 0;i < 6;++i) if(i != tmp_type) hits[i] = Event_Stores[i]->Time_Comparison(WR);
+	
+	//check for shared event data and write data
+	for(int i = 0;i < 6;++i){
+		if(hits[i] != -1){
+			
+		}
+	}
+
+
+
+
+
+	//improve!!
+	for(int i = 0;i < ){
+
+		//check if WR time difference lower than set threshold
+		if(){
+			for(int k = 0;k < iter[tmp_type];++k){
+				if(!Event[][]) Event = new Event;
+				else Event[][]->Set_Data(DATA);
+			}
+		}
+	}
+
+	//improve!
+	for(int i = 0;i < am_events;++i){
+
+	}
+
+
+
+	
+
+	
+}
+
+//---------------------------------------------------------------
+
+void Time_EventBuilder::get_used_Systems(){
+	ifstream data("Configuration_Files/Used_Systems.txt");
+	if(data.fail()){
+		cerr << "Could not find Used_Systems config file!" << endl;
+		exit(0);
+	}
+	int i = 0;
+	int id = 0;
+	string line;
+	char s_tmp[100];
+	while(data.good()){
+		getline(data,line,'\n');
+		if(line[0] == '#') continue;
+		sscanf(line.c_str(),"%s %d",s_tmp,&id);
+		Used_Systems[i] = (id == 1)
+		i++;
+	}
 }
 
 //---------------------------------------------------------------
