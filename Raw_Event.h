@@ -4,6 +4,7 @@
 
 typedef unsigned long ULong;
 typedef unsigned int UInt;
+typedef unsigned long long ULong64_t;
 
 class Raw_Event{
 
@@ -131,9 +132,9 @@ public:
 
 	########################################################## */
 
-	void set_DATA_FATIMA(int,int,double*,double*,ULong*,ULong*,ULong*,int*,int*);
+	void set_DATA_FATIMA(int,int,double*,double*,ULong64_t*,ULong64_t*,ULong64_t*,int*,int*);
 	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*);
-	void set_DATA_GALILEO(int,ULong*,int*,int*,ULong*,double*,int*);
+	void set_DATA_GALILEO(int,ULong64_t*,int*,int*,ULong64_t*,double*,int*);
 
 
 /* ####################################################
@@ -188,9 +189,9 @@ public:
 	//temporary FATIMA getters
 	int get_FATIMA_am_Fired();
 	double get_FATIMA_E(int);
-	ULong get_FATIMA_TDC_T(int);
-	ULong get_FATIMA_QDC_T_Coarse(int);
-	ULong get_FATIMA_QDC_T_Fine(int);
+	ULong64_t get_FATIMA_TDC_T(int);
+	ULong64_t get_FATIMA_QDC_T_Coarse(int);
+	ULong64_t get_FATIMA_QDC_T_Fine(int);
 	int get_FATIMA_det_id(int);
 	int get_FATIMA_am_Fired_TDC();
 	bool get_FATIMA_QDC_TDC_LINKED(int);
@@ -213,10 +214,10 @@ public:
 	
 	//temporary GALILEO getters
 	int get_GALILEO_am_Fired();
-	ULong get_GALILEO_Sum_T(int);
+	ULong64_t get_GALILEO_Sum_T(int);
 	int get_GALILEO_Pileup(int);
 	int get_GALILEO_Hit_Pattern(int);
-	ULong get_GALILEO_Chan_T(int);
+	ULong64_t get_GALILEO_Chan_T(int);
 	double get_GALILEO_Chan_E(int);
 	
 	

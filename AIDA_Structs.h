@@ -1,18 +1,17 @@
-#ifndef QDC_HEADERS_H
-#define QDC_HEADERS_H
+#ifndef AIDA_STRUCTS_H
+#define AIDA_STRUCTS_H
 
 
 #include <iostream>
 #include <string>
 #include <sstream>
 using namespace std;
-typedef unsigned long long ULong64_t;
 
 
-struct QDC_Header
+/*struct QDC_Header
 {  
 
-	unsigned int length		: 28;
+	unsigned int AIDA_t0_		: 28;
 	unsigned int check_a	: 4;
 
 };
@@ -40,7 +39,7 @@ struct QDC_Format_Size
 struct QDC_Time
 {
 
-	ULong64_t trigger_tag : 32;
+	unsigned long trigger_tag : 32;
 
 };
 
@@ -59,9 +58,9 @@ struct QDC_Traces
 struct QDC_Extras
 {
 
-	ULong64_t fine_time	: 10;
-	unsigned int flags	: 6;	
-	ULong64_t ext_trig	: 16;
+	unsigned int fine_time	: 10;
+	unsigned int flags		: 6;	
+	unsigned long ext_trig	: 16;
 	
 };
 
@@ -83,5 +82,5 @@ struct QDC_End
   unsigned int evCounter:24;
   unsigned int check:3;
   unsigned int geo:5;
-};
+};*/
 #endif

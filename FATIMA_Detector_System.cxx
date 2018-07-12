@@ -17,10 +17,10 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
     QLong = new double[max_am_dets];
     QShort = new double[max_am_dets];
 
-    QDC_Time_Coarse = new ULong[max_am_dets];
-    QDC_Time_Fine = new ULong[max_am_dets];
+    QDC_Time_Coarse = new ULong64_t[max_am_dets];
+    QDC_Time_Fine = new ULong64_t[max_am_dets];
 
-    TDC_Time = new ULong[max_am_dets];
+    TDC_Time = new ULong64_t[max_am_dets];
 
     det_ids_QDC = new int[max_am_dets];
     det_ids_TDC = new int[max_am_dets];
@@ -263,7 +263,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
     int active_Channel = 0;
     int active_board = 0;
     int active_det = 0;
-    double fine_time = 0;
+    ULong64_t fine_time = 0;
     
 
     for(int i = 0;i < num_channels_fired;++i){
@@ -299,7 +299,9 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 	   
 	    QDC_Extras* e = (QDC_Extras*) pdata;	
     
-		fine_time = (((t->trigger_tag) + ((e->ext_trig) << 32)));
+		ULong64_t tmp_ext_trig = e->ext_trig;
+    
+		fine_time = (((t->trigger_tag) + (tmp_ext_trig << 32)));
 		fine_time += ((double)(e->fine_time)/1024.);
 	    
 		    QDC_Time_Fine[active_det] = fine_time;

@@ -95,7 +95,7 @@ void Raw_Event::set_DATA_ID_Timestamp(Float_t FRS_timestamp,Float_t FRS_ts,Float
 
 ################################################################# */
 
-void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Qs,ULong* TDC,ULong* QDC_c,ULong* QDC_f,int* det_ids_QDC,int* det_ids_TDC){
+void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql,double* Qs,ULong64_t* TDC,ULong64_t* QDC_c,ULong64_t* QDC_f,int* det_ids_QDC,int* det_ids_TDC){
 	this->FAT_FIRED = FAT_FIRED;
 	this->TDC_FIRED = TDC_FIRED;
 
@@ -195,7 +195,7 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 
 //---------------------------------------------------------------
 
-void Raw_Event::set_DATA_GALILEO(int GAL_FIRED,ULong* sum_time,int* pileup,int* hit_pattern,ULong* chan_time,double* chan_en, int* FEBEX_det_ids){
+void Raw_Event::set_DATA_GALILEO(int GAL_FIRED,ULong64_t* sum_time,int* pileup,int* hit_pattern,ULong64_t* chan_time,double* chan_en, int* FEBEX_det_ids){
 	this->GAL_FIRED = GAL_FIRED;
 	    
 	for(int i = 0;i < GAL_FIRED;++i){
@@ -289,15 +289,15 @@ double Raw_Event::get_FATIMA_E(int i){return E[i];}
 
 //---------------------------------------------------------------
 
-ULong Raw_Event::get_FATIMA_TDC_T(int i){return TDC_timestamp[i];}
+ULong64_t Raw_Event::get_FATIMA_TDC_T(int i){return TDC_timestamp[i];}
 
 //---------------------------------------------------------------
 
-ULong Raw_Event::get_FATIMA_QDC_T_Coarse(int i){return QDC_t_coarse[i];}
+ULong64_t Raw_Event::get_FATIMA_QDC_T_Coarse(int i){return QDC_t_coarse[i];}
 
 //---------------------------------------------------------------
 
-ULong Raw_Event::get_FATIMA_QDC_T_Fine(int i){return QDC_t_fine[i];}
+ULong64_t Raw_Event::get_FATIMA_QDC_T_Fine(int i){return QDC_t_fine[i];}
 
 //---------------------------------------------------------------
 
@@ -373,7 +373,7 @@ int Raw_Event::get_GALILEO_am_Fired(){return GAL_FIRED;}
 
 //---------------------------------------------------------------
 
-ULong Raw_Event::get_GALILEO_Sum_T(int i){return GALILEO_sum_time[i];}
+ULong64_t Raw_Event::get_GALILEO_Sum_T(int i){return GALILEO_sum_time[i];}
 
 //---------------------------------------------------------------
 
@@ -385,7 +385,7 @@ int Raw_Event::get_GALILEO_Hit_Pattern(int i){return GALILEO_hit_pattern[i];}
 
 //---------------------------------------------------------------
 
-ULong Raw_Event::get_GALILEO_Chan_T(int i){return GALILEO_chan_time[i];}
+ULong64_t Raw_Event::get_GALILEO_Chan_T(int i){return GALILEO_chan_time[i];}
 
 //---------------------------------------------------------------
 

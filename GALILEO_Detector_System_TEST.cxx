@@ -19,11 +19,11 @@ GALILEO_Detector_System::GALILEO_Detector_System(){
 
     fired_FEBEX_amount = 0;
 
-    Sum_Time = new ULong[max_am_dets];
+    Sum_Time = new ULong64_t[max_am_dets];
     Pileup = new int[max_am_dets];
     Hit_Pattern = new int[max_am_dets];
 
-    Chan_Time = new ULong[max_am_dets];
+    Chan_Time = new ULong64_t[max_am_dets];
     Chan_Energy = new double[max_am_dets];
 
     det_ids = new int[max_am_dets];
@@ -146,8 +146,10 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
             this->pdata++; // Moves to rest of Event Timestamp //
 			
             FEBEX_Evt_Time *fbx_time=(FEBEX_Evt_Time*) this->pdata;
+	    
+	    ULong64_t tmp_ext_time = ((fbx_hT->ext_time));
 			
-	    tmp_Sum_Time = (fbx_time->evt_time)+((fbx_hT->ext_time)<<32);
+	    tmp_Sum_Time = (fbx_time->evt_time)+ (tmp_ext_time<<32);//((fbx_hT->ext_time)<<32);
 			
 			
             this->pdata++; // Moves to Pileup & Hit Pattern //
@@ -188,7 +190,9 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
     
 		FEBEX_TS *fbx_Ch_TS=(FEBEX_TS*) this->pdata; 
 		
-		Chan_Time[current_det] = (fbx_Ch_TS->chan_ts)+((fbx_Ch->ext_chan_ts)<<32); 
+		ULong64_t tmp_ext_chan_ts = (fbx_Ch->ext_chan_ts);
+		
+		Chan_Time[current_det] = (fbx_Ch_TS->chan_ts)+(tmp_ext_chan_ts<<32); 
 
 		this->pdata++; // Moves to Channel Energy //
 			    

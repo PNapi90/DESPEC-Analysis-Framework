@@ -7,6 +7,9 @@
 #include <sstream>
 using namespace std;
 
+typedef unsigned long long ULong64_t;
+
+
 // ############################################## //
 // ######## White Rabbit Data Structure ######### //
 // ############################################## //
@@ -66,7 +69,7 @@ struct FEBEX_Chan_Size
 struct FEBEX_Half_Time
 {  
 
-	unsigned int ext_time		: 16;
+	ULong64_t ext_time		: 16;
 	unsigned int blank		: 16;
 
 };
@@ -74,7 +77,7 @@ struct FEBEX_Half_Time
 struct FEBEX_Evt_Time
 {
 
-	unsigned long evt_time		: 32;
+	ULong64_t evt_time		: 32;
 
 };
 
@@ -105,7 +108,7 @@ struct DEADBEEF
 struct FEBEX_Chan_Header
 {
 	
-	unsigned long ext_chan_ts	: 16;
+	ULong64_t ext_chan_ts		: 16;
 	unsigned int Ch_ID		: 8;	
 	unsigned int oxfo		: 8;
 
@@ -115,7 +118,7 @@ struct FEBEX_Chan_Header
 struct FEBEX_TS
 {
 
-	unsigned int chan_ts		: 32;
+	ULong64_t chan_ts		: 32;
   
 };
 

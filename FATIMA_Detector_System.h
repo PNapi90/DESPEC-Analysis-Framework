@@ -18,6 +18,7 @@
 
 #include "Detector_System.cxx"
 
+typedef unsigned long long ULong64_t;
 
 class FATIMA_Detector_System : public Detector_System{
 
@@ -31,9 +32,9 @@ private:
 	double* QLong;
 	double* QShort;
 
-	ULong* QDC_Time_Coarse;
-	ULong* QDC_Time_Fine;
-	ULong* TDC_Time;
+	ULong64_t* QDC_Time_Coarse;
+	ULong64_t* QDC_Time_Fine;
+	ULong64_t* TDC_Time;
 
 	int* det_ids_QDC;
     int* det_ids_TDC;

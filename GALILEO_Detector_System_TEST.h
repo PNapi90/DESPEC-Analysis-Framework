@@ -17,6 +17,7 @@
 
 
 class GALILEO_Detector_System : public Detector_System{
+typedef unsigned long long ULong64_t;
 
 private:
 	int max_am_dets;
@@ -28,15 +29,15 @@ private:
 
 	int* pdata;
 
-	ULong tmp_Sum_Time;
+	ULong64_t tmp_Sum_Time;
 	int tmp_Pileup;
 	int tmp_Hit_Pattern;
 	
-	ULong* Sum_Time;
+	ULong64_t* Sum_Time;
 	int* Pileup;
 	int* Hit_Pattern;
 	
-	ULong* Chan_Time;
+	ULong64_t* Chan_Time;
 	double* Chan_Energy;
 
 	int* det_ids;
