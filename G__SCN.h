@@ -31,7 +31,8 @@ extern void G__set_cpp_environmentG__SCN();
 
 #include "TObject.h"
 #include "TMemberInspector.h"
-#include "./AIDA_Structs.h"
+#include "./AIDA_Detector_System.h"
+#include "./AIDA_Headers.h"
 #include "./FATIMA_Detector_System.h"
 #include "./FATIMA_Energy_Calibration.h"
 #include "./FATIMA_Gain_Match.h"

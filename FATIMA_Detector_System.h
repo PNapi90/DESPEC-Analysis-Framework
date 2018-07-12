@@ -86,7 +86,7 @@ public:
 
     int* tmp_get_iterator(){return NULL;};
 
-    bool calibration_done(){return false;}
+    bool calibration_done(){return false;};
 
     void write();
     

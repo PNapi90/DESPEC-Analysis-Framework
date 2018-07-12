@@ -27,9 +27,10 @@ void FATIMA_Gain_Match::load_Gain_Match_File(string GM_filename){
     ifstream gain_match_file(GM_filename.c_str());
 
     if(gain_match_file.fail()){
-        cerr << "Could not find Fatima Gain Match file" << endl;
+        cerr << "Could not find FATIMA Gain Match file" << endl;
         exit(0);
     }
+    if (gain_match_file.is_open()) cout<<"FATIMA Gain Match file:  "<<GM_filename<<"  was opened sucessfully"<<endl;
     
     string line;
 

@@ -441,19 +441,9 @@ void FATIMA_Detector_System::Calibrate_TDC(int id){
 void FATIMA_Detector_System::set_Gain_Match_Filename(string GM_filename){
 	
 	FATIMA_GAIN_MATCH = new FATIMA_Gain_Match(GM_filename);
-	
-	cout<<"BITCH I'M HERE!!!!"<<endl;
-	cout<<"BITCH I'M HERE!!!!"<<endl;
-	cout<<"BITCH I'M HERE!!!!"<<endl;
-	cout<<"BITCH I'M HERE!!!!"<<endl;
-	cout<<"BITCH I'M HERE!!!!"<<endl;
-	cout<<"BITCH I'M HERE!!!!"<<endl;
-	cout<<"BITCH I'M HERE!!!!"<<endl;
-	cout<<"BITCH I'M HERE!!!!"<<endl;
-	cout<<"BITCH I'M HERE!!!!"<<endl;
-	cout<<"BITCH I'M HERE!!!!"<<endl;
 
 	gain_match_used = true;
+	
 }
 
 //---------------------------------------------------------------
