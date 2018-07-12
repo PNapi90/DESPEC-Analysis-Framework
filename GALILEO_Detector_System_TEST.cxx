@@ -174,7 +174,7 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 
 		FEBEX_Chan_Header *fbx_Ch=(FEBEX_Chan_Header*) this->pdata;
 		
-		int tmp_Ch_ID = fbx_Ch->Ch_ID
+		int tmp_Ch_ID = fbx_Ch->Ch_ID;
 
 		current_det = GALILEO_map[std::make_pair(board_id, tmp_Ch_ID)];
 						
