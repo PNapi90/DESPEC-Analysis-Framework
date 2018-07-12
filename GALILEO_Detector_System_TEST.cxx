@@ -173,8 +173,10 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 		this->pdata++; // Moves to channel header //
 
 		FEBEX_Chan_Header *fbx_Ch=(FEBEX_Chan_Header*) this->pdata;
+		
+		int tmp_Ch_ID = fbx_Ch->Ch_ID
 
-		current_det = GALILEO_map[std::make_pair(board_id, (fbx_Ch->Ch_ID))];
+		current_det = GALILEO_map[std::make_pair(board_id, tmp_Ch_ID)];
 						
 		det_ids[i] = current_det;
 		
