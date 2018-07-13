@@ -31,7 +31,9 @@ private:
 
 	double* QLong;
 	double* QShort;
-
+	double* QLong_Raw;
+	double* QShort_Raw;
+	
 	ULong64_t* QDC_Time_Coarse;
 	ULong64_t* QDC_Time_Fine;
 	ULong64_t* TDC_Time;
