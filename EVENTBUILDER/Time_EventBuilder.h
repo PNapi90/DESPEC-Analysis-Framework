@@ -17,15 +17,24 @@ class Time_EventBuilder : public EventBuilder{
 
 private:
 	
+
+    int match_amount;
+    int found_matches;
+
 	bool Used_Systems[6];
+    bool relevance_system[6];
+
+    bool** relevance_array;
 
 	int amount_interests;
 	int** interest_array;
 	
 	Event_Store** Event_Stores;
 
+    void create_relevance_array();
+
 public:
-	Time_EventBuilder(int,int**);
+	Time_EventBuilder(int,int*,int**);
 	~Time_EventBuilder();
 	
 	void set_Event(Raw_Event*);

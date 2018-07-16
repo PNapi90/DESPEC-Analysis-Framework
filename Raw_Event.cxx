@@ -262,6 +262,18 @@ Float_t get_ts2(){return ts2;}
 
 ####################################################### */
 
+//White Rabbit
+
+//---------------------------------------------------------------
+
+void Raw_Event::set_WR(ULong64_t WR){this->WR = WR;}
+
+//---------------------------------------------------------------
+
+ULong64_t Raw_Event::get_WR(){return WR;}
+
+//---------------------------------------------------------------
+
 
 //FATIMA
 
@@ -414,3 +426,4 @@ ULong64_t Raw_Event::get_GALILEO_Chan_T(int i){return GALILEO_chan_time[i];}
 double Raw_Event::get_GALILEO_Chan_E(int i){return GALILEO_chan_energy[i];}
 
 //---------------------------------------------------------------
+

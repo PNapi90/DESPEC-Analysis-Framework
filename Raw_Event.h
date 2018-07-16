@@ -68,6 +68,9 @@ private:
 	
 	########################################################## */
 
+	//White Rabbit
+	ULong64_t WR;
+
 	//FATIMA
 	int FAT_FIRED,TDC_FIRED;
 	int Det_Nums[100];
@@ -225,6 +228,10 @@ public:
 	ULong64_t get_GALILEO_Chan_T(int);
 	double get_GALILEO_Chan_E(int);
 	
+
+	//White Rabbit setter and getter
+	void set_WR(ULong64_t);
+	ULong64_t get_WR();
 	
 	
 };
