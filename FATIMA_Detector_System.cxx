@@ -83,6 +83,8 @@ FATIMA_Detector_System::~FATIMA_Detector_System(){
 	delete[] det_ids_QDC;
     delete[] det_ids_TDC;
 
+	delete[] QLong_Raw;
+	delete[] QShort_Raw;
 	delete[] QLong;
 	delete[] QShort;
 	delete[] QDC_Time_Coarse;
@@ -139,7 +141,7 @@ void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
         if(called) break;
     }
 
-    RAW->set_DATA_FATIMA(fired_QDC_amount,fired_TDC_amount,QLong,QShort,TDC_Time,QDC_Time_Coarse,QDC_Time_Fine,det_ids_QDC,det_ids_TDC);
+    RAW->set_DATA_FATIMA(fired_QDC_amount,fired_TDC_amount,QLong_Raw,QShort_Raw,QLong,QShort,TDC_Time,QDC_Time_Coarse,QDC_Time_Fine,det_ids_QDC,det_ids_TDC);
     //QDC_TDC->get_Detector_Data(RAW);
 }
 
@@ -298,8 +300,8 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 	    
 	    QDC_Data* d = (QDC_Data*) pdata;
 	    
-	    QLong[active_det] = d->QL; // Gets Q Long data //
-	    QShort[active_det] = d->QS; // Gets Q Short data //
+	    QLong_Raw[active_det] = d->QL; // Gets Q Long data //
+	    QShort_Raw[active_det] = d->QS; // Gets Q Short data //
 	    
 	    if (gain_match_used) Gain_Match_QDC(active_det);
 	    Calibrate_QDC(active_det);
@@ -404,9 +406,14 @@ bool FATIMA_Detector_System::wired_TDC(int board_id,int ch_num){
 //---------------------------------------------------------------
 
 void FATIMA_Detector_System::Calibrate_QDC(int id){
-	QLong[id] = FATIMA_E_CALIB->Calibrate(QLong[id],id);
-	QShort[id] = FATIMA_E_CALIB->Calibrate(QShort[id],id);
-	
+	if (gain_match_used){
+	    QLong[id] = FATIMA_E_CALIB->Calibrate(QLong[id],id);
+	    QShort[id] = FATIMA_E_CALIB->Calibrate(QShort[id],id);
+	}
+	else{
+	    QLong[id] = FATIMA_E_CALIB->Calibrate(QLong_Raw[id],id);
+	    QShort[id] = FATIMA_E_CALIB->Calibrate(QShort_Raw[id],id);
+	}
 	QDC_Time_Coarse[id] = FATIMA_T_CALIB->Calibrate_QDC(QDC_Time_Coarse[id],id);
 	QDC_Time_Fine[id] = FATIMA_T_CALIB->Calibrate_QDC(QDC_Time_Fine[id],id);
 
@@ -415,8 +422,8 @@ void FATIMA_Detector_System::Calibrate_QDC(int id){
 //---------------------------------------------------------------
 
 void FATIMA_Detector_System::Gain_Match_QDC(int id){
-	QLong[id] = FATIMA_GAIN_MATCH->Gain_Match(QLong[id],id);
-	QShort[id] = FATIMA_GAIN_MATCH->Gain_Match(QShort[id],id);
+	QLong[id] = FATIMA_GAIN_MATCH->Gain_Match(QLong_Raw[id],id);
+	QShort[id] = FATIMA_GAIN_MATCH->Gain_Match(QShort_Raw[id],id);
 }
 
 //---------------------------------------------------------------
