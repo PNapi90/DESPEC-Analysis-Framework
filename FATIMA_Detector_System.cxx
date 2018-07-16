@@ -322,6 +322,8 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
     int active_det = 0;
     no_data = true;
     
+    int TDC_loop = 0;
+    
     int loop_counter = 0;
     while(!trail){
         loop_counter++;
@@ -377,9 +379,13 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
             }
         }
         // TDC Trailer Condition // 
-        else if ( check == 16 ) trail = true;
+        else if ( check == 16 ){
 	
-
+	     ++TDC_loop;
+	    
+	     if(TDC_loop == num_TDC_modules) trail = true;
+	
+	}
         if(loop_counter > 100){
             cerr << "FATIMA TDC loop not reaching trailer! pdata iteration problem possible" << endl;
             exit(0);

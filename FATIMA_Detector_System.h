@@ -49,6 +49,8 @@ private:
     bool QDC_DATA;
     bool gain_match_used;
     std::string gain_match_filename;
+    
+    int num_TDC_modules = 1;
 
     int Fired_QDC_Channels[100][2];
     int fired_QDC_amount,fired_TDC_amount;
