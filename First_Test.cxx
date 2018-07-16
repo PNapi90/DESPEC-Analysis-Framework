@@ -27,7 +27,9 @@
 #include <iomanip>
 
 
-
+//#include "TFRSSortEvent.h"
+//#include "TFRSCalibrEvent.h"
+//#include "TFRSAnlEvent.h"
 
 #include "TSCNUnpackEvent.h"
 
@@ -35,6 +37,7 @@
 #include "FATIMA_Detector_System.h"
 #include "PLASTIC_Detector_System.h"
 #include "GALILEO_Detector_System_TEST.h"
+//#include "FRS_Detector_System.h"
 
 #include "Data_Stream.cxx"
 #include "White_Rabbit.h"
@@ -56,7 +59,8 @@ TGo4EventProcessor()
 }
 //----------------------------------------------------------
 
-
+		    int not_same = 0;
+		    int equal_2 = 0;
 
 TSCNUnpackProc::TSCNUnpackProc(const char* name) :
 TGo4EventProcessor(name) // Histograms defined here //
@@ -72,6 +76,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	FAT_E = MakeTH1('D',"FATIMA_E","FATIMA_E",2001,0,8000);
 	FAT_MAT = MakeTH2('D',"FAT_MAT","FAT_MAT",1001,0,4000,1001,0,4000);
+	
+	FAT_TDC_Diff = MakeTH1('D',"FATIMA_TDC","FATIMA_TDC",3200,-40,40);
 
 	hit_mat = MakeTH2('D',"hitmat","hitmat",37,0,36,37,0,36);
 
@@ -132,10 +138,13 @@ TGo4EventProcessor(name) // Histograms defined here //
 	//GAL_Evt_Time = MakeTH1('D',"GALILEO_E","GALILEO_E",20001,0,800000);
 	GAL_Pileup = MakeTH1('D',"GALILEO_Pileup","GALILEO Pileup",101,0,100);
 	GAL_Hit_Pat = MakeTH1('D',"GALILEO_Hit_Pat","GALILEO Hit Pattern",101,0,100);
-	GAL_Chan_Time_Diff = MakeTH1('D',"GALILEO_Chan_Time_DIff","GALILEO Channel Time Difference",20001,-5000,5000);
-	GAL_Chan_E = MakeTH1('D',"GALILEO_E","GALILEO Channel Energy",80001,0,800000);
-	GAL_Chan_E_Mat = MakeTH2('D',"GALILEO_E_Mat","GALILEO Chanel Energy Matrix",10001,0,800000,10001,0,800000);
+	GAL_Chan_Time_Diff = MakeTH1('D',"GALILEO_Chan_Time_DIff","GALILEO Channel Time Difference",201,-100,100);
+	GAL_Chan_E_Mat = MakeTH2('D',"GALILEO_E_Mat","GALILEO Channel Energy Matrix",10001,0,800000,10001,0,800000);
 
+	for(int i=0; i < 5; ++i){
+	    GAL_Chan_E[i] = MakeTH1('D',Form("GALILEO_Energy_Spectra/GALILEO_E%2d",i),Form("GALILEO Channel Energy Channel %2d",i),80001,0,800000);
+	    GAL_Time_Diff_vs_Energy[i] = MakeTH2('D',Form("GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",i),Form("GALILEO Time Difference Vs Channel Energy Channel %2d",i),201,-100,100,10001,0,800000);
+	}
 	tdc_hist = MakeTH1('D',"tdc","tdc",1000,-60,1000);
 
 	Trail_LEAD = new TH1**[50];
@@ -149,6 +158,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 			Trail_LEAD[i][j] = NULL;
 			Coarse[i][j] = NULL;
 		//	lead_lead[i][j] = NULL;
+		
 		}
 	}
 
@@ -287,9 +297,23 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		Int_t lwords = psubevt->GetIntLen();
 	
 		Int_t PrcID=psubevt->GetProcid();
+		
+		//cout<<"ProcID is "<<PrcID<<endl;
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
-
+		
+		/*if(PrcID_Conv == 0){
+		    
+		    
+		   TFRSSortEvent *srt = dynamic_cast<TFRSSortEvent*> (GetInputEvent("Calibr"));
+		    
+		    
+		    Detector_Systems[PrcID_Conv]->Process_FRS(srt);
+		    
+		    
+		    
+		}*/		    
+		    
 		if(WHITE_RABBIT_USED){
 			WR_tmp[iterator] = WR->get_White_Rabbit(pdata);
 			pdata += WR->get_increase();
@@ -316,6 +340,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//send subevent to respective unpacker
 		Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
+		
 		
 		
 		//get mbs stream data from unpacker (pointer copy solution)
@@ -376,6 +401,24 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 						TDC_time_6[tdc_iter] = (double) RAW->get_FATIMA_TDC_T(i);
 						tdc_iter++;
 					}
+				}
+				
+				for(int j = 0; j < tdc_hits; ++j){
+
+
+				    if (i != j ){
+					 
+					 
+					//cout<<"First timestamp "<<RAW->get_FATIMA_TDC_T(i)<<"  Second timestamp  "<<RAW->get_FATIMA_TDC_T(j)<<endl;
+
+					TDC_times[0] = RAW->get_FATIMA_TDC_T(i);
+					TDC_times[1] = RAW->get_FATIMA_TDC_T(j);
+					 
+					//cout<<(TDC_times[0] - TDC_times[1])*1e-3<<endl;
+
+					FAT_TDC_Diff->Fill(((TDC_times[0] - TDC_times[1])*1e-3));
+				    
+				    }
 				}
 			}
 			
@@ -476,19 +519,16 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		    //cout<<"Something = "<<RAW->get_GALILEO_Chan_E(0)<<endl;
 		    
 		    am_GALILEO_hits = RAW->get_GALILEO_am_Fired();
+		    		    		    
 		    
 		    double tmpGAL[2];
 
 		    for(int i = 0;i < am_GALILEO_hits;++i){
 			//e,g, sum spectrum
-			
-			//cout<<"Filled Channel Energy = "<<(RAW->get_GALILEO_Chan_E(i))<<endl;
-			
+						
 			tmpGAL[i] = RAW->get_GALILEO_Chan_E(i);
-
-			//cout<<"Something Else = "<<tmpGAL[i]<<endl;
 			
-			GAL_Chan_E->Fill(tmpGAL[i]);
+			GAL_Chan_E[i]->Fill(tmpGAL[i]);
 			GAL_Pileup->Fill(RAW->get_GALILEO_Pileup(i));
 			GAL_Hit_Pat->Fill(RAW->get_GALILEO_Hit_Pattern(i));
 			
@@ -496,9 +536,14 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			    
 			    if(i != j){
 				
-				double GAL_chan_time_diff = RAW->get_GALILEO_Chan_T(i) - RAW->get_GALILEO_Chan_T(j);
+				double time_1 = RAW->get_GALILEO_Chan_T(i);
+				double time_2 = RAW->get_GALILEO_Chan_T(j);
+				
+				double GAL_chan_time_diff = time_1 - time_2;
 
 				GAL_Chan_Time_Diff->Fill(GAL_chan_time_diff);
+								
+				GAL_Time_Diff_vs_Energy[i]->Fill(GAL_chan_time_diff,tmpGAL[i]);
 				
 			    }
 			    
@@ -506,6 +551,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 			
 		    }
+		    
+		    //cout<<"Channel 0 Energy "<<tmpGAL[0]<<"    Channel 1 Energy "<<tmpGAL[1]<<endl;
 		    
 		    if(am_GALILEO_hits >= 2){GAL_Chan_E_Mat->Fill(tmpGAL[0],tmpGAL[1]);}
 			

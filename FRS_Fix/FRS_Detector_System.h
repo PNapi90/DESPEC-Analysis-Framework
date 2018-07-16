@@ -1,28 +1,30 @@
 #ifndef FRS_DETECTOR_SYSTEM_H
-#define FRS_DETECOR_SYSTEM_H
+#define FRS_DETECTOR_SYSTEM_H
 
-#include "TFRSBasicProc.h"
+#include "TFRSSortEvent.h"
+#include "TFRSCalibrEvent.h"
 #include "TFRSAnlEvent.h"
-#include "TFRSParameter.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TObject.h"
 
 #include "Detector_System.cxx"
 
-class RawEvent;
+/*class RawEvent;
 class TFRSSortEvent;
 class TFRSCalibrEvent;
-class TFRSAnlEvent;
+class TFRSAnlEvent;*/
 
-class FRS_Detector_System : public Detector_System {
+class FRS_Detector_System : public Detector_System{
 
 private:
 
   int* pdata;
+  
+  Int_t test;
 
     
-   // MUSIC PARAMETERS //
+/*   // MUSIC PARAMETERS //
   
   Float_t* dE;
   Float_t* dE_cor;
@@ -70,23 +72,34 @@ private:
   
   Float_t timestamp;
   Float_t ts;
-  Float_t ts2;   
+  Float_t ts2;   */
     
     
 public:
-  FRS_Detector_System() ;
-  TFRSUserProc(const char* name);
-  virtual ~FRS_Detector_System() ;
+  FRS_Detector_System();
+  ~FRS_Detector_System();
+  //TFRSUserProc(const char* name);
+  //virtual ~FRS_Detector_System() ;
 
+  void Process_FRS(TFRSSortEvent*);
 
   void Process_MBS(int*);
   void get_Event_data(Raw_Event*);
   int* get_pdata();
 
+	
+    unsigned long** tmp_get_coarse_T(){return NULL;};
+    int tmp_get_am_hits(){return 0;};
 
-  //TFRSAnlEvent previous;
+    unsigned int** tmp_get_chID(){return NULL;};
 
-  TModParameter* Setup ;
+    int* tmp_get_iterator(){return NULL;};
+
+    bool calibration_done(){return false;}
+    void write(){return;};
+    void set_Gain_Match_Filename(std::string){return;};
+
+  //TModParameter* Setup ;
 
 };
 

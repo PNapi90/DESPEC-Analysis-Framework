@@ -89,6 +89,8 @@ public:
     PLASTIC_Detector_System();
     ~PLASTIC_Detector_System();
 
+    //void Process_FRS(TFRSSortEvent*){return;};
+
     //functions from abstract class Detector_System
     void Process_MBS(int*);
 

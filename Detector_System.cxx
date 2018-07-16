@@ -4,9 +4,15 @@
 
 #include "Raw_Event.h"
 
+//#include "TFRSSortEvent.h"
+//#include "TFRSCalibrEvent.h"
+//#include "TFRSAnlEvent.h"
+
+
 #include "Data_Stream.cxx"
 
 #include <string>
+
 
 class Detector_System{
 
@@ -16,6 +22,8 @@ public:
 
     virtual void Process_MBS(int*) = 0;
     
+    //virtual void Process_FRS(TFRSSortEvent*) = 0;
+
     virtual void get_Event_data(Raw_Event*) = 0;
 
 //    virtual void get_Event_data(Data_Stream*) = 0;

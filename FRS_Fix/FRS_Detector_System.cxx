@@ -2,18 +2,20 @@
 
 #include "TH1.h"
 
+#include <cstdlib>
+#include <iostream>
+
+
 #include "TFRSSortEvent.h"
 #include "TFRSCalibrEvent.h"
 #include "TFRSAnlEvent.h"
-#include "TFRSUserEvent.h"
-#include "TFRSParameter.h"
+
+FRS_Detector_System::FRS_Detector_System(){
 
 
+    test = 0;
 
-void FRS_Detector_System::FRS_Detector_System(){
-
-
-  // MUSIC PARAMETERS //
+/*  // MUSIC PARAMETERS //
   
   dE     = new Float_t[3];
   dE_cor = new Float_t[3];
@@ -89,9 +91,16 @@ void FRS_Detector_System::FRS_Detector_System(){
   
   timestamp = 0;
   ts        = 0;
-  ts2       = 0;
+  ts2       = 0;*/
 
 }
+FRS_Detector_System::~FRS_Detector_System(){
+
+	test = 0;
+
+}
+
+
 
 /*  TFRSSortEvent *srt = dynamic_cast<TFRSSortEvent*> (GetInputEvent("Calibr"));
   TFRSCalibrEvent *cal = dynamic_cast<TFRSCalibrEvent*> (GetInputEvent("Analysis"));
@@ -114,11 +123,21 @@ void FRS_Detector_System::FRS_Detector_System(){
 }*/
 
 //---------------------------------------------------------------
-
-void FRS_Detector_System::Process_MBS(int* pdata){
+void FRS_Detector_System::Process_FRS(TFRSSortEvent *srt){
     
-  TFRSSortEvent *srt = dynamic_cast<TFRSSortEvent*> (GetInputEvent("Calibr"));
-  TFRSCalibrEvent *cal = dynamic_cast<TFRSCalibrEvent*> (GetInputEvent("Analysis"));
+      test = srt->dt_21l_21r;
+      
+      std::cout<<test<<std::endl;
+
+}
+
+void FRS_Detector_System::Process_MBS(int* pdata){return;
+    
+  //TFRSSortEvent *srt = dynamic_cast<TFRSSortEvent*> (GetInputEvent("Calibr"));
+  
+  
+  
+/*  TFRSCalibrEvent *cal = dynamic_cast<TFRSCalibrEvent*> (GetInputEvent("Analysis"));
   TFRSAnlEvent *anl = dynamic_cast<TFRSAnlEvent*> (GetInputEvent());
 
   // MUSIC PARAMETERS //
@@ -131,6 +150,7 @@ void FRS_Detector_System::Process_MBS(int* pdata){
   }
   
   // SCINTILLATOR PARAMETERS //
+
   
   for(int i=0; i < 12; ++i){	
 
@@ -183,21 +203,21 @@ void FRS_Detector_System::Process_MBS(int* pdata){
   
   timestamp = anl.timestamp;
   ts        = anl.ts;
-  ts2       = anl.ts2;  
+  ts2       = anl.ts2;  */
 
 }
 
 //---------------------------------------------------------------
 
-void FRS_Detector_System::get_Event_data(RawEvent* RAW) {
+void FRS_Detector_System::get_Event_data(Raw_Event* RAW) { return;
     
-    RAW->set_DATA_MUSIC(dE, dE_cor);
+    /*RAW->set_DATA_MUSIC(dE, dE_cor);
     RAW->set_DATA_SCI(sci_l, sci_r, sci_e, sci_tx, sci_x);
     RAW->set_DATA_SCI_ToF(sci_tofll2, sci_tofll3, sci_tof2, sci_tofrr2, sci_tofrr3, sci_tof3);
     RAW->set_DATA_ID_2_4(ID_x2, ID_y2, ID_a2, ID_b2, ID_x4, ID_y4, ID_a4, ID_b4);
     RAW->set_DATA_ID_Beta_Rho(ID_brho, ID_rho, beta, beta3, gamma);
     RAW->set_DATA_ID_Z_AoQ(AoQ, AoQ_corr, z, z2, z3);
-    RAW->set_DATA_ID_Timestamp(timestamp, ts, ts2);
+    RAW->set_DATA_ID_Timestamp(timestamp, ts, ts2);*/
 
 }
 

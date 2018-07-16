@@ -73,6 +73,8 @@ private:
 	int Det_Nums[100];
 	double E[100];
 	double QShort[100];
+	double E_Raw[100];
+	double QShort_Raw[100];
 	ULong TDC_timestamp[100];
 	ULong QDC_t_coarse[100];
 	ULong QDC_t_fine[100];
@@ -132,7 +134,7 @@ public:
 
 	########################################################## */
 
-	void set_DATA_FATIMA(int,int,double*,double*,ULong64_t*,ULong64_t*,ULong64_t*,int*,int*);
+	void set_DATA_FATIMA(int,int,double*,double*,double*,double*,ULong64_t*,ULong64_t*,ULong64_t*,int*,int*);
 	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*);
 	void set_DATA_GALILEO(int,ULong64_t*,int*,int*,ULong64_t*,double*,int*);
 
@@ -189,6 +191,9 @@ public:
 	//temporary FATIMA getters
 	int get_FATIMA_am_Fired();
 	double get_FATIMA_E(int);
+	double get_FATIMA_QShort(int);
+	double get_FATIMA_E_Raw(int);
+	double get_FATIMA_QShort_Raw(int);
 	ULong64_t get_FATIMA_TDC_T(int);
 	ULong64_t get_FATIMA_QDC_T_Coarse(int);
 	ULong64_t get_FATIMA_QDC_T_Fine(int);

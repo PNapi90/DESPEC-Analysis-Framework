@@ -39,6 +39,7 @@
 #include "FATIMA_Detector_System.h"
 #include "PLASTIC_Detector_System.h"
 #include "GALILEO_Detector_System_TEST.h"
+//#include "FRS_Detector_System.h"
 
 #include "Data_Stream.cxx"
 #include "White_Rabbit.h"
@@ -91,6 +92,9 @@ using namespace std;
 			TH1** DIFF_ARR;
 			TH1*** tamex_Mult_Ch_lead;
 			TH1*** tamex_Mult_Ch_trail;
+			
+			TH1* FAT_TDC_Diff; // ****NEWLY ADDED****
+			
 
 			TH2** tamex_mult_mat_lead;
 			TH2** tamex_mult_mat_trail;
@@ -107,13 +111,16 @@ using namespace std;
 			TH1* GAL_Pileup;
 			TH1* GAL_Hit_Pat;
 			TH1* GAL_Chan_Time_Diff;
-			TH1* GAL_Chan_E;
+			TH1* GAL_Chan_E[5];
 			TH2* GAL_Chan_E_Mat;
-			
+			TH2* GAL_Time_Diff_vs_Energy[5];
 
 			
 
 		private:
+		
+			int FATIMA_reference_det = 1;
+		
 			Bool_t ffill;
 			Int_t fshift;
 			ULong64_t White_Rabbbit_old;

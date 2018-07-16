@@ -61,6 +61,8 @@ public:
 	GALILEO_Detector_System();
 	~GALILEO_Detector_System();
 	
+	//void Process_FRS(TFRSSortEvent*){};
+
 	void Process_MBS(int*);
 	void get_Event_data(Raw_Event*);
 	int* get_pdata();
