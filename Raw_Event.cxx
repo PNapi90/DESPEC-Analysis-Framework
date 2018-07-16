@@ -262,6 +262,18 @@ Float_t get_ts2(){return ts2;}
 
 ####################################################### */
 
+//White Rabbit
+
+//---------------------------------------------------------------
+
+void Raw_Event::set_WR(ULong64_t WR){this->WR = WR;}
+
+//---------------------------------------------------------------
+
+ULong64_t Raw_Event::get_WR(){return WR;}
+
+//---------------------------------------------------------------
+
 
 //FATIMA
 
@@ -355,6 +367,16 @@ double Raw_Event::get_PLASTIC_trail_T(int i,int j){
 
 //---------------------------------------------------------------
 
+double Raw_Event::get_PLASTIC_TOT(int i,int j){
+    // i is board ID, j is physical channel
+    double T_lead = (coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j]);
+    double T_trail = (coarse_T_edge_trail[i][j+1]*5 - fine_T_edge_trail[i][j+1]);
+
+    return T_trail - T_lead;
+}
+
+//---------------------------------------------------------------
+
 
 int Raw_Event::get_PLASTIC_trail_hits(int i){return trailing_hits[i];}
 
@@ -404,3 +426,4 @@ ULong64_t Raw_Event::get_GALILEO_Chan_T(int i){return GALILEO_chan_time[i];}
 double Raw_Event::get_GALILEO_Chan_E(int i){return GALILEO_chan_energy[i];}
 
 //---------------------------------------------------------------
+

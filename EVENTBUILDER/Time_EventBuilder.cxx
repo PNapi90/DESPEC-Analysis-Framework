@@ -30,6 +30,11 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
 		for(int j = 0;j < length_interest[i];++j) interest_array[i][j] = interest_array_tmp[i][j];
 	}
 	
+    found_matches = 0;
+    for(int i = 0;i < 100;++i) match_amount[i] = 0;
+
+    create_relevance_array();
+
 	check_kinds_overlap();
 
 }
@@ -38,7 +43,11 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
 
 Time_EventBuilder::~Time_EventBuilder(){
 
-	for(int i = 0;i < amount_interest;++i) delete[] interest_array[i];
+	for(int i = 0;i < amount_interest;++i){
+        delete[] interest_array[i];
+        delete[] relevance_array[i];
+    }
+    delete[] relevance_array;
 	delete[] interest_array;
 	delete[] length_interest;
 
@@ -64,6 +73,32 @@ void Time_EventBuilder::check_kinds_overlap(){
 
 //---------------------------------------------------------------
 
+void Time_EventBuilder::create_relevance_array(){
+    relevance_array = new bool*[6];
+    //loop over all 6 systems (FRS,AIDA,...)
+    for(int i = 0;i < 6;++i){
+        relevance_system[i] = false;
+        relevance_array[i] = new bool[amount_interest];
+        //loop over amount of user defined coincidence arrays
+        for(int j = 0;j < amount_interest;++j){
+            relevance_array[i][j] = false;
+            //loop over elements in coincidence arrays
+            for(int k = 0;k < length_interest[j];++k){
+                //detector system i found in coincidence array
+                if(i == interest_array[j][k]){
+                    //system i is relevant for coincidence analysis
+                    relevance_system[i] = true;
+                    //system i can be found in coincidence array j
+                    relevance_array[i][j] = true;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------
+
 void Time_EventBuilder::set_Event(Raw_Event* RAW){
 	//get PrcID from RAW
 	int tmp_type = RAW->get_Type();
@@ -79,44 +114,70 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 	//save event in respective store
 	Event_Stores[tmp_type]->store(RAW);
 
-	int hits[6] = {-1,-1,-1,-1,-1,-1};
+    //pass by pointer to allow dynamic change of position
+    int* tmp_data_pos = Event_Stores[tmp_type]->get_position();
 
-	//get coincidences
-	for(int i = 0;i < 6;++i) if(i != tmp_type) hits[i] = Event_Stores[i]->Time_Comparison(WR);
-	
-	//check for shared event data and write data
+    //hits[i] != -1 if hit in system i
+	int hits[6];
+    int match_ID[6];
+
+    int found_matches = 0;
+
+	//get coincidences (self coincidence not possible)
 	for(int i = 0;i < 6;++i){
-		if(hits[i] != -1){
-			
-		}
-	}
+        hits[i] = -1;
+        match_ID[i] = -1;
+        if(i != tmp_type){
+            //hit id of smallest WR difference of system tmp_type to i
+            //if -1 -> no value within threshold window found
+            hits[i] = Event_Stores[i]->Time_Comparison(WR);
+
+            //check if coincidence and system relevant for user analysis
+            if(hits[i] == -1 || !relevance_system[i]) continue;
+
+            //check Match objects for each relevance array row
+            for(int j = 0;j < amount_interest;++j){
+                if(relevance_array[i][j]){
+                    //get Match id of coincident event
+                    match_ID[j] = Event_Stores[i]->get_Match_ID(hits[i],j);
+                    
+                    //set Match id to new event
+                    Event_Stores[tmp_type]->set_Match_ID(tmp_data_pos,match_ID[j]);
+                    
+                    //set data address in respective event store of tmp_type event
+                    Matches[j][match_ID[j]]->set_Data(tmp_type,tmp_data_pos);
+
+                    //check if match is filled
+                    if(Matches[j][match_ID[j]]->Full()){
+
+                        //write and delete data
+                        Matches[j][match_ID[j]]->Write();
+
+                        
 
 
+                        delete Matches[j][match_ID[j]];
+                        Matches[j][match_ID[j]] = Matches[j][match_amount[j]];
+                        Matches[j][match_amount[j]] = NULL;
+                    }
+                }
+            }
+            found_matches++;
+        }
+    }
 
-
-
-	//improve!!
-	for(int i = 0;i < ){
-
-		//check if WR time difference lower than set threshold
-		if(){
-			for(int k = 0;k < iter[tmp_type];++k){
-				if(!Event[][]) Event = new Event;
-				else Event[][]->Set_Data(DATA);
-			}
-		}
-	}
-
-	//improve!
-	for(int i = 0;i < am_events;++i){
-
-	}
-
-
-
-	
-
-	
+    //no matches in data found -> create new match object
+    if(found_matches == 0){
+        //loop over user defined coincidence list
+        for(int j = 0;j < amount_interest;++j){
+            //if new event's system relevant for analysis
+            if(relevance_array[tmp_type][j]){
+                //create new Match object with 
+                Matches[j][match_amount[j]] = new Match(match_amount,j,tmp_data_pos,interest_array[j]);
+                match_amount[j]++;
+            }
+        }
+    }
 }
 
 //---------------------------------------------------------------

@@ -68,6 +68,9 @@ private:
 	
 	########################################################## */
 
+	//White Rabbit
+	ULong64_t WR;
+
 	//FATIMA
 	int FAT_FIRED,TDC_FIRED;
 	int Det_Nums[100];
@@ -209,14 +212,14 @@ public:
 	int get_PLASTIC_CH_ID(int,int);
 	double get_PLASTIC_lead_T(int,int);
 	double get_PLASTIC_trail_T(int,int);
-
 	int get_PLASTIC_trail_hits(int);
 	int get_PLASTIC_lead_hits(int);
 	int get_PLASTIC_physical_channel(int,int);
 	int get_PLASTIC_physical_lead_hits(int,int);
 	int get_PLASTIC_physical_trail_hits(int,int);
 	double get_PLASTIC_coarse_lead(int,int);
-	
+	double get_PLASTIC_TOT(int,int);
+
 	//temporary GALILEO getters
 	int get_GALILEO_am_Fired();
 	ULong64_t get_GALILEO_Sum_T(int);
@@ -225,6 +228,10 @@ public:
 	ULong64_t get_GALILEO_Chan_T(int);
 	double get_GALILEO_Chan_E(int);
 	
+
+	//White Rabbit setter and getter
+	void set_WR(ULong64_t);
+	ULong64_t get_WR();
 	
 	
 };
