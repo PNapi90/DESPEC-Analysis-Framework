@@ -24,7 +24,8 @@ private:
     int match_amount;
     int found_matches;
 
-	bool Used_Systems[6];
+    int max_calls[6];
+    bool Used_Systems[6];
     bool relevance_system[6];
 
     bool** relevance_array;
