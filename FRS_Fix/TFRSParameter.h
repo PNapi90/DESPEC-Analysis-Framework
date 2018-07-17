@@ -1,7 +1,7 @@
 #ifndef TFRSPARAMETER_H
 #define TFRSPARAMETER_H
 
-#include "Go4StatusBase/TGo4Parameter.h"
+#include "TGo4Parameter.h"
 #include "TMap.h"
 #include <map>
 

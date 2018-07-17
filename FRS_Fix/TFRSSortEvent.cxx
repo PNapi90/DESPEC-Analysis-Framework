@@ -3,7 +3,7 @@
 #include "Riostream.h"
 
 #include "TFRSSortProc.h"
-#include "Go4EventServer/TGo4FileSource.h"
+#include "TGo4FileSource.h"
 
 
 TFRSSortEvent::TFRSSortEvent() : TGo4EventElement("FRSSortEvent")//, fxProc(0), fxFileSrc(0) { 

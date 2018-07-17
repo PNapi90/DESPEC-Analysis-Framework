@@ -1,7 +1,7 @@
 #include "TFRSAnlEvent.h"
 
 #include "Riostream.h"
-#include "Go4EventServer/TGo4FileSource.h"
+#include "TGo4FileSource.h"
 #include "TFRSAnlProc.h"
 
 TFRSAnlEvent::TFRSAnlEvent() :TGo4EventElement("FRSAnlEvent")//, fxProc(0), fxFileSrc(0) { 

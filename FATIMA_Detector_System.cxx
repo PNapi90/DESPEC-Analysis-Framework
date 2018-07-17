@@ -169,7 +169,9 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
     QDC_DATA = false;
 
     reset_fired_channels();
-
+    
+    num_TDC_modules = 1;
+    
     //loop over FATIMA modules
     while(!TDC_Called){
         //QDC channel empty (check a -> always with QDC, length-> am_channels called (len-4))
@@ -180,8 +182,22 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
             Check_QDC_DATA(QDChead);
         }
         //TDC code reached
-        else if(TDChead->type == 8) TDC_Called = true;
+        else if(TDChead->type == 8){
+	 
+	     --num_TDC_modules;
+	     
+	     Check_TDC_DATA(); 
 
+	     if (num_TDC_modules == 0) TDC_Called = true;
+	     
+	}
+	else if(TDChead->no == 3145728){
+	    
+	    --num_TDC_modules;
+	     
+	    if (num_TDC_modules == 0) TDC_Called = true;
+
+	}
         this->pdata++;
         
         QDChead = (QDC_Header*) this->pdata;
@@ -191,7 +207,7 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
     this->pdata--;
     this->pdata--;
 
-    Check_TDC_DATA(); 
+    //Check_TDC_DATA(); 
     //if(exiter) exit(0);
 }
 
@@ -379,13 +395,8 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
             }
         }
         // TDC Trailer Condition // 
-        else if ( check == 16 ){
+        else if ( check == 16 ) trail = true;
 	
-	     ++TDC_loop;
-	    
-	     if(TDC_loop == num_TDC_modules) trail = true;
-	
-	}
         if(loop_counter > 100){
             cerr << "FATIMA TDC loop not reaching trailer! pdata iteration problem possible" << endl;
             exit(0);

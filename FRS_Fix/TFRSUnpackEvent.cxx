@@ -2,7 +2,7 @@
 
 #include "Riostream.h"
 #include "TFRSUnpackProc.h"
-#include "Go4EventServer/TGo4FileSource.h"
+#include "TGo4FileSource.h"
 
 
 TFRSUnpackEvent::TFRSUnpackEvent() : TGo4EventElement("FRSUnpackEvent")

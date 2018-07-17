@@ -5,11 +5,11 @@
 #include "TH1.h"
 #include "TH2.h"
 
-#include "Go4EventServer/TGo4MbsEvent.h"
-#include "Go4ConditionsBase/TGo4WinCond.h"
-#include "Go4ConditionsBase/TGo4PolyCond.h"
+#include "TGo4MbsEvent.h"
+#include "TGo4WinCond.h"
+#include "TGo4PolyCond.h"
 
-#include "Go4EventServer/TGo4StepFactory.h"
+#include "TGo4StepFactory.h"
 
 #include "TFRSParameter.h"
 

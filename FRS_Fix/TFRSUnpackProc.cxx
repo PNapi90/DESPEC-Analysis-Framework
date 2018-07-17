@@ -1,7 +1,7 @@
 #include "TFRSUnpackProc.h"
 
-#include "Go4StatusBase/TGo4Picture.h"
-#include "Go4EventServer/TGo4MbsEvent.h"
+#include "TGo4Picture.h"
+#include "TGo4MbsEvent.h"
 
 #include "TFRSAnalysis.h"
 #include "TFRSUnpackEvent.h"

@@ -1,7 +1,7 @@
 #ifndef TFRSANLEVENT_H
 #define TFRSANLEVENT_H
 
-#include "Go4Event/TGo4EventElement.h"
+#include "TGo4EventElement.h"
 
 class TFRSAnlProc;
 class TGo4FileSource;

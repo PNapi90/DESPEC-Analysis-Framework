@@ -3,7 +3,7 @@
 #include "Riostream.h"
 
 #include "TFRSCalibrProc.h"
-#include "Go4EventServer/TGo4FileSource.h"
+#include "TGo4FileSource.h"
 
 TFRSCalibrEvent::TFRSCalibrEvent() : TGo4EventElement("FRSCalibrEvent")//, fxProc(0), fxFileSrc(0) { 
 { }

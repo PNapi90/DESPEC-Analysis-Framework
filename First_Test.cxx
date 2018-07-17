@@ -26,11 +26,6 @@
 #include <math.h>
 #include <iomanip>
 
-
-//#include "TFRSSortEvent.h"
-//#include "TFRSCalibrEvent.h"
-//#include "TFRSAnlEvent.h"
-
 #include "TSCNUnpackEvent.h"
 
 #include "Detector_System.cxx"
@@ -302,17 +297,18 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 		
-		/*if(PrcID_Conv == 0){
+		if(PrcID_Conv == 0){
 		    
 		    
-		   TFRSSortEvent *srt = dynamic_cast<TFRSSortEvent*> (GetInputEvent("Calibr"));
+		   /*TFRSSortEvent *srt = dynamic_cast<TFRSSortEvent*> (GetInputEvent("Calibr"));
 		    
 		    
-		    Detector_Systems[PrcID_Conv]->Process_FRS(srt);
+		    Detector_Systems[PrcID_Conv]->Process_FRS(srt);*/
+		    continue;
 		    
 		    
-		    
-		}*/		    
+		}
+			    
 		    
 		if(WHITE_RABBIT_USED){
 			WR_tmp[iterator] = WR->get_White_Rabbit(pdata);

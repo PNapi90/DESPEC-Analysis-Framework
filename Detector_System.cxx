@@ -4,15 +4,16 @@
 
 #include "Raw_Event.h"
 
-//#include "TFRSSortEvent.h"
-//#include "TFRSCalibrEvent.h"
-//#include "TFRSAnlEvent.h"
-
-
 #include "Data_Stream.cxx"
 
 #include <string>
 
+// Go4 Includes //
+#include "TGo4UserException.h"
+#include "TGo4Picture.h"
+#include "TGo4MbsEvent.h"
+
+#include "TFRSParameter.h"
 
 class Detector_System{
 
@@ -22,7 +23,8 @@ public:
 
     virtual void Process_MBS(int*) = 0;
     
-    //virtual void Process_FRS(TFRSSortEvent*) = 0;
+    virtual void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*) = 0;
+
 
     virtual void get_Event_data(Raw_Event*) = 0;
 

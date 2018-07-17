@@ -1,7 +1,7 @@
 #ifndef TFRSBASICPROCESSOR_H
 #define TFRSBASICPROCESSOR_H
 
-#include "Go4Event/TGo4EventProcessor.h"
+#include "TGo4EventProcessor.h"
 
 #include "Gtypes.h"
 

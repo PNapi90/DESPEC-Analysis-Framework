@@ -4,10 +4,10 @@
 #include "TH2.h"
 #include "TCutG.h"
 
-#include "Go4StatusBase/TGo4Picture.h"
-#include "Go4ConditionsBase/TGo4WinCond.h"
-#include "Go4ConditionsBase/TGo4PolyCond.h"
-#include "Go4ConditionsBase/TGo4CondArray.h"
+#include "TGo4Picture.h"
+#include "TGo4WinCond.h"
+#include "TGo4PolyCond.h"
+#include "TGo4CondArray.h"
 
 const  char* TFRSBasicProc::mw_name_ext[13]={"(1:1)", "(2:1)", "(2:2)", "(3:1)",
       				       "(4:1)", "(4:2)", "(5:1)", "(6:1)",

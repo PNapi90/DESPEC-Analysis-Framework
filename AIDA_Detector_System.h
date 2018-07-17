@@ -47,7 +47,8 @@ public:
 	~AIDA_Detector_System();
 	
 	
-	//void Process_FRS(TFRSSortEvent*){};
+	void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*){};
+
 
 	
 	void Process_MBS(int*);

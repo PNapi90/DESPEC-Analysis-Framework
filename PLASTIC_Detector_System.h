@@ -89,7 +89,8 @@ public:
     PLASTIC_Detector_System();
     ~PLASTIC_Detector_System();
 
-    //void Process_FRS(TFRSSortEvent*){return;};
+    void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*){};
+
 
     //functions from abstract class Detector_System
     void Process_MBS(int*);

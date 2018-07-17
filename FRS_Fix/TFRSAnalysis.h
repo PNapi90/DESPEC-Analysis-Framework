@@ -1,7 +1,7 @@
 #ifndef TFRSANALYSIS_H
 #define TFRSANALYSIS_H
 
-#include "Go4Analysis/TGo4Analysis.h"
+#include "TGo4Analysis.h"
 
 #include "TFRSParameter.h"
 

@@ -65,7 +65,8 @@ public:
 	GALILEO_Detector_System();
 	~GALILEO_Detector_System();
 	
-	//void Process_FRS(TFRSSortEvent*){};
+	void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*){};
+
 
 	void Process_MBS(int*);
 	void get_Event_data(Raw_Event*);

@@ -1,7 +1,7 @@
 #ifndef TFRSUSEREVENT_H
 #define TFRSUSEREVENT_H
 
-#include "Go4Event/TGo4EventElement.h"
+#include "TGo4EventElement.h"
 
 class TFRSUserProc;
 class TGo4FileSource;

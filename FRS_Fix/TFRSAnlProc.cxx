@@ -2,9 +2,9 @@
 
 #include "TH1.h"
 #include "TH2.h"
-#include "Go4ConditionsBase/TGo4WinCond.h"
-#include "Go4ConditionsBase/TGo4PolyCond.h"
-#include "Go4ConditionsBase/TGo4CondArray.h"
+#include "TGo4WinCond.h"
+#include "TGo4PolyCond.h"
+#include "TGo4CondArray.h"
 
 #include "TFRSAnlEvent.h"
 #include "TFRSSortEvent.h"

@@ -2,7 +2,7 @@
 #define TFRSUNPACKEVENT_H
 
 
-#include "Go4Event/TGo4EventElement.h"
+#include "TGo4EventElement.h"
 
 
 class TFRSUnpackProc;

@@ -2,8 +2,8 @@
 
 #include "TH1.h"
 #include "TH2.h"
-#include "Go4StatusBase/TGo4Picture.h"	//mik
-#include "Go4ConditionsBase/TGo4WinCond.h"
+#include "TGo4Picture.h"	//mik
+#include "TGo4WinCond.h"
 
 #include "TFRSCalibrEvent.h"
 #include "TFRSSortEvent.h"

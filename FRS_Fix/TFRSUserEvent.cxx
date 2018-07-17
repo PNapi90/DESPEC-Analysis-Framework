@@ -1,7 +1,7 @@
 #include "TFRSUserEvent.h"
 
 #include "Riostream.h"
-#include "Go4EventServer/TGo4FileSource.h"
+#include "TGo4FileSource.h"
 #include "TFRSUserProc.h"
 
 TFRSUserEvent::TFRSUserEvent() : TGo4EventElement("FRSUserEvent")//, fxProc(0), fxFileSrc(0) 
