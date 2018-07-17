@@ -85,7 +85,7 @@ void GALILEO_Detector_System::load_board_channel_file(){
 
 void GALILEO_Detector_System::get_Event_data(Raw_Event* RAW){
 	
-	RAW->set_DATA_GALILEO(fired_FEBEX_amount,Sum_Time,Pileup,Hit_Pattern,Chan_Time,Chan_Energy,det_ids);
+	RAW->set_DATA_GALILEO(fired_FEBEX_amount,Sum_Time,pileup_flags,Ge_channels,Chan_Time,Chan_Energy,det_ids);
 }
 
 //---------------------------------------------------------------
@@ -158,12 +158,37 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 	    
 	    tmp_Pileup = fbx_flag->pile_flags;
 	    
-	    tmp_Hit_Pattern = fbx_flag->hit_pattern; 
-    
+	    tmp_Hit_Pattern = fbx_flag->hit_pattern;
+	    
+	    for(int j = 15; j >= 0; j--){
+		
+		if(tmp_Hit_Pattern >= pow(2, j) && tmp_Pileup >= pow(2, j)){
+
+		    pileup_flags[j] = 1;
+		    
+		    Ge_channels[j] = j;
+
+		    tmp_Hit_Pattern -= pow(2, j);
+		    
+		    ++num_channels_fired;
+		    
+		}
+		else if(tmp_Hit_Pattern >= pow(2, j)){
+
+		    Ge_channels[j] = j;
+
+		    tmp_Hit_Pattern -= pow(2, j);
+		    
+		    ++num_channels_fired;
+		    
+		}
+	    }
+	    
+	    
             this->pdata++; // Moves to DEADBEEF //
     
         }
-	else if (FEBEXhead->ff == 240){ // FEBEX channel idicator //
+	else if (FEBEXhead->ff == 240){ // FEBEX channel indicator //
 	    
 	    this->pdata--; // Moves back to DEADBEEF so channel loop functions properly //
 
@@ -175,43 +200,43 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 		FEBEX_Chan_Header *fbx_Ch=(FEBEX_Chan_Header*) this->pdata;
 		
 		int tmp_Ch_ID = fbx_Ch->Ch_ID;
+		
+		if(pileup_flags[tmp_Ch_ID] == 1) this->pdata += 3;
+		else{
 
-		current_det = GALILEO_map[std::make_pair(board_id, tmp_Ch_ID)];
-						
-		det_ids[i] = current_det;
+		    current_det = GALILEO_map[std::make_pair(board_id, tmp_Ch_ID)];
+						    
+		    det_ids[i] = current_det;
+		    
+		    
+		    Sum_Time[current_det] = tmp_Sum_Time;
+		    
 		
-		
-		Sum_Time[current_det] = tmp_Sum_Time;
-		
-		Pileup[current_det] = tmp_Pileup;
-		 
-		Hit_Pattern[current_det] = tmp_Hit_Pattern;
-		
-	    
-		this->pdata++; // Moves to rest of channel timestamp //
+		    this->pdata++; // Moves to rest of channel timestamp //
+	
+		    FEBEX_TS *fbx_Ch_TS=(FEBEX_TS*) this->pdata; 
+		    
+		    ULong64_t tmp_ext_chan_ts = (fbx_Ch->ext_chan_ts);
+		    
+		    Chan_Time[current_det] = ((fbx_Ch_TS->chan_ts)+(tmp_ext_chan_ts<<32))*10; // in nanoseconds
     
-		FEBEX_TS *fbx_Ch_TS=(FEBEX_TS*) this->pdata; 
-		
-		ULong64_t tmp_ext_chan_ts = (fbx_Ch->ext_chan_ts);
-		
-		Chan_Time[current_det] = (fbx_Ch_TS->chan_ts)+(tmp_ext_chan_ts<<32); 
-
-		this->pdata++; // Moves to Channel Energy //
-			    
-		FEBEX_En *fbx_Ch_En=(FEBEX_En*) this->pdata; 
-	    
-		Chan_Energy[current_det] = fbx_Ch_En->chan_en;
+		    this->pdata++; // Moves to Channel Energy //
 				
-		Calibrate_FEBEX(current_det);
-					    
-		this->pdata++; // Moves to Future Use //
+		    FEBEX_En *fbx_Ch_En=(FEBEX_En*) this->pdata; 
 		
-		++fired_FEBEX_amount;
+		    Chan_Energy[current_det] = fbx_Ch_En->chan_en;
+				    
+		    Calibrate_FEBEX(current_det);
+						
+		    this->pdata++; // Moves to Future Use //
+		    
+		    ++fired_FEBEX_amount;
+		    
+		    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
+		    // @@@@ Traces Would Go Here @@@@@ //
+		    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
 		
-		// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
-                // @@@@ Traces Would Go Here @@@@@ //
-                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
-		
+		}
 			    	    
 	    }
 	    
@@ -237,9 +262,12 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 void GALILEO_Detector_System::reset_fired_channels(){
     
     fired_FEBEX_amount = 0;
+    num_channels_fired = 0;
     
     for(int i = 0;i < max_am_dets;++i){
         Sum_Time[i] = -1;
+        pileup_flags[i] = -1;
+        Ge_channels[i] = 0;
         Pileup[i] = -1;
         Hit_Pattern[i] = 0;
         Chan_Time[i] = 0;

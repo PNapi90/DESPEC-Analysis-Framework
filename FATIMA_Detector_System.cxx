@@ -363,7 +363,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                     if(fired_QDC_amount == 1 && active_det == 51){
                         double tmp_val = ((double) m->measurement*25.) - ((double) TDC_Time[det_ids_QDC[0]]);
 
-                        Det_Hist[det_ids_QDC[0]]->Fill(tmp_val);
+                        Det_Hist[det_ids_QDC[0]]->Fill(tmp_val*1e-3);
 
                     }
                     he_iter++;
@@ -371,7 +371,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
 
                 fired_TDC_amount++;
 
-                TDC_Time[active_det] = 25*m->measurement;
+                TDC_Time[active_det] = ((double) 25*m->measurement)*1e-3;
                 Calibrate_TDC(active_det);
 
                 no_data = false;

@@ -3,6 +3,7 @@ GO4SYS = $(shell go4-config --go4sys)
 endif
 
 include $(GO4SYS)/Makefile.config
+CXXFLAGS += -std=c++11
 
 ## normally should be like this for every module, but can be specific
 

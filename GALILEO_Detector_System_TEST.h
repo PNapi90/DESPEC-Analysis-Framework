@@ -43,7 +43,11 @@ private:
 	int* det_ids;
 
 	std::map<std::pair<int,int>, int> GALILEO_map;
+	
+	int num_channels_fired = 0;
 
+	int pileup_flags[16];
+	int Ge_channels[16];
 	int Fired_FEBEX_Channels[100][2];
 	int fired_FEBEX_amount;
 

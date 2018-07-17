@@ -136,14 +136,14 @@ TGo4EventProcessor(name) // Histograms defined here //
 	// GALILEO Histograms //
 	
 	//GAL_Evt_Time = MakeTH1('D',"GALILEO_E","GALILEO_E",20001,0,800000);
-	GAL_Pileup = MakeTH1('D',"GALILEO_Pileup","GALILEO Pileup",101,0,100);
-	GAL_Hit_Pat = MakeTH1('D',"GALILEO_Hit_Pat","GALILEO Hit Pattern",101,0,100);
-	GAL_Chan_Time_Diff = MakeTH1('D',"GALILEO_Chan_Time_DIff","GALILEO Channel Time Difference",201,-100,100);
+	GAL_Pileup = MakeTH1('I',"GALILEO_Pileup","GALILEO Pileup",16,0,16);
+	GAL_Hit_Pat = MakeTH1('I',"GALILEO_Hit_Pat","GALILEO Hit Pattern",16,0,16);
+	GAL_Chan_Time_Diff = MakeTH1('D',"GALILEO_Chan_Time_DIff","GALILEO Channel Time Difference",21,-100,100);
 	GAL_Chan_E_Mat = MakeTH2('D',"GALILEO_E_Mat","GALILEO Channel Energy Matrix",10001,0,800000,10001,0,800000);
 
 	for(int i=0; i < 5; ++i){
 	    GAL_Chan_E[i] = MakeTH1('D',Form("GALILEO_Energy_Spectra/GALILEO_E%2d",i),Form("GALILEO Channel Energy Channel %2d",i),80001,0,800000);
-	    GAL_Time_Diff_vs_Energy[i] = MakeTH2('D',Form("GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",i),Form("GALILEO Time Difference Vs Channel Energy Channel %2d",i),201,-100,100,10001,0,800000);
+	    GAL_Time_Diff_vs_Energy[i] = MakeTH2('D',Form("GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",i),Form("GALILEO Time Difference Vs Channel Energy Channel %2d",i),21,-100,100,10001,0,800000);
 	}
 	tdc_hist = MakeTH1('D',"tdc","tdc",1000,-60,1000);
 
