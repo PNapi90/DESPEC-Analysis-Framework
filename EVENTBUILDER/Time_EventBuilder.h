@@ -8,13 +8,9 @@
 #include "Raw_Event.h"
 #include "EventBuilder.cxx"
 
-#include "Event_Store.cxx"
+#include "Event_Store.h"
 
-//#include "FRS_Event_Store.h"
-//#include "AIDA_Event_Store.h"
-#include "FATIMA_Event_Store.h"
-#include "PLASTIC_Event_Store.h"
-//#include "GALILEO_Event_Store.h"
+
 
 class Time_EventBuilder : public EventBuilder{
 
@@ -33,7 +29,7 @@ private:
 	int amount_interests;
 	int** interest_array;
 	
-	Event_Store** Event_Stores;
+	Event_Store* Event_Storage;
 
     void create_relevance_array();
 
