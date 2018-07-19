@@ -101,6 +101,7 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,doubl
 
 	int position = -5;
 	int active_det = 0;
+	BOTH_FIRED = 0;
 
 	for(int i = 0;i < 50;++i) used_for_QDC[i] = false;
 	//all correlated tdcs and qdcs
@@ -108,11 +109,14 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,doubl
 
 		active_det = det_ids_QDC[i];
 
-		used_for_QDC[active_det] = false;
+		//used_for_QDC[active_det] = false;
 		for(int j = 0;j < TDC_FIRED;++j){
 			if(det_ids_QDC[i] == det_ids_TDC[j]){
 				position = det_ids_TDC[j];
 				used_for_QDC[position] = true;
+				Det_Nums[i] = det_ids_QDC[i];
+				FAT_Both[BOTH_FIRED] = i;
+				++BOTH_FIRED;
 				//cout << "USED POS " << j << endl;
 				break;
 			}
@@ -327,6 +331,14 @@ ULong64_t Raw_Event::get_FATIMA_QDC_T_Fine(int i){return QDC_t_fine[i];}
 
 int Raw_Event::get_FATIMA_det_id(int i){return Det_Nums[i];}
 
+//---------------------------------------------------------------
+
+int Raw_Event::get_FATIMA_Both(int i){return FAT_Both[i];}
+	
+//---------------------------------------------------------------
+
+int Raw_Event::get_am_FATIMA_Both(){return BOTH_FIRED;}
+	
 //---------------------------------------------------------------
 
 //PLASTIC

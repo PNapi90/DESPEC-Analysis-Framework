@@ -12,7 +12,8 @@
 //-----------------------------------------------------------------------
 
 #include "TSCNParameter.h"
-
+#include "Riostream.h"
+#include "TObjString.h"
 
 TSCNParameter::TSCNParameter(const char* name) :
   TGo4Parameter(name)

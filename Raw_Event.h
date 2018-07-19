@@ -72,7 +72,8 @@ private:
 	ULong64_t WR;
 
 	//FATIMA
-	int FAT_FIRED,TDC_FIRED;
+	int FAT_FIRED, TDC_FIRED, BOTH_FIRED;
+	int FAT_Both[100];
 	int Det_Nums[100];
 	double E[100];
 	double QShort[100];
@@ -205,6 +206,8 @@ public:
 	bool get_FATIMA_QDC_TDC_LINKED(int);
 	bool CH_51_FIRED();
 	double get_FATIMA_Time_Diff();
+	int get_FATIMA_Both(int);
+	int get_am_FATIMA_Both();
 
 	//temporary PLASTIC getters
 	int get_PLASTIC_am_Fired(int);

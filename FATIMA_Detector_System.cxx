@@ -186,9 +186,14 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 	 
 	     --num_TDC_modules;
 	     
+	     this->pdata--;
+
 	     Check_TDC_DATA(); 
 
 	     if (num_TDC_modules == 0) TDC_Called = true;
+	     
+	    this->pdata++;
+
 	     
 	}
 	else if(TDChead->no == 3145728){
@@ -198,6 +203,8 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 	    if (num_TDC_modules == 0) TDC_Called = true;
 
 	}
+	else cout<<"TDC Type not recognised: "<<TDChead->type<<endl;
+	
         this->pdata++;
         
         QDChead = (QDC_Header*) this->pdata;

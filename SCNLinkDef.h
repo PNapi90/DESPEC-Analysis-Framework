@@ -26,6 +26,33 @@
 #pragma link C++ class TSCNAnlEvent+;
 #pragma link C++ class TSCNAnlProc+;
 
+
+//#pragma link C++ class TXRSAnalysis+;
+/*#pragma link C++ class TXRSBasicProc+;
+#pragma link C++ class TXRSUnpackEvent+;
+#pragma link C++ class TXRSUnpackProc+;
+#pragma link C++ class TXRSSortEvent+;
+#pragma link C++ class TXRSSortProc+;
+#pragma link C++ class TXRSCalibrEvent+;
+#pragma link C++ class TXRSCalibrProc+;
+#pragma link C++ class TXRSAnlEvent+;
+#pragma link C++ class TXRSAnlProc+;
+#pragma link C++ class TXRSUserEvent+;
+#pragma link C++ class TXRSUserProc+;*/
+
+
+
+/*#pragma link C++ class TXRSParameter+;
+#pragma link C++ class TModParameter+;
+#pragma link C++ class Map1+;
+#pragma link C++ class TMWParameter+;
+#pragma link C++ class TTPCParameter+;
+#pragma link C++ class TMUSICParameter+;
+#pragma link C++ class TSCIParameter+;
+#pragma link C++ class TIDParameter+;
+#pragma link C++ class TSIParameter+;
+#pragma link C++ class TMRTOFMSParameter+;*/
+
 #endif
 
 

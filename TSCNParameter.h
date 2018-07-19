@@ -16,6 +16,9 @@
 
 #include "TGo4Parameter.h"
 
+#include "TMap.h"
+#include <map>
+
 class TSCNParameter : public TGo4Parameter {
    public:
       TSCNParameter(const char* name = 0);
@@ -41,4 +44,5 @@ class TSCNParameter : public TGo4Parameter {
    ClassDef(TSCNParameter,1)
 };
 
-#endif
+#endif //TSCNPARAMETER_H
+

@@ -41,7 +41,6 @@
 
 
 
-
 using namespace std;
 
 
@@ -73,6 +72,12 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FAT_MAT = MakeTH2('D',"FAT_MAT","FAT_MAT",1001,0,4000,1001,0,4000);
 	
 	FAT_TDC_Diff = MakeTH1('D',"FATIMA_TDC","FATIMA_TDC",3200,-40,40);
+	
+	for(int i = 0; i<36; ++i){
+
+	    FAT_TDC_dT[i] = MakeTH1('D',Form("TDC_Diff_Hists/TDC_Time_Diff%2d",i),Form("TDC Time Difference%2d",i),3200,-40,40);
+
+	}
 
 	hit_mat = MakeTH2('D',"hitmat","hitmat",37,0,36,37,0,36);
 
@@ -254,7 +259,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
   
 	TSCNUnpackEvent* out_evt = (TSCNUnpackEvent*) dest;
 	
-	
+
 	if (inp_evt==0) // Ensures that there is data in the event //
 	{
 		isValid = kFALSE;	// default calling Fill method will set validity of out_evt to return value! //
@@ -297,17 +302,13 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 		
-		if(PrcID_Conv == 0){
+		/*if(PrcID_Conv == 0){
+		    	    
+		   Detector_Systems[PrcID_Conv]->Process_FRS(psubevt);
+		    		    
+		   continue;
 		    
-		    
-		   /*TFRSSortEvent *srt = dynamic_cast<TFRSSortEvent*> (GetInputEvent("Calibr"));
-		    
-		    
-		    Detector_Systems[PrcID_Conv]->Process_FRS(srt);*/
-		    continue;
-		    
-		    
-		}
+		}*/
 			    
 		    
 		if(WHITE_RABBIT_USED){
@@ -364,14 +365,44 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			am_FATIMA_hits = RAW->get_FATIMA_am_Fired();
 			int tdc_hits = RAW->get_FATIMA_am_Fired_TDC();
 			if(am_hits > 0) am_hits->Fill(am_FATIMA_hits);
-
+					    
 			double sum = 0;
 			double tmpE[2];
 			double TDC_times[2] = {0,0};
 			double TDC_time_6[2];
 			int det_iter = 0;
 			bool called_link = false;
-
+			
+			int num_full_evts = RAW->get_am_FATIMA_Both(); 
+			
+			for(int i = 0; i < num_full_evts; ++i){
+			    
+			    for(int j = 0; j < num_full_evts; ++j){
+				
+				
+				if(i != j){
+				    
+				    int TDC_ID_1 = RAW->get_FATIMA_Both(i);
+				    int TDC_ID_2 = RAW->get_FATIMA_Both(j);
+				    int Det_ID = RAW->get_FATIMA_det_id(i);		    		    
+				
+				    //cout<<"EUREKA!! "<< TDC_ID_1<<" "<< TDC_ID_2<<endl;
+				
+				    double TDC_Time_1 = RAW->get_FATIMA_TDC_T(TDC_ID_1);
+				    double TDC_Time_2 = RAW->get_FATIMA_TDC_T(TDC_ID_2);
+				
+				    TDC_Time_1 = TDC_Time_1/1000;
+				    TDC_Time_2 = TDC_Time_2/1000;
+				    
+				    FAT_TDC_dT[Det_ID]->Fill((TDC_Time_1 - TDC_Time_2));
+			
+				}
+			
+			
+			    }
+			    
+			}
+			
 			if(RAW->CH_51_FIRED() && tdc_hits == 3){
 				int id_tmp = RAW->get_FATIMA_det_id(0);
 				double tdiff = RAW->get_FATIMA_Time_Diff();

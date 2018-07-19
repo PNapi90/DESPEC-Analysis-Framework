@@ -74,6 +74,8 @@ using namespace std;
 			TH1* FAT_E;
 			TH2* FAT_MAT;
 			TH2* hit_mat;
+			
+			TH1* FAT_TDC_dT[36];
 
 			TH1* WR_HIST;
 			TH1* WR_HIST2;
