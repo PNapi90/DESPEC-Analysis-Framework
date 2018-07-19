@@ -27,6 +27,7 @@ private:
     bool** relevance_array;
 
 	int amount_interests;
+    int* length_interest;
 	int** interest_array;
 	
 	Event_Store* Event_Storage;

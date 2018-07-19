@@ -25,8 +25,8 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
 
     check_kinds_overlap();
 
-    //set event stores
-    Event_Storage = new Event_Store();
+    //set event storage
+    Event_Storage = new Event_Store(amount_interest,length_interest,interest_array);
 
 }
 
@@ -119,7 +119,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     int match_ID[6];
 
     int found_matches = 0;
-    int* match_id_ptr = NULL;
+    int* match_id_ptr = nullptr;
 
     //get coincidences (self coincidence not possible)
     for(int i = 0;i < 6;++i){
@@ -163,8 +163,8 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                         Matches[j][match_ID[j]] = Matches[j][match_amount[j]];
                         Matches[j][match_ID[j]]->set_Address(match_ID[j]);
 
-                        //last event pointing to NULL
-                        Matches[j][match_amount[j]] = NULL;
+                        //last event pointing to nullptr
+                        Matches[j][match_amount[j]] = nullptr;
                         match_amount[j]--;
                     }
                 }
@@ -189,8 +189,8 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     //too old data has to be deleted
     int match_hits = 0;
     bool expired = false;
-    int** hit_addresses = NULL;
-    int* hit_types = NULL;
+    int** hit_addresses = nullptr;
+    int* hit_types = nullptr;
 
     for(int j = 0;j < amount_interest;++j){
         for(int k = 0;k < match_amount[j];++k){
@@ -218,8 +218,8 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                 Matches[j][k] = Matches[j][match_amount[j]];
                 Matches[j][k]->set_Address(k);
 
-                //last event pointing to NULL
-                Matches[j][match_amount[j]] = NULL;
+                //last event pointing to nullptr
+                Matches[j][match_amount[j]] = nullptr;
                 //decrease amount of current Matches
                 match_amount[j]--;
                 //decrease iterator(avoids loosing access to shifted Matches)

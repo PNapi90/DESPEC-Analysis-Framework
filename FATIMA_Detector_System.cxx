@@ -42,8 +42,8 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
     det_ID = new int*[100];
     det_ID_TDC = new int*[100];
     for(int i = 0;i < 100;++i){
-    	det_ID[i] = new int[100];
-    	det_ID_TDC[i] = new int[100];
+        det_ID[i] = new int[100];
+        det_ID_TDC[i] = new int[100];
         for(int j = 0;j < 100;++j){
             det_ID[i][j] = -1;
             det_ID_TDC[i][j] = -1;
@@ -72,27 +72,27 @@ FATIMA_Detector_System::~FATIMA_Detector_System(){
 
 
 
-	for(int i = 0;i < 100;++i){
-		delete[] det_ID[i];
-		delete[] det_ID_TDC[i];
-	}
+    for(int i = 0;i < 100;++i){
+        delete[] det_ID[i];
+        delete[] det_ID_TDC[i];
+    }
 
-	delete[] det_ID_TDC;
-	delete[] det_ID;
+    delete[] det_ID_TDC;
+    delete[] det_ID;
 
-	delete[] det_ids_QDC;
+    delete[] det_ids_QDC;
     delete[] det_ids_TDC;
 
-	delete[] QLong_Raw;
-	delete[] QShort_Raw;
-	delete[] QLong;
-	delete[] QShort;
-	delete[] QDC_Time_Coarse;
-	delete[] QDC_Time_Fine;
-	delete[] TDC_Time;
+    delete[] QLong_Raw;
+    delete[] QShort_Raw;
+    delete[] QLong;
+    delete[] QShort;
+    delete[] QDC_Time_Coarse;
+    delete[] QDC_Time_Fine;
+    delete[] TDC_Time;
 
-	delete FATIMA_T_CALIB;
-	delete FATIMA_E_CALIB;
+    delete FATIMA_T_CALIB;
+    delete FATIMA_E_CALIB;
 }
 
 //---------------------------------------------------------------
@@ -183,36 +183,30 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
         }
         //TDC code reached
         else if(TDChead->type == 8){
-	 
-	     --num_TDC_modules;
-	     
-	     this->pdata--;
+            --num_TDC_modules;
+            this->pdata--;
 
-	     Check_TDC_DATA(); 
+            Check_TDC_DATA(); 
+            if(num_TDC_modules == 0) TDC_Called = true;
+            
+            this->pdata++;
+        }
 
-	     if (num_TDC_modules == 0) TDC_Called = true;
-	     
-	    this->pdata++;
+        else if(TDChead->no == 3145728){
+            --num_TDC_modules;
 
-	     
-	}
-	else if(TDChead->no == 3145728){
-	    
-	    --num_TDC_modules;
-	     
-	    if (num_TDC_modules == 0) TDC_Called = true;
-
-	}
-	else cout<<"TDC Type not recognised: "<<TDChead->type<<endl;
-	
+            if(num_TDC_modules == 0) TDC_Called = true;
+        }
+        
+        else cout << "TDC Type not recognised: "<< TDChead->type << endl;
+        
         this->pdata++;
         
         QDChead = (QDC_Header*) this->pdata;
         TDChead = (TDC_Check*) this->pdata;
     }
 
-    this->pdata--;
-    this->pdata--;
+    this->pdata -= 2;
 
     //Check_TDC_DATA(); 
     //if(exiter) exit(0);
@@ -280,55 +274,55 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
     
 
     for(int i = 0;i < num_channels_fired;++i){
-	
-	pdata++; // Moves to 1st data value
+    
+    pdata++; // Moves to 1st data value
 
-	QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
-	
-	
-	if (Fired_QDC_Channels[num_channels_fired][1] == -1){ /*pdata += 6;*/
+    QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
+    
+    
+    if (Fired_QDC_Channels[num_channels_fired][1] == -1){ /*pdata += 6;*/
 
-	    
-	    int skip = fs->size - 1;
-	    
-	    pdata += skip;
-	      
-	}
-	else{
-	    //set active board_ID and channel #
-	    active_board = Fired_QDC_Channels[i][0];
-	    active_Channel = Fired_QDC_Channels[i][1];
+        
+        int skip = fs->size - 1;
+        
+        pdata += skip;
+          
+    }
+    else{
+        //set active board_ID and channel #
+        active_board = Fired_QDC_Channels[i][0];
+        active_Channel = Fired_QDC_Channels[i][1];
     
-	    active_det = det_ID[active_board][active_Channel];
-	    det_ids_QDC[i] = active_det;
-				    	    	    
-	    pdata += 3; //Moves to QDC time data
-	    
-	    QDC_Time* t = (QDC_Time*) pdata;
-	    QDC_Time_Coarse[active_det] = t->trigger_tag;
-	    
-	    
-	    pdata++; // Moves to Extras
-	   
-	    QDC_Extras* e = (QDC_Extras*) pdata;	
+        active_det = det_ID[active_board][active_Channel];
+        det_ids_QDC[i] = active_det;
+                            
+        pdata += 3; //Moves to QDC time data
+        
+        QDC_Time* t = (QDC_Time*) pdata;
+        QDC_Time_Coarse[active_det] = t->trigger_tag;
+        
+        
+        pdata++; // Moves to Extras
+       
+        QDC_Extras* e = (QDC_Extras*) pdata;    
     
-		ULong64_t tmp_ext_trig = e->ext_trig;
+        ULong64_t tmp_ext_trig = e->ext_trig;
     
-		fine_time = (((t->trigger_tag) + (tmp_ext_trig << 32)));
-		fine_time += ((double)(e->fine_time)/1024.);
-	    
-		    QDC_Time_Fine[active_det] = fine_time;
-	    
-	    pdata++; // Moves to 6th data value87454dda
-	    
-	    QDC_Data* d = (QDC_Data*) pdata;
-	    
-	    QLong_Raw[active_det] = d->QL; // Gets Q Long data //
-	    QShort_Raw[active_det] = d->QS; // Gets Q Short data //
-	    
-	    if (gain_match_used) Gain_Match_QDC(active_det);
-	    Calibrate_QDC(active_det);
-	}
+        fine_time = (((t->trigger_tag) + (tmp_ext_trig << 32)));
+        fine_time += ((double)(e->fine_time)/1024.);
+        
+            QDC_Time_Fine[active_det] = fine_time;
+        
+        pdata++; // Moves to 6th data value87454dda
+        
+        QDC_Data* d = (QDC_Data*) pdata;
+        
+        QLong_Raw[active_det] = d->QL; // Gets Q Long data //
+        QShort_Raw[active_det] = d->QS; // Gets Q Short data //
+        
+        if (gain_match_used) Gain_Match_QDC(active_det);
+        Calibrate_QDC(active_det);
+    }
     }
 }
 
@@ -351,27 +345,27 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
     while(!trail){
         loop_counter++;
         pdata++;
-	        
+            
         TDC_Check* p = (TDC_Check*) pdata;
         check = p->type;
-	        
+            
          // Global Header Condition //
         if( check == 8 ){
-	    
-	    
+        
+        
             TDC_Glob_Header* gh = (TDC_Glob_Header*) pdata;
             tdc_board_ID = gh->geo;
-	    
+        
         }
         // TDC Header Condition //
         else if( check == 1 ) {}
         // TDC Measurement Condition //
         else if( check == 0 ){
-	    
-	    
+        
+        
             TDC_Measurement* m = (TDC_Measurement*) pdata;
             TDC_ch = m->channel;
-	    
+        
 
             //if (!wired_TDC(tdc_board_ID,TDC_ch) && QDC_DATA) continue;
             if(!wired_TDC(tdc_board_ID,TDC_ch)){
@@ -403,9 +397,10 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
         }
         // TDC Trailer Condition // 
         else if ( check == 16 ) trail = true;
-	
+    
         if(loop_counter > 100){
             cerr << "FATIMA TDC loop not reaching trailer! pdata iteration problem possible" << endl;
+            cerr << "Exiting Program!" << endl;
             exit(0);
         }
     }
@@ -430,39 +425,39 @@ bool FATIMA_Detector_System::wired_TDC(int board_id,int ch_num){
 //---------------------------------------------------------------
 
 void FATIMA_Detector_System::Calibrate_QDC(int id){
-	if (gain_match_used){
-	    QLong[id] = FATIMA_E_CALIB->Calibrate(QLong[id],id);
-	    QShort[id] = FATIMA_E_CALIB->Calibrate(QShort[id],id);
-	}
-	else{
-	    QLong[id] = FATIMA_E_CALIB->Calibrate(QLong_Raw[id],id);
-	    QShort[id] = FATIMA_E_CALIB->Calibrate(QShort_Raw[id],id);
-	}
-	QDC_Time_Coarse[id] = FATIMA_T_CALIB->Calibrate_QDC(QDC_Time_Coarse[id],id);
-	QDC_Time_Fine[id] = FATIMA_T_CALIB->Calibrate_QDC(QDC_Time_Fine[id],id);
+    if (gain_match_used){
+        QLong[id] = FATIMA_E_CALIB->Calibrate(QLong[id],id);
+        QShort[id] = FATIMA_E_CALIB->Calibrate(QShort[id],id);
+    }
+    else{
+        QLong[id] = FATIMA_E_CALIB->Calibrate(QLong_Raw[id],id);
+        QShort[id] = FATIMA_E_CALIB->Calibrate(QShort_Raw[id],id);
+    }
+    QDC_Time_Coarse[id] = FATIMA_T_CALIB->Calibrate_QDC(QDC_Time_Coarse[id],id);
+    QDC_Time_Fine[id] = FATIMA_T_CALIB->Calibrate_QDC(QDC_Time_Fine[id],id);
 
 }
 
 //---------------------------------------------------------------
 
 void FATIMA_Detector_System::Gain_Match_QDC(int id){
-	QLong[id] = FATIMA_GAIN_MATCH->Gain_Match(QLong_Raw[id],id);
-	QShort[id] = FATIMA_GAIN_MATCH->Gain_Match(QShort_Raw[id],id);
+    QLong[id] = FATIMA_GAIN_MATCH->Gain_Match(QLong_Raw[id],id);
+    QShort[id] = FATIMA_GAIN_MATCH->Gain_Match(QShort_Raw[id],id);
 }
 
 //---------------------------------------------------------------
 void FATIMA_Detector_System::Calibrate_TDC(int id){
-	TDC_Time[id] = FATIMA_T_CALIB->Calibrate(TDC_Time[id],id);
+    TDC_Time[id] = FATIMA_T_CALIB->Calibrate(TDC_Time[id],id);
 }
 
 //---------------------------------------------------------------
 
 void FATIMA_Detector_System::set_Gain_Match_Filename(string GM_filename){
-	
-	FATIMA_GAIN_MATCH = new FATIMA_Gain_Match(GM_filename);
+    
+    FATIMA_GAIN_MATCH = new FATIMA_Gain_Match(GM_filename);
 
-	gain_match_used = true;
-	
+    gain_match_used = true;
+    
 }
 
 //---------------------------------------------------------------

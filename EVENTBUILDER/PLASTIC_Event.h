@@ -1,5 +1,5 @@
-#ifndef FATIMA_EVENT_H
-#define FATIMA_EVENT_H
+#ifndef PLASTIC_EVENT_H
+#define PLASTIC_EVENT_H
 
 #include <iostream>
 #include <cstdlib>
@@ -7,7 +7,7 @@
 #include "Events.h"
 #include "Raw_Event.h"
 
-class FATIMA_Event : public Events{
+class PLASTIC_Event : public Events{
 
 private:
 
@@ -17,8 +17,8 @@ private:
 
 
 public:
-    FATIMA_Event(int*,int,Raw_Event*);
-    ~FATIMA_Event();
+    PLASTIC_Event(int*,int,Raw_Event*);
+    ~PLASTIC_Event();
 };
 
 #endif

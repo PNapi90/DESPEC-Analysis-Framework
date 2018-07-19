@@ -176,7 +176,15 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) Detector_Systems[i] = NULL;
 
+	get_interest_arrays();
 
+	/*
+	if(!SKIP_EVT_BUILDING){
+		EvtBuilder = new EventBuilder*[2];
+		EvtBuilder[0] = new Time_EventBuilder(amount_interest,length_interest,interest_array);
+		//EvtBuilder[1] = new Space_EventBuilder();
+	}
+	*/
 	//Raw_Event object to handle data
 	RAW = new Raw_Event();
 
@@ -211,7 +219,10 @@ TSCNUnpackProc::~TSCNUnpackProc()
 
 	for(int i = 0;i < 6;++i){
 		if(Detector_Systems[i]) delete Detector_Systems[i];
+		delete[] interest_array[i];
 	}
+	delete[] interest_array;
+	delete[] length_interest;
 	delete[] Detector_Systems;
 	
 	delete RAW;
@@ -286,7 +297,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	bool used[5];
 	for(int i = 0;i < 5;++i) used[i] = false;
 	
-	bool WHITE_RABBIT_USED = false;
+	bool WHITE_RABBIT_USED = true;
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -352,7 +363,12 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
 		
-
+		/*	
+		if(!SKIP_EVT_BUILDING){
+			EvtBuilder[0]->set_Event(RAW);
+			//EvtBuilder[1]->set_Event(RAW);
+		}
+		*/
 		
 		if(cals_done) break;
 		//continue;
@@ -721,7 +737,79 @@ void TSCNUnpackProc::get_WR_Config(){
 
 
 
+void TSCNUnpackProc::get_interest_arrays(){
+	SKIP_EVT_BUILDING = false;
+	amount_interest = 0;
 
+	length_interest = new int[10];
+	interest_array = new int*[10];
+	for(int i = 0;i < 10;++i){
+		length_interest[i] = 0;
+		interest_array[i] = new int[6];
+		for(int j = 0;j < 6;++j) interest_array[i][j] = -1;
+	}
+
+	string DET_NAME[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
+
+	const char* format = "%d %d %d %d %d %d";
+
+	int tmp_values[6];
+
+	ifstream data("Configuration_Files/Coincidences_of_Interest.txt");
+
+	//Print statements if loading of data fails
+	if(data.fail()){
+		string input_string;
+		cerr << endl;
+		cerr << "No Detector_System coincidence file found!" << endl;
+		cerr << "Do you want to omit the Time_EventBuilding?  (y/n)\t\t ";
+		getline(cin,input_string);
+		cerr << endl;
+		if(input_string == "y"){
+			cerr << "------------------------------------------------------" << endl;
+			cerr << "!Time_EventBuilding will be skipped! ONLY SINGLES" << endl;
+			cerr << "------------------------------------------------------" << endl;
+			SKIP_EVT_BUILDING = true;
+			return;
+		}
+		else{
+			cerr << "Not skipping Time_EventBuilding.\n";
+			cerr << "PLEASE CREATE Configuration_Files/Coincidences_of_Interest.txt file!" << endl;
+			cerr << "\nEXITING PROGRAM NOW" << endl;
+			exit(0);
+		} 
+	}
+
+	string line;
+
+	cout << "\n=====================================================" << endl;
+	cout << "Coincidences of interest are: " << endl;
+	cout << "-----------------------------------------------------" << endl;
+	while(data.good()){
+		getline(data,line,'\n');
+		if(line[0] == '#') continue;
+		for(int i = 0;i < 6;++i) tmp_values[i] = -1;
+
+		sscanf(line.c_str(),format,&tmp_values[0],&tmp_values[1]
+								  ,&tmp_values[2],&tmp_values[3]
+								  ,&tmp_values[4],&tmp_values[5]);
+		
+		if(tmp_values[0] != -1){
+			for(int i = 0;i < 6;++i){
+				if(tmp_values[i] != -1){
+					interest_array[amount_interest][length_interest[amount_interest]] = tmp_values[i];
+					length_interest[amount_interest]++;
+				}
+			}
+			cout << "-> ";
+			for(int i = 0;i < length_interest[amount_interest]-1;++i) cout << DET_NAME[interest_array[amount_interest][i]] << " + ";
+			cout << DET_NAME[interest_array[amount_interest][length_interest[amount_interest]-1]];
+			cout << endl;
+			amount_interest++;
+		}
+	}
+	cout << "=====================================================" << endl;
+}
 
 
 
