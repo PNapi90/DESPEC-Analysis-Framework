@@ -132,6 +132,8 @@ using namespace std;
 			Int_t PrcID_Array[10];
 			bool Used_Systems[10];
 
+			bool SKIP_EVT_BUILDING;
+
 			double vals[100000];
 			int val_it;
 
@@ -146,6 +148,12 @@ using namespace std;
 			White_Rabbit* WR;
 			Raw_Event* RAW;
 
+			int amount_interest;
+			int* length_interest;
+			int** interest_array;
+
+			//Event_Builder** EvtBuilder;
+
 			double fatima_E_save[4];
 			int am_FATIMA_hits;
 			int num_full_FAT_evts;
@@ -156,6 +164,7 @@ using namespace std;
 			void get_WR_Config();
 
 			void load_PrcID_File();
+			void get_interest_arrays();
 
 			int count;
 			int called[2];

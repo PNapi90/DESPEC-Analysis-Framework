@@ -172,8 +172,6 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
     
     num_TDC_modules = 1;
     
-    //cout<<"FROM DATA :";
-    
     //loop over FATIMA modules
     while(!TDC_Called){
         //QDC channel empty (check a -> always with QDC, length-> am_channels called (len-4))
@@ -185,10 +183,8 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
         }
         //TDC code reached
         else if(TDChead->type == 8){
-	 
-	     --num_TDC_modules;
-	     
-	     this->pdata--;
+            --num_TDC_modules;
+            this->pdata--;
 
 	     Check_TDC_DATA(); 
 
@@ -213,14 +209,10 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
         TDChead = (TDC_Check*) this->pdata;
     }
 
-    this->pdata--;
-    this->pdata--;
+    this->pdata -= 2;
 
     //Check_TDC_DATA(); 
     //if(exiter) exit(0);
-    
-    //cout<<endl;
-    
 }
 
 //---------------------------------------------------------------
@@ -417,6 +409,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
 	
         if(loop_counter > 100){
             cerr << "FATIMA TDC loop not reaching trailer! pdata iteration problem possible" << endl;
+            cerr << "Exiting Program!" << endl;
             exit(0);
         }
     }

@@ -31,15 +31,23 @@ private:
 	double** Event_WR;
 	int** Event_position;
 
+    int amount_interests;
+    int* length_array;
+    int** interest_array
+
 	int event_counter[6];
+    
+    int iter[6];
+    int* sys_interest;
 
 	void purge(int,int);
 	void create_Event(int,Raw_Event*);
+    void set_Det_Sys_specific_coincidences();
 
 	inline bool in_time_windows(double);
 
 public:
-	Event_Store();
+	Event_Store(int,int*,int**);
 	~Event_Store();
 	
 
