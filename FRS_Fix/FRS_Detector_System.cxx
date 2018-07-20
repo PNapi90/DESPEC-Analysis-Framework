@@ -1,24 +1,28 @@
 #include "FRS_Detector_System.h"
+#include "Riostream.h"
 
 #include "TH1.h"
+#include "TMap.h"
 
 #include <cstdlib>
 #include <iostream>
 #include <bitset>
 #include <sstream>
 #include <fstream>
-
+#include <map>
+#include "TObject.h"
 
 // Go4 Includes //
 #include "TGo4UserException.h"
 #include "TGo4Picture.h"
 #include "TGo4MbsEvent.h"
 #include "TGo4StepFactory.h"
+#include "TGo4Analysis.h"
 
 //#include "TXRSSortEvent.h"
 //#include "TXRSCalibrEvent.h"
 
-#include "TXRSAnalysis.h"
+//#include "TXRSAnalysis.h"
 
 #include "TXRSParameter.h"
 
@@ -153,11 +157,15 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
   Int_t len = 0;	  
   Int_t vme_chn;
   Int_t lenMax = (psubevt->GetDlen()-2)/2;
-  const auto it_Crate = ModSetup->MapCrates.find(psubevt->GetProcid());
-  if(it_Crate == ModSetup->MapCrates.end())
+    
+  const auto it_Crate = ElecMod->MapCrates.find(psubevt->GetProcid());
+  if(it_Crate == ElecMod->MapCrates.end())
     std::cout<<"E> Crate Mapping does not have this ProcID :"<<psubevt->GetProcid()<<std::endl;
+    
+  std::cout<<"Matt E> Crate Mapping does not have this ProcID :"<<std::endl;
+
   
-  if(ModSetup->EventFlags.size()!=0)
+  if(ElecMod->EventFlags.size()!=0)
     {
       Int_t  event_flag = *pdata++;
       len++; // 0x200
@@ -165,18 +173,19 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 #ifdef DEBUG
       std::cout<<" Event FLAG :"<<std::endl;
       std::cout<<std::bitset<32>(event_flag)<<"\n";
-      for(Int_t elem : ModSetup->EventFlags)
+      for(Int_t elem : ElecMod->EventFlags)
 	std::cout<<std::bitset<32>(elem)<<"\n";
 #endif
       bool foundFlag = false;
-      for(int setupFlag : ModSetup->EventFlags)
+      for(int setupFlag : ElecMod->EventFlags)
 	if(event_flag == setupFlag)
 	  foundFlag = true;
       if(foundFlag)
 	EventFlag = event_flag;
     }
 
-  
+  std::cout<<"Matt E> Crate Mapping does not have this ProcID :"<<std::endl;
+
   switch(psubevt->GetProcid())
     {
 
@@ -193,7 +202,7 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 
       //Int_t *pdata = psubevt->GetDataField();
       //Int_t len = 0;
-      if(ModSetup->Nb_TimeStamp > 0 && (psubevt->GetType() == 12) )
+      if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12) )
        {
 	  // \note FRS TIME STAMP module data (3 longwords)   
 	  //   has no header or end-of-block info, we must hardwire GEO = 20.
@@ -213,13 +222,12 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 	  currentTimeStamp = tempTS;
       }
       
-      if( (psubevt->GetType() != 88) )
-	break;     
-
+      if( (psubevt->GetType() == 88) )
+      {
       //pdata++; len++; // remove 0xbaba.baba    
 
       
-      if(ModSetup->Nb_Scaler > 0) //v830 scaler
+      if(ElecMod->Nb_Scaler > 0) //v830 scaler
 	{
 	  // \note FRS SCALER module data (1 longword per channel)   
 	   //  This module has sequential readout therefore no channel
@@ -250,7 +258,7 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 	    {
 	      for(int i=0;i<vme_nlw;i++)
 		{
-		  if(ModSetup->Scaler32bit) 
+		  if(ElecMod->Scaler32bit) 
 		  {
 		      vme0[vme_geo][i] = *pdata;
 		      //vme2scaler[i] = *pdata;
@@ -341,7 +349,7 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 	  if(vme_type == 6)
 	    {
 	      // not valid data !
-	      const auto MaxCh = ModSetup->Nb_Channels.find(vme_geo); 
+	      const auto MaxCh = ElecMod->Nb_Channels.find(vme_geo); 
 	      for(int i=0;i<MaxCh->second;++i)
 		{
 		  //h_UnpackStatus->Fill(IdMod*32+i,"not valid/Header",1.);
@@ -383,9 +391,11 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 	      pdata++; len++;
 	    }
 			  
-	}  // end of the while... loop  
+	}  // end of the while... loop 
+	
+    }
      		      
-      break; 
+      //break; 
       // end proc ID=30 //changed from 10 to 30 (06.07.2018)
       //==========
 
@@ -424,7 +434,10 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
     //case 30: //changed to 10  (06.07.2018);
     case 10:
       //  (Main Crate)
-    // get pointer on data   
+    // get pointer on data 
+    std::cout<<"Matt ProcID :"<<10<<std::endl; //changed from 30 to 10
+
+      
 #ifdef DEBUG
       std::cout<<"ProcID :"<<10<<std::endl; //changed from 30 to 10
 #endif
@@ -439,7 +452,7 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 	}
       // std::cout<<"length = "<<lenMax<<std::endl;
       /*
-      if(ModSetup->Nb_TDC>0)
+      if(ElecMod->Nb_TDC>0)
 	{
 	  //v1290 TDC              
 	  Int_t vme_geo = getbits(*pdata,1,1,5);
@@ -550,11 +563,14 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 
       //Int_t *pdata = psubevt->GetDataField();
       //Int_t len = 0;
-      if(ModSetup->Nb_TimeStamp > 0 && (psubevt->GetType() == 12) )
+      if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12) )
 	{
 	  /** \note FRS TIME STAMP module data (3 longwords)   
 	   *   has no header or end-of-block info, we must hardwire GEO = 20.
 	   */
+	   
+	std::cout<<"Matt well we made it this far"<<std::endl;
+
 	  Long64_t tempTS = 0;
 	  static const Long64_t bit_weight[4] = {0x1,0x10000,0x100000000,0x1000000000000};
 	  for (int i=0;i<4;++i)
@@ -568,14 +584,20 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 	    }
 	  previousTimeStamp[0] = currentTimeStamp;
 	  currentTimeStamp = tempTS;
-	}     
+	}
+	
+      std::cout<<"Matt we made it this far too"<<std::endl;
+     
       
       if( (psubevt->GetType() != 88) )
-	break;
+      {
       
       pdata++; len++; // remove 0xbaba.baba
       
-      if(ModSetup->Nb_Scaler > 0)
+      std::cout<<"Matt we made it this far also"<<std::endl;
+
+      
+      if(ElecMod->Nb_Scaler > 0)
       {
 	  /** \note FRS SCALER module data (1 longword per channel)   
 	   *  This module has sequential readout therefore no channel
@@ -604,7 +626,7 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 	    {
 	      for(int i=0;i<vme_nlw;i++)
 		{
-		  if(ModSetup->Scaler32bit)
+		  if(ElecMod->Scaler32bit)
 		    {
 
 		      vme5[vme_geo][i] = *pdata;
@@ -662,7 +684,7 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 	   if(vme_type == 6)
 	    {
 	      // not valid data !
-	      const auto MaxCh = ModSetup->Nb_Channels.find(vme_geo); 
+	      const auto MaxCh = ElecMod->Nb_Channels.find(vme_geo); 
 	      for(int i=0;i<MaxCh->second;++i)
 	      {
 	         //h_UnpackStatus->Fill(IdMod*32+i,"not valid/Header",1.);
@@ -706,8 +728,8 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 			  
 	}  // end of the while... loop  
 
+    }
       /********* Added on 06.07.2018 *********/ 
-      break;
       // ID=10 loop   //changed to 10 from 30 on 06.07.2018
       //=========
 
@@ -720,7 +742,7 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 #endif      
       //UnpackUserSubevent(psubevt, event_out); //for historical reasons
       
-//       if(ModSetup->Nb_Scaler > 0)
+//       if(ElecMod->Nb_Scaler > 0)
 // 	{
 // 	  /** \note FRS SCALER module data (1 longword per channel)   
 // 	   *  This module has sequential readout therefore no channel
@@ -745,7 +767,7 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 // 	    {
 // 	      for(int i=0;i<vme_nlw;i++)
 // 		{
-// 		  if(ModSetup->Scaler32bit)
+// 		  if(ElecMod->Scaler32bit)
 // 		    {
 // 		      vme1[vme_geo][i] = *pdata;
 // #ifdef DEBUG
@@ -846,7 +868,7 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 	  if(vme_type == 6)
 	    {
 	      // not valid data !
-	      const auto MaxCh = ModSetup->Nb_Channels.find(vme_geo); 
+	      const auto MaxCh = ElecMod->Nb_Channels.find(vme_geo); 
 	      for(int i=0;i<MaxCh->second;++i)
 		{
 		  //h_UnpackStatus->Fill(IdMod*32+i,"not valid/Header",1.);
@@ -893,14 +915,13 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 	      pdata++; len++;
       
 	}  /* end of the while... loop  */
-      break;
       //=========
       
 
       //============
     case 40 :
       
-      if(ModSetup->Nb_TimeStamp > 0 && (psubevt->GetType() == 12) )
+      if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12) )
 	{
 	  /** \note FRS TIME STAMP module data (3 longwords)   
 	   *   has no header or end-of-block info, we must hardwire GEO = 20.
@@ -918,8 +939,8 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 	  currentTimeStamp = tempTS;	  
 	}
 
-      if( (psubevt->GetType() != 88) )
-	break;
+      if( (psubevt->GetType() == 88) )
+    {
 
       pdata++; len++; // remove 0xbaba.baba
 
@@ -941,7 +962,7 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
       pdata++; len++;
       
       
-      if(ModSetup->Nb_TDC>0)
+      if(ElecMod->Nb_TDC>0)
 	{
 	  //v1290 TDC              
 	  Int_t vme_geo = getbits(*pdata,1,1,5);
@@ -1039,13 +1060,13 @@ void FRS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 		}
 	    }
 	}
-      break;
+      }
       //===========
 
       //===========
     case 50:
 
-      if(ModSetup->Nb_TimeStamp > 0 && (psubevt->GetType() == 12) )
+      if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12) )
 	{
 	  /** \note FRS TIME STAMP module data (3 longwords)   
 	   *   has no header or end-of-block info, we must hardwire GEO = 20.
@@ -3579,7 +3600,7 @@ void FRS_Detector_System::FRS_Anal(){
 
 void FRS_Detector_System::Setup_Parameters(){
 
-  fFRSPar = new TXRSParameter("FRSPar");
+  /*fFRSPar = new TXRSParameter("FRSPar");
   AddParameter(fFRSPar);
 
   fMWPar = new TMWParameter("MWPar");
@@ -3604,19 +3625,55 @@ void FRS_Detector_System::Setup_Parameters(){
   AddParameter(ModPar);
   
   MRtofPar = new TMRTOFMSParameter("MRTOFMSPar");
-  AddParameter(MRtofPar);
+  AddParameter(MRtofPar);*/
 
 
-  // look up analysis object and all parameters 
-  ModSetup = dynamic_cast<TModParameter*>(GetParameter("ModPar"));
-  if (ModSetup==0) {
-    cout << "!!! Parameter ModPar not found " << endl;
-  }
+  // look up analysis object and all parameters
+  
+  frs = new TXRSParameter("FRSPar");
+  //AddParameter(fFRSPar);
+
+  mw = new TMWParameter("MWPar");
+  //AddParameter(fMWPar);
+
+  music = new TMUSICParameter("MUSICPar");
+  //AddParameter(fMUSICPar);
+
+  tpc = new TTPCParameter("TPCPar");
+  //AddParameter(fTPCPar);
+
+  sci = new TSCIParameter("SCIPar");
+  //AddParameter(fSCIPar);
+
+  id = new TIDParameter("IDPar");
+  //AddParameter(fIDPar);
+
+  si = new TSIParameter("SIPar");
+  //AddParameter(fSIPar);
+
+  ElecMod = new TModParameter("ModPar");
+  //AddParameter(ModPar);
+  
+  mrtof = new TMRTOFMSParameter("MRTOFMSPar");
+  //AddParameter(MRtofPar);
+  
+  //ElecMod = new TModParameter("ModPar");
+
+  
+  //TModParameter* ElecMod = dynamic_cast<TModParameter*>(an->GetParameter("ModPar"));
+
     
-  TXRSAnalysis* an = dynamic_cast<TXRSAnalysis*> (TGo4Analysis::Instance());
+  /*TXRSAnalysis* an = dynamic_cast<TXRSAnalysis*> (TGo4Analysis::Instance());
   if (an==0) {
     cout << "!!!  Script should be run in FRS analysis" << endl;
   }
+  
+  ElecMod = dynamic_cast<TModParameter*>(an->GetParameter("ModPar"));
+  if (ElecMod==0) {
+    cout << "!!! Parameter ModPar not found " << endl;
+  }
+  
+  
    
   TXRSParameter* frs = dynamic_cast<TXRSParameter*> (an->GetParameter("FRSPar"));
   if (frs==0) {
@@ -3667,7 +3724,7 @@ void FRS_Detector_System::Setup_Parameters(){
   an->SetupH2("ID_x4AoQ", 500, 1.3, 2.8, 200, -100, +100, "A/Q", "X4 [mm]");     
   an->SetupH2("ID_Z_AoQ", 600, 1.3, 2.8,600 , 0, 20, "A/Q", "Z"); 
   an->SetupH2("ID_Z_AoQ_corr", 500, 1.3, 2.8, 600, 0, 20, "A/Q (a2 corr)", "Z"); 
-  an->SetupH2("ID_x4z", 450, 0., 20.0, 500, -100, 100, "Z", "X4 [mm]"); 
+  an->SetupH2("ID_x4z", 450, 0., 20.0, 500, -100, 100, "Z", "X4 [mm]"); */
 
   //      ID_dEToF
   // Float_t my_cID_Z_AoQ_points[5][2] =
@@ -3697,7 +3754,7 @@ void FRS_Detector_System::Setup_Parameters(){
      {    0., 4000.},
      {40000., 4000.},
      {40000.,    0.}}; 
-  an->SetupPolyCond("cID_dEToF", 4, my_cID_dEToF_points);
+  //an->SetupPolyCond("cID_dEToF", 4, my_cID_dEToF_points);
    
 
   // /* 20Mg */
@@ -4561,6 +4618,12 @@ void FRS_Detector_System::Setup_Parameters(){
   CrateFRS.insert(std::pair<int,int>(8,IdMod++));
   CrateFRS.insert(std::pair<int,int>(11,IdMod++));
   CrateFRS.insert(std::pair<int,int>(12,IdMod++));
+  
+  cout<<"CRATE FRS VALUE  "<<CrateFRS[1]<<endl;
+  cout<<"CRATE FRS VALUE  "<<CrateFRS[9]<<endl;
+  cout<<"CRATE FRS VALUE  "<<CrateFRS[8]<<endl;
+  cout<<"CRATE FRS VALUE  "<<CrateFRS[11]<<endl;
+  cout<<"CRATE FRS VALUE  "<<CrateFRS[12]<<endl;
 
   //std::unordered_map<int,int> CrateTPC;
   std::map<int,int> CrateTPC;
@@ -4595,17 +4658,26 @@ void FRS_Detector_System::Setup_Parameters(){
   temp4->map=CrateMT;
   temp5->map=CrateSOFIA;
   
+  cout<<"TEMP1 VALUE  "<<temp1->map[1]<<endl;
+  cout<<"TEMP1 VALUE  "<<temp1->map[9]<<endl;
+  cout<<"TEMP1 VALUE  "<<temp1->map[8]<<endl;
+  cout<<"TEMP1 VALUE  "<<temp1->map[11]<<endl;
+  cout<<"TEMP1 VALUE  "<<temp1->map[12]<<endl;
+
+  
   TObjString* key1 = new TObjString("10");
   TObjString* key2 = new TObjString("20");
   TObjString* key3 = new TObjString("30");
   TObjString* key4 = new TObjString("40");
   TObjString* key5 = new TObjString("50");
+  
   ElecMod->Maptemp.Add(key1,temp1);
   ElecMod->Maptemp.Add(key2,temp2);
   ElecMod->Maptemp.Add(key3,temp3);
   ElecMod->Maptemp.Add(key4,temp4);
   ElecMod->Maptemp.Add(key5,temp5);
-  // ElecMod->MapCrates.insert(std::pair<int,std::unordered_map<int,int> >(10,CrateFRS));
+  
+  // ElecMod->Maptemp.insert(std::pair<int,map<int,int> >(10,CrateFRS));
   // ElecMod->MapCrates.insert(std::pair<int,std::unordered_map<int,int> >(20,CrateTPC));
   // ElecMod->MapCrates.insert(std::pair<int,std::unordered_map<int,int> >(30,CrateUser));
   
@@ -4645,8 +4717,10 @@ void FRS_Detector_System::Setup_Parameters(){
   // ElecMod->ModType.push_back("QDC_16");
   // ElecMod->ModType.push_back("QDC_17");
   // ElecMod->ModType.push_back("QDC_18");
+  
+  ElecMod->setMap();
 
-  //ElecMod->Print();
+  ElecMod->Print();
   
   cout << "Setup done " << endl;
 

@@ -27,8 +27,8 @@
 #pragma link C++ class TSCNAnlProc+;
 
 
-//#pragma link C++ class TXRSAnalysis+;
-/*#pragma link C++ class TXRSBasicProc+;
+/*#pragma link C++ class TXRSAnalysis+;
+#pragma link C++ class TXRSBasicProc+;
 #pragma link C++ class TXRSUnpackEvent+;
 #pragma link C++ class TXRSUnpackProc+;
 #pragma link C++ class TXRSSortEvent+;
@@ -42,7 +42,7 @@
 
 
 
-/*#pragma link C++ class TXRSParameter+;
+#pragma link C++ class TXRSParameter+;
 #pragma link C++ class TModParameter+;
 #pragma link C++ class Map1+;
 #pragma link C++ class TMWParameter+;
@@ -51,7 +51,7 @@
 #pragma link C++ class TSCIParameter+;
 #pragma link C++ class TIDParameter+;
 #pragma link C++ class TSIParameter+;
-#pragma link C++ class TMRTOFMSParameter+;*/
+#pragma link C++ class TMRTOFMSParameter+;
 
 #endif
 

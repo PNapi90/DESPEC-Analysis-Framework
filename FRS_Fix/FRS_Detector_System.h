@@ -4,6 +4,11 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TObject.h"
+#include "TH1.h"
+#include "TMap.h"
+#include "TCollection.h"
+
+#include "Riostream.h"
 
 #include "Detector_System.cxx"
 
@@ -15,9 +20,11 @@
 #include "TGo4PolyCond.h"
 #include "TGo4CondArray.h"
 #include "TGo4StepFactory.h"
+#include "TGo4Analysis.h"
 
 
 #include "TXRSParameter.h"
+//#include "TXRSAnalysis.h"
 
 //#include "TXRSSortEvent.h"
 //#include "TXRSCalibrEvent.h"
@@ -27,6 +34,7 @@
 
 #include <sstream>
 #include <fstream>
+#include <map>
 
 class FRS_Detector_System : public Detector_System{
 
@@ -411,6 +419,8 @@ private:
  /********************************************************************/
  /***Analysis Parameters***/
  
+  //TXRSAnalysis* an;
+ 
   TModParameter* ModSetup;
   TMWParameter* mw;
   TTPCParameter* tpc;
@@ -685,7 +695,7 @@ public:
   //virtual ~FRS_Detector_System() ;
 
     //void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*);
-    //void Process_FRS(TGo4MbsSubEvent* psubevt);
+    void Process_FRS(TGo4MbsSubEvent* psubevt);
 
     void Process_MBS(int*);
     void get_Event_data(Raw_Event*);

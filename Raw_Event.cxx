@@ -95,7 +95,7 @@ void Raw_Event::set_DATA_ID_Timestamp(Float_t FRS_timestamp,Float_t FRS_ts,Float
 
 ################################################################# */
 
-void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,double* Qs_Raw,double* Ql,double* Qs,ULong64_t* TDC,ULong64_t* QDC_c,ULong64_t* QDC_f,int* det_ids_QDC,int* det_ids_TDC){
+void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,double* Qs_Raw,double* Ql,double* Qs,double* TDC,ULong64_t* QDC_c,ULong64_t* QDC_f,int* det_ids_QDC,int* det_ids_TDC){
 	this->FAT_FIRED = FAT_FIRED;
 	this->TDC_FIRED = TDC_FIRED;
 
@@ -108,13 +108,16 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,doubl
 	for(int i = 0;i < FAT_FIRED;++i){
 
 		active_det = det_ids_QDC[i];
+		//cout<<"From RAW EVENT:"<<endl;;
+
+		//cout<<active_det<<" ";
 
 		//used_for_QDC[active_det] = false;
 		for(int j = 0;j < TDC_FIRED;++j){
 			if(det_ids_QDC[i] == det_ids_TDC[j]){
 				position = det_ids_TDC[j];
 				used_for_QDC[position] = true;
-				Det_Nums[i] = det_ids_QDC[i];
+				//Det_Nums[i] = det_ids_QDC[i];
 				FAT_Both[BOTH_FIRED] = i;
 				++BOTH_FIRED;
 				//cout << "USED POS " << j << endl;
@@ -130,6 +133,8 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,doubl
 		QDC_t_fine[i] = QDC_f[active_det];
 		TDC_timestamp[i] = TDC[position];
 	}
+	
+	//cout<<endl;
 
 	ch51 = false;
 	if(FAT_FIRED == 0) return;
@@ -317,7 +322,7 @@ double Raw_Event::get_FATIMA_QShort_Raw(int i){return QShort_Raw[i];}
 
 //---------------------------------------------------------------
 
-ULong64_t Raw_Event::get_FATIMA_TDC_T(int i){return TDC_timestamp[i];}
+double Raw_Event::get_FATIMA_TDC_T(int i){return TDC_timestamp[i];}
 
 //---------------------------------------------------------------
 

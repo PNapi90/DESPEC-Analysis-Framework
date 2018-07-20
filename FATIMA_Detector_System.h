@@ -36,7 +36,7 @@ private:
 	
 	ULong64_t* QDC_Time_Coarse;
 	ULong64_t* QDC_Time_Fine;
-	ULong64_t* TDC_Time;
+	double* TDC_Time;
 
 	int* det_ids_QDC;
     int* det_ids_TDC;
@@ -81,7 +81,7 @@ public:
 	
 	
 	//void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*){};
-	//void Process_FRS(TGo4MbsSubEvent* psubevt){};
+	void Process_FRS(TGo4MbsSubEvent* psubevt){};
 
 
 	

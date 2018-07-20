@@ -22,9 +22,7 @@
 // General Includes //
 #include <fstream>
 #include <vector>
-#include <time.h>
-#include <math.h>
-#include <iomanip>
+
 
 #include "TSCNUnpackEvent.h"
 
@@ -75,7 +73,9 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	for(int i = 0; i<36; ++i){
 
-	    FAT_TDC_dT[i] = MakeTH1('D',Form("TDC_Diff_Hists/TDC_Time_Diff%2d",i),Form("TDC Time Difference%2d",i),3200,-40,40);
+	    FAT_TDC_dT[i] = MakeTH1('D',Form("TDC_Diff_Hists/TDC_Time_Diff%2d",i),Form("TDC Time Difference%2d",i),3201,-40,40);
+	    Energy_Singles[i] = MakeTH1('D',Form("Energy_Singles/Energy_Singles%2d",i),Form("Energy Singles%2d",i),8000,0,8000);
+	    Energy_Coinc[i] = MakeTH1('D',Form("Energy_Coincidences/Energy_Coinc%2d",i),Form("Energy Coincidences%2d",i),8000,0,8000);
 
 	}
 
@@ -373,28 +373,36 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			int det_iter = 0;
 			bool called_link = false;
 			
-			int num_full_evts = RAW->get_am_FATIMA_Both(); 
+			num_full_FAT_evts = RAW->get_am_FATIMA_Both(); 
 			
-			for(int i = 0; i < num_full_evts; ++i){
+			for(int i = 0; i < num_full_FAT_evts; ++i){
 			    
-			    for(int j = 0; j < num_full_evts; ++j){
+			    int Data_Ref_i = RAW->get_FATIMA_Both(i);
+			    int Det_ID_i = RAW->get_FATIMA_det_id(Data_Ref_i);
+			    //int Data_Ref_i = RAW->get_FATIMA_Both(i);
+
+			    tmpE[0] = RAW->get_FATIMA_E(Data_Ref_i);
+			    
+			    if(num_full_FAT_evts == 1) Energy_Singles[Det_ID_i]->Fill(tmpE[0]);
+
+			    if(num_full_FAT_evts == 2) Energy_Coinc[Det_ID_i]->Fill(tmpE[0]);
+
+			    
+			    for(int j = 0; j < num_full_FAT_evts; ++j){
 				
+				int Data_Ref_j = RAW->get_FATIMA_Both(j);		    		    
+				int Det_ID_j = RAW->get_FATIMA_det_id(Data_Ref_j);
 				
-				if(i != j){
+				hit_mat->Fill(Det_ID_i,Det_ID_j);
+				
+				if(Det_ID_i != Det_ID_j && Det_ID_j == 0){
 				    
-				    int TDC_ID_1 = RAW->get_FATIMA_Both(i);
-				    int TDC_ID_2 = RAW->get_FATIMA_Both(j);
-				    int Det_ID = RAW->get_FATIMA_det_id(i);		    		    
+				    //int Data_Ref_j = RAW->get_FATIMA_Both(j);		    		    
 				
-				    //cout<<"EUREKA!! "<< TDC_ID_1<<" "<< TDC_ID_2<<endl;
-				
-				    double TDC_Time_1 = RAW->get_FATIMA_TDC_T(TDC_ID_1);
-				    double TDC_Time_2 = RAW->get_FATIMA_TDC_T(TDC_ID_2);
-				
-				    TDC_Time_1 = TDC_Time_1/1000;
-				    TDC_Time_2 = TDC_Time_2/1000;
+				    double TDC_Time_1 = RAW->get_FATIMA_TDC_T(Data_Ref_i);
+				    double TDC_Time_2 = RAW->get_FATIMA_TDC_T(Data_Ref_j);
 				    
-				    FAT_TDC_dT[Det_ID]->Fill((TDC_Time_1 - TDC_Time_2));
+				    FAT_TDC_dT[Det_ID_i]->Fill((TDC_Time_1 - TDC_Time_2));
 			
 				}
 			

@@ -118,6 +118,7 @@ public:
 
   std::map<int, int> Nb_Channels; 
   std::map<int, std::map<int,int> > MapCrates; // [ procID -> { VMEGeo, idMod}] 
+  
   TMap Maptemp;
   
   std::vector<std::string> ModType;

@@ -24,7 +24,7 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
     QDC_Time_Coarse = new ULong64_t[max_am_dets];
     QDC_Time_Fine = new ULong64_t[max_am_dets];
 
-    TDC_Time = new ULong64_t[max_am_dets];
+    TDC_Time = new double[max_am_dets];
 
     det_ids_QDC = new int[max_am_dets];
     det_ids_TDC = new int[max_am_dets];
@@ -172,6 +172,8 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
     
     num_TDC_modules = 1;
     
+    //cout<<"FROM DATA :";
+    
     //loop over FATIMA modules
     while(!TDC_Called){
         //QDC channel empty (check a -> always with QDC, length-> am_channels called (len-4))
@@ -216,6 +218,9 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 
     //Check_TDC_DATA(); 
     //if(exiter) exit(0);
+    
+    //cout<<endl;
+    
 }
 
 //---------------------------------------------------------------
@@ -268,7 +273,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
         }
     }
     
-    fired_QDC_amount += num_channels_fired;
+    //fired_QDC_amount += num_channels_fired;
     
     pdata += 2; // Moves from 2nd to 4th header value //
     
@@ -286,7 +291,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 	QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
 	
 	
-	if (Fired_QDC_Channels[num_channels_fired][1] == -1){ /*pdata += 6;*/
+	if (Fired_QDC_Channels[i][1] == -1){ /*pdata += 6;*/
 
 	    
 	    int skip = fs->size - 1;
@@ -300,7 +305,10 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 	    active_Channel = Fired_QDC_Channels[i][1];
     
 	    active_det = det_ID[active_board][active_Channel];
-	    det_ids_QDC[i] = active_det;
+	    det_ids_QDC[fired_QDC_amount + i] = active_det;
+		
+	    //cout<<active_det<<" ";
+		
 				    	    	    
 	    pdata += 3; //Moves to QDC time data
 	    
@@ -330,6 +338,9 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 	    Calibrate_QDC(active_det);
 	}
     }
+    
+    fired_QDC_amount += num_channels_fired;
+    
 }
 
 

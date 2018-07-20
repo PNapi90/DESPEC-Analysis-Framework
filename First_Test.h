@@ -76,6 +76,8 @@ using namespace std;
 			TH2* hit_mat;
 			
 			TH1* FAT_TDC_dT[36];
+			TH1* Energy_Singles[36];
+			TH1* Energy_Coinc[36];
 
 			TH1* WR_HIST;
 			TH1* WR_HIST2;
@@ -146,6 +148,7 @@ using namespace std;
 
 			double fatima_E_save[4];
 			int am_FATIMA_hits;
+			int num_full_FAT_evts;
 			int am_GALILEO_hits;
 
 			Int_t get_Conversion(Int_t);
