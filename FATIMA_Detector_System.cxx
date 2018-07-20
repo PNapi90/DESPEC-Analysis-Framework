@@ -178,30 +178,47 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
         if(QDChead->check_a == 10 && QDChead->length == 4) for(int i = 0;i < 3;++i) this->pdata++;
         //QDC channel filled 
         else if(QDChead->check_a == 10){
+	    
+	    double length = QDChead->length;
+	    	    
             QDC_DATA = true;
             Check_QDC_DATA(QDChead);
         }
         //TDC code reached
         else if(TDChead->type == 8){
-            --num_TDC_modules;
+
+            num_TDC_modules--;
+
             this->pdata--;
 
-	     Check_TDC_DATA(); 
+	    Check_TDC_DATA(); 
 
-	     if (num_TDC_modules == 0) TDC_Called = true;
-	     
-	    this->pdata++;
+	    if (num_TDC_modules == 0){
+		 
+		TDC_Called = true;
+		
+		this->pdata++;
 
+	    }
 	     
 	}
 	else if(TDChead->no == 3145728){
 	    
-	    --num_TDC_modules;
+	    num_TDC_modules--;
 	     
-	    if (num_TDC_modules == 0) TDC_Called = true;
+	    if (num_TDC_modules == 0){
+		
+		TDC_Called = true;
+		 
+		this->pdata++;
+		 
+	    }
+	}
+	else{
+	    
+	    //cout<<"TDC Type not recognised: "<<TDChead->type<<endl;
 
 	}
-	else cout<<"TDC Type not recognised: "<<TDChead->type<<endl;
 	
         this->pdata++;
         
@@ -209,7 +226,8 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
         TDChead = (TDC_Check*) this->pdata;
     }
 
-    this->pdata -= 2;
+    this->pdata--;
+    this->pdata--;
 
     //Check_TDC_DATA(); 
     //if(exiter) exit(0);
@@ -256,7 +274,6 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
                 num_channels_fired++;
             }
             else{
-                cout << "QDC " << board_ID << " ch " << j << " not wired " << endl;
                 Fired_QDC_Channels[num_channels_fired][0] = board_ID; 
                 Fired_QDC_Channels[num_channels_fired][1] = -1;
                 num_channels_fired++;
@@ -287,7 +304,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 
 	    
 	    int skip = fs->size - 1;
-	    
+	    	    
 	    pdata += skip;
 	      
 	}
@@ -378,7 +395,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
 
             //if (!wired_TDC(tdc_board_ID,TDC_ch) && QDC_DATA) continue;
             if(!wired_TDC(tdc_board_ID,TDC_ch)){
-                cout << "TDC " << tdc_board_ID << " ch " << TDC_ch << " not wired " << fired_QDC_amount << endl;
+                //cout << "TDC " << tdc_board_ID << " ch " << TDC_ch << " not wired " << fired_QDC_amount << endl;
                 no_data = true;
             }
             else{

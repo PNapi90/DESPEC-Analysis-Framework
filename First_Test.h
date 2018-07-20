@@ -73,12 +73,15 @@ using namespace std;
 	
 			TH1* FAT_E;
 			TH2* FAT_MAT;
+			TH2* FAT_MAT_2;
 			TH2* hit_mat;
 			
 			TH1* FAT_TDC_dT[36];
 			TH1* Energy_Singles[36];
 			TH1* Energy_Coinc[36];
-
+			TH2* FAT_En_vs_dT[36];
+			
+			
 			TH1* WR_HIST;
 			TH1* WR_HIST2;
 			TH1* C_t;
