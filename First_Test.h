@@ -132,7 +132,7 @@ using namespace std;
 			Int_t fshift;
 			ULong64_t White_Rabbbit_old;
 
-			Int_t PrcID_Array[10];
+			Int_t PrcID_Array[10][5];
 			bool Used_Systems[10];
 
 			bool SKIP_EVT_BUILDING;

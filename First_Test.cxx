@@ -27,10 +27,11 @@
 #include "TSCNUnpackEvent.h"
 
 #include "Detector_System.cxx"
+#include "AIDA_Detector_System.h"
 #include "FATIMA_Detector_System.h"
 #include "PLASTIC_Detector_System.h"
 #include "GALILEO_Detector_System_TEST.h"
-//#include "FRS_Detector_System.h"
+#include "BS_Detector_System.h"
 
 #include "Data_Stream.cxx"
 #include "White_Rabbit.h"
@@ -170,7 +171,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	// all non used systems intialized as NULL 
 	//-> calling uninitialized system will cause an error !
-	//Detector_Systems[0] = !Used_Systems[0] ? NULL : new FRS_Detector_System();
+	Detector_Systems[0] = !Used_Systems[0] ? NULL : new BS_Detector_System();
 	//Detector_Systems[1] = !Used_Systems[1] ? NULL : new AIDA_Detector_System();
 	Detector_Systems[2] = !Used_Systems[2] ? NULL : new PLASTIC_Detector_System();
 	Detector_Systems[3] = !Used_Systems[3] ? NULL : new FATIMA_Detector_System();
@@ -314,14 +315,14 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		//cout<<"ProcID is "<<PrcID<<endl;
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
-		
-		/*if(PrcID_Conv == 0){
-		    	    
+				
+		if(PrcID_Conv == 0){
+		    		    	    
 		   Detector_Systems[PrcID_Conv]->Process_FRS(psubevt);
 		    		    
 		   continue;
 		    
-		}*/
+		}
 			    
 		    
 		if(WHITE_RABBIT_USED){
@@ -702,15 +703,15 @@ void TSCNUnpackProc::load_PrcID_File(){
 		cerr << "Could not find PrcID config file!" << endl;
 		exit(0);
 	}
+	int id[5] = {0,0,0,0,0};
 	int i = 0;
-	int id = 0;
 	string line;
 	char s_tmp[100];
 	while(data.good()){
 		getline(data,line,'\n');
 		if(line[0] == '#') continue;
-		sscanf(line.c_str(),"%s %d",s_tmp,&id);
-		PrcID_Array[i] = id;
+		sscanf(line.c_str(),"%s %d %d %d %d %d",s_tmp,&id[0],&id[1],&id[2],&id[3],&id[4]);
+		for(int j = 0; j < 5; ++j) PrcID_Array[i][j] = id[j];
 		i++;
 	}
 }
@@ -718,7 +719,11 @@ void TSCNUnpackProc::load_PrcID_File(){
 
 Int_t TSCNUnpackProc::get_Conversion(Int_t PrcID){
 
-	for(int i = 0;i < 6;++i) if(PrcID == PrcID_Array[i]) return i;
+	for(int i = 0;i < 6;++i){
+	    for(int j = 0;j < 5;++j){
+	     if(PrcID == PrcID_Array[i][j]) return i;
+	    }
+	}
 	cerr << "ProcID " << PrcID << " not known!" << endl;
 	exit(0);
 }

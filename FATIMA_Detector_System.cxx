@@ -263,6 +263,8 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
     int num_Channels = QDChead_2->channels; // Gets Channels fired 0011 means 1&2 fired //
 
     int num_channels_fired = 0;
+    
+    //cout<<"Number of Channels = "<<num_Channels<<endl;
         
      // Loop retrieves channels fired from integer value //
     for(int j = 7; j >= 0; j--){
@@ -282,6 +284,25 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
         }
     }
     
+    //reverse(Fired_QDC_Channels.begin(), Fired_QDC_Channels.end());
+    
+    
+    /*for(int i = 0; i < num_channels_fired; ++i){
+	
+	if(i < (num_channels_fired - i)){
+	    
+	    int save_value_0 = Fired_QDC_Channels[i][0];
+	    int save_value_1 = Fired_QDC_Channels[i][1];
+	    
+	    Fired_QDC_Channels[i][0] = Fired_QDC_Channels[num_channels_fired-i][0];
+	    Fired_QDC_Channels[i][1] = Fired_QDC_Channels[num_channels_fired-i][1];
+	    
+	    Fired_QDC_Channels[num_channels_fired-i][0] = save_value_0;
+	    Fired_QDC_Channels[num_channels_fired-i][1] = save_value_1;
+	}
+     
+    }*/
+        
     //fired_QDC_amount += num_channels_fired;
     
     pdata += 2; // Moves from 2nd to 4th header value //
@@ -293,14 +314,14 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
     ULong64_t fine_time = 0;
     
 
-    for(int i = 0;i < num_channels_fired;++i){
+    for(int i = (num_channels_fired - 1); i >= 0; --i){
 	
 	pdata++; // Moves to 1st data value
 
 	QDC_Format_Size* fs = (QDC_Format_Size*) pdata;
 	
 	
-	if (Fired_QDC_Channels[i][1] == -1){ /*pdata += 6;*/
+	if (Fired_QDC_Channels[num_channels_fired - i][1] == -1){ /*pdata += 6;*/
 
 	    
 	    int skip = fs->size - 1;
@@ -314,6 +335,10 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 	    active_Channel = Fired_QDC_Channels[i][1];
     
 	    active_det = det_ID[active_board][active_Channel];
+	    
+	    //cout<<"Channel Number = "<<active_Channel<<" Board ID = "<<active_board<<endl;
+	    //cout<<"Channel Number = "<<active_det<<endl;
+	    
 	    det_ids_QDC[fired_QDC_amount + i] = active_det;
 		
 	    //cout<<active_det<<" ";

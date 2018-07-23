@@ -1,13 +1,21 @@
 #include "BS_Detector_System.h"
 
-#include <cstdlib>
-#include <map>
+#include "Riostream.h"
 
-#include <iostream>
+#include "TH1.h"
+#include "TMap.h"
+#include "TObject.h"
+#include "TString.h"
+#include "TObjString.h"
+ 
+#include <cstdlib>
 #include <bitset>
 #include <sstream>
+#include <iostream>
 #include <fstream>
-#include "TObject.h"
+#include <string>
+#include <cmath>
+#include <map>
 
 // Go4 Includes //
 #include "TGo4UserException.h"
@@ -15,6 +23,18 @@
 #include "TGo4MbsEvent.h"
 #include "TGo4StepFactory.h"
 #include "TGo4Analysis.h"
+#include "TGo4WinCond.h"
+#include "TGo4PolyCond.h"
+#include "TGo4CondArray.h"
+#include "TGo4EventProcessor.h"
+
+#include "TXRSParameter.h"
+
+#include "Detector_System.cxx"
+
+
+
+
 
 
 using namespace std;
@@ -22,8 +42,582 @@ using namespace std;
 //---------------------------------------------------------------
 
 BS_Detector_System::BS_Detector_System(){
+    
+    /*for(int i; i < 6; ++i){
+	vme 	= new UInt_t**[i];         // FRS crate
+	vme[i]  = new UInt_t*[21];                             
+    }
+    
+    
 
     //set amount of Germanium Detectors
+    /*vme0 = new UInt_t*[21];         // FRS crate                                
+    vme1 = new UInt_t*[21];         // TPC crate 
+    vme3 = new UInt_t*[21];         // Mtof crate
+    vme5 = new UInt_t*[21];          //Main Crate or User Crate
+    vme4 = new UInt_t*[21] ; // SOFIA crate temp need multiplicity for both MDPP and vftx
+    */
+    
+    
+    /*for(int i; i < 21; ++i){
+		                        
+	vme[0][i] = new UInt_t[32];         // FRS crate                                
+	vme[1][i] = new UInt_t[32];         // TPC crate 
+	vme[2][i] = new UInt_t[32];         // Mtof crate
+	vme[3][i] = new UInt_t[32];          //Main Crate or User Crate
+	vme[4][i] = new UInt_t[32];          //Main Crate or User Crate
+	vme[5][i] = new UInt_t[32];          //Main Crate or User Crate
+	
+    }*/
+    
+    vme2s = new Int_t*[32];           // User TDC (V1290) 
+    vme2s_trailing = new Int_t*[32];  // User TDC (V1290) 
+
+    nhit5 = new Int_t*[32];            // multiplicity (V1290)
+    
+    //nhit5[0] = new Int_t[32];            // multiplicity (V1290)
+    //nhit5[1] = new Int_t[32];            // multiplicity (V1290)
+
+    vme3_MT_nhit5 = new Int_t*[32];       // multiplicity (V1290)
+    
+    //vme3_MT_nhit5[0] = new Int_t[32];            // multiplicity (V1290)
+    //vme3_MT_nhit5[1] = new Int_t[32];            // multiplicity (V1290)
+    
+    vme3s_MT = new Int_t*[32];           // Mtof TDC (V1290) 
+    vme3s_MT_trailing = new Int_t*[32];  // Mtof TDC (V1290) 
+    
+    for(int i; i < 32; ++i){
+	
+	vme2s[i] 		= new Int_t[10];           // User TDC (V1290) 
+	vme2s_trailing[i] 	= new Int_t[10];  // User TDC (V1290) 
+
+	vme3s_MT[i] 		= new Int_t[10];           // Mtof TDC (V1290) 
+	vme3s_MT_trailing[i] 	= new Int_t[10];  // Mtof TDC (V1290) 
+
+	nhit5[i]		= new Int_t[2];       // multiplicity (V1290)
+	vme3_MT_nhit5[i] 	= new Int_t[2];       // multiplicity (V1290)
+
+	
+	
+    }
+    
+    
+    vme2scaler = new Int_t[32];         // User Crate Messhure
+    vme3scaler = new Int_t[32];         // User Crate Messhure
+
+    firstTS = new bool[3];
+    
+    previousTimeStamp = new Long64_t[3];
+    
+    currentTimeStamp = 0;
+    
+    EventFlag = 0;
+    
+    qlength 	= 0;         /* From event header     */
+    qtype 	= 0;           /*                       */
+    qsubtype 	= 0;        /*                       */
+    qdummy 	= 0;          /*                       */
+    qtrigger 	= 0;        /*                       */
+    qevent_nr 	= 0;       /*                       */
+
+    /*******************************************************************/
+    /***SORT STUFF***/
+  
+    StartOfSpilTime 	= 0;
+    StartOfSpilTime2 	= 0; //does not reset at end of extraction
+    PreviousTS 		= 0;
+  
+    counter = 0; 
+
+    // time stamp data  
+    ts_id = 0;                                
+    ts_word = new Int_t[4]; //for the titris time stammping
+    tsys_word = new Int_t[3]; //for the system time
+    timestamp = 0;  // absolute time stamp value
+    timespill = 0;  // relative time from start of the spill 
+    timespill2 = 0;  // relative time from start of the spill does not reset at end extraction
+    systemtime_ms = 0;
+    systemtime_s = 0;
+
+    pattern = 0;
+    trigger = 0;
+
+    // scaler readings     
+    sc_long = new UInt_t[64]; //changed from 32 to 64 (10.07.2018)
+    sc_long2 = new UInt_t[32];
+
+
+    // SEETRAM calib IC energy
+    //      Int_t         ic_de;           /*                          */
+      
+     
+    // part of MW parameter
+    mw_an = new Int_t[13];       /*  anode time              */
+    mw_xl = new Int_t[13];       /*  Rohdaten                */
+    mw_xr = new Int_t[13];       /*                          */
+    mw_yu = new Int_t[13];       /*                          */ 
+    mw_yd = new Int_t[13];       /*                          */
+
+    // TPC part //(HAPOL-25/03/06) 6 TPCs each one with 2 delay lines each!!	
+    //7 TPCs (4 at S2, 2 at S4 and one at S3) 03.07.2018 SB
+    
+    tpc_l = new Int_t*[7];
+    tpc_r = new Int_t*[7];
+    tpc_lt = new Int_t*[7];
+    tpc_rt = new Int_t*[7];
+
+    // [index][anode_no]
+    tpc_dt = new Int_t*[7];
+    tpc_a = new Int_t*[7];
+    
+    
+    
+    for(int i=0; i < 7; ++i){
+	
+	tpc_l[i] = new Int_t[2];
+	tpc_r[i] = new Int_t[2];
+	tpc_lt[i] = new Int_t[2];
+	tpc_rt[i] = new Int_t[2];
+	
+	tpc_dt[i] = new Int_t[4];
+	tpc_a[i] = new Int_t[4];
+	
+    }
+
+      
+    // SCI part
+    de_21l  = 0;          /* dE SCI21 left            */  
+    de_21r  = 0;          /* de SCI21 right           */ 
+    de_41l  = 0;          /* dE SCI41 left            */
+    de_41r  = 0;          /* dE SCI41 right           */
+    de_41u  = 0;          /* dE SCI41 up              */
+    de_41d  = 0;          /* dE SCI41 down            */
+    de_42l  = 0;          /* de SCI42 left            */
+    de_42r  = 0;          /* de SCI42 right           */
+    de_43l  = 0;          /* de SCI43 left            */
+    de_43r  = 0;          /* de SCI43 right           */
+    de_81l  = 0;          /* de SCI81 left            */
+    de_81r  = 0;          /* de SCI81 right           */  
+    de_21ld = 0;         /* dE SCI21 left delayed    */  
+    de_21rd = 0;         /* de SCI21 right delayed   */ 
+    de_v1l  = 0;          /* dE veto1 left            */  
+    de_v1r  = 0;          /* de veto1 right           */ 
+    de_v2l  = 0;          /* dE veto2 left            */
+    de_v2r  = 0;          /* dE veto2 right           */
+    de_v3   = 0;           /* dE veto3                 */
+
+
+    dt_21l_21r   = 0;      /*                          */ 
+    dt_41l_41r   = 0;      /*                          */ 
+    dt_21l_41l   = 0;      /*                          */
+    dt_21r_41r   = 0;      /*                          */
+    dt_42l_42r   = 0;      /*                          */
+    dt_43l_43r   = 0;      /*                          */
+    dt_42l_21l   = 0;      /*                          */
+    dt_42r_21r   = 0;      /*                          */
+    dt_41u_41d   = 0;      /*                          */
+    dt_81l_81r   = 0;
+    dt_21l_81l   = 0;
+    dt_21r_81r   = 0;
+
+    // User multihit TDC
+		
+    tdc_sc41l = new Int_t[10];
+    tdc_sc41r = new Int_t[10];
+    tdc_sc21l = new Int_t[10];
+    tdc_sc21r = new Int_t[10];
+    tdc_sc42l = new Int_t[10];
+    tdc_sc42r = new Int_t[10];
+    tdc_sc43l = new Int_t[10];
+    tdc_sc43r = new Int_t[10];
+    tdc_sc81l = new Int_t[10];
+    tdc_sc81r = new Int_t[10];
+
+    // MUSIC1 part
+    music_e1 = new Int_t[8];     /* Raw energy signals       */
+    music_t1 = new Int_t[8];     /* Raw drift time           */
+    music_pres = new Int_t[3];   /* Music Druck              */
+    music_temp = new Int_t[3];   /* Music Temperatur         */
+    
+    // MUSIC2 part
+    music_e2 = new Int_t[8];     /* Raw energy signals       */
+    music_t2 = new Int_t[8];     /* Raw drift time           */
+    
+    // MUSIC3 part (OLD MUSIC)
+    music_e3 = new Int_t[4];     /* Raw energy signals       */
+    music_t3 = new Int_t[4];     /* Raw drift times          */
+
+    // Single Anode
+    SingleAnode_adc = 0;
+    
+    //Si detectors
+    si_adc1 = 0;
+    si_adc2 = 0;
+    si_adc3 = 0;
+    si_adc4 = 0;
+    si_adc5 = 0;
+    dssd_adc = new Int_t[32];
+
+    //Channeltron detector
+    ct_signal = 0;
+    ct_time = 0;
+    ct_trigger_DU  = false;
+    ct_trigger_SY = false;
+    
+    //Electron current measurement
+    ec_signal = 0;
+    
+    // MR-TOF
+    mrtof_start = 0;
+    mrtof_stop = 0;
+    mrtof_stopDelay = 0;
+    
+    /******************************************************************/
+    /**CALIBRATION Parameters**/
+        
+    lim_csum = new Float_t**[4];
+    
+    for(int i = 0; i < 4; ++i){
+	
+	lim_csum[i] = new Float_t*[7];
+	
+	    for(int j = 0; j < 7; ++j){
+		
+		
+		lim_csum[i][j] = new Float_t[2];
+		
+		lim_csum[i][j][0] = 300;
+		lim_csum[i][j][1] = 1800;
+		
+	    }
+	
+    }
+    
+   /*lim_csum = {{{300,1800},{350,1800},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
+				 {{300,1800},{300,1800},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
+				 {{300,1800},{300,1840},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
+				 {{300,1800},{300,1810},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}}};
+	*/			 
+				 
+
+    
+    lim_xsum = new Float_t*[13];
+    lim_ysum = new Float_t*[13];
+    
+    for(int i = 0; i < 13; ++i){
+	
+	
+	lim_xsum[i] = new Float_t[2];
+	lim_ysum[i] = new Float_t[2];
+	
+	lim_xsum[i][0] = 1;
+	lim_xsum[i][1] = 8000;
+	lim_ysum[i][0] = 2;
+	lim_ysum[i][1] = 8000;
+	
+	
+    }
+    
+    
+    /*lim_xsum = {	{1,8000},  // MW11
+				{1,8000},  // MW21
+				{1,8000},  // MW22
+   				{1,8000},  // MW31
+   				{1,8000},  // MW41
+   				{1,8000},  // MW42
+   				{1,8000},  // MW51
+  				{1,8000},  // MW61
+  				{1,8000},  // MW71
+  				{1,8000},  // MW81
+  				{1,8000},  // MW82
+  				{1,8000},  // MWB1
+  				{1,8000}};  // MWB2
+
+    lim_ysum = { {2,8000},  // MW11
+				{2,8000},  // MW21
+  				{2,8000},  // MW22
+  				{2,8000},  // MW31
+  				{2,8000},  // MW41
+ 				{2,8000},  // MW42
+ 				{2,8000},  // MW51
+ 				{2,8000},  // MW61
+ 				{2,8000},  // MW71
+ 				{2,8000},  // MW81
+ 				{2,8000},  // MW82
+ 				{2,8000},  // MWB1
+ 				{2,8000}};  // MWB2*/
+				
+    
+    
+    /*for(int i=0;i<7;i++){
+	
+	//    cTPC_CSUM[i][0]=MakeWindowCond("TPC/CSUM1",condname,lim_csum1[i][0],
+	//				   lim_csum1[i][1],"CSUM1");
+	char condname[40];
+	
+	sprintf(condname,"TPC/CSUM1%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][0]=MakeWinCond(condname,lim_csum1[i][0],lim_csum1[i][1],"CSUM1");
+	
+	sprintf(condname,"CSUM2%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][1]=MakeWindowCond("TPC/CSUM2",condname,lim_csum2[i][0],lim_csum2[i][1],"CSUM2");
+	
+	sprintf(condname,"CSUM3%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][2]=MakeWindowCond("TPC/CSUM3",condname,lim_csum3[i][0],lim_csum3[i][1],"CSUM3");
+	
+	sprintf(condname,"CSUM4%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][3]=MakeWindowCond("TPC/CSUM4",condname,lim_csum4[i][0],lim_csum4[i][1],"CSUM4");
+    }
+    
+      for(int i=0;i<13;i++){  // up to MW31
+       //up to MWB2 (09.07.2018)
+
+      char condname[40];
+      sprintf(condname,"XSUM%s",mw_name_ext[i]);
+      cMW_XSUM[i] = MakeWindowCond("MW/XSUM", condname, lim_xsum[i][0], lim_xsum[i][1], MW_XSUM);
+
+      sprintf(condname,"YSUM%s",mw_name_ext[i]);
+      cMW_YSUM[i] = MakeWindowCond("MW/YSUM", condname, lim_ysum[i][0], lim_ysum[i][1], MW_YSUM);
+    }*/
+    
+    
+    
+    
+    
+    
+    // MON data declarations
+    
+    check_first_event 		 = new int[2];
+    scaler_channel_10khz = 0;//YT 20Jun
+    scaler_time_count 		 = new Long64_t[2]; 
+    scaler_spill_count 		 = new Long64_t[2]; //UInt_t
+    scaler_time_check_last 	 = new Long64_t[2];//UInt_t
+    scaler_spill_check_last 	 = new Long64_t[2];//UInt_t 
+    check_increase_time 	 = new Long64_t[64];//UInt_t 
+    check_increase_spill 	 = new Long64_t[64];//UInt_t
+    scaler_increase_event 	 = new Long64_t[64];//UInt_t
+    scaler_last_event 		 = new Long64_t[64];
+    
+    
+    //TGo4WinCond   *cMW_XSUM[13];
+    //TGo4WinCond   *cMW_YSUM[13];  
+    
+    ////condtition for control sum
+    //TGo4WinCond *cTPC_CSUM[7][4];
+    //TGo4PolyCond *cTPC_XY[7];
+    
+    //**** keep values from previous event
+    focx_s2m 		= 0;
+    focy_s2m 		= 0;
+    angle_x_s2m 	= 0;
+    angle_y_s2m 	= 0;
+    
+    
+    
+    fbFirstEvent = false;
+    //unsigned int  scaler_save[64];
+    scaler_save  = new Long64_t[64];
+    
+    firstsec 		= 0;
+    firsttenthsec 	= 0;
+    firsthundrethsec 	= 0;	//mik	
+    firstcycle		= 0;
+    firstseetram 	= 0;
+    
+    scalercycle_Sec 		= 0;
+    scalercycle_TenthSec 	= 0;
+    scalercycle_HundrethSec 	= 0;
+    scalercycle_Cycle 		= 0;
+    scalercycle_Seetram 	= 0;
+    
+    dtime 	= 0;
+    dt_last 	= 0;
+    dt_diff 	= 0;
+    
+    
+    check_total_sc41 		= 0;
+    check_total_sc21 		= 0;
+    check_total_seetram 	= 0;
+    check_total_mrtof_start 	= 0;
+    check_total_mrtof_stop 	= 0;
+    
+    
+    freeTrig = 0;
+    acptTrig = 0;
+    mon_inc  = new Long64_t[64];
+    
+    // MON part
+    seconds 		= 0;
+    tenthsecs 		= 0;
+    hundrethsecs 	= 0;	//mik
+    extraction_cycle 	= 0;
+    coin  = new Int_t[16];
+    seetram 		= 0;
+    
+    // MW part
+    mw_xsum = new Float_t[13];     /*                          */
+    mw_ysum = new Float_t[13];     /*                          */
+    
+    mw_x    = new Float_t[13];        /*                          */
+    mw_y    = new Float_t[13];        /*                          */
+    mw_wire = new Float_t[13];     /* special for Helmut       */
+    
+    z_x_s2 = 0;          
+    z_y_s2 = 0;          
+    z_x_s4 = 0;          
+    z_y_s4 = 0;          
+    z_x_s8 = 0;          
+    z_y_s8 = 0;          
+    
+    b_mw_xsum = new Bool_t[13];   /*  wc on sum               */
+    b_mw_ysum = new Bool_t[13];   /*                          */
+    
+    focx_s2 = 0;         /*  FRS foci                */  
+    focy_s2 = 0;         /*                          */  
+    focx_s4 = 0;         /*                          */  
+    focy_s4 = 0;         /*                          */  
+    focx_s8 = 0;         /*  FRS foci                */  
+    focy_s8 = 0;         /*                          */
+    angle_x_s2 = 0;      /*                          */
+    angle_y_s2 = 0;      /*                          */
+    angle_x_s4 = 0;      /*                          */
+    angle_y_s4 = 0;      /*                          */
+    angle_x_s8 = 0;      /*                          */
+    angle_y_s8 = 0;      /*                          */
+    
+    // TPC part
+    tpc_x    = new Float_t[7];
+    tpc_y    = new Float_t[7];
+    b_tpc_xy = new Bool_t[7];
+
+    tpc_csum = new Int_t*[7];
+    b_tpc_csum = new Bool_t*[7];
+    
+    for(int i=0; i < 7; ++i){
+	
+	tpc_csum[i] = new Int_t[4];
+	b_tpc_csum[i] = new Bool_t[4];
+	
+    }
+    
+    //TPCs 21 & 22 @ S2 focus
+    tpc_x_s2_foc_21_22 		= 0;
+    tpc_y_s2_foc_21_22 		= 0;
+    tpc_angle_x_s2_foc_21_22 	= 0;
+    tpc_angle_y_s2_foc_21_22 	= 0;
+    
+    //TPCs 23 & 24 @ S2 focus
+    tpc_x_s2_foc_23_24 		= 0;
+    tpc_y_s2_foc_23_24 		= 0;
+    tpc_angle_x_s2_foc_23_24 	= 0;
+    tpc_angle_y_s2_foc_23_24 	= 0;
+    
+    //TPCs 22 & 24 @ S2 focus
+    tpc_x_s2_foc_22_24 		= 0;
+    tpc_y_s2_foc_22_24 		= 0;
+    tpc_angle_x_s2_foc_22_24 	= 0;
+    tpc_angle_y_s2_foc_22_24 	= 0;
+    
+    //TPCs 3 & 4 @ S2 focus (old tracking)
+    tpc_x_s2_foc 		= 0;
+    tpc_y_s2_foc 		= 0;
+    tpc_angle_x_s2_foc 		= 0;
+    tpc_angle_y_s2_foc 		= 0;
+    
+    //TPCs 41 & 42 @ s4 focus
+    tpc_x_s4 			= 0;
+    tpc_y_s4 			= 0;
+    tpc_angle_x_s4 		= 0;
+    tpc_angle_y_s4 		= 0;
+    
+    //TPCs 5 & 6 @ S4 OTPC (exp s388)
+    tpc_x_s4_target2 		= 0;
+    tpc_y_s4_target2 		= 0;
+    
+    
+    //TPCs 3 & 4 @ S2 first Si tracking detector (exp s388)
+    tpc_x_s2_target1 		= 0;
+    tpc_y_s2_target1 		= 0;
+    //      Float_t tpc_angle_x_s4_target2;
+    //      Float_t tpc_angle_y_s4_target2;
+    
+    
+    tpc_sc21_x = 0;      /* SC21 x                    */
+    tpc_sc41_x = 0;      /* SC41 x                    */
+    tpc_sc21_y = 0;      /* SC21 y                    */
+    tpc_sc41_y = 0;      /* SC41 y                    */
+    
+    
+    sc21_x = 0;          /* SC21                     */
+    sc22_x = 0;          /* SC22 (LAND finger)       */
+    sc41_x = 0;          /* SC41                     */
+    itag_stopper_x = 0;  /* ITAG Stopper             */
+    sc42_x = 0;          /* SC42                     */
+    sc43_x = 0;          /* SC43                     */
+    sc21_y = 0;          /* tracked SC21 Y pos       */
+    sc41_y = 0;          /* SC41 Y                   */
+    sc42_y = 0;          /* SC42 Y                   */
+    sc43_y = 0;          /* SC43 Y                   */
+    sc81_x = 0;          /* SC81          positions  */
+    
+    music1_x1 = 0;       /* parameters to calibrate  */
+    music1_x2 = 0;       /* parameters to calibrate  */
+    music1_x3 = 0;       /* parameters to calibrate  */
+    music1_x4 = 0;       /* parameters to calibrate  */
+    music1_y1 = 0;       /* parameters to calibrate  */
+    music1_y2 = 0;       /* parameters to calibrate  */
+    music1_y3 = 0;       /* parameters to calibrate  */
+    music1_y4 = 0;       /* parameters to calibrate  */
+    music2_x  = 0;       /* MUSIC1,2 positions       */
+    
+    
+    //Si detectors
+    si_e1 = 0;
+    si_e2 = 0;
+    si_e3 = 0;
+    si_e4 = 0;
+    si_e5 = 0;
+    
+    dssd_e = new Float_t[32]; //[3][2][16]
+    dssd_maxenergy = 0; //[3] 
+    dssd_maxindex  = 0;  //[3]
+    
+    dssd_xmaxenergy = 0;
+    dssd_xmaxindex  = 0;
+    dssd_ymaxenergy = 0;
+    dssd_ymaxindex  = 0;
+    
+    /******************************************************************/
+    /*** ANALYSIS Parameters ***/
+    
+    
+    /*for(int i=0;i<8;i++){
+	
+       sprintf(name,"Music1_E(%d)",i);
+       cMusic1_E[i] = MakeWindowCond("MUSIC/MUSIC(1)/E",name, 10, 4086, "hMUSIC1_E");
+
+        sprintf(name,"Music1_T(%d)",i);
+       cMusic1_T[i] = MakeWindowCond("MUSIC/MUSIC(1)/T",name, 10, 4086,"hMUSIC1_T");
+
+       sprintf(name,"Music2_E(%d)",i);
+       cMusic2_E[i] = MakeWindowCond("MUSIC/MUSIC(2)/E",name, 10, 4086, "hMUSIC2_E");
+
+       sprintf(name,"Music2_T(%d)",i);
+       cMusic2_T[i] = MakeWindowCond("MUSIC/MUSIC(2)/T",name, 10, 4086, "hMUSIC2_T");
+     }
+
+   for(int i=0;i<4;i++){
+       
+       sprintf(name,"Music3_E(%d)",i);
+       cMusic3_E[i] = MakeWindowCond("MUSIC/MUSIC(3)/E",name, 10, 4086, "hMUSIC3_E");
+
+       sprintf(name,"Music3_T(%d)",i);
+       cMusic3_T[i] = MakeWindowCond("MUSIC/MUSIC(3)/T",name, 10, 4086, "hMUSIC3_T");
+    }
+   
+   
+    cMusic3_dec = MakeWindowCond("MUSIC/MUSIC 3","Music3_dec", 10., 4000., "hMUSIC3_dECOR");*/
+    
+    Setup_Parameters();
 
     
 }
@@ -39,11 +633,14 @@ BS_Detector_System::~BS_Detector_System(){
 
 void BS_Detector_System::Process_FRS(TGo4MbsSubEvent* psubevt){
     
-    Setup_Parameters();
+    //Setup_Parameters();
     FRS_Unpack(psubevt);
     FRS_Sort();
+    FRS_Calib();
+    FRS_Anal();
     
-    cout<<"HOLY SHIT IT ACTUALLY FUCKING WORKED!!! "<<dt_21l_21r<<endl;
+    //cout<<"HOLY SHIT IT ACTUALLY FUCKING WORKED!!! "<<dt_21l_21r<<endl;
+    cout<<"HOLY FUCK IT STILL WORKS!!! "<<tpc_y[1]<<endl;
     
 }
 
@@ -51,19 +648,23 @@ void BS_Detector_System::Process_FRS(TGo4MbsSubEvent* psubevt){
 //--------------------- UNPACKER STUFF ----------------------------//
 //-----------------------------------------------------------------//
 
-void BS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
-
-    bool keep_unpacking = true;
+void BS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevent){
     
-    *pdata = psubevt->GetDataField();
+    psubevt = psubevent;
+
+    pdata = psubevt->GetDataField();
     len = 0;	  
     vme_chn;
     lenMax = (psubevt->GetDlen()-2)/2;
     
-      if(ElecMod->EventFlags.size()!=0)
-    {
-      Int_t  event_flag = *pdata++;
-      len++; // 0x200
+    const auto it_Crate = ElecMod->MapCrates.find(psubevt->GetProcid());
+	if(it_Crate == ElecMod->MapCrates.end())
+	std::cout<<"E> Crate Mapping does not have this ProcID :"<<psubevt->GetProcid()<<std::endl;
+  
+    if(ElecMod->EventFlags.size()!=0){
+	
+	Int_t  event_flag = *pdata++;
+	len++; // 0x200
       
 #ifdef DEBUG
       std::cout<<" Event FLAG :"<<std::endl;
@@ -71,52 +672,57 @@ void BS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
       for(Int_t elem : ElecMod->EventFlags)
 	std::cout<<std::bitset<32>(elem)<<"\n";
 #endif
-      bool foundFlag = false;
-      for(int setupFlag : ElecMod->EventFlags)
-	if(event_flag == setupFlag)
-	  foundFlag = true;
-      if(foundFlag)
-	EventFlag = event_flag;
+
+	bool foundFlag = false;
+	for(int setupFlag : ElecMod->EventFlags)
+	    if(event_flag == setupFlag)
+		foundFlag = true;
+    
+	if(foundFlag)
+	    EventFlag = event_flag;
+	    
     }
+    
     
     if(psubevt->GetProcid() == 10){
 	
-	if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12)) FRS_Timestamp_Module(vme5);
+
+	if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12)) FRS_Timestamp_Module(5);
 	
 	if(psubevt->GetType() == 88){
 	    
+
 	    pdata++;
 	    
 	    len++;
 	    
 	    if(ElecMod->Nb_Scaler > 0){
 		
-		FRS_Scaler_Module(vme5);
-		
+
+		FRS_Scaler_Module(5);
+
 	    }
 	    
 	    while (len < (psubevt->GetDlen()-2)/2)
 	    {
 		
-		FRS_Rest_Of_Unpacking(vme5);
-		
+		FRS_Rest_Of_Unpacking(5);
+
 	    }   
-	
 	}
-	
     }
     else if(psubevt->GetProcid() == 20){
 	
 	while(len < lenMax){
 		
-	    FRS_775_TDC_785_ADC_Modules(vme1);
+	    FRS_775_TDC_785_ADC_Modules(1);
 		
 	}
 	
 	while (len < (psubevt->GetDlen()-2)/2)
 	{
 		
-	    FRS_Rest_Of_Unpacking(vme1);
+	    FRS_Rest_Of_Unpacking(1);
 		
 	}   
 	
@@ -124,30 +730,26 @@ void BS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
     }
     else if(psubevt->GetProcid() == 30){
 	
-	if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12)) FRS_Timestamp_Module(vme0);
+	if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12)) FRS_Timestamp_Module(0);
 	
 	if(psubevt->GetType() == 88){
 	    	    
-	    pdata++;
-	    
-	    len++;
-	    
 	    if(ElecMod->Nb_Scaler > 0){
 		
-		FRS_Scaler_Module(vme0);
+		FRS_Scaler_Module(0);
 		
 	    }
 	    
 	    while(len < lenMax){
 		
-		FRS_775_TDC_785_ADC_Modules(vme0);
+		FRS_775_TDC_785_ADC_Modules(0);
 		
 	    }
 	    
 	    while (len < (psubevt->GetDlen()-2)/2)
 	    {
 		
-		FRS_Rest_Of_Unpacking(vme0);
+		FRS_Rest_Of_Unpacking(0);
 		
 	    }    
 	    
@@ -156,7 +758,7 @@ void BS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
     }
     else if(psubevt->GetProcid() == 40){
 	
-	if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12)) FRS_Timestamp_Module(vme3);
+	if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12)) FRS_Timestamp_Module(3);
 	
 	if(psubevt->GetType() == 88){
 
@@ -197,7 +799,7 @@ void BS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 		len++;
 		
 		Int_t multihit = 0;//, counter = 0;
-		
+
 		const auto it_Module = it_Crate->second.find(vme_geo);
 		if(it_Module == it_Crate->second.end())
 		std::cout<<"E> Crate Mapping does not have this module (vmeGEO//) "<<vme_geo<<" in Crate :"<<psubevt->GetProcid()<<std::endl;
@@ -288,7 +890,7 @@ void BS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
     }
     else if(psubevt->GetProcid() == 50){
 	
-	if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12)) FRS_Timestamp_Module(vme4);
+	if(ElecMod->Nb_TimeStamp > 0 && (psubevt->GetType() == 12)) FRS_Timestamp_Module(4);
 	
 	
 	
@@ -297,18 +899,19 @@ void BS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevt){
 
 //---------------------------------------------------------------
 
-void BS_Detector_System::FRS_Timestamp_Module(UInt_t vme_num[21][32]){
+void BS_Detector_System::FRS_Timestamp_Module(int ID){
     
 
     // \note FRS TIME STAMP module data (3 longwords)   
     //   has no header or end-of-block info, we must hardwire GEO = 20.
     //
+    
     Long64_t tempTS = 0;
     static const Long64_t bit_weight[4] = {0x1,0x10000,0x100000000,0x1000000000000};
     for (int i=0;i<4;++i){
 	
-	vme_num[20][i] = getbits(*pdata,1,1,16);
-	tempTS += vme_num[20][i]*bit_weight[i];
+	vme[ID][20][i] = getbits(*pdata,1,1,16);
+	tempTS += vme[ID][20][i]*bit_weight[i];
 	
 	pdata++;
 	
@@ -323,7 +926,7 @@ void BS_Detector_System::FRS_Timestamp_Module(UInt_t vme_num[21][32]){
 
 //---------------------------------------------------------------
 
-void BS_Detector_System::FRS_Scaler_Module(UInt_t vme_num[21][32]){
+void BS_Detector_System::FRS_Scaler_Module(int ID){
 
 
     // \note FRS SCALER module data (1 longword per channel)   
@@ -339,13 +942,23 @@ void BS_Detector_System::FRS_Scaler_Module(UInt_t vme_num[21][32]){
     
     len++;
     
+    
+    const auto it_Crate = ElecMod->MapCrates.find(psubevt->GetProcid());
+	if(it_Crate == ElecMod->MapCrates.end())
+	    std::cout<<"E> Crate Mapping does not have this ProcID :"<<psubevt->GetProcid()<<std::endl;
+    
+
+    
     const auto it_Module = it_Crate->second.find(vme_geo);
 	int IdMod = it_Module->second;
 	if(it_Module == it_Crate->second.end())
 	    std::cout<<"E> Crate Mapping does not have this module (vmeGEO==) "<<vme_geo<<" in Crate :"<<psubevt->GetProcid()<<std::endl;
     
+    
     if(vme_type!=4)
 	std::cout<<"E> Scaler type missed match ! GEO"<<vme_geo<<" "<<" type 4 =/="<<vme_type<<std::endl;
+    
+    
     
     // read the data 
     if (vme_nlw > 0){
@@ -354,7 +967,7 @@ void BS_Detector_System::FRS_Scaler_Module(UInt_t vme_num[21][32]){
 	    
 	    if(ElecMod->Scaler32bit){
 		
-		vme_num[vme_geo][i] = *pdata;
+		vme[ID][vme_geo][i] = *pdata;
 	    
 	    }
 	    else{
@@ -362,10 +975,11 @@ void BS_Detector_System::FRS_Scaler_Module(UInt_t vme_num[21][32]){
 		Int_t sc_data = get2bits(*pdata,1,1,26);
 		Int_t  sc_ch = get2bits(*pdata,1,27,5);
 		
+		
 		if(sc_ch != i)
 		    std::cout<<"E> Scaler missed match channel !"<<sc_ch<<" "<<i<<" "<<psubevt->GetProcid()<<std::endl;
 		    
-		vme_num[vme_geo][i] = sc_data;
+		vme[ID][vme_geo][i] = sc_data;
 	    
 	    }
 	    
@@ -381,7 +995,7 @@ void BS_Detector_System::FRS_Scaler_Module(UInt_t vme_num[21][32]){
 
 //---------------------------------------------------------------
 
-void BS_Detector_System::FRS_775_TDC_785_ADC_Modules(UInt_t vme_num[21][32]){
+void BS_Detector_System::FRS_775_TDC_785_ADC_Modules(int ID){
     
     
     /* read the header longword and extract slot, type & length  */
@@ -402,7 +1016,7 @@ void BS_Detector_System::FRS_775_TDC_785_ADC_Modules(UInt_t vme_num[21][32]){
 	    vme_geo = getbits(*pdata,2,12,5);
 	    vme_type = getbits(*pdata,2,9,3);
 	    vme_chn = getbits(*pdata,2,1,5);
-	    vme_num[vme_geo][vme_chn] = getbits(*pdata,1,1,16);
+	    vme[ID][vme_geo][vme_chn] = getbits(*pdata,1,1,16);
 	    
 	    pdata++;
 	    
@@ -421,7 +1035,7 @@ void BS_Detector_System::FRS_775_TDC_785_ADC_Modules(UInt_t vme_num[21][32]){
 
 //---------------------------------------------------------------
 
-void BS_Detector_System::FRS_Rest_Of_Unpacking(UInt_t vme_num[21][32]){
+void BS_Detector_System::FRS_Rest_Of_Unpacking(int ID){
     
     // read the header longword and extract slot, type & length  
     
@@ -432,6 +1046,10 @@ void BS_Detector_System::FRS_Rest_Of_Unpacking(UInt_t vme_num[21][32]){
     pdata++;
     
     len++;
+    
+    const auto it_Crate = ElecMod->MapCrates.find(psubevt->GetProcid());
+	if(it_Crate == ElecMod->MapCrates.end())
+	    std::cout<<"E> Crate Mapping does not have this ProcID :"<<psubevt->GetProcid()<<std::endl;
     
     const auto it_Module = it_Crate->second.find(vme_geo);
 	int IdMod = it_Module->second;
@@ -448,7 +1066,7 @@ void BS_Detector_System::FRS_Rest_Of_Unpacking(UInt_t vme_num[21][32]){
 	    vme_type = getbits(*pdata,2,9,3);
 	    vme_chn = getbits(*pdata,2,1,5);
 	    
-	    vme_num[vme_geo][vme_chn] = getbits(*pdata,1,1,16);
+	    vme[ID][vme_geo][vme_chn] = getbits(*pdata,1,1,16);
 	    Int_t vme_statusVD = getbits(*pdata,14,1,1);
 	    Int_t vme_statusUN = getbits(*pdata,13,1,1);
 	    Int_t vme_statusOV = getbits(*pdata,12,1,1);
@@ -476,13 +1094,13 @@ void BS_Detector_System::FRS_Sort(){
     
 
     if(EventFlag == 0x100){
-	for(int i = 0; i < 4; ++i) ts_word[i] = vme0[20][i];
+	for(int i = 0; i < 4; ++i) ts_word[i] = vme[0][20][i];
     }
     else if(EventFlag == 0x200){
-	for(int i = 0; i < 4; ++i) ts_word[i] = vme3[20][i];
+	for(int i = 0; i < 4; ++i) ts_word[i] = vme[3][20][i];
     }
     else if(EventFlag == 0x300){
-	for(int i = 0; i < 4; ++i) ts_word[i] = vme4[20][i];
+	for(int i = 0; i < 4; ++i) ts_word[i] = vme[4][20][i];
     }
 
     timestamp = Long64_t(1)*ts_word[0] + Long64_t(0x10000)*ts_word[1] + Long64_t(0x100000000)*ts_word[2] + Long64_t(0x1000000000000)*ts_word[3];
@@ -520,7 +1138,7 @@ void BS_Detector_System::FRS_Sort(){
     timespill2 = (timestamp - StartOfSpilTime2) * 1e-2; //microsec  // 50000000.;
 
     /* ### Pattern ###*/
-    pattern = vme0[5][0];
+    pattern = vme[0][5][0];
     trigger = qtrigger;
   
 
@@ -528,8 +1146,8 @@ void BS_Detector_System::FRS_Sort(){
   /* these are treated as 32-bit integers directly  */
     for(int i = 0 ;i < 32; ++i){
 	
-	sc_long[i]  = vme0[0][i]; //frs crate
-	sc_long[32+i] = vme5[8][i]; //main crate
+	sc_long[i]  = vme[0][0][i]; //frs crate
+	sc_long[32+i] = vme[5][8][i]; //main crate
 
     }
 
@@ -538,24 +1156,24 @@ void BS_Detector_System::FRS_Sort(){
     
   /* ### MW anodes:  */
   for(int i = 0; i < 13; ++i)
-    mw_an[i] = vme0[8][i] & 0xfff;
+    mw_an[i] = vme[0][8][i] & 0xfff;
     
   /* ### MW cathodes:  */
   // from MW11 -> MW31
   for(int i = 0; i < 4; ++i)
     {  
-      mw_xr[i] = vme0[8][16+i*4] & 0xfff;
-      mw_xl[i] = vme0[8][17+i*4] & 0xfff;
-      mw_yu[i] = vme0[8][18+i*4] & 0xfff;
-      mw_yd[i] = vme0[8][19+i*4] & 0xfff;
+      mw_xr[i] = vme[0][8][16+i*4] & 0xfff;
+      mw_xl[i] = vme[0][8][17+i*4] & 0xfff;
+      mw_yu[i] = vme[0][8][18+i*4] & 0xfff;
+      mw_yd[i] = vme[0][8][19+i*4] & 0xfff;
     }
   // from MW41 -> MW51
   for(int i = 0 ;i < 3; ++i)
     {
-      mw_xr[i+4] = vme0[9][0+i*4] & 0xfff;
-      mw_xl[i+4] = vme0[9][1+i*4] & 0xfff;
-      mw_yu[i+4] = vme0[9][2+i*4] & 0xfff;
-      mw_yd[i+4] = vme0[9][3+i*4] & 0xfff;
+      mw_xr[i+4] = vme[0][9][0+i*4] & 0xfff;
+      mw_xl[i+4] = vme[0][9][1+i*4] & 0xfff;
+      mw_yu[i+4] = vme[0][9][2+i*4] & 0xfff;
+      mw_yd[i+4] = vme[0][9][3+i*4] & 0xfff;
     }
   // skip MW61
   //putting MW61 all to zero (09.07.2018)
@@ -567,10 +1185,10 @@ void BS_Detector_System::FRS_Sort(){
   // from MW71 -> MWB2
   for(int i = 0; i < 5; ++i)
     {
-      mw_xr[i+8] = vme0[9][12+i*4] & 0xfff;
-      mw_xl[i+8] = vme0[9][13+i*4] & 0xfff;
-      mw_yu[i+8] = vme0[9][14+i*4] & 0xfff;
-      mw_yd[i+8] = vme0[9][15+i*4] & 0xfff;
+      mw_xr[i+8] = vme[0][9][12+i*4] & 0xfff;
+      mw_xl[i+8] = vme[0][9][13+i*4] & 0xfff;
+      mw_yu[i+8] = vme[0][9][14+i*4] & 0xfff;
+      mw_yd[i+8] = vme[0][9][15+i*4] & 0xfff;
     }
 
 
@@ -582,66 +1200,66 @@ void BS_Detector_System::FRS_Sort(){
     //////////////////////////////////////
     
     //ADC
-    for(int i = 0; i < 4; ++i;){ // TPC 1->4 at S2 (TPC 21 & 22) in vacuum (TPC 23 & 24) in air
+    for(int i = 0; i < 4; ++i){ // TPC 1->4 at S2 (TPC 21 & 22) in vacuum (TPC 23 & 24) in air
     	
-	tpc_a[i][0]=vme1[15][0 + i*8] & 0xfff;
-	tpc_a[i][1]=vme1[15][1 + i*8] & 0xfff;
-	tpc_a[i][2]=vme1[15][2 + i*8] & 0xfff;
-	tpc_a[i][3]=vme1[15][3 + i*8] & 0xfff;
-	tpc_l[i][0]=vme1[15][4 + i*8] & 0xfff;
-	tpc_r[i][0]=vme1[15][5 + i*8] & 0xfff;
-	tpc_l[i][1]=vme1[15][6 + i*8] & 0xfff;
-	tpc_r[i][1]=vme1[15][7 + i*8] & 0xfff;
+	tpc_a[i][0]=vme[1][15][0 + i*8] & 0xfff;
+	tpc_a[i][1]=vme[1][15][1 + i*8] & 0xfff;
+	tpc_a[i][2]=vme[1][15][2 + i*8] & 0xfff;
+	tpc_a[i][3]=vme[1][15][3 + i*8] & 0xfff;
+	tpc_l[i][0]=vme[1][15][4 + i*8] & 0xfff;
+	tpc_r[i][0]=vme[1][15][5 + i*8] & 0xfff;
+	tpc_l[i][1]=vme[1][15][6 + i*8] & 0xfff;
+	tpc_r[i][1]=vme[1][15][7 + i*8] & 0xfff;
 	
 	
-	tpc_dt[i][0]=vme1[8][0 + i*8] & 0xfff;
-	tpc_dt[i][1]=vme1[8][1 + i*8] & 0xfff;
-	tpc_dt[i][2]=vme1[8][2 + i*8] & 0xfff;
-	tpc_dt[i][3]=vme1[8][3 + i*8] & 0xfff;
-	tpc_lt[i][0]=vme1[8][4 + i*8] & 0xfff;
-	tpc_rt[i][0]=vme1[8][5 + i*8] & 0xfff;
-	tpc_lt[i][1]=vme1[8][6 + i*8] & 0xfff;
-	tpc_rt[i][1]=vme1[8][7 + i*8] & 0xfff;
+	tpc_dt[i][0]=vme[1][8][0 + i*8] & 0xfff;
+	tpc_dt[i][1]=vme[1][8][1 + i*8] & 0xfff;
+	tpc_dt[i][2]=vme[1][8][2 + i*8] & 0xfff;
+	tpc_dt[i][3]=vme[1][8][3 + i*8] & 0xfff;
+	tpc_lt[i][0]=vme[1][8][4 + i*8] & 0xfff;
+	tpc_rt[i][0]=vme[1][8][5 + i*8] & 0xfff;
+	tpc_lt[i][1]=vme[1][8][6 + i*8] & 0xfff;
+	tpc_rt[i][1]=vme[1][8][7 + i*8] & 0xfff;
 	
 	
 	
     }
-    for(int i = 0; i < 3; ++i;){ // TPC 5 & 6 at S4 (TPC 41 & 42) in air & TPC at S3 (TPC 31) (CheckSB)
+    for(int i = 0; i < 3; ++i){ // TPC 5 & 6 at S4 (TPC 41 & 42) in air & TPC at S3 (TPC 31) (CheckSB)
     	
-	tpc_a[i+4][0]=vme1[3][0 + i*8] & 0xfff;
-	tpc_a[i+4][1]=vme1[3][1 + i*8] & 0xfff;
-	tpc_a[i+4][2]=vme1[3][2 + i*8] & 0xfff;
-	tpc_a[i+4][3]=vme1[3][3 + i*8] & 0xfff;
-	tpc_l[i+4][0]=vme1[3][4 + i*8] & 0xfff;
-	tpc_r[i+4][0]=vme1[3][5 + i*8] & 0xfff;
-	tpc_l[i+4][1]=vme1[3][6 + i*8] & 0xfff;
-	tpc_r[i+4][1]=vme1[3][7 + i*8] & 0xfff;
+	tpc_a[i+4][0]=vme[1][3][0 + i*8] & 0xfff;
+	tpc_a[i+4][1]=vme[1][3][1 + i*8] & 0xfff;
+	tpc_a[i+4][2]=vme[1][3][2 + i*8] & 0xfff;
+	tpc_a[i+4][3]=vme[1][3][3 + i*8] & 0xfff;
+	tpc_l[i+4][0]=vme[1][3][4 + i*8] & 0xfff;
+	tpc_r[i+4][0]=vme[1][3][5 + i*8] & 0xfff;
+	tpc_l[i+4][1]=vme[1][3][6 + i*8] & 0xfff;
+	tpc_r[i+4][1]=vme[1][3][7 + i*8] & 0xfff;
 	
-	tpc_dt[i+4][0]=vme1[9][0 + i*8] & 0xfff;
-	tpc_dt[i+4][1]=vme1[9][1 + i*8] & 0xfff;
-	tpc_dt[i+4][2]=vme1[9][2 + i*8] & 0xfff;
-	tpc_dt[i+4][3]=vme1[9][3 + i*8] & 0xfff;
-	tpc_lt[i+4][0]=vme1[9][4 + i*8] & 0xfff;
-	tpc_rt[i+4][0]=vme1[9][5 + i*8] & 0xfff;
-	tpc_lt[i+4][1]=vme1[9][6 + i*8] & 0xfff;
-	tpc_rt[i+4][1]=vme1[9][7 + i*8] & 0xfff;
+	tpc_dt[i+4][0]=vme[1][9][0 + i*8] & 0xfff;
+	tpc_dt[i+4][1]=vme[1][9][1 + i*8] & 0xfff;
+	tpc_dt[i+4][2]=vme[1][9][2 + i*8] & 0xfff;
+	tpc_dt[i+4][3]=vme[1][9][3 + i*8] & 0xfff;
+	tpc_lt[i+4][0]=vme[1][9][4 + i*8] & 0xfff;
+	tpc_rt[i+4][0]=vme[1][9][5 + i*8] & 0xfff;
+	tpc_lt[i+4][1]=vme[1][9][6 + i*8] & 0xfff;
+	tpc_rt[i+4][1]=vme[1][9][7 + i*8] & 0xfff;
 	
     }
 
   
     /* ### SCI dE:  */
-    de_21l = vme5[11][2] & 0xfff;
-    de_21r = vme5[11][3] & 0xfff;
+    de_21l = vme[5][11][2] & 0xfff;
+    de_21r = vme[5][11][3] & 0xfff;
  
-    de_41l = vme5[11][0] & 0xfff;
-    de_41r = vme5[11][1] & 0xfff;
-    de_42l = vme5[11][4] & 0xfff; 
-    de_42r = vme5[11][5] & 0xfff;
-    de_43l = vme5[11][11] & 0xfff;
-    de_43r = vme5[11][12] & 0xfff;  
+    de_41l = vme[5][11][0] & 0xfff;
+    de_41r = vme[5][11][1] & 0xfff;
+    de_42l = vme[5][11][4] & 0xfff; 
+    de_42r = vme[5][11][5] & 0xfff;
+    de_43l = vme[5][11][11] & 0xfff;
+    de_43r = vme[5][11][12] & 0xfff;  
   
-    de_81l = vme5[11][13] & 0xfff;
-    de_81r = vme5[11][14] & 0xfff;
+    de_81l = vme[5][11][13] & 0xfff;
+    de_81r = vme[5][11][14] & 0xfff;
   
     de_v1l = 0;
     de_v1r = 0;  
@@ -651,17 +1269,17 @@ void BS_Detector_System::FRS_Sort(){
 
     
     /* ### SCI times:  */
-    dt_21l_21r = vme0[12][0] & 0xfff;
-    dt_41l_41r = vme0[12][1] & 0xfff;
-    dt_21l_41l = vme0[12][5] & 0xfff;
-    dt_21r_41r = vme0[12][6] & 0xfff;
-    dt_42l_42r = vme0[12][2] & 0xfff;  
-    dt_42l_21l = vme0[12][7] & 0xfff; //
-    dt_42r_21r = vme0[12][8] & 0xfff; //
-    dt_43l_43r = vme0[12][3] & 0xfff; //
-    dt_81l_81r = vme0[12][4] & 0xfff;
-    dt_21l_81l = vme0[12][9] & 0xfff;
-    dt_21r_81r = vme0[12][10] & 0xfff;
+    dt_21l_21r = vme[0][12][0] & 0xfff;
+    dt_41l_41r = vme[0][12][1] & 0xfff;
+    dt_21l_41l = vme[0][12][5] & 0xfff;
+    dt_21r_41r = vme[0][12][6] & 0xfff;
+    dt_42l_42r = vme[0][12][2] & 0xfff;  
+    dt_42l_21l = vme[0][12][7] & 0xfff; //
+    dt_42r_21r = vme[0][12][8] & 0xfff; //
+    dt_43l_43r = vme[0][12][3] & 0xfff; //
+    dt_81l_81r = vme[0][12][4] & 0xfff;
+    dt_21l_81l = vme[0][12][9] & 0xfff;
+    dt_21r_81r = vme[0][12][10] & 0xfff;
 
  
   /* ### SCI Multihit TDC time:  */
@@ -684,9 +1302,9 @@ void BS_Detector_System::FRS_Sort(){
   /* ### MUSIC OLD:  */
     for(int i=0;i<4;i++){
       
-	music_t3[i] = vme1[11][16+i] & 0xfff;    //TIME
+	music_t3[i] = vme[1][11][16+i] & 0xfff;    //TIME
 	//music_t3[i] = 0;
-	music_e3[i] = vme0[10][16+i] & 0xfff;    //ENERGY
+	music_e3[i] = vme[0][10][16+i] & 0xfff;    //ENERGY
 	//music_e3[i] = 0;
 
     }
@@ -694,10 +1312,10 @@ void BS_Detector_System::FRS_Sort(){
     /* ### TUM MUSIC dE:  */
     for(int i=0;i<8;i++){
 	
-	music_e1[i] = vme0[11][i] & 0xfff;
-	music_e2[i] = vme0[11][8+i] & 0xfff;
+	music_e1[i] = vme[0][11][i] & 0xfff;
+	music_e2[i] = vme[0][11][8+i] & 0xfff;
 	
-	//music_e2[i] = vme0[12][24+i] & 0xfff;
+	//music_e2[i] = vme[0][12][24+i] & 0xfff;
 	
 	music_t1[i] = vme2s[16+i][0] & 0xfff; //TIME
 	music_t2[i] = vme2s[24+i][0] & 0xfff; //TIME
@@ -717,19 +1335,19 @@ void BS_Detector_System::FRS_Sort(){
     music_temp[2] = 0;
     
     //Single anode 
-    SingleAnode_adc = vme0[10][20] & 0xfff; 
+    SingleAnode_adc = vme[0][10][20] & 0xfff; 
     
     //Si detectors 
-    si_adc1 = vme0[10][24] & 0xfff; 
-    si_adc2 = vme0[10][25] & 0xfff;
-    si_adc3 = vme0[10][26] & 0xfff; 
-    si_adc4 = vme0[10][27] & 0xfff;
-    si_adc5 = vme0[10][28] & 0xfff;
+    si_adc1 = vme[0][10][24] & 0xfff; 
+    si_adc2 = vme[0][10][25] & 0xfff;
+    si_adc3 = vme[0][10][26] & 0xfff; 
+    si_adc4 = vme[0][10][27] & 0xfff;
+    si_adc5 = vme[0][10][28] & 0xfff;
     
     //Si detectors DSSD = alpha tagger
     for(int i=0;i<32;i++){
 	
-	dssd_adc[i] = vme0[7][i] & 0xfff;
+	dssd_adc[i] = vme[0][7][i] & 0xfff;
     
     }
 
@@ -740,7 +1358,7 @@ void BS_Detector_System::FRS_Sort(){
     ct_trigger_SY = vme2scaler[6]& 0xfff;
     
     //Electron current measurement (vme must be adjused)
-    ec_signal = vme0[10][1]& 0xfff;
+    ec_signal = vme[0][10][1]& 0xfff;
     
     // mrtof
     mrtof_start = vme3s_MT[0][0] ;//& 0x7ffff;
@@ -749,6 +1367,879 @@ void BS_Detector_System::FRS_Sort(){
     
     
 }
+
+
+void BS_Detector_System::FRS_Calib(){
+    
+  //----- from here added by YKT 23.05 --------//   
+  /////// 
+  ///////  scaler_time_count,  scaler_spill_count,  scaler_time_check_last,   scaler_spill_check_last,  scaler_increase_event[64]     UInt_t
+  ///////  check_increase_time[i]   check_increase_spill[i],   scaler_last_event[i]    UInt_t 
+
+  // special channels for normalization
+  int scaler_channel_spill_all[2] = {8, 5}; double normalization_factor_spill_all[2] = {1.0,1.0}; //   YKT 23.05
+  //int scaler_channel_time_all[2]  = {36,1}; double normalization_factor_time_all[2] = {10.0,100.}; //  36 for 10 Hz clock
+  int scaler_channel_time_all[2]  = {36,1}; double normalization_factor_time_all[2] = {1.,100.}; //  36 for 10 Hz clock (normalization 100ms)
+  // int scaler_channel_time_all[2]  = {38,1}; double normalization_factor_time_all[2] = {100000.0,100.}; //38 for 100kHz clock
+  
+  scaler_channel_10khz = 25; //YT 20Jun.
+  Long64_t nmax_V830 = 0x100000000;
+
+  //printf("Event_flag_test=0x%08x\n", EventFlag);
+
+  int index_flag = -1;
+  if(EventFlag==0x100)
+    index_flag=0;
+  /*else if(EventFlag==0x200)
+    index_flag=1;
+  else if(EventFlag==0x300)
+  index_flag=1;*/
+  else
+    std::cout<<"E> EventFlag unknown !"<<EventFlag<<std::endl;
+
+
+  int scaler_channel_spill = scaler_channel_spill_all[index_flag];
+  double normalization_factor_spill = normalization_factor_spill_all[index_flag]; //   YKT 23.05
+  int scaler_channel_time  = scaler_channel_time_all[index_flag];
+  double normalization_factor_time = normalization_factor_time_all[index_flag] ; //  YKT 23.05 
+
+  //UInt_t tempCurrentTime = index_flag == 0 ? sc_long[scaler_channel_time] : sc_long2[scaler_channel_time];
+  UInt_t tempCurrentTime = sc_long[scaler_channel_time];
+  
+  //----initialize values defined in this file---
+  if(1==check_first_event[index_flag]) // if first event has 0 (for all channels) >> use next event as a first event 
+    {
+      //      std::cout<<"Init Scaler :"<<index_flag<<" "<<EventFlag<<" | "<<check_first_event[index_flag]<<" "<<tempCurrentTime<<"\n";
+      if(0!=tempCurrentTime)
+	{
+	  //std::cout<<" +--> set initial values ";
+	  scaler_time_count[index_flag]  = 0; //UInt_t
+	  scaler_spill_count[index_flag] = 0; //UInt_t
+	  scaler_time_check_last[index_flag] = 0;//UInt_t
+	  scaler_spill_check_last[index_flag] = 0;//UInt_t
+	  for(size_t i=0; i<64; i++) //changed from 32 to 64 (10.07.2018)
+	    {
+	      check_increase_time[i]   =0;//UInt_t
+	      check_increase_spill[i]  =0;//UInt_t
+	      scaler_increase_event[i] =0;//UInt_t
+	      scaler_last_event[i] = static_cast<Long64_t>(sc_long[i]);//UInt_t
+	    }
+	  /*
+	  for(size_t i=32;i<64;++i)
+	    {
+	      check_increase_time[i]   =0;//UInt_t
+	      check_increase_spill[i]  =0;//UInt_t
+	      scaler_increase_event[i] =0;//UInt_t
+	      scaler_last_event[i] = static_cast<Long64_t>(sc_long2[i-32]);//UInt_t
+	    }
+	  */
+
+	  //std::cout<<" done !\n";
+	}
+    }
+  for(int i=0; i<64; i++)
+    scaler_increase_event[i]=0;  
+  
+  //------------ scaler_increase_event[i] and scaler_last_event[i] -----------
+  //////
+  // sometimes V830 data from sort is empty (all 0)
+  // in such case, we skip updating { scaler_increase_event[i] and scaler_last_event[i] }
+  if(0!=tempCurrentTime)
+    {
+      if(0==check_first_event[index_flag])
+	{
+	  if(index_flag==0)
+	    {
+	      for(size_t i=0; i<64; i++) //changed from 32 to 64 (10.07.2018)
+		{
+		  if(static_cast<Long64_t>(sc_long[i]) >= scaler_last_event[i])
+		    scaler_increase_event[i] = sc_long[i] - scaler_last_event[i];
+		  else
+		    {
+		      //printf("sc_long[i], scaler_last_event[i]:%d %d\n", sc_long[i] , scaler_last_event[i]);
+		      scaler_increase_event[i] =  sc_long[i]  + nmax_V830 - scaler_last_event[i];
+		    }
+		  scaler_last_event[i]     = sc_long[i];
+		}
+	    }
+	  /*
+	  if(index_flag==1)
+	    {
+	      for(size_t i=32; i<64; i++)
+		{
+		  if(static_cast<Long64_t>(sc_long2[i-32]) >= scaler_last_event[i])
+		    scaler_increase_event[i] = sc_long2[i-32] - scaler_last_event[i];
+		  else
+		    {
+		      //printf("sc_long[i], scaler_last_event[i]:%d %d\n", sc_long[i] , scaler_last_event[i]);
+		      scaler_increase_event[i] =  sc_long2[i-32]  + nmax_V830 - scaler_last_event[i];
+		    }
+		  scaler_last_event[i]     = sc_long2[i-32];
+		}	  
+		}*/
+	}
+    }
+  //-----switch off initial event check---
+  if(1==check_first_event[index_flag] && (0!=tempCurrentTime)) // if first event has 0 (for all channels) >> use next event as a first event
+    { 
+      check_first_event[index_flag] = 0;
+    }
+
+
+  // add {increase from last event} to the counters.
+  if(0!=tempCurrentTime)
+    {
+      for(int i=0; i<64; i++)
+	{
+	  check_increase_spill[i] += scaler_increase_event[i];  
+	  check_increase_time[i]  += scaler_increase_event[i];
+	}
+    }
+ 
+  // integrated count from the beginning
+  if(0!=tempCurrentTime)
+    {
+      scaler_time_count[index_flag]  += scaler_increase_event[scaler_channel_time]; //
+      scaler_spill_count[index_flag] += scaler_increase_event[scaler_channel_spill];//
+    }
+  
+  int scaler_time_check  = scaler_time_count[index_flag]/((int)normalization_factor_time);
+  int scaler_spill_check = scaler_spill_count[index_flag];
+
+  //  printf("scaler_time_count = %d, sc_long[4]=%d, sc_long[3]=%d, \n",scaler_time_count, sc_long[4], sc_long[3]);
+ 
+
+  // when scaler_time_check is increased
+  if( 0<(scaler_time_check - scaler_time_check_last[index_flag]) )
+    {
+      //   printf("scaler_time_check = %d, scaler_time_check_last = %d \n",scaler_time_check,scaler_time_check_last);
+      //if(10<(scaler_time_check - scaler_time_check_last[index_flag])) //10 Hz clock
+      if(1<(scaler_time_check - scaler_time_check_last[index_flag])) //10 Hz clock //for normalization 100ms
+      //if(100000<(scaler_time_check - scaler_time_check_last[index_flag])) //100 kHz clock
+	{
+	  //printf("scaler_time_check - scaler_time_check_last = %d ...\n",);
+	  std::cout<<"EventFlag"<<EventFlag<<"|"<<index_flag<<"scaler_time_check - scaler_time_check_last = "<<(scaler_time_check - scaler_time_check_last[index_flag])<<"...\n";
+	} 
+      for(int i=0; i<64; i++)
+	{
+	  int x_bin = (scaler_time_check % 3000);
+	  int x_bin_short = (scaler_time_check % 300);
+	  int y_set;
+	  if(check_increase_time[i]>0)
+	    {
+	      y_set =  (int)(normalization_factor_time*((Float_t)( check_increase_time[i] ))/((Float_t)( check_increase_time[scaler_channel_time] ))); 
+	    }
+	  else
+	    {
+	      y_set = 0;
+	    }
+	}
+      for(int i=0; i<64; i++)
+	{
+	  check_increase_time[i]=0;
+	}//reset
+      scaler_time_check_last[index_flag] = scaler_time_check;  
+    }
+
+  // when scaler_time_check is increased
+  if( 0<(scaler_spill_check - scaler_spill_check_last[index_flag]) )
+    {
+      if(10<(scaler_spill_check - scaler_spill_check_last[index_flag]))
+	{
+	  //printf("scaler_spill_check - scaler_spill_check_last = %d ...\n",(scaler_spill_check - scaler_spill_check_last));
+	  std::cout<<"EventFlag"<<EventFlag<<"|"<<index_flag<<"scaler_spill_check - scaler_spill_check_last = "<<(scaler_spill_check - scaler_spill_check_last[index_flag])<<"...\n";
+	}
+      for(int i=0; i<64; i++)
+	{
+	  int x_bin = (scaler_spill_check % 300);
+	  int x_bin_short = (scaler_spill_check % 30);
+	  int y_set;
+	  if(check_increase_spill[i]>0)
+	    {
+	      y_set =  (int)(normalization_factor_spill*((Float_t)( check_increase_spill[i] ))/((Float_t)( check_increase_spill[scaler_channel_spill] )));
+	    }
+	  else
+	    {
+	      y_set = 0;
+	    }
+	}
+      //
+      if(index_flag==0)
+	{
+	  check_total_sc21 += check_increase_spill[7];
+	  check_total_sc41 += check_increase_spill[8];
+	  check_total_seetram += check_increase_spill[10];
+      //printf("Total SC41 = %d,  Total SC21 = %d, Total SEETRAM = %d \n",check_total_sc41,check_total_sc21,check_total_seetram);
+	}
+      if(index_flag==1)
+	{
+	  check_total_mrtof_start += check_increase_spill[38];
+	  check_total_mrtof_stop += check_increase_spill[39];
+	    
+	}
+      for(int i=0; i<64; i++)
+	{
+	  check_increase_spill[i]=0;
+	}//reset                                                                                                                                                       
+      scaler_spill_check_last[index_flag] = scaler_spill_check;
+      //           
+    }
+  //----- up to here added by YKT 23.05 --------// 
+   
+  UInt_t first[64];
+  //  Int_t  first[64]; 
+
+  if (fbFirstEvent)
+    { //
+      for (int i=0;i<64;i++)  //changed here from 32 to 64 (10.07.2018)
+	{
+	  //std::cout <<"In first event loop"<<std::endl ; 
+	  scaler_save[i] = sc_long[i];
+	  //		 std::cout <<"  "<<scaler_save[i] <<"  "<<sc_long[i]<<std::endl ; 
+	  first[i]=sc_long[i];
+	}
+      /*
+      for (int i=32;i<64;i++)
+	{
+	  scaler_save[i] = sc_long2[i-32];
+	  first[i]=sc_long2[i-32];
+	}
+      */
+
+      //    std::cout <<"1Hz  "<<sc_long[3]<<std::endl;
+      //    std::cout <<"10Hz "<<sc_long[4]<<std::endl;  
+
+      if(sc_long[35]!=0)
+	{     
+	  firstsec = sc_long[35]; // TIME //
+	  firsttenthsec = sc_long[36];
+	  firsthundrethsec = sc_long[38];	//mik
+	  firstcycle = sc_long[34];
+	  firstseetram= sc_long[2]; // new SE01
+	  //      firstseetram= sc_long[9]; // old SE01
+
+	  fbFirstEvent = kFALSE; 
+	}
+    }
+
+
+  //  Int_t mon_inc[64];
+
+  Double_t over_scale=  4000000000.;
+  //  printf("%15f",over_scale);
+
+  // for 1st module
+  for (int i=0;i<32;i++)
+    if(0!=sc_long[scaler_channel_time])
+      {
+	Int_t overload = 0; 
+	//  if(sc_long[i]!=0){            
+	if ( scaler_save[i] > static_cast<Long64_t>(sc_long[i]))
+	  {
+	    if (trigger==12 || trigger==13)
+	      continue ;
+
+	    //std::cout <<"Hey I got overloaded !!! channel "<<i<<std::endl ; 
+	    //std::cout <<scaler_save[i] <<"  "<<sc_long[i]<<std::endl ;
+	    //std::cout <<"trigger is : "<<trigger<<std::endl ; 
+	    //scaler_save[i] = scaler_save[i] - 4294967295;
+	    mon_inc[i] = static_cast<Long64_t>(sc_long[i])+4294967295 - scaler_save[i]; //
+	    //scaler_save[i] = (Long64_t)sc_long[i]);
+	    overload = 1;
+	  }
+	else
+	  mon_inc[i] = static_cast<Long64_t>(sc_long[i]) - scaler_save[i]; //
+	 
+	scaler_save[i] = static_cast<Long64_t>(sc_long[i]);
+	//
+	//if(overload != 0)
+	//std::cout<<"case overload"<<std::endl;
+	if (mon_inc[i]<0)
+	  {
+	    //std::cout <<"  "<<i<<"  "<<mon_inc[i]<<"  "<<sc_long[i]<<"  "<<scaler_save[i]<<" | "<<overload<<std::endl ; 
+	    std::cout <<"!> mon_inc["<<i<<"] -> WRONG"<<std::endl ;
+	  } 
+
+
+	/* save the current value so that it can be used next time around... */
+	//if(mon_inc[i]>4000000000)mon_inc[i]=0; 
+	//  if(mon_inc[i]>over_scale)mon_inc[i]=0; 
+      
+      } 
+
+  // for 2nd module
+  for (int i=32;i<64;i++)
+    if(0!=sc_long[scaler_channel_time])
+      {
+	Int_t overload = 0;
+	//if (scaler_save[i] > sc_long2[i-32])
+	if (scaler_save[i] > sc_long[i])
+	  { 
+	    //scaler_save[i] = scaler_save[i] - 4294967295;
+	    //mon_inc[i] = static_cast<Long64_t>(sc_long2[i-32]) + 4294967295 - scaler_save[i];
+	    mon_inc[i] = static_cast<Long64_t>(sc_long[i]) + 4294967295 - scaler_save[i];
+	    overload =1;
+	  }
+	else
+	  //mon_inc[i] = sc_long2[i-32] - scaler_save[i];
+	  mon_inc[i] = sc_long[i] - scaler_save[i];
+	   
+	
+	if(mon_inc[i] > over_scale)
+	  mon_inc[i]=0;
+
+	//save the current value so that it can be used next time around... 
+	//scaler_save[i] = sc_long2[i-32];
+	scaler_save[i] = sc_long[i];
+
+      
+      }
+
+  //Store scalers for later
+  freeTrig=mon_inc[0];
+  acptTrig=mon_inc[1];
+  
+  
+  if(sc_long[35]!=0)
+    {
+      if(sc_long[35]<firstsec)
+	++scalercycle_Sec;
+      //firstsec = sc_long[3];	  
+      
+      if(sc_long[36]<firsttenthsec)
+	++scalercycle_TenthSec;
+	
+      if(sc_long[38]<firsthundrethsec)		//mik
+	++scalercycle_HundrethSec;
+	
+      if(sc_long[34]<firstcycle)
+	++scalercycle_Cycle;
+
+
+      seconds = sc_long[35] + 4294967295*scalercycle_Sec -firstsec;
+      tenthsecs = sc_long[36] + 4294967295*scalercycle_TenthSec - firsttenthsec;
+      hundrethsecs = sc_long[38] + 4294967295*scalercycle_HundrethSec - firsthundrethsec;  //mik
+      extraction_cycle = sc_long[34] + 4294967295*scalercycle_Cycle - firstcycle;
+    }
+
+
+  for(int i=0;i<16;i++)
+    {
+      coin[i]=pattern>>i & 0x0001;
+
+    }
+
+
+
+
+  
+  /**  for SeeTram calibration purposes:   **/
+
+
+  //10HzClock = hMON_scaler[4]->Integral();
+
+  /*   Naming conventions:  index     detector   focus #                     */
+  /*                         1         MW11        1                         */
+  /*                         2         MW21        2                         */
+  /*                         3         MW22                                  */
+  /*                         4         MW31        3                         */
+  /*                         5         MW41                                  */
+  /*                         6         MW42                                  */
+  /*                         7         MW51                                  */
+  /*                         8         MW61                                  */
+   /*                        9         MW71                                  */
+  /*                         10        MW81                                  */
+  /*                         11        MW82                                  */
+  /*                         12        MWB1                                  */
+  /*                         13        MWB2                                  */
+  /////////////////////////////////////////////////////////////////////////////
+  int max_index = 13; //upto MWB2 (09.07.2018) /*  up to S3 */
+
+  for(int i=0;i<max_index;i++)
+    {	
+      
+      /********************************************/
+      /* Calculate the sum spectra and conditions */
+      /********************************************/
+      
+      /* better test first existence of xl, xr, an before filling of xsum */
+      
+      if(mw_an[i] && mw_xl[i] && mw_xr[i])
+	{
+	  // if(mw_xl[i]&&mw_xr[i]) {
+	  mw_xsum[i] = 1000+(mw_xl[i] - mw_an[i]) + (mw_xr[i] - mw_an[i]);
+      
+	  // mw_xsum[i] = (mw_xl[i]) + (mw_xr[i]); //when an doesn't work
+	}
+
+
+      if(mw_xsum[i] >= lim_xsum[i][0] && mw_xsum[i] <= lim_xsum[i][1]) b_mw_xsum[i] =  true; //cMW_XSUM[i]->Test(mw_xsum[i]);
+      else b_mw_xsum[i] =  false;
+      
+      
+      /* better test first existence of yu, yd, an before filling of ysum */
+      
+      if(mw_an[i] && mw_yu[i] && mw_yd[i])
+	{
+	   
+	  //if(mw_yu[i]&&mw_yd[i]) {
+	  mw_ysum[i] = 1000+(mw_yu[i] - mw_an[i]) + (mw_yd[i] - mw_an[i]);	  
+	  
+	  //mw_ysum[i] = (mw_yu[i]) + (mw_yd[i]); //when an doesn't work			
+	}
+      
+	if(mw_ysum[i] >= lim_ysum[i][0] && mw_ysum[i] <= lim_ysum[i][1]) b_mw_ysum[i] =  true; //cMW_YSUM[i]->Test(mw_ysum[i]);
+	else b_mw_ysum[i] =  false;
+    
+      /*******************************************************************/
+      /* If the signals in x and y are valid, calculate position spectra */
+      /*******************************************************************/
+      
+      if (b_mw_xsum[i])
+	{
+	  //      Int_t r_x = mw_xl[i] - mw_xr[i];
+	  Float_t r_x = mw_xl[i] *  mw->gain_tdc[1][i] - mw_xr[i] *  mw->gain_tdc[2][i]; //14.09.05 CN+AM
+	  mw_x[i] = mw->x_factor[i] * r_x + mw->x_offset[i];
+	  
+	  cout<<"Here's something interesting "<<r_x<<endl;
+	  
+	}
+    
+      if (b_mw_ysum[i])
+	{
+	  //      Int_t r_y = mw_yd[i] - mw_yu[i];
+	  Float_t r_y = mw_yd[i] *  mw->gain_tdc[4][i] - mw_yu[i] *  mw->gain_tdc[3][i]; //14.09.05 CN+AM
+	  mw_y[i] = mw->y_factor[i] * r_y + mw->y_offset[i];
+	}
+
+    
+      if(b_mw_xsum[i] && b_mw_ysum[i])
+	{
+	    
+	}
+      
+    } // for(int i=0;i<max_index;i++)
+
+
+  /*********************************************/
+  /* S2 Angle and transformed position spectra */
+  /*********************************************/
+  
+  Float_t  dist_MW21_MW22  = frs->dist_MW22  - frs->dist_MW21;
+  Float_t  dist_MW22_focS2 = frs->dist_focS2 - frs->dist_MW22;
+  Float_t  dist_MW22_SC21  = frs->dist_SC21  - frs->dist_MW22;
+  Float_t  dist_MW22_SC22  = frs->dist_SC22  - frs->dist_MW22;
+  
+
+  if (b_mw_xsum[1] && b_mw_xsum[2])
+    {
+      /* MW21 and MW22 X okay */
+      /*  X angle at S2  [mrad]:  */
+      angle_x_s2 = (mw_x[2]-mw_x[1])/dist_MW21_MW22*1000.;
+
+      /*  X at nominal S2 focus:  */
+      focx_s2 = mw_x[2] + dist_MW22_focS2 * angle_x_s2/1000.;
+      
+      /*  X at SC21 position:    */
+      sc21_x = mw_x[2] + dist_MW22_SC21 * angle_x_s2/1000.;
+
+      /*  X at SC22 position:    */
+      sc22_x = mw_x[2] + dist_MW22_SC22 * angle_x_s2/1000.;
+      
+
+      /* 'real' z-position of S2 X focus (cm) */
+      Float_t rh = (angle_x_s2 - angle_x_s2m);
+      if(fabs(rh)>1e-4)
+	{
+	  z_x_s2 = ((focx_s2m - focx_s2)/rh)*100. + frs->dist_focS2/10.;  
+	}
+    
+      /* keep values for next event */
+      focx_s2m = focx_s2; 
+      angle_x_s2m = angle_x_s2;
+    }
+  
+  if (b_mw_ysum[1] && b_mw_ysum[2])
+    {
+      /* MW21 and MW22 Y okay */
+      /*  Y angle at S2 [mrad]:   */
+      angle_y_s2 = (mw_y[2] - mw_y[1])/dist_MW21_MW22*1000.;
+      
+      /*  Y at nominal S2 focus:  */
+      focy_s2 = mw_y[2] + dist_MW22_focS2 * angle_y_s2/1000.;
+
+      /* 'real' z-position of S2 Y focus (cm) */
+      Float_t rh = (angle_y_s2 - angle_y_s2m);
+      if(fabs(rh)>1.e-4)
+	{
+	  z_y_s2 = ((focy_s2m - focy_s2)/rh)*100. + frs->dist_focS2/10.;  
+	}
+      
+      /* keep values for next event */
+      focy_s2m = focy_s2; 
+      angle_y_s2m = angle_y_s2; 
+    }
+  
+  /*if (b_mw_ysum[1] && b_mw_ysum[2] && b_mw_xsum[1] && b_mw_xsum[2])
+    hMW_FocS2->Fill(focx_s2,focy_s2);*/ 
+
+
+//////////////////////////////////////////////////////////////////
+///  ***********TPC Analysis*************************** //////////
+
+ //================================
+  // Nomenclature for TPCs
+  //================================
+  // TPCs at S2
+  // TPC 1 = TPC 21 (in vaccum) [i=0]
+  // TPC 2 = TPC 22 (in vaccum) [i=1]
+  // TPC 3 = TPC 23 (in air)    [i=2]
+  // TPC 4 = TPC 24 (in air)    [i=3]
+
+  // TPCs at S4
+  // TPC 5 = TPC 41 (in air)    [i=4]
+  // TPC 6 = TPC 42 (in air)    [i=5]
+
+  //TPC at S3
+  // TPC 7 = TPC 31             [i=6]
+  
+
+  for(int i=0;i<7;i++)
+    {  
+
+      int count =0;
+      Int_t r_y = 0;
+      
+      int countx =0;
+      Int_t r_x0 = 0;
+      Int_t r_x1 = 0;
+      
+      tpc_y[i] = 0;
+      tpc_x[i] = 9999;
+
+      for(int j=0;j<4;j++)
+	{
+
+	  //// calculate control sums
+	  if(j < 2)
+	    tpc_csum[i][j] = (tpc_lt[i][0] + tpc_rt[i][0]- 2*tpc_dt[i][j]);
+	  else
+	    tpc_csum[i][j] = (tpc_lt[i][1] + tpc_rt[i][1]- 2*tpc_dt[i][j]);
+
+
+	       // if((de_42l>230&&de_42l<450)||(de_42r>540&&de_42r<750)){
+
+	  //b_tpc_csum[i][j] = cTPC_CSUM[i][j]->Test(tpc_csum[i][j]);
+	  if(tpc_csum[i][j] >= lim_csum[j][i][0] && tpc_csum[i][j] <= lim_csum[j][i][1]) b_tpc_csum[i][j] = true;
+	  else b_tpc_csum[i][j] = false;
+	       // }
+	  
+	  if(tpc_lt[i][0]==0 && tpc_rt[i][0]==0 && j<2)
+	    b_tpc_csum[i][j]=0;
+      
+	  if(tpc_lt[i][1]==0 && tpc_rt[i][1]==0 && j>1)
+	    b_tpc_csum[i][j]=0;
+      
+	  if (b_tpc_csum[i][j])
+	    {
+	      r_y += tpc_dt[i][j];
+	      tpc_y[i] += tpc->y_factor[i][j]*tpc_dt[i][j] + tpc->y_offset[i][j];
+	      count++;
+	    }
+	}
+
+      if (b_tpc_csum[i][0] || b_tpc_csum[i][1])
+	{
+	  r_x0 =  tpc_lt[i][0]-tpc_rt[i][0];
+	  //          r_x0 =  tpc_lt[i][0];
+	  
+	  tpc_x[i]=tpc->x_factor[i][0]*r_x0 + tpc->x_offset[i][0];
+	  countx++;
+	}
+      
+      if (b_tpc_csum[i][2] || b_tpc_csum[i][3])
+	{
+	  r_x1 =  tpc_lt[i][1]-tpc_rt[i][1];
+	  if (countx == 0)
+	    tpc_x[i]=tpc->x_factor[i][1]*r_x1 + tpc->x_offset[i][1];
+	  else
+	    tpc_x[i]+=tpc->x_factor[i][1]*r_x1 + tpc->x_offset[i][1];
+	  countx++;
+	}
+
+      b_tpc_xy[i] = kFALSE;  // HWE
+
+      if (countx > 0)
+	{
+	  tpc_y[i] = tpc_y[i]/count;
+	  tpc_x[i] = tpc_x[i]/countx;
+	  //Int_t r_x=tpc_lt[i]-tpc_rt[i];
+	  //tpc_x[i]=tpc->x_factor[i]*r_x + tpc->x_offset[i];
+	  
+	  //      if(r_x0<-40)
+
+	  b_tpc_xy[i] = kTRUE;
+	}
+      
+      if(countx>1)
+	{
+	  float x0=tpc->x_factor[i][0]*r_x0 + tpc->x_offset[i][0];
+	  float x1=tpc->x_factor[i][1]*r_x1 + tpc->x_offset[i][1];
+
+	}    
+    }
+
+
+  //*********************************************
+  // *****Relative distances for tracking *******
+  //*********************************************
+  //Float_t dist_TPC1_TPC2 = 1.;         
+  //distances at S2 for exp s388 measured 'by eye' (i.e. not very precise)! AE, 8.8.2012
+  //Float_t dist_TPC4_target1 = 455.;  //8.8.12, s388: taget1 is first Si detector at S2 
+  //using: TPC4->chamber= 150 mm, chamber->Si(1)= 305 mm
+  //Float_t dist_TPC3_TPC4 = 610.; // exp S417+S411 Oct2014
+  //Float_t dist_TPC3_focS2 = 2860 - 2013 ; //exp S411 Oct2014
+  //Float_t dist_TPC3_focS2 = 0. ; //exp S417 Oct2014 focus on TPC21
+  //Float_t dist_TPC5_TPC6 = 1595. - 385. ; // Oct.2014, exp s411 
+  //Float_t dist_TPC6_focS4  = 2349. - 1595. ; // Oct.2014, exp s411
+  //THIS SHOULD BE NOT HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //Yhis was for Uranium--- see logbook page 6
+  //Float_t dist_TPC6_target2  = 1015.; // 8.08.12, exp s388 target2= OTPC entrance (check distance)
+  //Float_t dist_TPC4_target1 = 455.;  // 8.8.12, s388: taget1 is first Si detector at S2 
+                                     // using: TPC4->chamber= 150 mm, chamber->Si(1)= 305 mm
+
+  //==========================
+  // Distances of TPCs at S2
+  //==========================
+
+  Float_t dist_TPC21_TPC22 = 1782.5 - 604.0; //check
+  Float_t dist_TPC23_TPC24 = 1782.5 - 604.0; //check
+  Float_t dist_TPC22_TPC24 = 1782.5 - 604.0; //check
+
+  Float_t dist_TPC21_focS2 = 604.-2165.; //check
+  Float_t dist_TPC22_focS2 = 604.-2165.; //check
+  Float_t dist_TPC23_focS2 = 604.-2165.; //check
+
+
+  //Float_t dist_TPC3_TPC4 = 1782.0- 604.; //old value for old tracking 
+  //Float_t dist_TPC3_focS2 = 604.-2165. ; //old value for old tracking  
+
+  //==================================
+  //Distance of TPCs at S4
+  //==================================
+  
+  Float_t dist_TPC41_TPC42 = 1525.0 - 385.0;  //rough check
+  //Float_t dist_TPC41_TPC42 = 1660.0 - 360.0;  //check
+
+  Float_t dist_TPC42_focS4 = 3300.0 - 1525.0; //check
+  //Float_t dist_TPC42_focS4 = 3300.0 - 1660.0; //check
+
+  
+  //Float_t dist_TPC5_TPC6 = 2063.5 - 382.5 ; 
+  //Float_t dist_TPC6_focS4  = 2200. - 2063.5 ;
+  //Float_t dist_TPC6_focS4  = 4300. - 1660. ;//before 13Jun2016 17:10
+  //Float_t dist_TPC6_focS4  = 2200. - 1660. ;//for S4 focus 2200 , changed at 13Jun2016 17:10 
+  //Float_t dist_TPC6_focS4  = 2200. -1135.9 +300.0 - 1660. +100.; //short focus 11jul2016
+  //Float_t dist_TPC6_focS4  = 2202 - 1660.; // tensor28 mode
+  //Float_t dist_TPC6_focS4  = 3300 - 1660.; // long focus
+
+  //=====================
+  // Old tracking for S2 
+  //=====================
+  /*
+  //Position S2 tracked with TPCs 3 and 4 for focus
+  if (b_tpc_xy[2]&&b_tpc_xy[3])
+    {
+      tpc_angle_x_s2_foc = (tpc_x[3] - tpc_x[2])/dist_TPC3_TPC4*1000.;
+      tpc_angle_y_s2_foc = (tpc_y[3] - tpc_y[2])/dist_TPC3_TPC4*1000.;
+      tpc_x_s2_foc = -tpc_angle_x_s2_foc * dist_TPC3_focS2/1000. + tpc_x[2];
+      tpc_y_s2_foc = -tpc_angle_y_s2_foc * dist_TPC3_focS2/1000. + tpc_y[2];
+
+ 
+     // Position S2 tracked with TPCs 3 and 4 to first Si tracker in exp S388
+     // tpc_x_s2_target1 = tpc_angle_x_s2_foc * dist_TPC4_target1/1000. + tpc_x[3];
+     // tpc_y_s2_target1 = tpc_angle_y_s2_foc * dist_TPC4_target1/1000. + tpc_y[3];
+      
+    }
+  else  tpc_x_s2_foc= -999 ;
+  */
+
+  //=================================
+  // Tracking with TPC 21 and TPC 22 
+  //=================================
+  
+  if (b_tpc_xy[0]&&b_tpc_xy[1])
+    {
+      tpc_angle_x_s2_foc_21_22 = (tpc_x[1] - tpc_x[0])/dist_TPC21_TPC22*1000.;
+      tpc_angle_y_s2_foc_21_22 = (tpc_y[1] - tpc_y[0])/dist_TPC21_TPC22*1000.;
+      tpc_x_s2_foc_21_22 = -tpc_angle_x_s2_foc_21_22 * dist_TPC21_focS2/1000. + tpc_x[0]; //check
+      tpc_y_s2_foc_21_22 = -tpc_angle_y_s2_foc_21_22 * dist_TPC21_focS2/1000. + tpc_y[0]; //check
+      
+    }
+  else  tpc_x_s2_foc_21_22= -999 ;
+
+
+  //=================================
+  // Tracking with TPC 23 and TPC 24 
+  //=================================
+  
+  if (b_tpc_xy[2]&&b_tpc_xy[3])
+    {
+      tpc_angle_x_s2_foc_23_24 = (tpc_x[3] - tpc_x[2])/dist_TPC23_TPC24*1000.;
+      tpc_angle_y_s2_foc_23_24 = (tpc_y[3] - tpc_y[2])/dist_TPC23_TPC24*1000.;
+      tpc_x_s2_foc_23_24 = -tpc_angle_x_s2_foc_23_24 * dist_TPC23_focS2/1000. + tpc_x[2]; //check
+      tpc_y_s2_foc_23_24 = -tpc_angle_y_s2_foc_23_24 * dist_TPC23_focS2/1000. + tpc_y[2]; //check
+
+    }
+  else  tpc_x_s2_foc_23_24= -999 ;
+
+
+  //=================================
+  // Tracking with TPC 22 and TPC 24 
+  //=================================
+  
+  if (b_tpc_xy[1]&&b_tpc_xy[3])
+    {
+      tpc_angle_x_s2_foc_22_24 = (tpc_x[3] - tpc_x[1])/dist_TPC22_TPC24*1000.;
+      tpc_angle_y_s2_foc_22_24 = (tpc_y[3] - tpc_y[1])/dist_TPC22_TPC24*1000.;
+      tpc_x_s2_foc_22_24 = -tpc_angle_x_s2_foc_22_24 * dist_TPC22_focS2/1000. + tpc_x[1]; //check
+      tpc_y_s2_foc_22_24 = -tpc_angle_y_s2_foc_22_24 * dist_TPC22_focS2/1000. + tpc_y[1]; //check
+      
+    }
+  else  tpc_x_s2_foc_22_24= -999 ;
+  
+  
+  //=====================================================
+  // Tracking with TPC 41 and TPC 42 (TPC 5 and 6) at S4  
+  //=====================================================
+  if (b_tpc_xy[4]&&b_tpc_xy[5])
+    {
+      
+      tpc_angle_x_s4 = (tpc_x[5] - tpc_x[4])/dist_TPC41_TPC42*1000.;
+      tpc_angle_y_s4 = (tpc_y[5] - tpc_y[4])/dist_TPC41_TPC42*1000.;
+      tpc_x_s4 = tpc_angle_x_s4 * dist_TPC42_focS4/1000. + tpc_x[5];
+      tpc_y_s4 = tpc_angle_y_s4 * dist_TPC42_focS4/1000. + tpc_y[5];
+      
+      music1_x1 = tpc_angle_x_s4 * (frs->dist_MUSIC3+frs->dist_MUSICa1)/1000. + tpc_x[5];
+      music1_x2 = tpc_angle_x_s4 * (frs->dist_MUSIC3+frs->dist_MUSICa2)/1000. + tpc_x[5];
+      music1_x3 = tpc_angle_x_s4 * (frs->dist_MUSIC3+frs->dist_MUSICa3)/1000. + tpc_x[5];
+      music1_x4 = tpc_angle_x_s4 * (frs->dist_MUSIC3+frs->dist_MUSICa4)/1000. + tpc_x[5];
+
+      music1_y1 = tpc_angle_y_s4 * (frs->dist_MUSIC3+frs->dist_MUSICa1)/1000. + tpc_y[5];
+      music1_y2 = tpc_angle_y_s4 * (frs->dist_MUSIC3+frs->dist_MUSICa2)/1000. + tpc_y[5];
+      music1_y3 = tpc_angle_y_s4 * (frs->dist_MUSIC3+frs->dist_MUSICa3)/1000. + tpc_y[5];
+      music1_y4 = tpc_angle_y_s4 * (frs->dist_MUSIC3+frs->dist_MUSICa4)/1000. + tpc_y[5];
+
+      
+      //S4 entrance of OTPC tracked with TPCs 5 and 6 for s388    
+      //tpc_x_s4_target2 = tpc_angle_x_s4 * dist_TPC6_target2/1000. + tpc_x[5];
+      //tpc_y_s4_target2 = tpc_angle_y_s4 * dist_TPC6_target2/1000. + tpc_y[5];
+    
+    }
+  
+  
+  // tracking to musics and scis (S323,410 exp.)
+  //Float_t dist_TPC3_SC21  = 1375.5;
+  //Float_t dist_TPC6_SC41  = 510.; //8.09.11 //check AEv
+
+  // X position at SC21 position:
+  // SC21 is before TPC3 and TPC4
+  //tpc_sc21_x = tpc_x[2] - dist_TPC3_SC21 * tpc_angle_x_s2_foc/1000.;
+ 
+
+  // Y position at SC21
+  //tpc_sc21_y = tpc_y[2] - dist_TPC3_SC21 * tpc_angle_y_s2_foc/1000.;
+
+  
+  // X position at SC41 
+  // SC41 is after TPC6
+  //tpc_sc41_x  = tpc_x[5] + dist_TPC6_SC41 * tpc_angle_x_s4 / 1000.;
+  
+  // Y position at SC41
+  //tpc_sc41_y = tpc_y[5] + dist_TPC6_SC41 * tpc_angle_y_s4 /1000.;
+
+
+//////////////////////////////////////////////////////////////////
+///  ***********Si Analysis**************************** //////////
+
+
+  // Si alpha
+  si_e1 = (si->si_factor1*si_adc1)+si->si_offset1;
+  si_e2 = (si->si_factor2*si_adc2)+si->si_offset2;
+  si_e3 = (si->si_factor3*si_adc3)+si->si_offset3;
+  si_e4 = (si->si_factor4*si_adc4)+si->si_offset4;
+  si_e5 = (si->si_factor5*si_adc5)+si->si_offset5;
+
+
+  //========================
+  //Active Stopper Analysis
+  //========================
+  
+  dssd_xmaxindex=-10;
+  dssd_xmaxenergy=1000;
+
+  
+  //for(int i=0;i<16;i++){
+  //dssd_e[15-i] = (si->dssd_factor[15-i]*(dssd_adc[i]+gRandom->Rndm()-0.5))+si->dssd_offset[15-i];	  	  }
+  
+
+  for(int i=0;i<16;i++){
+   //dssd_e[i] = dssd_adc[i];
+     dssd_e[i] = (si->dssd_factor[i]*dssd_adc[i])+si->dssd_offset[i];
+  }
+
+
+  for (int i=0 ; i<16 ; i++)
+      {
+        if (dssd_xmaxenergy<dssd_e[i])
+           {
+	     dssd_xmaxenergy=dssd_e[i];
+	     dssd_xmaxindex= i;
+	   }
+      }
+  
+	
+  dssd_ymaxindex=-10;
+  dssd_ymaxenergy=1000;
+  
+  
+  //for(int i=16;i<24;i++){
+  //dssd_e[i+8] = (si->dssd_factor[i+8]*(dssd_adc[i]+gRandom->Rndm()-0.5))+si->dssd_offset[i+8];
+  //}
+	
+  //for(int i=24;i<32;i++){
+  //dssd_e[i-8] = (si->dssd_factor[i-8]*(dssd_adc[i]+gRandom->Rndm()-0.5))+si->dssd_offset[i-8];
+  //}	
+   
+
+   for(int i=16;i<32;i++){
+      // dssd_e[i] = dssd_adc[i];
+	 dssd_e[i] = (si->dssd_factor[i]*dssd_adc[i])+si->dssd_offset[i];
+   }
+
+
+   for (int i=16 ; i<32 ; i++){
+     if(dssd_ymaxenergy<dssd_e[i])
+       {
+	 dssd_ymaxenergy=dssd_e[i];
+	 dssd_ymaxindex= i-16;
+       }	
+
+   }
+    
+    
+}
+
+
+
+void BS_Detector_System::FRS_Anal(){
+    
+    
+    
+    
+    
+}
+
 
 
 void BS_Detector_System::Setup_Parameters(){
@@ -1603,11 +3094,11 @@ void BS_Detector_System::Setup_Parameters(){
   //frs->rho0[0]   = 11.1340;    // FRS (D2) radius [m]   
   //frs->rho0[1]   = 11.2415;   // FRS (D3+D4)/2 radius [m] 
 
-  //26.06.2016 new effective radius
+  //26.06.2016 = new effective radius
   //frs->rho0[0]   = 11.1349;    // FRS (D2) radius [m]   
   //frs->rho0[1]   = 11.377;   // FRS (D3+D4)/2 radius [m] 
 
-  //05.07.2016 new effective radius S411_149 12C
+  //05.07.2016 = new effective radius S411_149 12C
   frs->rho0[0]   = 11.1374;    // FRS (D1+D2)/2 radius [m]   
   frs->rho0[1]   = 11.3516;    // FRS (D3+D4)/2 radius [m]
 
@@ -1772,12 +3263,6 @@ void BS_Detector_System::Setup_Parameters(){
   CrateFRS.insert(std::pair<int,int>(11,IdMod++));
   CrateFRS.insert(std::pair<int,int>(12,IdMod++));
   
-  cout<<"CRATE FRS VALUE  "<<CrateFRS[1]<<endl;
-  cout<<"CRATE FRS VALUE  "<<CrateFRS[9]<<endl;
-  cout<<"CRATE FRS VALUE  "<<CrateFRS[8]<<endl;
-  cout<<"CRATE FRS VALUE  "<<CrateFRS[11]<<endl;
-  cout<<"CRATE FRS VALUE  "<<CrateFRS[12]<<endl;
-
   //std::unordered_map<int,int> CrateTPC;
   std::map<int,int> CrateTPC;
   //CrateTPC.insert(std::pair<int,int>(5,IdMod++));
@@ -1810,13 +3295,6 @@ void BS_Detector_System::Setup_Parameters(){
   temp3->map=CrateUser;
   temp4->map=CrateMT;
   temp5->map=CrateSOFIA;
-  
-  cout<<"TEMP1 VALUE  "<<temp1->map[1]<<endl;
-  cout<<"TEMP1 VALUE  "<<temp1->map[9]<<endl;
-  cout<<"TEMP1 VALUE  "<<temp1->map[8]<<endl;
-  cout<<"TEMP1 VALUE  "<<temp1->map[11]<<endl;
-  cout<<"TEMP1 VALUE  "<<temp1->map[12]<<endl;
-
   
   TObjString* key1 = new TObjString("10");
   TObjString* key2 = new TObjString("20");
@@ -1873,7 +3351,7 @@ void BS_Detector_System::Setup_Parameters(){
   
   ElecMod->setMap();
 
-  ElecMod->Print();
+  //ElecMod->Print();
   
   cout << "Setup done " << endl;
 
@@ -1898,7 +3376,7 @@ int* BS_Detector_System::get_pdata(){return pdata;}
 
 //---------------------------------------------------------------
 
-Float_t FRS_Detector_System::rand0_5(){
+Float_t BS_Detector_System::rand0_5(){
     
   return rand()*1./RAND_MAX;// - 0.5; 
     
@@ -1906,7 +3384,7 @@ Float_t FRS_Detector_System::rand0_5(){
 
 //---------------------------------------------------------------
 
-Int_t FRS_Detector_System::getbits(Int_t value, int nword, int start, int length){
+Int_t BS_Detector_System::getbits(Int_t value, int nword, int start, int length){
     
   UInt_t buf = (UInt_t) value;
   buf = buf >> ((nword-1)*16 + start - 1);
@@ -1917,7 +3395,7 @@ Int_t FRS_Detector_System::getbits(Int_t value, int nword, int start, int length
 
 //---------------------------------------------------------------
 
-Int_t FRS_Detector_System::get2bits(Int_t value, int nword, int start, int length){
+Int_t BS_Detector_System::get2bits(Int_t value, int nword, int start, int length){
     
   UInt_t buf = (UInt_t) value;
   buf = buf >> ((nword-1)*32 + start - 1);
