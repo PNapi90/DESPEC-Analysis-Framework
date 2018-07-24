@@ -8,7 +8,11 @@ using namespace std;
 Match::Match(int Match_ID,int primary_type,int* primary_pos,int* interest_array,int len_interest,ULong64_t WR){
     this->Match_ID = Match_ID;
     Match_ID_Address = &(this->Match_ID);
-    
+
+    cout << "match info " << Match_ID << " " <<  primary_type << " " <<  primary_pos;
+    cout << " " <<  interest_array << " " <<  len_interest << " " <<  WR << endl;
+    for(int i = 0;i < 2;++i) cout << interest_array[i] << " ";
+    cout << endl;
     this->len_interest = len_interest;
     hit_types = new int[len_interest];
     for(int i = 0;i < len_interest;++i) hit_types[i] = interest_array[i];
@@ -78,6 +82,7 @@ int Match::get_amount_Hits(){
 //---------------------------------------------------------------
 
 bool Match::Check_Time(ULong64_t WR_tmp){
+    double threshold = 10;
     return (WR_tmp - WR) < threshold;
 }
 

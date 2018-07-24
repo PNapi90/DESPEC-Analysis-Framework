@@ -13,11 +13,11 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
     set_Det_Sys_specific_coincidences();
 
     Event = new Events**[6];
-    Event_WR = new double*[6];
+    Event_WR = new ULong64_t*[6];
     Event_position = new int*[6];
     for(int i = 0;i < 6;++i){
         Event[i] = new Events*[MEMORY_LIMIT];
-        Event_WR[i] = new double[MEMORY_LIMIT];
+        Event_WR[i] = new ULong64_t[MEMORY_LIMIT];
         Event_position[i] = new int[MEMORY_LIMIT];
         for(int j = 0;j < MEMORY_LIMIT;++j) Event[i][j] = nullptr;
         event_counter[i] = 0;
@@ -66,8 +66,6 @@ void Event_Store::store(Raw_Event* RAW){
     }
     int event_type = RAW->get_Event_type();
     create_Event(event_type,RAW);
-
-    event_counter[event_type]++;
 }
 
 //---------------------------------------------------------------
@@ -77,14 +75,14 @@ void Event_Store::purge(int type,int i){
     if(Event[type][i]){
         delete Event[type][i];
         //shift last event in list to free memory slot
-        Event[type][i] = Event[type][event_counter-1];
-        Event_WR[type][i] = Event_WR[type][event_counter-1];
-        Event_position[type][i] = Event_position[type][event_counter-1];
+        Event[type][i] = Event[type][event_counter[type]-1];
+        Event_WR[type][i] = Event_WR[type][event_counter[type]-1];
+        Event_position[type][i] = Event_position[type][event_counter[type]-1];
 
         //nullify pointer of last event
-        Event[type][event_counter-1] = nullptr;
-        Event_WR[type][event_counter-1] = -9999;
-        Event_position[type][event_counter-1en] = -9999;
+        Event[type][event_counter[type]-1] = nullptr;
+        Event_WR[type][event_counter[type]-1] = 0;
+        Event_position[type][event_counter[type]-1] = -9999;
         event_counter[type]--;
     }
     else cerr << "Event " << i << " already nullptr -> undefined behavior!" << endl;
@@ -99,20 +97,27 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
     double delta = 0;
     double WR_d = (double) WR;
     
+   
     //search through event data for smallest time difference
     for(int i = 0;i < event_counter[type];++i){
-        delta = abs(WR_d - Event_WR[type][i]);
+        
+        delta = (double) abs(WR - Event_WR[type][i]);
+        cout << delta << " ";
+        if(i % 10 == 0 && i > 0) cout << endl;
         if(in_time_windows(delta)){
             return_value = i;
             break;
         }
     }
+    cout << endl;
     return return_value;
 }
 
 //---------------------------------------------------------------
 
 inline bool Event_Store::in_time_windows(double delta){
+    double offset = 0;
+    double width = 2;
     return (abs(delta - offset) < width);
 }
 
@@ -125,7 +130,7 @@ void Event_Store::set_Match_ID_address(int type,int* primary_addr,int* match_id_
 //---------------------------------------------------------------
 
 int* Event_Store::get_position(int type){
-    return &Event_position[type][event_counter-1];
+    return &Event_position[type][event_counter[type]-1];
 }
 
 //---------------------------------------------------------------
@@ -143,7 +148,7 @@ void Event_Store::set_permission(int type,int* event_addr,int interest_pos){
 
 void Event_Store::Full_Permission(int type,int* event_addr){
     int position = *event_addr;
-    Event[type][position]->set_Match_ID_address_to_NULL_ALL();
+    Event[type][position]->set_Match_ID_address_NULL_ALL();
     purge(type,position);
 }
 
@@ -172,35 +177,30 @@ bool Event_Store::compare_match_ID(int type,int* match_ID,int* event_addr){
 
 void Event_Store::create_Event(int type,Raw_Event* RAW){
     switch(type){
-        case 0:{
-            Event[0][event_counter[0]] = new FRS_Event(sys_interest[0],iter[0],RAW);
+        case 0:
+            //Event[0][event_counter[0]] = new FRS_Event(sys_interest[0],iter[0],RAW);
             break;
-        }
-        case 1:{
-            Event[1][event_counter[1]] = new AIDA_Event(sys_interest[1],iter[1],RAW);
+        case 1:
+           // Event[1][event_counter[1]] = new AIDA_Event(sys_interest[1],iter[1],RAW);
             break;
-        }
-        case 2:{
+        case 2:
             Event[2][event_counter[2]] = new PLASTIC_Event(sys_interest[2],iter[2],RAW);
             break;
-        }
-        case 3:{
+        case 3:
             Event[3][event_counter[3]] = new FATIMA_Event(sys_interest[3],iter[3],RAW);
             break;
-        }
-        case 4:{
-            Event[4][event_counter[4]] = new GALILEO_Event(sys_interest[4],iter[4],RAW);
+        case 4:
+            //Event[4][event_counter[4]] = new GALILEO_Event(sys_interest[4],iter[4],RAW);
             break;
-        }
-        case 5:{
-            Event[5][event_counter[5]] = new FINGER_Event(sys_interest[5],iter[5],RAW);
+        case 5:
+            //Event[5][event_counter[5]] = new FINGER_Event(sys_interest[5],iter[5],RAW);
             break;
-        }
-        default:{
+        default:
             cerr << "Default error in Event_Store switch!" << endl;
             exit(0);
-        }
     }
+    Event_WR[type][event_counter[type]] = RAW->get_WR();
+    event_counter[type]++;
 }
 
 //---------------------------------------------------------------
@@ -224,4 +224,10 @@ void Event_Store::set_Det_Sys_specific_coincidences(){
         }
     }
 }
+//---------------------------------------------------------------
+
+int Event_Store::get_Match_ID(int type,int pos,int j){
+    return Event[type][pos]->get_Match_ID(j);
+}
+
 //---------------------------------------------------------------

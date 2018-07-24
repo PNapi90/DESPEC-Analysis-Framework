@@ -9,16 +9,18 @@
 #include "EventBuilder.cxx"
 
 #include "Event_Store.h"
-
+#include "Match.h"
 
 
 class Time_EventBuilder : public EventBuilder{
 
 private:
-	
+	const int MEMORY_LIMIT = 1000000;
 
-    int match_amount;
+    int match_amount[100];
     int found_matches;
+    int iter[6];
+    int expired_counter;
 
     int max_calls[6];
     bool Used_Systems[6];
@@ -26,13 +28,16 @@ private:
 
     bool** relevance_array;
 
-	int amount_interests;
+	int amount_interest;
     int* length_interest;
 	int** interest_array;
 	
+    Match*** Matches;
 	Event_Store* Event_Storage;
 
     void create_relevance_array();
+    void get_used_Systems();
+    void get_DELETE_Permission(int,int);
 
 public:
 	Time_EventBuilder(int,int*,int**);

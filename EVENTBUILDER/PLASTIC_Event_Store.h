@@ -24,7 +24,7 @@ private:
 
 
 public:
-	PLASTIC_Event_Store();
+	PLASTIC_Event_Store(int*,int,Raw_Event*);
 	~PLASTIC_Event_Store();
 	
 

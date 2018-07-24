@@ -6,7 +6,9 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-Raw_Event::Raw_Event(){}
+Raw_Event::Raw_Event(){
+    Event_Type = -1;
+}
 
 //---------------------------------------------------------------
 
@@ -95,6 +97,13 @@ void Raw_Event::set_DATA_ID_Timestamp(Float_t FRS_timestamp,Float_t FRS_ts,Float
 
 ################################################################# */
 
+
+int Raw_Event::get_Event_type(){
+    return Event_Type;
+}
+
+
+
 void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,double* Qs_Raw,double* Ql,double* Qs,double* TDC,ULong64_t* QDC_c,ULong64_t* QDC_f,int* det_ids_QDC,int* det_ids_TDC){
 	this->FAT_FIRED = FAT_FIRED;
 	this->TDC_FIRED = TDC_FIRED;
@@ -159,6 +168,8 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,doubl
 		cout << endl;
 
 	}
+
+    Event_Type = 3;
 }
 
 //---------------------------------------------------------------
@@ -202,6 +213,8 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 			}
 		}	
 	}
+
+    Event_Type = 2;
 }
 
 //---------------------------------------------------------------
@@ -219,6 +232,8 @@ void Raw_Event::set_DATA_GALILEO(int GAL_FIRED,ULong64_t* sum_time,int* pileup,i
 	    GALILEO_chan_energy[i] = chan_en[i];
 
 	}
+
+    Event_Type = 4;
 }
 //TEMPORARY GETTERS FOR FRS, FATIMA, PLASTIC, and GALILEO
 

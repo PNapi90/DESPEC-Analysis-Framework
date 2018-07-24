@@ -123,7 +123,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	DIFF_ARR = new TH1*[36];
 	for(int i = 0;i < 36;++i) DIFF_ARR[i] = NULL;//MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),300,-30000,0);
 
-	WR_used = false;
+	WR_used = true;
 
 	//used_systems
 	get_used_Systems();
@@ -181,13 +181,13 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	get_interest_arrays();
 
-	/*
+	
 	if(!SKIP_EVT_BUILDING){
 		EvtBuilder = new EventBuilder*[2];
 		EvtBuilder[0] = new Time_EventBuilder(amount_interest,length_interest,interest_array);
 		//EvtBuilder[1] = new Space_EventBuilder();
 	}
-	*/
+	
 	//Raw_Event object to handle data
 	RAW = new Raw_Event();
 
@@ -300,7 +300,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	bool used[5];
 	for(int i = 0;i < 5;++i) used[i] = false;
 	
-	bool WHITE_RABBIT_USED = false;
+	bool WHITE_RABBIT_USED = true;
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -338,7 +338,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 3 && false){
+		if(PrcID_Conv == 3 || PrcID_Conv == 2){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex << *(pdata + i) << " ";
@@ -361,17 +361,21 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		//get data from subevent
 		Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
 		
+		//set White Rabbit to RAW
+		RAW->set_WR(WR_tmp[iterator]);
+		cout << dec;
 
 		//if(PrcID_Conv == 3) Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
 
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
 		
-		/*	
+
+			
 		if(!SKIP_EVT_BUILDING){
 			EvtBuilder[0]->set_Event(RAW);
 			//EvtBuilder[1]->set_Event(RAW);
 		}
-		*/
+		
 		
 		if(cals_done) break;
 		//continue;

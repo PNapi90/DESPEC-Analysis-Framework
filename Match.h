@@ -1,6 +1,8 @@
 #ifndef MATCH_H
 #define MATCH_H
 
+#include <iostream>
+
 typedef unsigned long long ULong64_t;
 
 class Match{

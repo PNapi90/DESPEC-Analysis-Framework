@@ -3,10 +3,11 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <cmath>
 
 #include "Raw_Event.h"
 
-#include "Events.cxx"
+#include "Events.h"
 
 //#include "FRS_Event.h"
 //#include "AIDA_Event.h"
@@ -28,17 +29,18 @@ private:
 
 	Events*** Event;
 
-	double** Event_WR;
+	ULong64_t** Event_WR;
 	int** Event_position;
 
-    int amount_interests;
+    int amount_interest;
     int* length_array;
-    int** interest_array
+    int* length_interest;
+    int** interest_array;
 
 	int event_counter[6];
     
     int iter[6];
-    int* sys_interest;
+    int** sys_interest;
 
 	void purge(int,int);
 	void create_Event(int,Raw_Event*);
@@ -57,13 +59,12 @@ public:
 	bool compare_match_ID(int,int*,int*);
 
 	void store(Raw_Event*);
-	void Time_Comparison(int,ULong64_t);
 	void set_Match_ID_address(int,int*,int*);
 
+    int get_Match_ID(int,int,int);
+    int Time_Comparison(int,ULong64_t);
+
 	int* get_position(int);
-
-
-
 
 };
 

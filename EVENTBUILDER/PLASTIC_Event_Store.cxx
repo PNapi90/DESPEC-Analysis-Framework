@@ -11,7 +11,6 @@ PLASTIC_Event_Store::PLASTIC_Event_Store(){
 		Event[i] = NULL;
 		Event_WR[i] = -9999;
 	}
-
 	event_counter = 0;
 }
 

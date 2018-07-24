@@ -48,6 +48,9 @@
 
 #include "Raw_Event.h"
 
+#include "EventBuilder.cxx"
+#include "Time_EventBuilder.h"
+
 #include <string>
 
 
@@ -150,6 +153,8 @@ using namespace std;
 			Data_Stream** data_stream;
 			White_Rabbit* WR;
 			Raw_Event* RAW;
+
+			EventBuilder** EvtBuilder;
 
 			int amount_interest;
 			int* length_interest;

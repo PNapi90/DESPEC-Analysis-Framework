@@ -17,16 +17,22 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
         interest_array[i] = new int[length_interest[i]];
         for(int j = 0;j < length_interest[i];++j) interest_array[i][j] = interest_array_tmp[i][j];
     }
+    
+    Matches = new Match**[amount_interest];
+    for(int i = 0;i < amount_interest;++i){
+        Matches[i] = new Match*[MEMORY_LIMIT];
+        for(int j = 0;j < MEMORY_LIMIT;++j) Matches[i][j] = nullptr;
+    }
 
     found_matches = 0;
     for(int i = 0;i < 100;++i) match_amount[i] = 0;
 
     create_relevance_array();
 
-    check_kinds_overlap();
-
     //set event storage
     Event_Storage = new Event_Store(amount_interest,length_interest,interest_array);
+
+    expired_counter = 0;
 
 }
 
@@ -39,33 +45,14 @@ Time_EventBuilder::~Time_EventBuilder(){
     for(int i = 0;i < amount_interest;++i){
         delete[] interest_array[i];
         delete[] relevance_array[i];
+        for(int j = 0;j < MEMORY_LIMIT;++j) if(Matches[i][j]) delete Matches[i][j];
+        delete[] Matches[i];
     }
+    delete[] Matches;
     delete[] relevance_array;
     delete[] interest_array;
     delete[] length_interest;
 
-}
-
-//---------------------------------------------------------------
-
-void Time_EventBuilder::check_kinds_overlap(){
-    //maximum amount of calls for each system
-    for(int i = 0;i < 6;++i) max_calls[i] = 0;
-
-    //loop over all possible Detector Systems
-    for(int i = 0;i < 6;++i){
-        iter[i] = 0;
-        for(int j = 0;j < amount_interest;++j){
-            for(int k = 0;k < length_interest[j];++k){
-                max_calls[interest_array[j][k]]++;
-                if(interest_array[j][k] == i){
-                    overlap_arr[i][iter[i]] = j;
-                    iter[i]++;
-                    break;
-                }
-            }
-        }
-    }
 }
 
 //---------------------------------------------------------------
@@ -98,8 +85,8 @@ void Time_EventBuilder::create_relevance_array(){
 
 void Time_EventBuilder::set_Event(Raw_Event* RAW){
     //get PrcID from RAW
-    int tmp_type = RAW->get_Type();
-
+    int tmp_type = RAW->get_Event_type();
+    cout << tmp_type << endl;
     //PrcID check
     if(tmp_type > 5 || tmp_type < 0){
         cerr << "Unknown PrcID in Time_EventBuilder. Raw_Event sent wrong ID" << endl;
@@ -108,11 +95,17 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 
     ULong64_t WR = RAW->get_WR();
 
+    cout << "WR " << WR << endl;
+
     //save event in respective store
     Event_Storage->store(RAW);
 
+    cout << "Event stored" << endl;
+
     //pass by pointer to allow dynamic change of position
     int* tmp_data_pos = Event_Storage->get_position(tmp_type);
+
+    cout << "Data pos " << tmp_data_pos << " " << *tmp_data_pos << endl;
 
     //hits[i] != -1 if hit in system i
     int hits[6];
@@ -125,13 +118,13 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     for(int i = 0;i < 6;++i){
         hits[i] = -1;
         match_ID[i] = -1;
-        if(i != tmp_type){
+        if(i != tmp_type && relevance_system[i]){
             //hit id of smallest WR difference of system tmp_type to i
             //if -1 -> no value within threshold window found
             hits[i] = Event_Storage->Time_Comparison(i,WR);
 
             //check if coincidence and system relevant for user analysis
-            if(hits[i] == -1 || !relevance_system[i]) continue;
+            if(hits[i] == -1) continue;
 
             //check Match objects for each relevance array row
             for(int j = 0;j < amount_interest;++j){
@@ -175,13 +168,17 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 
     //no matches in data found -> create new match object
     if(found_matches == 0){
+        cout << "no matches found -> creating new object" << endl;
         //loop over user defined coincidence list
         for(int j = 0;j < amount_interest;++j){
             //if new event's system relevant for analysis
             if(relevance_array[tmp_type][j]){
+                cout << "system relevant!" << endl;
+                cout << j << " " << match_amount[j] << endl;
                 //create new Match object with 
-                Matches[j][match_amount[j]] = new Match(match_amount[j],j,tmp_data_pos,interest_array[j],length_interest[j]);
+                Matches[j][match_amount[j]] = new Match(match_amount[j],j,tmp_data_pos,interest_array[j],length_interest[j],WR);
                 match_amount[j]++;
+                cout << "Match created" << endl;
             }
         }
     }
@@ -192,41 +189,49 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     int** hit_addresses = nullptr;
     int* hit_types = nullptr;
 
-    for(int j = 0;j < amount_interest;++j){
-        for(int k = 0;k < match_amount[j];++k){
-            //check if Match event is already expired
-            //=> difference of WR of Match to current WR too large
-            expired = Matches[j][k]->Check_Time(WR);
-            if(expired){
-                //get amount of hits and types in Match
-                match_hits = Matches[j][k]->get_amount_Hits();
-                hit_addresses = Matches[j][k]->get_Address_Array();
-                hit_types = Matches[j][k]->get_hit_types();
-                match_id_ptr = Matches[j][k]->get_Address();
+    if(expired_counter == 100){
+        cout << "Expired if" << endl;
+        for(int j = 0;j < amount_interest;++j){
+            for(int k = 0;k < match_amount[j];++k){
+                //check if Match event is already expired
+                //=> difference of WR of Match to current WR too large
+                expired = Matches[j][k]->Check_Time(WR);
+                if(expired){
+                    //get amount of hits and types in Match
+                    match_hits = Matches[j][k]->get_amount_Hits();
+                    hit_addresses = Matches[j][k]->get_Address_Array();
+                    hit_types = Matches[j][k]->get_hit_types();
+                    match_id_ptr = Matches[j][k]->get_Address();
 
-                //loop over all events in Match
-                for(int o = 0;o < match_hits;++o){
-                    //get match_id pointer to compare, if Event already deleted
-                    if(Event_Storage->compare_match_ID(hit_types[o],match_id_ptr,hit_addresses[o])){
-                        Event_Storage->Full_Permission(hit_types[o],hit_addresses[o]);
+                    cout << match_hits << " " << hit_addresses << " " << hit_types << " " << match_id_ptr << endl;
+
+                    //loop over all events in Match
+                    for(int o = 0;o < match_hits;++o){
+                        //get match_id pointer to compare, if Event already deleted
+                        if(Event_Storage->compare_match_ID(hit_types[o],match_id_ptr,hit_addresses[o])){
+                            Event_Storage->Full_Permission(hit_types[o],hit_addresses[o]);
+                        }
                     }
+
+                    delete Matches[j][k];
+
+                    //fill empty hole in Match data and reset address variables
+                    Matches[j][k] = Matches[j][match_amount[j]];
+                    Matches[j][k]->set_Address(k);
+
+                    //last event pointing to nullptr
+                    Matches[j][match_amount[j]] = nullptr;
+                    //decrease amount of current Matches
+                    match_amount[j]--;
+                    //decrease iterator(avoids loosing access to shifted Matches)
+                    k--;
                 }
-
-                delete Matches[j][k];
-
-                //fill empty hole in Match data and reset address variables
-                Matches[j][k] = Matches[j][match_amount[j]];
-                Matches[j][k]->set_Address(k);
-
-                //last event pointing to nullptr
-                Matches[j][match_amount[j]] = nullptr;
-                //decrease amount of current Matches
-                match_amount[j]--;
-                //decrease iterator(avoids loosing access to shifted Matches)
-                k--;
             }
         }
+        expired_counter = 0;
     }
+
+    expired_counter++;
 }
 
 //---------------------------------------------------------------
