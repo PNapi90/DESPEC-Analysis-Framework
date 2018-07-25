@@ -12,6 +12,8 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
 
     set_Det_Sys_specific_coincidences();
 
+    tmp_pos = nullptr;
+
     Event = new Events**[6];
     Event_WR = new ULong64_t*[6];
     Event_position = new int*[6];
@@ -72,17 +74,20 @@ void Event_Store::store(Raw_Event* RAW){
 
 void Event_Store::purge(int type,int i){
     //delete event
-    if(Event[type][i]){
+    if(i != -9999 && Event[type][i]){
         delete Event[type][i];
+        Event[type][i] = nullptr;
         //shift last event in list to free memory slot
-        Event[type][i] = Event[type][event_counter[type]-1];
-        Event_WR[type][i] = Event_WR[type][event_counter[type]-1];
-        Event_position[type][i] = Event_position[type][event_counter[type]-1];
-
         //nullify pointer of last event
+        if(event_counter[type] > 2){
+            Event[type][i] = Event[type][event_counter[type]-1];
+            Event_WR[type][i] = Event_WR[type][event_counter[type]-1];
+            Event_position[type][i] = Event_position[type][event_counter[type]-1];
+        }
         Event[type][event_counter[type]-1] = nullptr;
         Event_WR[type][event_counter[type]-1] = 0;
         Event_position[type][event_counter[type]-1] = -9999;
+
         event_counter[type]--;
     }
     else cerr << "Event " << i << " already nullptr -> undefined behavior!" << endl;
@@ -97,19 +102,21 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
     double delta = 0;
     double WR_d = (double) WR;
     
-   
+    cout << "-----------------" << endl;
     //search through event data for smallest time difference
     for(int i = 0;i < event_counter[type];++i){
-        
         delta = (double) abs(WR - Event_WR[type][i]);
-        cout << delta << " ";
+        
+        cout << delta/1000. << " ";
         if(i % 10 == 0 && i > 0) cout << endl;
+        
         if(in_time_windows(delta)){
             return_value = i;
             break;
         }
     }
     cout << endl;
+    cout << "-----------------" << endl;
     return return_value;
 }
 
@@ -117,27 +124,33 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
 
 inline bool Event_Store::in_time_windows(double delta){
     double offset = 0;
-    double width = 2;
-    return (abs(delta - offset) < width);
+    double width = 100;
+    return (abs(delta - offset)/1000. < width);
 }
 
 //---------------------------------------------------------------
 
 void Event_Store::set_Match_ID_address(int type,int* primary_addr,int* match_id_addr){
-    Event[type][*primary_addr]->set_Match_ID_address(match_id_addr);
+    int pos = *primary_addr;
+    Event[type][pos]->set_Match_ID_address(match_id_addr);
 }
 
 //---------------------------------------------------------------
 
 int* Event_Store::get_position(int type){
-    return &Event_position[type][event_counter[type]-1];
+    tmp_pos = &Event_position[type][event_counter[type]-1];
+    return tmp_pos;
 }
 
 //---------------------------------------------------------------
 
 void Event_Store::set_permission(int type,int* event_addr,int interest_pos){
     int position = *event_addr;
-    //set 
+    cout << "jjj " << type << " " << event_addr << " " << interest_pos << " " << position << endl;
+    if(position == -9999){
+        purge(type,position);
+        return;
+    }
     bool full_permission = Event[type][position]->Permission(interest_pos);
 
     //if all events of interest happend -> delete data
@@ -157,17 +170,25 @@ void Event_Store::Full_Permission(int type,int* event_addr){
 bool Event_Store::compare_match_ID(int type,int* match_ID,int* event_addr){
 
     //check if Event still exists
+    cout << type << " " << match_ID << " " << event_addr << endl;
+    if(!event_addr) return false;
     if(Event[type][*event_addr]){
         bool correct_match = false;
-        int internal_counter = Event[type][*event_addr]->get_iterator();
 
+        int internal_counter = Event[type][*event_addr]->get_iterator();
+        int** match_ID_Event = Event[type][*event_addr]->get_Match_ID_address();
+        
         //check if match_id still known (should be the case!)
         for(int i = 0;i < internal_counter;++i){
-            correct_match = correct_match || (match_ID == Event[type][*event_addr]->get_Match_ID_address(i));
+            cout << match_ID << " " << match_ID_Event[i] << endl;
+            correct_match = correct_match || (match_ID == match_ID_Event[i]);
         }
         if(!correct_match){
             cerr << "Possible pointer problem in Event_Store::compare_match_ID(...)" << endl;
         }
+
+        match_ID_Event = nullptr;
+
         return correct_match;
     }
     return false;
@@ -199,7 +220,9 @@ void Event_Store::create_Event(int type,Raw_Event* RAW){
             cerr << "Default error in Event_Store switch!" << endl;
             exit(0);
     }
+    cout << "created event " << type << " at " << event_counter[type] << endl;
     Event_WR[type][event_counter[type]] = RAW->get_WR();
+    Event_position[type][event_counter[type]] = event_counter[type];
     event_counter[type]++;
 }
 

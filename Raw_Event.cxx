@@ -155,7 +155,7 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,doubl
 		if(!used_for_QDC[active_det]){
 			Det_Nums[i] = det_ids_TDC[active_det];
 			TDC_timestamp[i] = TDC[active_det];
-;
+
 			if(active_det == 51 && position != -5 && !ch51 && TDC_FIRED == 3){
 				ch51 = true;
 				time_difference = ((double) TDC_timestamp[i]) - ((double) TDC_timestamp[0]);

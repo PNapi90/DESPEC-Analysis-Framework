@@ -2,6 +2,8 @@
 #define MATCH_H
 
 #include <iostream>
+#include <cstdlib>
+
 
 typedef unsigned long long ULong64_t;
 

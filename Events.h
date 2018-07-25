@@ -29,7 +29,7 @@ public:
     int get_iterator();
     int get_Match_ID(int);
 
-    int* get_Match_ID_address(int);
+    int** get_Match_ID_address();
 };
 
 #endif

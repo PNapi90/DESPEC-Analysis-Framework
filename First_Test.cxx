@@ -338,7 +338,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 3 || PrcID_Conv == 2){
+		if((PrcID_Conv == 3 || PrcID_Conv == 2) && false){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex << *(pdata + i) << " ";
@@ -351,8 +351,6 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//send subevent to respective unpacker
 		Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
-		
-		
 		
 		//get mbs stream data from unpacker (pointer copy solution)
 		pdata = Detector_Systems[PrcID_Conv]->get_pdata();

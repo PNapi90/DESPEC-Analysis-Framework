@@ -33,6 +33,7 @@ private:
 	int** Event_position;
 
     int amount_interest;
+    int* tmp_pos;
     int* length_array;
     int* length_interest;
     int** interest_array;
