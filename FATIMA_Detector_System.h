@@ -26,34 +26,41 @@ private:
 
     int he_iter;
 	int max_am_dets;
+	int FAT_evt;
 
 	int* pdata;
-
+	
+	//These are indexed by fired_QDC_amount
+	int fired_QDC_amount;
+	int* det_ids_QDC;
 	double* QLong;
-	double* QShort;
 	double* QLong_Raw;
 	double* QShort_Raw;
-	
 	ULong64_t* QDC_Time_Coarse;
-	ULong64_t* QDC_Time_Fine;
-	double* TDC_Time;
+	double* QDC_Time_Fine;
+	
+	//These are indexed by fired_TDC_amount
+	int fired_TDC_amount;
+	int* det_ids_TDC;
+	ULong64_t* TDC_Time_raw;		//This is the raw TDC time
+	double* TDC_Time_ns;		//This is the raw TDC time
 
-	int* det_ids_QDC;
-    int* det_ids_TDC;
 
-	int** det_ID;
+	//These are used for mapping mod,chn to detector
+	int** det_ID_QDC;
 	int** det_ID_TDC;
 
 	bool exiter;
 	bool no_data;
     bool QDC_DATA;
-    bool gain_match_used;
     std::string gain_match_filename;
     
-    int num_TDC_modules = 1;
+    bool gain_match_used; //Set in the constructor
+    int num_TDC_modules;  //Set in the constructor
 
+	//This is used during individual module unpacking
     int Fired_QDC_Channels[100][2];
-    int fired_QDC_amount,fired_TDC_amount;
+    
 
 	void load_board_channel_file();
 	void reset_fired_channels();
@@ -63,9 +70,12 @@ private:
 	void Gain_Match_QDC(int);
 	void Calibrate_TDC(int);
 
+	//This could be used to activate deactivate individual
+	//detectors
 	bool wired_QDC(int,int);
 	bool wired_TDC(int,int);
 
+	//??
     bool check_additional(int);
 
     FATIMA_Time_Calibration* FATIMA_T_CALIB;
@@ -98,6 +108,7 @@ public:
     int* tmp_get_iterator(){return NULL;};
 
     bool calibration_done(){return false;};
+    //bool do_gain_matching(){return gain_match_used;};
 
     void write();
     

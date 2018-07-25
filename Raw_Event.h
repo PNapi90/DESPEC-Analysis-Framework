@@ -72,18 +72,25 @@ private:
 	ULong64_t WR;
 
 	//FATIMA
-	int FAT_FIRED, TDC_FIRED, BOTH_FIRED;
-	int FAT_Both[100];
-	int Det_Nums[100];
-	double E[100];
-	double QShort[100];
-	double E_Raw[100];
-	double QShort_Raw[100];
-	double TDC_timestamp[100];
-	ULong QDC_t_coarse[100];
-	ULong QDC_t_fine[100];
-	bool used_for_QDC[100];
-	double time_difference;
+	int    FAT_DET_FIRED;         //number of completed detectors in evt
+	int    FAT_id[100];           //id according to allocation file
+	double FAT_E[100];            //energy (calibrated nad gain matched)
+	double FAT_ratio[100];		  //Qshort/Qlong
+	double FAT_t[100];			  //tdc time  (ns, shifted)
+	double FAT_t_qdc[100];		  //qdc time  (ns, shifted)
+	//For trouble debugging:
+	int    FAT_QDCs_FIRED;
+	int    FAT_QDC_id[100];
+	double FAT_QLong[100];		  //calibrated
+	double FAT_QLong_Raw[100];
+	double FAT_QShort_Raw[100];
+	ULong  FAT_QDC_t_coarse[100];
+	double FAT_QDC_t_fine[100];  //qdc time (ns)
+	//
+	int	   FAT_TDCs_FIRED;
+	int    FAT_TDC_id[100];
+	double FAT_TDC_timestamp[100];//tdc time raw
+	
 
 	//PLASTIC
 	int iterator[4];
@@ -138,7 +145,11 @@ public:
 
 	########################################################## */
 
-	void set_DATA_FATIMA(int,int,double*,double*,double*,double*,double*,ULong64_t*,ULong64_t*,int*,int*);
+	void set_DATA_FATIMA(int,int,
+						 double*,double*,double*,
+						 ULong64_t*,double*,
+						 ULong64_t*,double*,
+						 int*,int*);
 	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*);
 	void set_DATA_GALILEO(int,ULong64_t*,int*,int*,ULong64_t*,double*,int*);
 
@@ -193,21 +204,25 @@ public:
 
 
 	//temporary FATIMA getters
-	int get_FATIMA_am_Fired();
-	double get_FATIMA_E(int);
-	double get_FATIMA_QShort(int);
-	double get_FATIMA_E_Raw(int);
-	double get_FATIMA_QShort_Raw(int);
-	double get_FATIMA_TDC_T(int);
-	ULong64_t get_FATIMA_QDC_T_Coarse(int);
-	ULong64_t get_FATIMA_QDC_T_Fine(int);
-	int get_FATIMA_det_id(int);
-	int get_FATIMA_am_Fired_TDC();
-	bool get_FATIMA_QDC_TDC_LINKED(int);
-	bool CH_51_FIRED();
-	double get_FATIMA_Time_Diff();
-	int get_FATIMA_Both(int);
-	int get_am_FATIMA_Both();
+	  int get_FAT_det_fired();
+	  int get_FAT_id(int i);
+   double get_FAT_E(int i);
+   double get_FAT_ratio(int i);
+   double get_FAT_t(int i);
+   double get_FAT_t_qdc(int i);
+   
+      int get_FAT_QDCs_fired();
+      int get_FAT_QDC_id(int i);
+   double get_FAT_QLong(int i);
+   double get_FAT_QShort_Raw(int i);
+   double get_FAT_QLong_Raw(int i);
+ULong64_t get_FAT_QDC_t_Coarse(int i);
+   double get_FAT_QDC_t_Fine(int i);
+
+      int get_FAT_TDCs_fired();
+	  int get_FAT_TDC_id(int i);
+   double get_FAT_TDC_timestamp(int i);
+	
 
 	//temporary PLASTIC getters
 	int get_PLASTIC_am_Fired(int);

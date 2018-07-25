@@ -95,8 +95,47 @@ void Raw_Event::set_DATA_ID_Timestamp(Float_t FRS_timestamp,Float_t FRS_ts,Float
 
 ################################################################# */
 
-void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,double* Qs_Raw,double* Ql,double* Qs,double* TDC,ULong64_t* QDC_c,ULong64_t* QDC_f,int* det_ids_QDC,int* det_ids_TDC){
-	this->FAT_FIRED = FAT_FIRED;
+void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
+								double* Ql_Raw,double* Qs_Raw,
+								double* Ql,
+								ULong64_t* TDC, double* TDC_ns,
+								ULong64_t* QDC_c, double* QDC_f,
+								int* det_ids_QDC,int* det_ids_TDC){
+	
+	
+	this->FAT_QDCs_FIRED = QDC_FIRED;
+	this->FAT_TDCs_FIRED = TDC_FIRED;
+	int dets_fired = 0;
+	for (int i=0; i<QDC_FIRED; i++) {
+		this->FAT_QDC_id[i] = det_ids_QDC[i];
+		this->FAT_QLong[i]  = Ql[i];
+		this->FAT_QLong_Raw[i]  = Ql_Raw[i];
+		this->FAT_QShort_Raw[i] = Qs_Raw[i];
+		this->FAT_QDC_t_coarse[i] = QDC_c[i];
+		this->FAT_QDC_t_fine[i] = QDC_f[i];
+		for (int j=0; j<TDC_FIRED; j++) {
+			if (det_ids_QDC[i] == det_ids_TDC[j]) {
+				this->FAT_id[dets_fired] = det_ids_QDC[i];
+				this->FAT_E[dets_fired] = Ql[i];
+				this->FAT_ratio[dets_fired] = (double) Qs_Raw[i]/Ql_Raw[i];
+				this->FAT_t[dets_fired] = TDC_ns[i];
+				this->FAT_t_qdc[dets_fired] = QDC_c[i];
+				dets_fired++;
+			}
+		}
+	}
+	this->FAT_DET_FIRED = dets_fired;
+	
+	for (int i=0; i<TDC_FIRED; i++) {
+		this->FAT_TDC_id[i]        = det_ids_TDC[i];
+		this->FAT_TDC_timestamp[i] = TDC[i];
+	}
+
+	
+	
+	
+	
+	/*this->FAT_FIRED = FAT_FIRED;
 	this->TDC_FIRED = TDC_FIRED;
 
 	int position = -5;
@@ -159,6 +198,7 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,doubl
 		cout << endl;
 
 	}
+	*/
 }
 
 //---------------------------------------------------------------
@@ -288,61 +328,35 @@ ULong64_t Raw_Event::get_WR(){return WR;}
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_FATIMA_am_Fired(){return FAT_FIRED;}
+      int Raw_Event::get_FAT_det_fired(){return FAT_DET_FIRED;}
+	  int Raw_Event::get_FAT_id(int i){return FAT_id[i];}
+   double Raw_Event::get_FAT_E(int i){return FAT_E[i];}
+   double Raw_Event::get_FAT_ratio(int i){return FAT_ratio[i];}
+   double Raw_Event::get_FAT_t(int i){return FAT_t[i];}
+   double Raw_Event::get_FAT_t_qdc(int i){return FAT_t_qdc[i];}
+
+      int Raw_Event::get_FAT_QDCs_fired(){return FAT_QDCs_FIRED;}
+      int Raw_Event::get_FAT_QDC_id(int i){return FAT_QDC_id[i];}
+   double Raw_Event::get_FAT_QLong(int i){return FAT_QLong[i];}
+   double Raw_Event::get_FAT_QShort_Raw(int i){return FAT_QShort_Raw[i];}
+   double Raw_Event::get_FAT_QLong_Raw(int i){return FAT_QLong_Raw[i];}
+ULong64_t Raw_Event::get_FAT_QDC_t_Coarse(int i){return FAT_QDC_t_coarse[i];}
+   double Raw_Event::get_FAT_QDC_t_Fine(int i){return FAT_QDC_t_fine[i];}
+
+      int Raw_Event::get_FAT_TDCs_fired(){return FAT_TDCs_FIRED;}
+      int Raw_Event::get_FAT_TDC_id(int i){return FAT_TDC_id[i];}
+   double Raw_Event::get_FAT_TDC_timestamp(int i){return FAT_TDC_timestamp[i];}
+
 
 //---------------------------------------------------------------
 
-bool Raw_Event::CH_51_FIRED(){return ch51;};
 
 //---------------------------------------------------------------
 
-double Raw_Event::get_FATIMA_Time_Diff(){return time_difference;}
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_FATIMA_am_Fired_TDC(){return TDC_FIRED;}
 
-//---------------------------------------------------------------
-
-bool Raw_Event::get_FATIMA_QDC_TDC_LINKED(int i){return used_for_QDC[i];}
-
-//---------------------------------------------------------------
-
-double Raw_Event::get_FATIMA_E(int i){return E[i];}
-//---------------------------------------------------------------
-
-double Raw_Event::get_FATIMA_QShort(int i){return E[i];}
-
-//---------------------------------------------------------------
-
-double Raw_Event::get_FATIMA_E_Raw(int i){return E_Raw[i];}
-//---------------------------------------------------------------
-
-double Raw_Event::get_FATIMA_QShort_Raw(int i){return QShort_Raw[i];}
-
-//---------------------------------------------------------------
-
-double Raw_Event::get_FATIMA_TDC_T(int i){return TDC_timestamp[i];}
-
-//---------------------------------------------------------------
-
-ULong64_t Raw_Event::get_FATIMA_QDC_T_Coarse(int i){return QDC_t_coarse[i];}
-
-//---------------------------------------------------------------
-
-ULong64_t Raw_Event::get_FATIMA_QDC_T_Fine(int i){return QDC_t_fine[i];}
-
-//---------------------------------------------------------------
-
-int Raw_Event::get_FATIMA_det_id(int i){return Det_Nums[i];}
-
-//---------------------------------------------------------------
-
-int Raw_Event::get_FATIMA_Both(int i){return FAT_Both[i];}
-	
-//---------------------------------------------------------------
-
-int Raw_Event::get_am_FATIMA_Both(){return BOTH_FIRED;}
 	
 //---------------------------------------------------------------
 
