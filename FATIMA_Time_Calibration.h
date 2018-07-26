@@ -19,7 +19,7 @@ public:
     FATIMA_Time_Calibration();
     ~FATIMA_Time_Calibration();
     
-    double Calibrate(double,int);
+    double Calibrate_TDC(unsigned long,int);
     double Calibrate_QDC(double,int);
 };
 

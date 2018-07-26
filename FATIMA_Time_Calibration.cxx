@@ -61,8 +61,8 @@ void FATIMA_Time_Calibration::load_Calibration_File(){
 
 //----------------------------------------------------------
 
-double FATIMA_Time_Calibration::Calibrate(double T,int det_id){
-    return T + calib_coeffs[det_id];
+double FATIMA_Time_Calibration::Calibrate_TDC(unsigned long T,int det_id){
+    return ((double) T)*25.0/1000. + calib_coeffs[det_id];
 }
 
 //----------------------------------------------------------

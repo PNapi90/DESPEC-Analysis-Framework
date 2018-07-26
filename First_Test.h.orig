@@ -73,7 +73,9 @@ using namespace std;
 			virtual Bool_t BuildEvent(TGo4EventElement* dest);
 
 		protected:
-
+		
+<<<<<<< HEAD
+		
 			TH1* hsci_tofll2;
 			
 			TH1* hsci_tofll3;
@@ -107,7 +109,24 @@ using namespace std;
 			TH1* hts;
 			TH1* hts2;
 			
-		
+			
+			
+			
+			
+			
+	
+			TH1* FAT_E;
+			TH2* FAT_MAT;
+			TH2* FAT_MAT_2;
+			TH2* hit_mat;
+			
+			TH1* FAT_TDC_dT[36];
+			TH1* Energy_Singles[36];
+			TH1* Energy_Coinc[36];
+			TH2* FAT_En_vs_dT[36];
+			
+			
+=======
 			//Fatima histograms
 			//-general
 			TH1* FAT_Esum;
@@ -134,12 +153,8 @@ using namespace std;
 			TH1** FAT_TDCdt_ref_gated;
 			TH2** FAT_E_TDCdt_ref_gated;
 
-			
-			
-	
-
-			
-			
+			//Other histograms			 
+>>>>>>> fc63b5bd4edcdc5a44125ea8f3ad965190753794
 			TH1* WR_HIST;
 			TH1* WR_HIST2;
 			TH1* C_t;
@@ -156,7 +171,6 @@ using namespace std;
 			TH1*** tamex_Mult_Ch_lead;
 			TH1*** tamex_Mult_Ch_trail;
 			
-
 
 			TH2** tamex_mult_mat_lead;
 			TH2** tamex_mult_mat_trail;
@@ -224,7 +238,11 @@ using namespace std;
 
 			void load_PrcID_File();
 			void get_interest_arrays();
-
+			
+			void set_FATIMA_Histos();
+			void Fill_FATIMA_Histos();
+			
+			
 
 			int count;
 			int called[2];
