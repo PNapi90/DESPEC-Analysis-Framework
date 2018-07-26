@@ -1,1 +1,1 @@
-Fatima_calib/60Co_22det.txt
+Fatima_calib/Ecal/60Co_22det.txt

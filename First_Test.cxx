@@ -156,13 +156,13 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	for (int det = 0;  det< FAT_MAX_DET; det++) {
 		FAT_E[det] = MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", det),
-		                          Form("LaBr%02d energy", det),2001,0,4000);
+		                          Form("LaBr%02d energy", det),4001,0,4000);
 		FAT_Eraw[det] = MakeTH1('D', Form("FATIMA/Energy/E_Raw_LaBr%02d", det),
 		                             Form("LaBr%02d energy (raw)", det),2000,0,40000);
 		FAT_E_ratio[det] = MakeTH2('D', Form("FATIMA/Energy/EvsRatio_LaBr%02d", det),
-		                           Form("LaBr%02d energy vs QShort/QLong", det),2001,0,4000, 200,0,1);
+		                           Form("LaBr%02d energy vs QShort/QLong", det),4001,0,4000, 200,0,1);
 		FAT_gg_ref[det] = MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
-		                          Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, det),2001,0,4000, 200,0,1);
+		                          Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, det),4001,0,4000, 200,0,1);
 		FAT_TDCdt_ref[det] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
 		                             Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, det),3201,-40,40);		                             
 		FAT_QDCdt_ref[det] = MakeTH1('D', Form("FATIMA/Timing/QDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
@@ -625,36 +625,41 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				FAT_E[deti]->Fill(RAW->get_FAT_E(i));
 				FAT_E_ratio[deti]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_ratio(i));
 				for (int j=0; j<dets_fired; j++) {
-					if ( i==j )
-						continue;
 					int detj = RAW->get_FAT_id(j);
+					if ( deti==detj )
+						continue;
+					
 					FAT_gg->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
-					//Timing condition
 					if (deti < detj) {
 						dt1 = RAW->get_FAT_t(i) - RAW->get_FAT_t(j);
 						dt2 = RAW->get_FAT_t_qdc(i) - RAW->get_FAT_t_qdc(j);
-						//dt2 = RAW->get_FAT_t(j) - RAW->get_FAT_t(i);
 						FAT_TDCdtsum->Fill(dt1);
 						FAT_QDCdtsum->Fill(dt2);
-						if (deti == FAT_REF_DET) {
-							FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
-							FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(j), RAW->get_FAT_E(i));
-							FAT_TDCdtsum_ref_gated->Fill(dt1);
-							FAT_QDCdtsum_ref_gated->Fill(dt2);
-							FAT_TDCdt_ref[detj]->Fill(dt1);
-							FAT_QDCdt_ref[detj]->Fill(dt2);
-							FAT_TDC_QDC_dt[detj]->Fill(dt1, dt2);
-							//printf("Gates %4.2lf-%4.2lf  %4.2lf-%4.2lf\n", FATgate1_low, FATgate1_high,
-							//										     FATgate1_low, FATgate1_high);
-							//printf("Energies %4.2lf %4.2lf\n", RAW->get_FAT_E(i), RAW->get_FAT_E(j));
-							if (RAW->get_FAT_E(i) > FATgate1_low 
-									&& RAW->get_FAT_E(i) < FATgate1_high) {
-								FAT_E_TDCdt_ref_gated[detj]->Fill(RAW->get_FAT_E(j), dt1);
-								if (RAW->get_FAT_E(j) > FATgate2_low 
-										&& RAW->get_FAT_E(j) < FATgate2_high) {
-									FAT_TDCdt_ref_gated[detj]->Fill(dt1);
-									printf("hit gates\n");									
-								}
+						FAT_TDCdtsum_ref_gated->Fill(dt1);
+						FAT_QDCdtsum_ref_gated->Fill(dt2);
+					}else{
+						dt1 = RAW->get_FAT_t(j) - RAW->get_FAT_t(i);
+						dt2 = RAW->get_FAT_t_qdc(j) - RAW->get_FAT_t_qdc(i);
+					}	
+						
+						//printf("Gates %4.2lf-%4.2lf  %4.2lf-%4.2lf\n", FATgate1_low, FATgate1_high,
+						//										     FATgate1_low, FATgate1_high);
+						//printf("Energies %4.2lf %4.2lf\n", RAW->get_FAT_E(i), RAW->get_FAT_E(j));
+						
+					
+					if (deti == FAT_REF_DET) {
+						FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
+						FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(j), RAW->get_FAT_E(i));
+						FAT_TDCdt_ref[detj]->Fill(dt1);
+						FAT_QDCdt_ref[detj]->Fill(dt2);
+						FAT_TDC_QDC_dt[detj]->Fill(dt1, dt2);
+						if (RAW->get_FAT_E(i) > FATgate1_low 
+								&& RAW->get_FAT_E(i) < FATgate1_high) {
+							FAT_E_TDCdt_ref_gated[detj]->Fill(RAW->get_FAT_E(j), dt1);
+							if (RAW->get_FAT_E(j) > FATgate2_low 
+									&& RAW->get_FAT_E(j) < FATgate2_high) {
+								FAT_TDCdt_ref_gated[detj]->Fill(dt1);
+								printf("hit gates\n");									
 							}
 						}
 					}
