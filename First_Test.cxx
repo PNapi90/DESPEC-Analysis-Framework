@@ -325,25 +325,35 @@ TSCNUnpackProc::~TSCNUnpackProc()
 Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 {
     
-    if(Used_Systems[3] && FAT_gain_match_used && !FAT_gain_match_done){
+    if(Used_Systems[3] && FAT_gain_match_used){
 
-		TGo4MbsEvent       *fMbsEvent = dynamic_cast<TGo4MbsEvent*>    (GetInputEvent("Unpack"));   // of step "Unpack";
-		s_filhe* fileheader=fMbsEvent->GetMbsSourceHeader();
+	    TGo4MbsEvent       *fMbsEvent = dynamic_cast<TGo4MbsEvent*>    (GetInputEvent("Unpack"));   // of step "Unpack";
+	    s_filhe* fileheader=fMbsEvent->GetMbsSourceHeader();
 
-	    string input_data_path = fileheader->filhe_file;
-	
-	    cout<<"Filename = "<<input_data_path<<endl;
-	    	    
-	    for(unsigned int i = 0; i<input_data_path.length(); ++i){
-			if(input_data_path[i] == '/') file_pwd = i;
-			else if(input_data_path[i] == '.'){
-		    	file_end = i;
-			    gain_match_filename = "Configuration_Files/FATIMA_Gain_Match_Files/" + input_data_path.substr((file_pwd+1),(file_end - file_pwd -1)) + ".gm";
-				cout<<"gain_match_filename = "<<gain_match_filename<<endl;
-			}
+	    input_data_path = fileheader->filhe_file;
+	    
+	    if(input_data_path == input_data_path_old) FAT_gain_match_done = true;
+	    else if(input_data_path != input_data_path_old) FAT_gain_match_done = false;
+	    
+	    if(!FAT_gain_match_done){
+	    
+		input_data_path_old = input_data_path;
+		
+		cout<<"Filename = "<<input_data_path<<endl;
+			
+		for(unsigned int i = 0; i<input_data_path.length(); ++i){
+			    if(input_data_path[i] == '/') file_pwd = i;
+			    else if(input_data_path[i] == '.'){
+			    file_end = i;
+				gain_match_filename = "Configuration_Files/FATIMA_Gain_Match_Files/" + input_data_path.substr((file_pwd+1),(file_end - file_pwd -1)) + ".gm";
+				    cout<<"gain_match_filename = "<<gain_match_filename<<endl;
+			    }
+		}
+		Detector_Systems[3]->set_Gain_Match_Filename(gain_match_filename);
+		FAT_gain_match_done = true;
+		
 	    }
-	    Detector_Systems[3]->set_Gain_Match_Filename(gain_match_filename);
-	    FAT_gain_match_done = true;
+	    
 	}
 	
 	count++;
@@ -630,36 +640,11 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 							}
 						}
 					}
-					called_link = true;
 				}
-				else{
-					if(RAW->get_FATIMA_det_id(i) >= 17 && called_link && false){
-						TDC_time_6[tdc_iter] = (double) RAW->get_FATIMA_TDC_T(i);
-						tdc_iter++;
-					}
-				}
-				
-				for(int j = 0; j < tdc_hits; ++j){
 
-
-				    if (i != j ){
-					 
-					 
-					//cout<<"First timestamp "<<RAW->get_FATIMA_TDC_T(i)<<"  Second timestamp  "<<RAW->get_FATIMA_TDC_T(j)<<endl;
-
-					TDC_times[0] = RAW->get_FATIMA_TDC_T(i);
-					TDC_times[1] = RAW->get_FATIMA_TDC_T(j);
-					 
-					//cout<<(TDC_times[0] - TDC_times[1])*1e-3<<endl;
-
-					FAT_TDC_Diff->Fill(((TDC_times[0] - TDC_times[1])*1e-3));
-				    
-				    }
-				}
 			}
 			
 			//if(am_FATIMA_hits == 2) FAT_MAT->Fill(RAW->get_FATIMA_E(0),RAW->get_FATIMA_E(1));
-			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);
 		}
 		//PLASTIC CASE
 		if(PrcID_Conv == 2){

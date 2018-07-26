@@ -26,7 +26,6 @@
 #include "TTree.h"
 
 
-
 // Go4 Includes //
 #include "TGo4UserException.h"
 #include "TGo4Picture.h"
@@ -192,6 +191,9 @@ using namespace std;
 
 			double vals[100000];
 			int val_it;
+
+			string input_data_file;
+			string input_data_file_old = "old";
 
 			bool cals_done,WR_used;
 			bool FAT_make_raw_histograms;
