@@ -100,7 +100,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	
 	
-	
+	cout<<"Helleurrr"<<endl;
 	
 	// ######################################################### //
 
@@ -112,6 +112,9 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FATgate2_high = 1338.;
 	float E_gate1 = FATgate1_low + (FATgate1_high - FATgate1_low)/2;
 	float E_gate2 = FATgate2_low + (FATgate2_high - FATgate2_low)/2;
+	
+	cout<<"Helleurrr"<<endl;
+
 		
 	FAT_Esum  = MakeTH1('D', "FATIMA/ESum", "LaBr Energy (all detectors)",4001,0,4000);
 	FAT_gg    = MakeTH2('D', "FATIMA/gg", "FATIMA Gamma-Gamma (all detectors)",2001,0,2000, 2001,0,2000);
@@ -121,23 +124,36 @@ TGo4EventProcessor(name) // Histograms defined here //
 							Form("TDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);
 	FAT_QDCdtsum_ref_gated = MakeTH1('D', "FATIMA/QDCdt_ref_gated",
 							Form("QDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);				
+	
+	cout<<"Helleurrr"<<endl;
+
+	
 	//statistics
 	FAT_hits = MakeTH1('D', "FATIMA/Stat/det_hits", "FATIMA detector statistics",40,0,40);
 	FAT_hits_QDC = MakeTH1('D', "FATIMA/Stat/QDC_hits", "FATIMA QDC statistics",40,0,40);
 	FAT_hits_TDC = MakeTH1('D', "FATIMA/Stat/TDC_hits", "FATIMA TDC statistics",40,0,40);
 	FAT_QDC_TDC_hitmap = MakeTH2('D', "FATIMA/Stat/QDC_TDC_hitmap", "FATIMA QDC-TDC hit map",40,0,40, 40,0,40);
 	FAT_correlations = MakeTH2('D', "FATIMA/Stat/det_det_correlations", "FATIMA det-det correlations",40,0,40, 40,0,40);
+	
+	cout<<"Helleurrr"<<endl;
+	
 	//energy
 	FAT_E = new TH1*[FAT_MAX_DET];
 	FAT_Eraw = new TH1*[FAT_MAX_DET];
 	FAT_E_ratio = new TH2*[FAT_MAX_DET];
 	FAT_gg_ref = new TH2*[FAT_MAX_DET];
+	
+	cout<<"Helleurrr"<<endl;
+	
 	//timing
 	FAT_TDCdt_ref = new TH1*[FAT_MAX_DET];
 	FAT_QDCdt_ref = new TH1*[FAT_MAX_DET];
 	FAT_TDC_QDC_dt = new TH2*[FAT_MAX_DET];
 	FAT_TDCdt_ref_gated = new TH1*[FAT_MAX_DET];
 	FAT_E_TDCdt_ref_gated = new TH2*[FAT_MAX_DET];
+	
+	cout<<"Helleurrr"<<endl;
+	
 	for (int det = 0;  det< FAT_MAX_DET; det++) {
 		FAT_E[det] = MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", det),
 		                          Form("LaBr%02d energy", det),2001,0,4000);
@@ -162,6 +178,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 																		FAT_REF_DET, E_gate1, det),
                                              2001, 0, 2000, 3201,-40,40);
 	}
+
+	cout<<"Helleurrr"<<endl;
 
 	//*****************
 	

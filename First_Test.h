@@ -192,8 +192,8 @@ using namespace std;
 			double vals[100000];
 			int val_it;
 
-			string input_data_file;
-			string input_data_file_old = "old";
+			string input_data_path;
+			string input_data_path_old = "old";
 
 			bool cals_done,WR_used;
 			bool FAT_make_raw_histograms;
