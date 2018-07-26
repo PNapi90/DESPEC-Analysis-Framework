@@ -73,6 +73,8 @@ using namespace std;
 			virtual Bool_t BuildEvent(TGo4EventElement* dest);
 
 		protected:
+		
+
 
 			TH1* hsci_tofll2;
 			
@@ -134,12 +136,7 @@ using namespace std;
 			TH1** FAT_TDCdt_ref_gated;
 			TH2** FAT_E_TDCdt_ref_gated;
 
-			
-			
-	
-
-			
-			
+			//Other histograms			 
 			TH1* WR_HIST;
 			TH1* WR_HIST2;
 			TH1* C_t;
@@ -156,7 +153,8 @@ using namespace std;
 			TH1*** tamex_Mult_Ch_lead;
 			TH1*** tamex_Mult_Ch_trail;
 			
-
+			TH1* FAT_TDC_Diff; // ****NEWLY ADDED****
+			
 
 			TH2** tamex_mult_mat_lead;
 			TH2** tamex_mult_mat_trail;

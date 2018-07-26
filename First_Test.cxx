@@ -226,7 +226,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	    GAL_Chan_E[i] = MakeTH1('D',Form("GALILEO_Energy_Spectra/GALILEO_E%2d",i),Form("GALILEO Channel Energy Channel %2d",i),80001,0,800000);
 	    GAL_Time_Diff_vs_Energy[i] = MakeTH2('D',Form("GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",i),Form("GALILEO Time Difference Vs Channel Energy Channel %2d",i),21,-100,100,10001,0,800000);
 	}
-	tdc_hist = MakeTH1('D',"tdc","tdc",1000,-60,1000);
+
 
 	Trail_LEAD = new TH1**[50];
 	Coarse = new TH1**[50];
