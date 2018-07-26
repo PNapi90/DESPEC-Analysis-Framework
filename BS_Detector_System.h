@@ -45,9 +45,7 @@ private:
     Int_t len = 0;	  
     Int_t vme_chn;
     Int_t lenMax;
-    
-    void Setup_Parameters();
-    
+        
     TModParameter* ModSetup;
     TMWParameter* mw;
     TTPCParameter* tpc;
@@ -501,19 +499,64 @@ private:
     
     
     /*******************************************************************/
-    /***CALIBRATION STUFF***/
+    /***ANALYSIS STUFF***/
     
     void FRS_Anal();
     
     char name[80];
     
-    TGo4WinCond  *cMusic1_E[8];
-    TGo4WinCond  *cMusic1_T[8];
-    TGo4WinCond  *cMusic2_E[8];
-    TGo4WinCond  *cMusic2_T[8];
-    TGo4WinCond  *cMusic3_T[4];
-    TGo4WinCond  *cMusic3_E[4];
-    TGo4WinCond  *cMusic3_dec;
+    Float_t* tmp_array;
+    
+    Float_t**  cMusic1_E;
+    Float_t**  cMusic1_T;
+    Float_t**  cMusic2_E;
+    Float_t**  cMusic2_T;
+    Float_t**  cMusic3_T;
+    Float_t**  cMusic3_E;
+
+    Float_t*  cMusic3_dec;
+    
+    Float_t*  cSCI_L;
+    Float_t*  cSCI_R;
+    Float_t*  cSCI_E;
+    Float_t*  cSCI_Tx;
+    Float_t*  cSCI_X;
+    
+    Float_t*  cSCI_LL2;
+    Float_t*  cSCI_RR2;
+    Float_t*  cSCI_LL3;
+    Float_t*  cSCI_RR3;
+    Float_t*  cSCI_LL4;
+    Float_t*  cSCI_RR4;
+    
+    Float_t**  cSCI_detof;
+    
+    Float_t*  cID_x2;
+    Float_t*  cID_x4;
+    Float_t*  cID_Z_Z;
+    
+    Float_t** cID_dEToF;
+
+    Float_t** cID_x4AoQ_Z;
+    
+    Float_t*** cID_x2AoQ;
+    Float_t*** cID_Z_AoQ;
+    
+      /*sprintf(name, "cSCI%s_L", count_title1[index]);
+      cSCI_L[index] = MakeWindowCond(fname,name, 10, 4000, hSCI_L[index]->GetName());
+     
+      sprintf(name, "cSCI%s_R", count_title1[index]);
+      cSCI_R[index] = MakeWindowCond(fname,name, 10, 4000, hSCI_R[index]->GetName());
+     
+      sprintf(name, "cSCI%s_E", count_title1[index]);
+      cSCI_E[index] = MakeWindowCond(fname,name, 10, 4000, hSCI_E[index]->GetName());
+     
+      sprintf(name, "cSCI%s_Tx", count_title1[index]);
+      cSCI_Tx[index] = MakeWindowCond(fname,name,200,4000, hSCI_Tx[index]->GetName());
+     
+      sprintf(name, "cSCI%s_X", count_title1[index]);
+      cSCI_X[index] = MakeWindowCond(fname,name,-100,100, hSCI_X[index]->GetName());*/
+     
     
     /*TGo4WinCond   *cID_x2;
     TGo4WinCond   *cID_x4;
@@ -540,13 +583,167 @@ private:
   
     TGo4PolyCond  *cSCI_detof;*/
     
-  
-  
+    // MUSIC part
+	Int_t         music1_anodes_cnt;
+	Int_t         music2_anodes_cnt;
+	Int_t         music3_anodes_cnt;
+	Bool_t*       music_b_e1;
+	Bool_t*       music_b_t1;
+	Bool_t*       music_b_e2;
+	Bool_t*       music_b_t2;
+	Bool_t*       music_b_e3;
+	Bool_t*       music_b_t3;
+	Bool_t        b_de1;
+	Bool_t        b_de2;
+	Bool_t        b_de3;
+	Float_t*      de;
+	Float_t*      de_cor;
+	Bool_t        b_dt3;
+	Float_t       x1_mean;
+	Bool_t        b_decor;
+    
+    //SCI part
+	Float_t*      sci_l;  
+	Float_t*      sci_r;  
+	Float_t*      sci_e;  
+	Float_t*      sci_tx;  
+	Float_t*      sci_x;
+	Float_t       itag_42_e;
+	Float_t       itag_43_e;
+	Float_t       sci_u5, sci_d5;
+	Float_t       sci_ty5;  
+	Float_t       sci_y5;  
+	Float_t       sci_tofll2;
+	Float_t       sci_tofrr2;
+	Float_t       sci_tof2;
+	Float_t       sci_tofll3;
+	Float_t       sci_tofrr3;
+	Float_t       sci_tof3;
+	Float_t       sci_tofll4;  
+	Float_t       sci_tofrr4;
+	Float_t       sci_tof4;
+	
+	Float_t*      sci_veto_l;
+	Float_t*      sci_veto_r;
+	Float_t*      sci_veto_e;
+	
+	Bool_t*       sci_b_l;  
+	Bool_t*       sci_b_r;  
+	Bool_t*       sci_b_e;  
+	Bool_t*       sci_b_tx;  
+	Bool_t*       sci_b_x;  
+	Bool_t        sci_b_u5, sci_b_d5;
+	Bool_t        sci_b_ty5;
+	Bool_t        sci_b_y5;
+	Bool_t        sci_b_tofll2;
+	Bool_t        sci_b_tofrr2;
+	Bool_t        sci_b_tofll3;
+	Bool_t        sci_b_tofrr3;
+	Bool_t        sci_b_tofll4;
+	Bool_t        sci_b_tofrr4;  
+	Bool_t        sci_b_detof;
+	Bool_t*       sci_b_veto_l;  
+	Bool_t*       sci_b_veto_r;  
+	Bool_t*       sci_b_veto_e;  
+    
+    // ID part
+    
+	Float_t       id_x2;
+	Float_t       id_y2;
+	Float_t       id_a2;
+	Float_t       id_b2;
+	Float_t       id_x4;
+	Float_t       id_y4;
+	Float_t       id_a4;
+	Float_t       id_b4;
+	Float_t       id_x8;
+	Float_t       id_y8;
+	Float_t       id_a8;
+	Float_t       id_b8;
+	
+	Bool_t        id_b_x2;
+	Bool_t        id_b_x4;
+	Bool_t        id_b_x8;
+	Bool_t        id_b_detof2;
+	
+	Float_t*      id_brho;      /* position-corr. BRho      */
+	Float_t*      id_rho;       /* Position-corrected Rho   */
+	
+	Float_t       id_beta;        /* Beta from TOF            */
+	Float_t       id_beta3;        /* Beta from TOF            */
+	Float_t       id_gamma;       /* Gamma from TOF           */
+	Float_t       id_AoQ;
+	Float_t       id_AoQ_corr;
+	
+	Float_t       id_v_cor;       /* Velocity correction  */
+	Float_t       id_v_cor2;      /* Velocity correction TUM 2 */
+	Float_t       id_v_cor3;      /* Velocity correction Old Music */
+	Float_t       id_z;
+	Float_t       id_z2;
+	Float_t       id_z3;
+	Float_t       id_energy_geL;
+	Float_t       id_tac_41_geL;
+	Float_t       id_stopper_x;
+	Int_t         id_energy_geL_raw;
+	Int_t         id_tac_41_geL_raw;
+	Int_t         id_trigger;
+	Int_t         id_scal_seconds;
+	Int_t         id_scal_geL;
+	Int_t         id_scal_sc21;
+	Int_t         id_scal_sc41;
+	Int_t         id_scal_sc42;
+	Int_t         id_scal_sc43;
+	Int_t         id_scal_sc81;
+	
+	Bool_t        id_b_AoQ;
+	Bool_t        id_b_z;
+	Bool_t        id_b_z2;
+	Bool_t        id_b_z3;
+	Bool_t        id_b_x2AoQ;
+	Bool_t*       id_b_x4AoQ_Z; 
+	Bool_t*       id_b_z_AoQ;
+	Bool_t*       id_b_music_z;
+	
+	Long64_t      firsttimestamp;
+	Bool_t        firstevent;
+	
+	Double_t      ts;  // relative time from start of the spill 
+	Double_t      ts2;  // relative time from start of the spill does not reset at end extraction
+	
+    // MRTOF part :
+    
+	Float_t       mrtof_tof;
+	
+	Float_t       mrtof_si_e1;
+	Float_t       mrtof_si_e2;
+	Float_t       mrtof_si_e3;
+	Float_t       mrtof_si_e4;
+	Float_t       mrtof_si_e5;
+	
+    
+    
+    
+    
+    
+    void Setup_Parameters();
+
     Int_t getbits(Int_t, int, int, int);
 
     Int_t get2bits(Int_t, int, int, int);
  
     Float_t rand0_5();
+    
+    Bool_t Check_WinCond(Float_t P, Float_t* V);
+    Bool_t Check_WinCond_Multi(Float_t P, Float_t** V, int cond_num);
+    Bool_t Check_WinCond_Multi_Multi(Float_t P, Float_t*** V, int cond_num, int cond_num_2);
+    
+    Bool_t Check_PolyCond(Float_t* P, Float_t** V, int n );
+    Bool_t Check_PolyCond_X_Y(Float_t X, Float_t Y, Float_t** V, int n );
+    
+    Bool_t Check_PolyCond_Multi(Float_t* P, Float_t*** V, int n, int cond_num );
+    Bool_t Check_PolyCond_Multi_X_Y(Float_t X, Float_t Y, Float_t*** V, int n, int cond_num);
+
+    void Setup_Conditions();
 
 
 public:

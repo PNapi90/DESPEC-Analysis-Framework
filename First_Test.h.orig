@@ -26,6 +26,7 @@
 #include "TTree.h"
 
 
+
 // Go4 Includes //
 #include "TGo4UserException.h"
 #include "TGo4Picture.h"
@@ -72,8 +73,6 @@ using namespace std;
 			virtual Bool_t BuildEvent(TGo4EventElement* dest);
 
 		protected:
-		
-
 
 			TH1* hsci_tofll2;
 			
@@ -135,7 +134,16 @@ using namespace std;
 			TH1** FAT_TDCdt_ref_gated;
 			TH2** FAT_E_TDCdt_ref_gated;
 
+<<<<<<< HEAD
+			
+			
+	
+
+			
+			
+=======
 			//Other histograms			 
+>>>>>>> fc63b5bd4edcdc5a44125ea8f3ad965190753794
 			TH1* WR_HIST;
 			TH1* WR_HIST2;
 			TH1* C_t;
@@ -152,8 +160,10 @@ using namespace std;
 			TH1*** tamex_Mult_Ch_lead;
 			TH1*** tamex_Mult_Ch_trail;
 			
-			TH1* FAT_TDC_Diff; // ****NEWLY ADDED****
-			
+<<<<<<< HEAD
+
+=======
+>>>>>>> fc63b5bd4edcdc5a44125ea8f3ad965190753794
 
 			TH2** tamex_mult_mat_lead;
 			TH2** tamex_mult_mat_trail;
@@ -191,9 +201,6 @@ using namespace std;
 
 			double vals[100000];
 			int val_it;
-
-			string input_data_file;
-			string input_data_file_old = "old";
 
 			bool cals_done,WR_used;
 			bool FAT_make_raw_histograms;

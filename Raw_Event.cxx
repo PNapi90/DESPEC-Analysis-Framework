@@ -14,15 +14,15 @@ Raw_Event::~Raw_Event(){}
 
 //---------------------------------------------------------------
 
-/* ################################################################# 
+// ################################################################# 
 
 
 void Raw_Event::set_DATA_MUSIC(Float_t* FRS_dE,Float_t* FRS_dE_cor){
     
     for(int i; i<3; ++i){
 	
-	de[i] = FRS_dE[i];
-	de_cor[i] = FRS_dE_cor[i];
+	dE[i] = FRS_dE[i];
+	dE_cor[i] = FRS_dE_cor[i];
 	
     }	    
 
@@ -50,7 +50,7 @@ void Raw_Event::set_DATA_SCI_ToF(Float_t FRS_sci_tofll2,Float_t FRS_sci_tofll3,F
     sci_tof3   = FRS_sci_tof3;
     
 }
-void Raw_Event::set_DATA_ID_2_4(Float_tID_x2,Float_tID_y2,Float_tID_a2,Float_tID_b2,Float_tID_x4,Float_tID_y4,Float_tID_a4,Float_tID_b4){
+void Raw_Event::set_DATA_ID_2_4(Float_t FRS_ID_x2,Float_t FRS_ID_y2,Float_t FRS_ID_a2,Float_t FRS_ID_b2,Float_t FRS_ID_x4,Float_t FRS_ID_y4,Float_t FRS_ID_a4,Float_t FRS_ID_b4){
     
     ID_x2 = FRS_ID_x2;
     ID_y2 = FRS_ID_y2;
@@ -62,7 +62,7 @@ void Raw_Event::set_DATA_ID_2_4(Float_tID_x2,Float_tID_y2,Float_tID_a2,Float_tID
     ID_b4 = FRS_ID_b4;
     
 }
-void Raw_Event::set_DATA_ID_Beta_Rho(Float_t* FRS_ID_brho,Float_t* FRS_ID_rho,Float_t FRS_beta,Float_t FRS_beta,Float_t FRS_gamma){
+void Raw_Event::set_DATA_ID_Beta_Rho(Float_t* FRS_ID_brho,Float_t* FRS_ID_rho,Float_t FRS_beta,Float_t FRS_beta3,Float_t FRS_gamma){
     
     for(int i; i<2; ++i){
 	
@@ -93,7 +93,7 @@ void Raw_Event::set_DATA_ID_Timestamp(Float_t FRS_timestamp,Float_t FRS_ts,Float
     
 }
 
-################################################################# */
+// #################################################################
 
 void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 								double* Ql_Raw,double* Qs_Raw,
@@ -262,54 +262,54 @@ void Raw_Event::set_DATA_GALILEO(int GAL_FIRED,ULong64_t* sum_time,int* pileup,i
 }
 //TEMPORARY GETTERS FOR FRS, FATIMA, PLASTIC, and GALILEO
 
-/* #############################################################
+// #############################################################
 
 // FRS
 
-Float_t get_FRS_dE(int i){return dE[i];}
-Float_t get_FRS_dE_corr(int i){return dE_corr[i];}
+Float_t Raw_Event::get_FRS_dE(int i){return dE[i];}
+Float_t Raw_Event::get_FRS_dE_corr(int i){return dE_cor[i];}
 
-Float_t get_FRS_sci_l(int i){return sci_l[i];}
-Float_t get_FRS_sci_r(int i){return sci_r[i];}
-Float_t get_FRS_sci_e(int i){return sci_e[i];}
-Float_t get_FRS_sci_tx(int i){return sci_tx[i];}
-Float_t get_FRS_sci_x(int i){return sci_x[i];}
+Float_t Raw_Event::get_FRS_sci_l(int i){return sci_l[i];}
+Float_t Raw_Event::get_FRS_sci_r(int i){return sci_r[i];}
+Float_t Raw_Event::get_FRS_sci_e(int i){return sci_e[i];}
+Float_t Raw_Event::get_FRS_sci_tx(int i){return sci_tx[i];}
+Float_t Raw_Event::get_FRS_sci_x(int i){return sci_x[i];}
 
-Float_t get_FRS_tofll2(){return tofll2;}
-Float_t get_FRS_tofll3(){return tofll3;}
-Float_t get_FRS_tof2(){return tof2;}
-Float_t get_FRS_tofrr2(){return tofrr2;}
-Float_t get_FRS_tofrr3(){return tofrr3;}
-Float_t get_FRS_tof3(){return tof3;}
+Float_t Raw_Event::get_FRS_tofll2(){return sci_tofll2;}
+Float_t Raw_Event::get_FRS_tofll3(){return sci_tofll3;}
+Float_t Raw_Event::get_FRS_tof2(){return sci_tof2;}
+Float_t Raw_Event::get_FRS_tofrr2(){return sci_tofrr2;}
+Float_t Raw_Event::get_FRS_tofrr3(){return sci_tofrr3;}
+Float_t Raw_Event::get_FRS_tof3(){return sci_tof3;}
 
-Float_t get_FRS_x2(){return x2;}
-Float_t get_FRS_y2(){return y2;}
-Float_t get_FRS_a2(){return a2;}
-Float_t get_FRS_b2(){return b2;}
+Float_t Raw_Event::get_FRS_x2(){return ID_x2;}
+Float_t Raw_Event::get_FRS_y2(){return ID_y2;}
+Float_t Raw_Event::get_FRS_a2(){return ID_a2;}
+Float_t Raw_Event::get_FRS_b2(){return ID_b2;}
 
-Float_t get_FRS_x4(){return x4;}
-Float_t get_FRS_y4(){return y4;}
-Float_t get_FRS_a4(){return a4;}
-Float_t get_FRS_b4(){return b4;}
+Float_t Raw_Event::get_FRS_x4(){return ID_x4;}
+Float_t Raw_Event::get_FRS_y4(){return ID_y4;}
+Float_t Raw_Event::get_FRS_a4(){return ID_a4;}
+Float_t Raw_Event::get_FRS_b4(){return ID_b4;}
 
-Float_t get_FRS_brho(int i){return brho[i];}
-Float_t get_FRS_rho(int i){return rho[i];}
+Float_t Raw_Event::get_FRS_brho(int i){return ID_brho[i];}
+Float_t Raw_Event::get_FRS_rho(int i){return ID_rho[i];}
 
-Float_t get_FRS_beta(){return beta;}
-Float_t get_FRS_beta3(){return beta3;}
-Float_t get_FRS_gamma(){return gamma;}
+Float_t Raw_Event::get_FRS_beta(){return beta;}
+Float_t Raw_Event::get_FRS_beta3(){return beta3;}
+Float_t Raw_Event::get_FRS_gamma(){return gamma;}
 
-Float_t get_AoQ(){return AoQ;}
-Float_t get_AoQ_corr(){return AoQ_corr;}
-Float_t get_z(){return z;}
-Float_t get_z2(){return z2;}
-Float_t get_z3(){return z3;}
+Float_t Raw_Event::get_FRS_AoQ(){return AoQ;}
+Float_t Raw_Event::get_FRS_AoQ_corr(){return AoQ_corr;}
+Float_t Raw_Event::get_FRS_z(){return z;}
+Float_t Raw_Event::get_FRS_z2(){return z2;}
+Float_t Raw_Event::get_FRS_z3(){return z3;}
 
-Float_t get_timestamp(){return timestamp;}
-Float_t get_ts(){return ts;}
-Float_t get_ts2(){return ts2;}
+Float_t Raw_Event::get_FRS_timestamp(){return timestamp;}
+Float_t Raw_Event::get_FRS_ts(){return ts;}
+Float_t Raw_Event::get_FRS_ts2(){return ts2;}
 
-####################################################### */
+// ####################################################### 
 
 //White Rabbit
 

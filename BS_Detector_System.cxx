@@ -274,115 +274,6 @@ BS_Detector_System::BS_Detector_System(){
     
     /******************************************************************/
     /**CALIBRATION Parameters**/
-        
-    lim_csum = new Float_t**[4];
-    
-    for(int i = 0; i < 4; ++i){
-	
-	lim_csum[i] = new Float_t*[7];
-	
-	    for(int j = 0; j < 7; ++j){
-		
-		
-		lim_csum[i][j] = new Float_t[2];
-		
-		lim_csum[i][j][0] = 300;
-		lim_csum[i][j][1] = 1800;
-		
-	    }
-	
-    }
-    
-   /*lim_csum = {{{300,1800},{350,1800},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
-				 {{300,1800},{300,1800},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
-				 {{300,1800},{300,1840},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
-				 {{300,1800},{300,1810},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}}};
-	*/			 
-				 
-
-    
-    lim_xsum = new Float_t*[13];
-    lim_ysum = new Float_t*[13];
-    
-    for(int i = 0; i < 13; ++i){
-	
-	
-	lim_xsum[i] = new Float_t[2];
-	lim_ysum[i] = new Float_t[2];
-	
-	lim_xsum[i][0] = 1;
-	lim_xsum[i][1] = 8000;
-	lim_ysum[i][0] = 2;
-	lim_ysum[i][1] = 8000;
-	
-	
-    }
-    
-    
-    /*lim_xsum = {	{1,8000},  // MW11
-				{1,8000},  // MW21
-				{1,8000},  // MW22
-   				{1,8000},  // MW31
-   				{1,8000},  // MW41
-   				{1,8000},  // MW42
-   				{1,8000},  // MW51
-  				{1,8000},  // MW61
-  				{1,8000},  // MW71
-  				{1,8000},  // MW81
-  				{1,8000},  // MW82
-  				{1,8000},  // MWB1
-  				{1,8000}};  // MWB2
-
-    lim_ysum = { {2,8000},  // MW11
-				{2,8000},  // MW21
-  				{2,8000},  // MW22
-  				{2,8000},  // MW31
-  				{2,8000},  // MW41
- 				{2,8000},  // MW42
- 				{2,8000},  // MW51
- 				{2,8000},  // MW61
- 				{2,8000},  // MW71
- 				{2,8000},  // MW81
- 				{2,8000},  // MW82
- 				{2,8000},  // MWB1
- 				{2,8000}};  // MWB2*/
-				
-    
-    
-    /*for(int i=0;i<7;i++){
-	
-	//    cTPC_CSUM[i][0]=MakeWindowCond("TPC/CSUM1",condname,lim_csum1[i][0],
-	//				   lim_csum1[i][1],"CSUM1");
-	char condname[40];
-	
-	sprintf(condname,"TPC/CSUM1%s",tpc_name_ext1[i]);
-	cTPC_CSUM[i][0]=MakeWinCond(condname,lim_csum1[i][0],lim_csum1[i][1],"CSUM1");
-	
-	sprintf(condname,"CSUM2%s",tpc_name_ext1[i]);
-	cTPC_CSUM[i][1]=MakeWindowCond("TPC/CSUM2",condname,lim_csum2[i][0],lim_csum2[i][1],"CSUM2");
-	
-	sprintf(condname,"CSUM3%s",tpc_name_ext1[i]);
-	cTPC_CSUM[i][2]=MakeWindowCond("TPC/CSUM3",condname,lim_csum3[i][0],lim_csum3[i][1],"CSUM3");
-	
-	sprintf(condname,"CSUM4%s",tpc_name_ext1[i]);
-	cTPC_CSUM[i][3]=MakeWindowCond("TPC/CSUM4",condname,lim_csum4[i][0],lim_csum4[i][1],"CSUM4");
-    }
-    
-      for(int i=0;i<13;i++){  // up to MW31
-       //up to MWB2 (09.07.2018)
-
-      char condname[40];
-      sprintf(condname,"XSUM%s",mw_name_ext[i]);
-      cMW_XSUM[i] = MakeWindowCond("MW/XSUM", condname, lim_xsum[i][0], lim_xsum[i][1], MW_XSUM);
-
-      sprintf(condname,"YSUM%s",mw_name_ext[i]);
-      cMW_YSUM[i] = MakeWindowCond("MW/YSUM", condname, lim_ysum[i][0], lim_ysum[i][1], MW_YSUM);
-    }*/
-    
-    
-    
-    
-    
     
     // MON data declarations
     
@@ -589,33 +480,223 @@ BS_Detector_System::BS_Detector_System(){
     /******************************************************************/
     /*** ANALYSIS Parameters ***/
     
+    /*** MUSIC Conditions ***/
     
-    /*for(int i=0;i<8;i++){
+        // MUSIC part
+	    music1_anodes_cnt = 0;
+	    music2_anodes_cnt = 0;
+	    music3_anodes_cnt = 0;
+	    
+	    music_b_e1 = new Bool_t[8];
+	    music_b_t1 = new Bool_t[8];
+	    music_b_e2 = new Bool_t[8];
+	    music_b_t2 = new Bool_t[8];
+	    music_b_e3 = new Bool_t[4];
+	    music_b_t3 = new Bool_t[4];
+	    
+	    for(int i = 0; i < 8; ++i){
+		
+		music_b_e1[i] = false;
+		music_b_t1[i] = false;
+		music_b_e2[i] = false;
+		music_b_t2[i] = false;
+		if(i < 4) music_b_e3[i] = false;
+		if(i < 4) music_b_t3[i] = false;
+
+	    }
+	    
+	    b_de1 = false;
+	    b_de2 = false;
+	    b_de3 = false;
+	    
+	    de = new Float_t[3];
+	    de_cor = new Float_t[3];
+	    
+	    for(int i = 0; i < 3; ++i){
+
+	    	de[i] = 0;
+		de_cor[i] = 0;
+	    }
+	    
+	    b_dt3 = false;
+	    
+	    x1_mean = 0;
+	    
+	    b_decor = false;
+    
+    //SCI part
+	sci_l = new Float_t[12];  
+	sci_r = new Float_t[12];  
+	sci_e = new Float_t[12];  
+	sci_tx = new Float_t[12];  
+	sci_x = new Float_t[12];
+	itag_42_e = 0;
+	itag_43_e = 0;
+	sci_u5 = 0;
+	sci_d5 = 0;
+	sci_ty5 = 0;  
+	sci_y5 = 0;  
+	sci_tofll2 = 0;
+	sci_tofrr2 = 0;
+	sci_tof2 = 0;
+	sci_tofll3 = 0;
+	sci_tofrr3 = 0;
+	sci_tof3 = 0;
+	sci_tofll4 = 0;  
+	sci_tofrr4 = 0;
+	sci_tof4 = 0;
 	
-       sprintf(name,"Music1_E(%d)",i);
-       cMusic1_E[i] = MakeWindowCond("MUSIC/MUSIC(1)/E",name, 10, 4086, "hMUSIC1_E");
+	sci_veto_l = new Float_t[3];
+	sci_veto_r = new Float_t[3];
+	sci_veto_e = new Float_t[3];
+	
+	sci_b_l = new Bool_t[12];  
+	sci_b_r = new Bool_t[12];  
+	sci_b_e = new Bool_t[12];  
+	sci_b_tx = new Bool_t[12];  
+	sci_b_x = new Bool_t[12];  
+	sci_b_u5 = false;
+	sci_b_d5 = false;
+	sci_b_ty5 = false;
+	sci_b_y5 = false;
+	sci_b_tofll2 = false;
+	sci_b_tofrr2 = false;
+	sci_b_tofll3 = false;
+	sci_b_tofrr3 = false;
+	sci_b_tofll4 = false;
+	sci_b_tofrr4 = false;  
+	sci_b_detof = false;
+	sci_b_veto_l = new Bool_t[3];  
+	sci_b_veto_r = new Bool_t[4];  
+	sci_b_veto_e = new Bool_t[3];
+	
+	for(int i; i < 12; ++i){
+	    
+	    sci_l[i] = 0;  
+	    sci_r[i] = 0;  
+	    sci_e[i] = 0;  
+	    sci_tx[i] = 0;  
+	    sci_x[i] = 0;
+		   
+	    sci_b_l[i] = false;  
+	    sci_b_r[i] = false;  
+	    sci_b_e[i] = false;  
+	    sci_b_tx[i] = false;  
+	    sci_b_x[i] = false;  
+	       
+	    if(i < 3){
+		
+		sci_veto_l[i] = 0;
+		sci_veto_r[i] = 0;
+		sci_veto_e[i] = 0;
+		    
+		sci_b_veto_l[i] = false;  
+		sci_b_veto_e[i] = false;
+		
+	    }
+	    
+	    if(i < 4) sci_b_veto_r[i] = false;  
 
-        sprintf(name,"Music1_T(%d)",i);
-       cMusic1_T[i] = MakeWindowCond("MUSIC/MUSIC(1)/T",name, 10, 4086,"hMUSIC1_T");
-
-       sprintf(name,"Music2_E(%d)",i);
-       cMusic2_E[i] = MakeWindowCond("MUSIC/MUSIC(2)/E",name, 10, 4086, "hMUSIC2_E");
-
-       sprintf(name,"Music2_T(%d)",i);
-       cMusic2_T[i] = MakeWindowCond("MUSIC/MUSIC(2)/T",name, 10, 4086, "hMUSIC2_T");
-     }
-
-   for(int i=0;i<4;i++){
-       
-       sprintf(name,"Music3_E(%d)",i);
-       cMusic3_E[i] = MakeWindowCond("MUSIC/MUSIC(3)/E",name, 10, 4086, "hMUSIC3_E");
-
-       sprintf(name,"Music3_T(%d)",i);
-       cMusic3_T[i] = MakeWindowCond("MUSIC/MUSIC(3)/T",name, 10, 4086, "hMUSIC3_T");
-    }
-   
-   
-    cMusic3_dec = MakeWindowCond("MUSIC/MUSIC 3","Music3_dec", 10., 4000., "hMUSIC3_dECOR");*/
+	    
+	}
+	
+	
+    
+    // ID part
+    
+	id_x2 = 0;
+	id_y2 = 0;
+	id_a2 = 0;
+	id_b2 = 0;
+	id_x4 = 0;
+	id_y4 = 0;
+	id_a4 = 0;
+	id_b4 = 0;
+	id_x8 = 0;
+	id_y8 = 0;
+	id_a8 = 0;
+	id_b8 = 0;
+	
+	id_b_x2 = false;
+	id_b_x4 = false;
+	id_b_x8 = false;
+	id_b_detof2 = false;
+	
+	id_brho = new Float_t[2];      /* position-corr. BRho      */
+	id_rho = new Float_t[2];       /* Position-corrected Rho   */
+	
+	id_brho[0] = 0;
+	id_brho[1] = 0;
+	id_rho[0] = 0;
+	id_rho[1] = 0;
+	
+	id_beta = 0;        /* Beta from TOF            */
+	id_beta3 = 0;        /* Beta from TOF            */
+	id_gamma = 0;       /* Gamma from TOF           */
+	id_AoQ = 0;
+	id_AoQ_corr = 0;
+	
+	id_v_cor = 0;       /* Velocity correction  */
+	id_v_cor2 = 0;      /* Velocity correction TUM 2 */
+	id_v_cor3 = 0;      /* Velocity correction Old Music */
+	id_z = 0;
+	id_z2 = 0;
+	id_z3 = 0;
+	id_energy_geL = 0;
+	id_tac_41_geL = 0;
+	id_stopper_x = 0;
+	id_energy_geL_raw = 0;
+	id_tac_41_geL_raw = 0;
+	id_trigger = 0;
+	id_scal_seconds = 0;
+	id_scal_geL = 0;
+	id_scal_sc21 = 0;
+	id_scal_sc41 = 0;
+	id_scal_sc42 = 0;
+	id_scal_sc43 = 0;
+	id_scal_sc81 = 0;
+	
+	id_b_AoQ = false;
+	id_b_z = false;
+	id_b_z2 = false;
+	id_b_z3 = false;
+	id_b_x2AoQ = false;
+	
+	id_b_x4AoQ_Z = new Bool_t[5]; 
+	id_b_z_AoQ = new Bool_t[5];
+	id_b_music_z = new Bool_t[5];
+	
+	for(int i = 0; i < 5; i++){
+	    
+	    id_b_x4AoQ_Z[i] = false; 
+	    id_b_z_AoQ[i] = false;
+	    id_b_music_z[i] = false;
+	    
+	}
+	
+	firsttimestamp = 0;
+	firstevent = false;
+	
+	ts = 0;  // relative time from start of the spill 
+	ts2 = 0;  // relative time from start of the spill does not reset at end extraction
+	
+    // MRTOF part :
+    
+	mrtof_tof = 0;
+	
+	mrtof_si_e1 = 0;
+	mrtof_si_e2 = 0;
+	mrtof_si_e3 = 0;
+	mrtof_si_e4 = 0;
+	mrtof_si_e5 = 0;
+	
+    
+    
+    
+    
+    
+    
+    Setup_Conditions();
     
     Setup_Parameters();
 
@@ -626,7 +707,186 @@ BS_Detector_System::BS_Detector_System(){
 
 BS_Detector_System::~BS_Detector_System(){
 
+    
+    for(int i; i < 32; ++i){
+	
+	delete[] vme2s[i];           // User TDC (V1290) 
+	delete[] vme2s_trailing[i];  // User TDC (V1290) 
 
+	delete[] vme3s_MT[i];           // Mtof TDC (V1290) 
+	delete[] vme3s_MT_trailing[i];  // Mtof TDC (V1290) 
+
+	delete[] nhit5[i];       // multiplicity (V1290)
+	delete[] vme3_MT_nhit5[i];       // multiplicity (V1290)
+
+    }
+    
+    
+    delete[] vme2scaler;         // User Crate Messhure
+    delete[] vme3scaler;         // User Crate Messhure
+
+    delete[] firstTS;
+    
+    delete[] previousTimeStamp;
+    
+    /*******************************************************************/
+    /***SORT STUFF***/
+  
+    delete[] ts_word; //for the titris time stammping
+    delete[] tsys_word; //for the system time
+
+    // scaler readings     
+    delete[] sc_long; //changed from 32 to 64 (10.07.2018)
+    delete[] sc_long2;
+
+
+    // part of MW parameter
+    delete[]  mw_an;       /*  anode time              */
+    delete[] mw_xl;       /*  Rohdaten                */
+    delete[] mw_xr;       /*                          */
+    delete[] mw_yu;       /*                          */ 
+    delete[] mw_yd;       /*                          */
+
+    // TPC part //(HAPOL-25/03/06) 6 TPCs each one with 2 delay lines each!!	
+    //7 TPCs (4 at S2, 2 at S4 and one at S3) 03.07.2018 SB
+    
+    
+    for(int i=0; i < 7; ++i){
+	
+	delete[] tpc_l[i];
+	delete[] tpc_r[i];
+	delete[] tpc_lt[i];
+	delete[] tpc_rt[i];
+	
+	delete[] tpc_dt[i];
+	delete[] tpc_a[i];
+	
+    }
+
+      
+    // User multihit TDC
+		
+    delete[] tdc_sc41l;
+    delete[] tdc_sc41r;
+    delete[] tdc_sc21l;
+    delete[] tdc_sc21r;
+    delete[] tdc_sc42l;
+    delete[] tdc_sc42r;
+    delete[] tdc_sc43l;
+    delete[] tdc_sc43r;
+    delete[] tdc_sc81l;
+    delete[] tdc_sc81r;
+
+    // MUSIC1 part
+    delete[]  music_e1;     /* Raw energy signals       */
+    delete[] music_t1;     /* Raw drift time           */
+    delete[] music_pres;   /* Music Druck              */
+    delete[]  music_temp;   /* Music Temperatur         */
+    
+    // MUSIC2 part
+    delete[] music_e2;     /* Raw energy signals       */
+    delete[] music_t2;     /* Raw drift time           */
+    
+    // MUSIC3 part (OLD MUSIC)
+    delete[] music_e3;     /* Raw energy signals       */
+    delete[] music_t3;     /* Raw drift times          */
+
+    delete[] dssd_adc;
+
+    /******************************************************************/
+    /**CALIBRATION Parameters**/
+    
+    // MON data declarations
+    
+    delete[] check_first_event;
+    delete[] scaler_time_count; 
+    delete[] scaler_spill_count; //UInt_t
+    delete[] scaler_time_check_last;//UInt_t
+    delete[] scaler_spill_check_last;//UInt_t 
+    delete[] check_increase_time;//UInt_t 
+    delete[] check_increase_spill;//UInt_t
+    delete[] scaler_increase_event;//UInt_t
+    delete[] scaler_last_event;
+    
+    
+    delete[] scaler_save;
+    
+    delete[] mon_inc;
+    
+    delete[] coin;
+    
+    // MW part
+   delete[]  mw_xsum;     /*                          */
+   delete[]  mw_ysum;     /*                          */
+    
+   delete[]  mw_x;        /*                          */
+   delete[]  mw_y;        /*                          */
+   delete[]  mw_wire;     /* special for Helmut       */
+    
+   delete[]  b_mw_xsum;   /*  wc on sum               */
+   delete[]  b_mw_ysum;   /*                          */
+    
+    // TPC part
+    delete[] tpc_x;
+    delete[] tpc_y;
+    delete[] b_tpc_xy;
+
+    for(int i=0; i < 7; ++i){
+	
+	delete[] tpc_csum[i];
+	delete[] b_tpc_csum[i];
+	
+    }
+    
+    
+    delete[] dssd_e; //[3][2][16]
+    
+    /******************************************************************/
+    /*** ANALYSIS Parameters ***/
+    
+    /*** MUSIC Conditions ***/
+    
+    // MUSIC part
+	
+	delete[] music_b_e1;
+	delete[] music_b_t1;
+	delete[] music_b_e2;
+	delete[] music_b_t2;
+	delete[] music_b_e3;
+	delete[] music_b_t3;
+	
+	delete[] de;
+	delete[] de_cor;
+	
+    //SCI part
+	delete[] sci_l;  
+	delete[] sci_r;  
+	delete[]  sci_e;  
+	delete[]  sci_tx;  
+	delete[] sci_x;
+	
+	delete[]  sci_veto_l;
+	delete[]  sci_veto_r;
+	delete[]  sci_veto_e;
+	
+	delete[]  sci_b_l;  
+	delete[]  sci_b_r;  
+	delete[]  sci_b_e;  
+	delete[]  sci_b_tx;  
+	delete[]  sci_b_x;  
+	delete[]  sci_b_veto_l;  
+	delete[]  sci_b_veto_r;  
+	delete[]  sci_b_veto_e;
+	
+    // ID part
+    
+	delete[] id_brho;      /* position-corr. BRho      */
+	delete[] id_rho;       /* Position-corrected Rho   */
+	
+	delete[] id_b_x4AoQ_Z; 
+	delete[] id_b_z_AoQ;
+	delete[] id_b_music_z;
+	
 }
 
 //---------------------------------------------------------------
@@ -640,8 +900,9 @@ void BS_Detector_System::Process_FRS(TGo4MbsSubEvent* psubevt){
     FRS_Anal();
     
     //cout<<"HOLY SHIT IT ACTUALLY FUCKING WORKED!!! "<<dt_21l_21r<<endl;
-    cout<<"HOLY FUCK IT STILL WORKS!!! "<<tpc_y[1]<<endl;
+    //cout<<"HOLY FUCK IT STILL WORKS!!! "<<tpc_y[1]<<endl;
     
+    //cout<<"FUCKITTY FUCK FUCKING HOLY BALLS!!! "<<sci_tofll2<<endl;
 }
 
 //-----------------------------------------------------------------//
@@ -1773,8 +2034,10 @@ void BS_Detector_System::FRS_Calib(){
 	}
 
 
-      if(mw_xsum[i] >= lim_xsum[i][0] && mw_xsum[i] <= lim_xsum[i][1]) b_mw_xsum[i] =  true; //cMW_XSUM[i]->Test(mw_xsum[i]);
-      else b_mw_xsum[i] =  false;
+	b_mw_xsum[i] = Check_WinCond_Multi(mw_xsum[i], lim_xsum, i);
+
+      //if(mw_xsum[i] >= lim_xsum[i][0] && mw_xsum[i] <= lim_xsum[i][1]) b_mw_xsum[i] =  true; //cMW_XSUM[i]->Test(mw_xsum[i]);
+      //else b_mw_xsum[i] =  false;
       
       
       /* better test first existence of yu, yd, an before filling of ysum */
@@ -1788,8 +2051,10 @@ void BS_Detector_System::FRS_Calib(){
 	  //mw_ysum[i] = (mw_yu[i]) + (mw_yd[i]); //when an doesn't work			
 	}
       
-	if(mw_ysum[i] >= lim_ysum[i][0] && mw_ysum[i] <= lim_ysum[i][1]) b_mw_ysum[i] =  true; //cMW_YSUM[i]->Test(mw_ysum[i]);
-	else b_mw_ysum[i] =  false;
+      	b_mw_ysum[i] = Check_WinCond_Multi(mw_ysum[i], lim_ysum, i);
+
+	//if(mw_ysum[i] >= lim_ysum[i][0] && mw_ysum[i] <= lim_ysum[i][1]) b_mw_ysum[i] =  true; //cMW_YSUM[i]->Test(mw_ysum[i]);
+	//else b_mw_ysum[i] =  false;
     
       /*******************************************************************/
       /* If the signals in x and y are valid, calculate position spectra */
@@ -1800,9 +2065,7 @@ void BS_Detector_System::FRS_Calib(){
 	  //      Int_t r_x = mw_xl[i] - mw_xr[i];
 	  Float_t r_x = mw_xl[i] *  mw->gain_tdc[1][i] - mw_xr[i] *  mw->gain_tdc[2][i]; //14.09.05 CN+AM
 	  mw_x[i] = mw->x_factor[i] * r_x + mw->x_offset[i];
-	  
-	  cout<<"Here's something interesting "<<r_x<<endl;
-	  
+	  	  
 	}
     
       if (b_mw_ysum[i])
@@ -1930,8 +2193,12 @@ void BS_Detector_System::FRS_Calib(){
 	       // if((de_42l>230&&de_42l<450)||(de_42r>540&&de_42r<750)){
 
 	  //b_tpc_csum[i][j] = cTPC_CSUM[i][j]->Test(tpc_csum[i][j]);
-	  if(tpc_csum[i][j] >= lim_csum[j][i][0] && tpc_csum[i][j] <= lim_csum[j][i][1]) b_tpc_csum[i][j] = true;
-	  else b_tpc_csum[i][j] = false;
+	  
+	  b_tpc_csum[i][j] = Check_WinCond_Multi_Multi(tpc_csum[i][j], lim_csum, j, i);
+	  
+	  
+	  //if(tpc_csum[i][j] >= lim_csum[j][i][0] && tpc_csum[i][j] <= lim_csum[j][i][1]) b_tpc_csum[i][j] = true;
+	  //else b_tpc_csum[i][j] = false;
 	       // }
 	  
 	  if(tpc_lt[i][0]==0 && tpc_rt[i][0]==0 && j<2)
@@ -2234,9 +2501,851 @@ void BS_Detector_System::FRS_Calib(){
 
 void BS_Detector_System::FRS_Anal(){
     
+  music1_anodes_cnt = 0;  
+  music2_anodes_cnt = 0;  
+  music3_anodes_cnt = 0;
+
+
+   // Munich MUSIC 
+  
+  for (int i=0;i<8;i++)
+    {
+      /* 8 anodes of TUM MUSIC */		
+      /****** first MUSIC ***** threshold changed to 5, 9/8/2012 **/
+      if ( music_e1[i] > 5)
+	{ 
+
+	  music_b_e1[i] = Check_WinCond_Multi(music_e1[i], cMusic1_E, i);//cMusic1_E[i]->Test(music_e1[i]);
+	  
+
+	  if (music_b_e1[i])
+	    music1_anodes_cnt++;
+	}
+
+        if (music_t1[i] > 0)
+	{ 
+	  music_b_t1[i] = Check_WinCond_Multi(music_t1[i], cMusic1_T, i); // cMusic1_T[i]->Test(music_t1[i]);
+	}
+
+       
+      //hMUSIC1_dE1dE2->Fill(music_e1[0],music_e1[1]);
+
+      //       /****** second MUSIC *****/
+      
+      if ( music_e2[i] > 5)
+	{ 
+	  music_b_e2[i] = Check_WinCond_Multi(music_e2[i], cMusic2_E, i);// cMusic2_E[i]->Test(music_e2[i]);
+	  if (music_b_e2[i]) music2_anodes_cnt++;
+	}
+
+      if (music_t2[i] > 0)
+	{ 
+	  music_b_t2[i] = Check_WinCond_Multi(music_t2[i], cMusic2_T, i);// cMusic2_T[i]->Test(music_t2[i]);
+	}
+    }
+
+  for (int i=0;i<4;i++)
+    {
+      /* 4 anodes of MUSIC OLD */		
+      /****** third MUSIC *****/
+      if ( music_e3[i] > 0)
+	{ 
+
+	  music_b_e3[i] = Check_WinCond_Multi(music_e3[i], cMusic3_E, i);// cMusic3_E[i]->Test(music_e3[i]);
+	  if (music_b_e3[i])
+	    music3_anodes_cnt++;
+	}
+      if (music_t3[i] > 0)
+	{ 
+	  music_b_t3[i] = Check_WinCond_Multi(music_t3[i], cMusic3_T, i);// cMusic3_T[i]->Test(music_t3[i]);
+	}
+    }
+  
+  // calculate truncated dE from 8 anodes, Munich MUSIC 
+  
+  if (music1_anodes_cnt == 8)
+    {
+      /* "quick-n-dirty solution according to Klaus:   */
+      //      Float_t r1 = (music_e1[0] - music->e1_off[0])*(music_e1[1] - music->e1_off[1]);
+      //      Float_t r2 = (music_e1[2] - music->e1_off[2])*(music_e1[3] - music->e1_off[3]);
+      //      Float_t r3 = (music_e1[4] - music->e1_off[4])*(music_e1[5] - music->e1_off[5]);
+      //      Float_t r4 = (music_e1[6] - music->e1_off[6])*(music_e1[7] - music->e1_off[7]);
+
+      Float_t r1 = ((music_e1[0])*music->e1_gain[0] + music->e1_off[0])*((music_e1[1])*music->e1_gain[1] + music->e1_off[1]);
+      Float_t r2 = ((music_e1[2])*music->e1_gain[2] + music->e1_off[2])*((music_e1[3])*music->e1_gain[3] + music->e1_off[3]);
+      Float_t r3 = ((music_e1[4])*music->e1_gain[4] + music->e1_off[4])*((music_e1[5])*music->e1_gain[5] + music->e1_off[5]);
+      Float_t r4 = ((music_e1[6])*music->e1_gain[6] + music->e1_off[6])*((music_e1[7])*music->e1_gain[7] + music->e1_off[7]);
+
+      if ( (r1 > 0) && (r2 > 0) && (r3 > 0) && (r4 > 0) )
+	{
+	  b_de1 = kTRUE;
+	  de[0] = sqrt( sqrt( sqrt(r1) * sqrt(r2) ) * sqrt( sqrt(r3) * sqrt(r4) ) );
+	  de_cor[0] = de[0];
+	}  
+    }
+
+       
+  if (music2_anodes_cnt == 8)
+    {
+      
+      Float_t r1 = ((music_e2[0])*music->e2_gain[0] + music->e2_off[0])*((music_e2[1])*music->e2_gain[1] + music->e2_off[1]);
+      Float_t r2 = ((music_e2[2])*music->e2_gain[2] + music->e2_off[2])*((music_e2[3])*music->e2_gain[3] + music->e2_off[3]);
+      Float_t r3 = ((music_e2[4])*music->e2_gain[4] + music->e2_off[4])*((music_e2[5])*music->e2_gain[5] + music->e2_off[5]);
+      Float_t r4 = ((music_e2[6])*music->e2_gain[6] + music->e2_off[6])*((music_e2[7])*music->e2_gain[7] + music->e2_off[7]);
+
+      if ( (r1 > 0) && (r2 > 0) && (r3 > 0) && (r4 > 0) )
+	{
+	  b_de2 = kTRUE;
+	  de[1] = sqrt( sqrt( sqrt(r1) * sqrt(r2) ) * sqrt( sqrt(r3) * sqrt(r4) ) );
+	  de_cor[1] = de[1];
+	}  
+    }
+       
+
+  if (music3_anodes_cnt == 4)
+    {         // OLD MUSIC
+      
+      Float_t r1 = ((music_e3[0])*music->e3_gain[0] + music->e3_off[0])*((music_e3[1])*music->e3_gain[1] + music->e3_off[1]);
+      Float_t r2 = ((music_e3[2])*music->e3_gain[2] + music->e3_off[2])*((music_e3[3])*music->e3_gain[3] + music->e3_off[3]);
+      //Float_t r3 = ((music_e3[4])*music->e3_gain[4] + music->e3_off[4])*((music_e3[5])*music->e3_gain[5] + music->e3_off[5]);  //added on 22.05.2018 SB
+      //Float_t r4 = ((music_e3[6])*music->e3_gain[6] + music->e3_off[6])*((music_e3[7])*music->e3_gain[7] + music->e3_off[7]);  //added on 22.05.2018 SB
+      
+      if ( (r1 > 0) && (r2 > 0) )
+	{
+	  b_de3 = kTRUE;
+	  de[2] = sqrt( sqrt(r1) * sqrt(r2) ) ;  // corrrected JSW 19.03.2010
+	  //de[2] = sqrt( sqrt( sqrt(r1) * sqrt(r2) ) * sqrt( sqrt(r3) * sqrt(r4) ) );   //changed on 22.05.2018 SB
+	  de_cor[2] = de[2];
+	} 
+
+      if (music_b_t3[0] && music_b_t3[1] && music_b_t3[2] && music_b_t3[3]) 
+	b_dt3 = kTRUE;
+    
+
+
+	//hMUSIC1_MUSIC2->Fill(de[0],de[1]);
+
+      /* Position (X) correction by TPC */       //TO DO!!!
+    
+
+
+      //if(!music->b_selfcorr1 && b_de3) {
+      //if(b_mw_xsum[4] && b_mw_xsum[5] && b_de3) {
+      if(b_de3 && b_tpc_xy[4]&&b_tpc_xy[5])
+	{
+	  Float_t p1 = music1_x1;
+	  Float_t p2 = music1_x2;
+	  Float_t p3 = music1_x3;
+	  Float_t p4 = music1_x4;
+
+	  //Float_t p5 = music1_x5; //added on 22.05.2018 SB
+	  //Float_t p6 = music1_x6; //added on 22.05.2018 SB
+	  //Float_t p7 = music1_x7; //added on 22.05.2018 SB
+	  //Float_t p8 = music1_x8; //added on 22.05.2018 SB
+	  
+	  x1_mean = (p1+p2+p3+p4)/4.;	// Mean position
+	  //x1_mean = (p1+p2+p3+p4+p5+p6+p7+p8)/8.;	// Mean position  //added on 22.05.2018 SB
+ 
+	  
+	  Float_t power = 1., Corr = 0.;
+	  for(int i=0;i<4;i++) {
+	    Corr += music->pos_a1[i] * power;
+	    power *= x1_mean;  
+	  }
+      
+	  if (Corr!=0) {
+	    Corr = music->pos_a1[0] / Corr;
+	    de_cor[2] = de[2] * Corr;
+	  }
+	  
+	}
+	//}
+      
+
+      /* Special gate on corrected music for cleaning x2 vs. AoQ spectrum */
+      b_decor = Check_WinCond(de_cor[2], cMusic3_dec);// cMusic3_dec->Test(de_cor[2]);
+      
+    
+    }
+
+
+        /*-------------------------------------------------------------------------*/
+ 	/* focus index: detector number                  tof index  tof path       */
+ 	/*       0:     Sc01                                0:     TA - S1         */
+ 	/*       1:     Sc11                                1:     S1 - S2         */
+ 	/*       2:     Sc21                                2:     S2 - S41        */
+ 	/*       3:     Sc21                                3:     S2 - S42        */
+ 	/*       4:     Sc31                                4:     S2 - 81         */
+ 	/*       5:     Sc41                                5:     S2 - E1         */
+	/*                                                                         */
+ 	/*       6:     Sc42                              tof index not used up to */
+ 	/*       7:     Sc43 (previously Sc51)             now, only separate      */
+ 	/*       8:     Sc61                              variables for S2-S41 and */
+ 	/*       9:     ScE1 (ESR)                                S2-S42           */
+ 	/*      10:     Sc81                                                       */
+ 	/*      11:     Sc82                                                       */
+ 	/*-------------------------------------------------------------------------*/
     
     
+
+  /*  Raw data  */
+   sci_l[2] = de_21l;  /* 21L         */
+   sci_r[2] = de_21r;  /* 21R         */
+   sci_tx[2] = dt_21l_21r + rand0_5();
+
+   sci_l[5] = de_41l;  /* 41L         */
+   sci_r[5] = de_41r;  /* 41R         */
+   sci_tx[5] = dt_41l_41r + rand0_5();
+  
+   sci_l[6] = de_42l;  /* 42L         */
+   sci_r[6] = de_42r;  /* 42R         */
+   sci_tx[6] = dt_42l_42r + rand0_5();
+
+   sci_l[7] = de_43l;  /* 43L         */
+   sci_r[7] = de_43r;  /* 43R         */
+   sci_tx[7] = dt_43l_43r + rand0_5();
+
+   sci_l[10] = de_81l; /* 81L         */
+   sci_r[10] = de_81r; /* 81R         */
+   sci_tx[10] = dt_81l_81r + rand0_5();
+   
+
+   for (int cnt=0;cnt<6;cnt++) // 
+     {
+       int idx = 0 ;
+       //int mw_idx = 0;
+       //Float_t mwx = 0;
+       switch(cnt)
+	 {
+	 case 0:        /* SC21 */
+	   idx = 2; 
+	   //mw_idx = 2;
+	   //mwx = sc21_x;
+	   break;    
+	 case 1:        /* SC21 delayed */
+	   idx = 3; 
+	   //mw_idx = 2;
+	   //mwx = sc21_x;
+	   break;    
+	 case 2:        /* SC41 */
+	   idx = 5; 
+	   //mw_idx = 5;
+	   //mwx = tpc_sc41_x;
+	   break;    
+	 case 3:        /* SC42 */
+           idx = 6;
+	   break;
+	 case 4:
+	   idx = 7;     /* SC43 */
+	   break;
+	 case 5:
+	   idx = 10;    /* SC81 */
+	   break;
+	 default: idx = 2;
+	 }   
+     
+       // raw spectra 
+       sci_b_l[idx] = Check_WinCond(sci_l[idx], cSCI_L);// cSCI_L[idx]->Test(sci_l[idx]);
+       sci_b_r[idx] = Check_WinCond(sci_r[idx], cSCI_R);// cSCI_R[idx]->Test(sci_r[idx]);
+
+       if(sci_b_l[idx] && sci_b_r[idx])
+	 {     
+	   sci_e[idx] = sqrt( (sci_l[idx] - sci->le_a[0][idx]) * sci->le_a[1][idx] 
+				  * (sci_r[idx] - sci->re_a[0][idx]) * sci->re_a[1][idx]);
+	   
+	   sci_b_e[idx] = Check_WinCond(sci_e[idx], cSCI_E);// cSCI_E[idx]->Test(sci_e[idx]);
+	 }
+
+
+       /*   Position in X direction:   */
+       sci_b_tx[idx] = Check_WinCond(sci_tx[idx], cSCI_Tx);// cSCI_Tx[idx]->Test(sci_tx[idx]);
+       if (sci_b_tx[idx])
+	 {
+
+	   /* mm-calibrated     */
+	   Float_t R = sci_tx[idx] ;//+ rand0_5(); 
+	   
+	   Float_t power = 1., sum = 0.;
+	   for(int i=0;i<7;i++)
+	     {
+	       sum += sci->x_a[i][idx] * power;
+	       power *= R;  
+	     }
+	   
+	   sci_x[idx] = sum;
+	   
+	   sci_b_x[idx] = Check_WinCond(sci_x[idx], cSCI_X);// cSCI_X[idx]->Test(sci_x[idx]);
+	 }
+
+     } // end of loop for indices 2,3,5,6,7,10   
+
+
+   /***  Scintillator Tof  spectra ***/
+
+   /* S21 - S41 */ 
+
+   /*  Calibrated tof  */
+   sci_tofll2 = dt_21l_41l*sci->tac_factor[2] - sci->tac_off[2] ;   /* S41L- S21L */
+   sci_tofrr2 = dt_21r_41r*sci->tac_factor[3] - sci->tac_off[3] ;   /* S41R- S21R */
+   //        sci_tofll2 = dt_21l_41l;  
+   //        sci_tofrr2 = dt_21r_41r;
+   //     std::cout <<" tac_factor2 "<<sci->tac_factor[2]<<std::endl; 
+   //     std::cout <<" tac_factor3 "<<sci->tac_factor[3]<<std::endl;  
+  
+   sci_b_tofll2 = Check_WinCond(sci_tofll2, cSCI_LL2);// cSCI_TofLL2->Test(sci_tofll2);
+   sci_b_tofrr2 = Check_WinCond(sci_tofrr2, cSCI_RR2);// cSCI_TofRR2->Test(sci_tofrr2);
+
+    /*cout<<"VALUE !!!"<<sci_tofll2<<endl;
+    cout<<"WINDOW !!!"<<cSCI_LL2[0]<<"   "<<cSCI_LL2[1]<<endl;
+    cout<<"BREAK!"<<endl;
+    cout<<"VALUE !!!"<<sci_tofrr2<<endl;
+    cout<<"WINDOW !!!"<<cSCI_RR2[0]<<"   "<<cSCI_RR2[1]<<endl;
+    cout<<"PAY ATTENTION !!!"<<sci_b_tofll2<<"   "<<sci_b_tofrr2<<endl;*/
+
+   /* sum of Tof_LL and Tof_RR corrects for position in stop/start scint.      */
+   if (sci_b_tofll2 && sci_b_tofrr2)
+     {      /* TOF SC41 - SC21 [ps]  */
+       sci_tof2 =  (sci->tof_bll2 * sci_tofll2 + sci->tof_a2 
+			+ sci->tof_brr2 * sci_tofrr2)/2.0 ;
+			
+			//cout<<"WE MADE IT !!!"<<sci_tof2<<endl;
+      
+     }
+ 
+   /*  
+    else if (sci_b_tofll2) {
+    sci_tof2 =  (sci->tof_bll2 * sci_tofll2 + sci->tof_a2) ;
     
+    hSCI_Tof2->Fill(sci_tof2);
+    }
+    else if (sci_b_tofrr2) {
+    sci_tof2 =  (sci->tof_a2 + sci->tof_brr2 * sci_tofrr2);
+    
+    hSCI_Tof2->Fill(sci_tof2);
+    }
+   */
+
+
+   /***  Scintillator Tof  spectra with SC21-SC42 (as a backup) ***/ //added on 03.07.2018 SB
+
+   //  Calibrated tof  
+   sci_tofll3 = dt_42l_21l*sci->tac_factor[5] - sci->tac_off[5] ;   // S42L- S21L 
+   sci_tofrr3 = dt_42r_21r*sci->tac_factor[6] - sci->tac_off[6] ;   // S42R- S21R
+   //     std::cout <<" tac_factor5 "<<sci->tac_factor[5]<<std::endl; 
+   //     std::cout <<" tac_factor6 "<<sci->tac_factor[6]<<std::endl;  
+  
+   sci_b_tofll3 = Check_WinCond(sci_tofll3, cSCI_LL3);// cSCI_TofLL3->Test(sci_tofll3);
+   sci_b_tofrr3 = Check_WinCond(sci_tofrr3, cSCI_RR3);// cSCI_TofRR3->Test(sci_tofrr3);
+
+   // sum of Tof_LL and Tof_RR corrects for position in stop/start scint.      
+   if (sci_b_tofll3 && sci_b_tofrr3)
+     {      // TOF SC42 - SC21 [ps]
+       sci_tof3 =  (sci->tof_bll3 * sci_tofll3 + sci->tof_a3 
+			+ sci->tof_brr3 * sci_tofrr3)/2.0 ;
+      
+     }
+
+
+   /***  Scintillator Tof  spectra with SC21-SC81 ***/ //added on 03.07.2018 SB
+
+   //  Calibrated tof  
+   sci_tofll4 = dt_21l_81l*sci->tac_factor[9] - sci->tac_off[9] ;   // S81L- S21L 
+   sci_tofrr4 = dt_21r_81r*sci->tac_factor[10] - sci->tac_off[10] ;   // S81R- S21R
+  
+   sci_b_tofll4 = Check_WinCond(sci_tofll4, cSCI_LL4);// cSCI_TofLL4->Test(sci_tofll4);
+   sci_b_tofrr4 = Check_WinCond(sci_tofrr4, cSCI_RR4);// cSCI_TofRR4->Test(sci_tofrr4);
+
+   // sum of Tof_LL and Tof_RR corrects for position in stop/start scint.      
+   if (sci_b_tofll4 && sci_b_tofrr4)
+     {      // TOF SC81 - SC21 [ps]
+       sci_tof4 =  (sci->tof_bll4 * sci_tofll4 + sci->tof_a4 
+			+ sci->tof_brr4 * sci_tofrr4)/2.0 ;
+      
+     }
+   
+
+   /* check for polygon in raw detof spectrum of SC41 */
+   
+   sci_b_detof = Check_PolyCond_X_Y(sci_tof2, sci_e[5], cSCI_detof, 4); // cSCI_detof->Test(sci_tof2, sci_e[5]);
+ 
+  id_trigger=trigger;
+  /* accumulate raw detof spectrum  */
+
+  // sci_e[idx] = sqrt( (sci_l[idx] - sci->le_a[0][idx]) * sci->le_a[1][idx] 
+  //                   * (sci_r[idx] - sci->re_a[0][idx]) * sci->re_a[1][idx]);
+  
+  
+  /* check for polygon in raw detof spectrum  */
+  //  id_b_detof2 = cID_dEToF->Test(sci_tof2, de[0]);
+    
+  /*  select by what means S2 positions are to be derived:         */
+  /*  ID.X2_select =0: SC21;  =1: S2 MWs                           */
+  id_x2 = -9999;
+  if(id->x2_select == 0) 
+    {
+      if(sci_b_x[2])
+	id_x2 = sci_x[2]; /* pos index 2 = SC21 */
+    }
+
+  /* For old tracking with old nomenclature (06.06.18)
+  if(id->x2_select == 1)
+    {
+     
+      id_x2=999;
+      if(b_tpc_xy[2] && b_tpc_xy[3])
+	id_x2 = tpc_x_s2_foc;
+      if(b_tpc_xy[2] && !b_tpc_xy[3])
+	id_x2 = tpc_x[2];
+      if(!b_tpc_xy[2] && b_tpc_xy[3])
+	id_x2 = tpc_x[3];
+      if(!b_tpc_xy[2] && !b_tpc_xy[3] && sci_b_x[2])
+	id_x2 = sci_x[2];
+     
+
+     id_a2 = tpc_angle_x_s2_foc;
+     id_y2 = tpc_y_s2_foc;
+     id_b2 = tpc_angle_y_s2_foc;
+  }
+  */
+
+   if(id->x2_select == 1)
+    {
+     
+      id_x2=999;
+      id_y2=999;
+      id_a2=999;
+      id_b2=999;
+      
+      if(b_tpc_xy[0] && b_tpc_xy[1] && !b_tpc_xy[2] && !b_tpc_xy[3] )
+	{
+	id_x2 = tpc_x_s2_foc_21_22;
+        id_y2 = tpc_y_s2_foc_21_22;
+	id_a2 = tpc_angle_x_s2_foc_21_22;
+	id_b2 = tpc_angle_y_s2_foc_21_22;
+	}
+
+      if(!b_tpc_xy[0] && !b_tpc_xy[1] && b_tpc_xy[2] && b_tpc_xy[3] )
+	{
+	id_x2 = tpc_x_s2_foc_23_24;
+        id_y2 = tpc_y_s2_foc_23_24;
+	id_a2 = tpc_angle_x_s2_foc_23_24;
+	id_b2 = tpc_angle_y_s2_foc_23_24;
+	}
+
+      if(!b_tpc_xy[0] && b_tpc_xy[1] && !b_tpc_xy[2] && b_tpc_xy[3] )
+	{
+	id_x2 = tpc_x_s2_foc_22_24;
+        id_y2 = tpc_y_s2_foc_22_24;
+	id_a2 = tpc_angle_x_s2_foc_22_24;
+	id_b2 = tpc_angle_y_s2_foc_22_24;
+	}
+
+       if(b_tpc_xy[0] && b_tpc_xy[1] && b_tpc_xy[2] && b_tpc_xy[3] )
+	{
+	id_x2 = tpc_x_s2_foc_22_24;
+        id_y2 = tpc_y_s2_foc_22_24;
+	id_a2 = tpc_angle_x_s2_foc_22_24;
+	id_b2 = tpc_angle_y_s2_foc_22_24;
+	}
+
+        if(!b_tpc_xy[0] && !b_tpc_xy[1] && !b_tpc_xy[2] && !b_tpc_xy[3] && sci_b_x[2] )
+	{
+	id_x2 = sci_x[2];
+        id_y2 = 0.0;
+	id_a2 = 0.0;
+	id_b2 = 0.0;
+	}
+	
+  }
+                            
+  /*  select by what means S4 positions are to be derived:         */
+  /*  ID.X4_select =0: SC41;  =1: S4 MWs;                          */
+  if(id->x4_select == 0) 
+    {
+      //    if(sci_b_x[5]) id_x4 = sci_x[5];  /* pos index 5 = SC41 */
+      id_x4 = 0;  /* pos index 5 = SC41 */
+    }
+  
+  if(id->x4_select == 1)
+    {
+      id_x4 = tpc_x_s4;
+      id_a4 = tpc_angle_x_s4;
+      id_y4 = tpc_y_s4;
+      id_b4 = tpc_angle_y_s4;
+    }
+
+  
+  /*  check that the positions are OK   */
+  id_b_x2 = Check_WinCond(id_x2, cID_x2);// cID_x2->Test(id_x2);
+  id_b_x4 = Check_WinCond(id_x4, cID_x4);// cID_x4->Test(id_x4);
+
+  /*
+  /// conditions for the 12C measurement
+
+  // for 12N at S4
+  if(de[0]>2200. && de[0]<4000.)hID_x4z55->Fill(id_x4);// added 2016Jun.16
+  // for 12N at S2
+   if(de[0]>2200. && de[0]<4000.)hID_x2z55->Fill(id_x2);// added 2016Jun.16
+
+   //for 12B at s4 and s2
+  if(de[0]>900. && de[0]<1200. )hID_x4z53->Fill(id_x4);
+  if(de[0]>900. && de[0]<1200. )hID_x2z53->Fill(id_x2);
+  */
+
+  // This ones are for all nuclei as a funtion of the energy loss
+
+  //hID_E_Xs4->Fill(id_x4,de[0]);// added by 2016Jun.16
+
+  //hID_E_Xs2->Fill(id_x2,de[0]);// added by 2016Jun.16
+
+  /*hID_x2a2->Fill(id_x2,id_a2);
+  hID_y2b2->Fill(id_y2,id_b2);
+  hID_x4a4->Fill(id_x4,id_a4);
+  hID_y4b4->Fill(id_y4,id_b4); */
+
+
+  /****  A/Q calculations for S41-S21 or S42-S41 (tof index 2+3) *************/ 
+  Float_t f = 931.4940 / 299.792458 ;    /* the u/(c*10^-6) factor  */
+
+  /*----------------------------------------------------------*/
+  /* Determination of beta                                    */
+  /* ID.TofOff(i)                   Flight time offset [ps]   */
+  /* ID.Path(i)                     Flight path/c [ps]        */
+  /* TOF(i)        BIN FLOAT(24),   Flight time  [ps]         */
+  /*----------------------------------------------------------*/
+  /* from ToF S41-S21 */
+  if (sci_b_tofll2 && sci_b_tofrr2)
+    {
+      id_beta = id->id_path2 / (id->id_tofoff2 - sci_tof2);
+    }
+  
+  /*------------------------------------------------------*/
+  /* Determination of Brho                                */
+  /* Dispersion and magnification are still the same      */
+  /* variable for S41-S21 and S42-S41, adjust in setup.C  */
+  /*------------------------------------------------------*/
+
+  /* check S2 valid conditions */
+  //if (id_b_x2 && id_b_x4) {
+  if (id_b_x2)
+    {   
+      // first half of FRS
+      id_rho[0] = frs->rho0[0] * (1. - id_x2/1000./frs->dispersion[0]);   
+      // second half of FRS
+      id_rho[1] = frs->rho0[1] * (1. - (id_x4 - frs->magnification[1] * id_x2) / 1000. / frs->dispersion[1]) ; 
+      //    id_rho[1] = frs->rho0[1] * (1. - (frs->magnification[1] * id_x2) / 1000. / frs->dispersion[1]) ; 
+      
+      for(int i=0;i<2;i++)
+	{
+	  id_brho[i] = (fabs(frs->bfield[2*i]) + fabs(frs->bfield[2*i+1]))/ 2. * id_rho[i];
+	}
+    }   
+  //}
+
+
+  /*--------------------------------------------------------------*/
+  /* Determination of A/Q                                         */
+  /*--------------------------------------------------------------*/
+  /* Beta(i)       BIN FLOAT(24),   Beta = v/c                    */
+  /* Gamma(i)      BIN FLOAT(24),   Gamma= sqrt(1/1-beta**2)      */
+  /*--------------------------------------------------------------*/
+  /* for S2-S4 */
+  // if (sci_b_tofll2 && sci_b_tofrr2 && id_b_x2 && id_b_x4) {
+  if (sci_b_tofll2 && sci_b_tofrr2 &&  id_b_x2)
+    {
+      if ((id_beta>0.0) && (id_beta<1.0))
+	{
+	  id_gamma = sqrt( 1. /(1. - id_beta * id_beta));
+	  //id_AoQ = id_brho[1]/id_beta/id_gamma/ f - id->id_tofcorr2 * id_x4;
+	  id_AoQ = id_brho[1]/id_beta/id_gamma/ f ;
+	  
+	  //      std::cout <<" id_AoQ "<<id_AoQ<<std::endl; 
+	  
+	  //correction for id_a2, JK 16.9.11
+
+
+	  id_AoQ_corr = id_AoQ - frs->a2AoQCorr * id_a2;
+	  if (!b_tpc_xy[4] || !b_tpc_xy[5])
+	    id_AoQ_corr = id_AoQ - frs->a4AoQCorr * id_a4;
+
+
+	  id_b_AoQ = kTRUE;
+	}
+    }
+
+  if(id_b_AoQ)
+    {
+    }
+  
+  // }
+
+  /*------------------------------------------------*/
+  /* Determination of Z                             */
+  /*------------------------------------------------*/
+  /****  S4  (MUSIC 1)   */
+  //  if((de_cor[0]>0.0) && (id_beta>0.0) && (id_beta<1.0)) {
+  
+  if((de[0]>0.0) && (id_beta>0.0) && (id_beta<1.0))
+    {
+      Double_t power = 1., sum = 0.;
+      for (int i=0;i<4;i++)
+	{
+	  sum += power * id->vel_a[i];
+	  power *= id_beta;
+	}
+      id_v_cor = sum;
+      
+      if (id_v_cor > 0.0)
+	id_z = frs->primary_z * sqrt(de[0]/id_v_cor) + frs->offset_z;
+      
+    if ((id_z>0.0) && (id_z<100.0))
+      {
+	id_b_z = kTRUE;
+      }
+    }
+
+  /****  S4  (MUSIC 2)   */
+  
+  //  if((de_cor[0]>0.0) && (id_beta>0.0) && (id_beta<1.0)) {
+  if((de[1]>0.0) && (id_beta>0.0) && (id_beta<1.0))
+    {
+      Double_t power = 1., sum = 0.;
+      for (int i=0;i<4;i++)
+	{
+	  sum += power * id->vel_a2[i];
+	  power *= id_beta;
+	}
+      id_v_cor2 = sum;
+      
+      if (id_v_cor2 > 0.0)
+	id_z2 = frs->primary_z * sqrt(de[1]/id_v_cor2) + frs->offset_z2;
+      //std::cout<<"id_z2="<<id_z2<<std::endl;
+      
+      if ((id_z2>0.0) && (id_z2<100.0))
+	{
+	  id_b_z2 = kTRUE;
+	}
+    }
+ 
+
+  /****  S4  (MUSIC OLD)   */
+  //  if((de_cor[0]>0.0) && (id_beta>0.0) && (id_beta<1.0)) {
+  
+  if((de[2]>0.0) && (id_beta>0.0) && (id_beta<1.0))
+    {
+      Double_t power = 1., sum = 0.;
+      for (int i=0;i<4;i++)
+	{
+	  sum += power * id->vel_a3[i];
+	  power *= id_beta;
+	}
+      id_v_cor3 = sum;
+      
+      if (id_v_cor3 > 0.0)
+	id_z3 = frs->primary_z * sqrt(de[2]/id_v_cor3) + frs->offset_z3;
+      //std::cout<<"id_z2="<<id_z2<<std::endl;
+      
+      if ((id_z3>0.0) && (id_z3<100.0))
+	{
+	  id_b_z3 = kTRUE;
+	}
+
+
+      static const double anode_width = 10.;//cm
+      double music_dX = anode_width*sqrt(id_a4*id_a4+id_b4*id_b4+1.);
+      //h_dEdx_betagammaAll->Fill(id_beta*id_gamma,de[2]/music_dX);
+      //h_dEdx_betagammaAllZoom->Fill(id_beta*id_gamma,de[2]/music_dX);
+      double music_dEtemp0 = music_e3[0]*music->e3_gain[0] + music->e3_off[0];
+      for(int i=0;i<4;++i)
+	{
+	  double music_dEtemp = music_e3[i]*music->e3_gain[i] + music->e3_off[i];
+	  //h_dEdx_betagamma[i]->Fill(id_beta*id_gamma,music_dEtemp/music_dX);
+	  /*if(i>0)
+	    h_DiffdEdx_betagamma[i]->Fill(id_beta*id_gamma,(music_dEtemp-music_dEtemp0)/music_dX);*/
+	}
+    }
+  /*------------------------------------------------*/
+  /* Identification Plots                           */
+  /*------------------------------------------------*/
+
+  /****  for S2-S4  ****/
+
+  //Float_t my_dist_TPC6= 1075; //position TPC6 in s388?
+  //Float_t x4env=0;
+  //Float_t y4env=0;
+  //  Float_t my_dist_TPC65;
+  if(id_b_AoQ)
+    {
+      for (int i=0;i<5;i++)
+	{
+	
+	//Float_t tmp_array[2] = {id_AoQ, id_x4};
+	    
+	id_b_x4AoQ_Z[i] = Check_PolyCond_X_Y(id_AoQ, id_x4, cID_x4AoQ_Z, 4);// cID_x4AoQ_Z[i]->Test(id_AoQ, id_x4); 
+        }
+    
+	//Float_t tmp_array[2] = {id_AoQ, id_x2};
+	
+      id_b_x2AoQ = Check_PolyCond_Multi_X_Y(id_AoQ, id_x2, cID_x2AoQ, 5, 0);// cID_x2AoQ[0]->Test(id_AoQ, id_x2);
+      for(int i=0;i<6;++i)
+	{
+	  if(Check_PolyCond_Multi_X_Y(id_AoQ, id_x2, cID_x2AoQ, 5, i)==true)// cID_x2AoQ[i]->Test(id_AoQ, id_x2)
+	    {
+	      //hMUSIC3_x2AoQ_E[0][i]->Fill(music_e3[0]);
+	      //hMUSIC3_x2AoQ_E[1][i]->Fill(music_e3[1]);
+	      //hMUSIC3_x2AoQ_E[2][i]->Fill(music_e3[2]);
+	      //hMUSIC3_x2AoQ_E[3][i]->Fill(music_e3[3]);	      
+	      //hID_x4AoQ_x2AoQgate[i]->Fill(id_AoQ, id_x4);
+	      /*if (id_b_z3)
+		hID_ZAoQ_x2AoQgate[i]->Fill(id_AoQ, id_z3);*/
+	    }
+	}
+	       
+      //      if (id_b_z3) // changed to Music1. YT. 2016Jun.13 19:00
+      if (id_b_z) // changed to Music1. YT. 2016Jun.13 19:00   
+	{   
+
+	  for(int i=0;i<5;i++)
+	    {
+	      id_b_music_z[i] = Check_WinCond(id_z, cID_Z_Z);// cID_Z_Z[i]->Test(id_z);   
+	      if(cID_Z_AoQ[i]==nullptr)
+		std::cout<<"E> cID_Z_AoQ["<<i<<"] nullptr "<<cID_Z_AoQ[i]<<" | "<<id->ID_Z_AoverQ_num[i]<<std::endl;
+	      
+	      //Float_t tmp_array[2] = {id_AoQ, id_z};
+	      
+	       id_b_z_AoQ[i] = Check_PolyCond_Multi_X_Y(id_AoQ, id_z, cID_Z_AoQ, 5, i);// cID_Z_AoQ[i]->Test(id_AoQ, id_z);      
+	      
+		// if(i==0)
+		//   { 
+		//     if (id_b_z_AoQ[0])
+		//       { 
+		// 	hMUSIC3_z_AoQ_E[0][i]->Fill(music_e3[0]);
+		// 	hMUSIC3_z_AoQ_E[1][i]->Fill(music_e3[1]);
+		// 	hMUSIC3_z_AoQ_E[2][i]->Fill(music_e3[2]);
+		// 	hMUSIC3_z_AoQ_E[3][i]->Fill(music_e3[3]);
+		// 	hID_x4c[0]->Fill(id_x4);
+		// 	hID_x2c[0]->Fill(id_x2);
+		      
+		// 	hMUSIC3_music_z_E[0][i]->Fill(music_e3[0]);
+		// 	hMUSIC3_music_z_E[1][i]->Fill(music_e3[1]);
+		// 	hMUSIC3_music_z_E[2][i]->Fill(music_e3[2]);
+		// 	hMUSIC3_music_z_E[3][i]->Fill(music_e3[3]);
+		//       }
+		//   }
+	      if (id_b_z_AoQ[i])
+		  {
+
+			// S395 envelop plots, tracking from position(TPC6) and angle (TPC5, TPC6)
+			/*
+			  if( id_b_x4 && i==0) {
+			  for(Int_t zz=0; zz<=2600; zz+=100) {
+			  x4env =  id_a4 * (zz-my_dist_TPC6)/1000. + tpc_x[5];
+			  y4env =  id_b4 * (zz-my_dist_TPC6)/1000. + tpc_y[5];
+			  //hID_xz->Fill(zz,x4env);
+			  //hID_yz->Fill(zz,y4env);
+			  hID_xzc->Fill(zz,x4env);
+			  hID_yzc->Fill(zz,y4env);
+			  }
+			  }
+			*/
+			 
+			  
+			  //hID_betac[i]->Fill(id_beta);
+			  //hID_brhoc[i]->Fill(id_brho[1]);
+			
+			  // hID_x_target1c[i]->Fill(tpc_x_s2_target1);
+			  // hID_x_target2c[i]->Fill(tpc_x_s4_target2);
+			  // hID_y_target1c[i]->Fill(tpc_y_s2_target1);
+			  // hID_y_target2c[i]->Fill(tpc_y_s4_target2);
+			
+		      
+			// if(i==1){
+			//if(coin[10]==1)
+			//	hID_x4c[i]->Fill(id_x4);
+			//}else{
+			//hID_x4c[i]->Fill(id_x4);
+			//}
+		      //}
+		  }
+	      }
+	}
+    }
+  
+  if(EventFlag==0x200 && trigger==1)
+    {
+      mrtof_start = mrtof_start*25./1000000.; // ch to microsec
+      
+      double tempStop1 = mrtof_stopDelay*25./1000000. ;
+      double tempStop2 = mrtof_stop*25./1000000. ;
+      
+      /*h_MRtof_Start->Fill(mrtof_start);
+      h_MRtof_StopDelay->Fill(tempStop1);
+      h_MRtof_Stop->Fill(tempStop2);*/
+      
+      int stop_status=0;
+      
+      if(tempStop1<=0.)
+	{
+	  if(tempStop2>0.)
+	    {
+	      mrtof_stop  = tempStop2;
+	      //h_MRtof_status->Fill("GoodStop2",1);
+	      stop_status=1;
+	    }
+	  else
+	    {
+	      mrtof_stop = -9999.;
+	      //std::cout<<"E> MRTOF Anal : both stop signal "<<
+	      /*if(mrtof_start>1)
+		h_MRtof_status->Fill("NoGoodStop",1);
+	      else
+		h_MRtof_status->Fill("NoData",1);*/
+	    }
+	}
+      else
+	{
+	  if(tempStop2<=0.)
+	    {
+	      mrtof_stop = tempStop1-45.;
+	      //h_MRtof_status->Fill("GoodStop1",1);
+	      stop_status=1;
+	    }
+	  else
+	    {
+	      double diff_stop = tempStop1-tempStop2;
+	      if(TMath::Abs(diff_stop-45)<1.)
+		{
+		  mrtof_stop = tempStop1-45.;
+		  //h_MRtof_status->Fill("GoodStop1&2",1);
+		  stop_status=1;
+		}
+	      else
+		{
+		  //h_MRtof_status->Fill("Stop1&2BadOverlap",1);
+		  std::cout<<"E> MRtof diff stop too big from 45 microsec !"<<diff_stop<< "sorted : D="<<mrtof_stopDelay <<" "<< mrtof_stop <<" | in microsec: D="<< tempStop1 <<" "<<tempStop2<<"\n";
+		}
+	    }
+	}
+
+      //int diff_stopdelay = 1891482-54830;
+
+      if(stop_status==1)
+	{
+	  mrtof_tof = 100 - ( mrtof_start - mrtof_stop); // add 100 microsec from mrtof trigger system 
+	  //h_MRtof_tof->Fill(mrtof_tof);
+	  //h_MRtof_status->Fill("GoodTOF",1);
+	}
+      /*else
+	h_MRtof_status->Fill("BadTOF",1);*/
+
+
+    }
+
+  mrtof_si_e1=si_e1;
+  mrtof_si_e2=si_e2;
+  mrtof_si_e3=si_e3;
+  mrtof_si_e4=si_e4;
+  mrtof_si_e5=si_e5;
     
 }
 
@@ -3351,7 +4460,7 @@ void BS_Detector_System::Setup_Parameters(){
   
   ElecMod->setMap();
 
-  //ElecMod->Print();
+  ElecMod->Print();
   
   cout << "Setup done " << endl;
 
@@ -3363,6 +4472,14 @@ void BS_Detector_System::Setup_Parameters(){
 
 
 void BS_Detector_System::get_Event_data(Raw_Event* RAW){
+	    
+    RAW->set_DATA_MUSIC(de, de_cor);
+    RAW->set_DATA_SCI(sci_l, sci_r, sci_e, sci_tx, sci_x);
+    RAW->set_DATA_SCI_ToF(sci_tofll2, sci_tofll3, sci_tof2, sci_tofrr2, sci_tofrr3, sci_tof3);
+    RAW->set_DATA_ID_2_4(id_x2, id_y2, id_a2, id_b2, id_x4, id_y4, id_a4, id_b4);
+    RAW->set_DATA_ID_Beta_Rho(id_brho, id_rho, id_beta, id_beta3, id_gamma);
+    RAW->set_DATA_ID_Z_AoQ(id_AoQ, id_AoQ_corr, id_z, id_z2, id_z3);
+    RAW->set_DATA_ID_Timestamp(timestamp, ts, ts2);
 	
 }
 
@@ -3405,3 +4522,656 @@ Int_t BS_Detector_System::get2bits(Int_t value, int nword, int start, int length
 }
 
 //---------------------------------------------------------------
+Bool_t BS_Detector_System::Check_WinCond(Float_t P, Float_t* V){
+    
+    if(P >= V[0] && P <= V[1]) return true;
+    else return false;
+
+}
+
+//---------------------------------------------------------------
+Bool_t BS_Detector_System::Check_WinCond_Multi(Float_t P, Float_t** V, int cond_num){
+    
+    if(P >= V[cond_num][0] && P <= V[cond_num][1]) return true;
+    else return false;
+
+}
+
+//---------------------------------------------------------------
+Bool_t BS_Detector_System::Check_WinCond_Multi_Multi(Float_t P, Float_t*** V, int cond_num, int cond_num_2){
+    
+    if(P >= V[cond_num][cond_num_2][0] && P <= V[cond_num][cond_num_2][1]) return true;
+    else return false;
+
+}
+
+//---------------------------------------------------------------
+
+// cn_PnPoly(): crossing number test for a point in a polygon
+//      Input:   P = a point,
+//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+//      Return:  0 = outside, 1 = inside
+// This code is patterned after [Franklin, 2000]
+Bool_t BS_Detector_System::Check_PolyCond(Float_t* P, Float_t** V, int n ){
+    int    cn = 0;    // the  crossing number counter
+
+    // loop through all edges of the polygon
+    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
+       if (((V[i][1] <= P[1]) && (V[i+1][1] > P[1]))     // an upward crossing
+        || ((V[i][1] > P[1]) && (V[i+1][1] <=  P[1]))) { // a downward crossing
+            // compute  the actual edge-ray intersect x-coordinate
+            float vt = (float)(P[1]  - V[i][1]) / (V[i+1][1] - V[i][1]);
+            if (P[0] <  V[i][0] + vt * (V[i+1][0] - V[i][0])) // P.x < intersect
+                 ++cn;   // a valid crossing of y=P.y right of P.x
+        }
+    }
+    
+    if(cn&1 == 0) return false;
+    if(cn&1 == 1) return true;
+    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
+
+}
+
+//---------------------------------------------------------------
+
+// cn_PnPoly(): crossing number test for a point in a polygon
+//      Input:   P = a point,
+//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+//      Return:  0 = outside, 1 = inside
+// This code is patterned after [Franklin, 2000]
+Bool_t BS_Detector_System::Check_PolyCond_Multi(Float_t* P, Float_t*** V, int n, int cond_num )
+{
+    int    cn = 0;    // the  crossing number counter
+
+    // loop through all edges of the polygon
+    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
+       if (((V[cond_num][i][1] <= P[1]) && (V[cond_num][i+1][1] > P[1]))     // an upward crossing
+        || ((V[cond_num][i][1] > P[1]) && (V[cond_num][i+1][1] <=  P[1]))) { // a downward crossing
+            // compute  the actual edge-ray intersect x-coordinate
+            float vt = (float)(P[1]  - V[cond_num][i][1]) / (V[cond_num][i+1][1] - V[cond_num][i][1]);
+            if (P[0] <  V[cond_num][i][0] + vt * (V[cond_num][i+1][0] - V[cond_num][i][0])) // P.x < intersect
+                 ++cn;   // a valid crossing of y=P.y right of P.x
+        }
+    }
+    
+    if(cn&1 == 0) return false;
+    if(cn&1 == 1) return true;
+
+    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
+
+}
+//---------------------------------------------------------------
+
+// cn_PnPoly(): crossing number test for a point in a polygon
+//      Input:   P = a point,
+//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+//      Return:  0 = outside, 1 = inside
+// This code is patterned after [Franklin, 2000]
+Bool_t BS_Detector_System::Check_PolyCond_X_Y(Float_t X, Float_t Y, Float_t** V, int n ){
+    int    cn = 0;    // the  crossing number counter
+
+    // loop through all edges of the polygon
+    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
+       if (((V[i][1] <= Y) && (V[i+1][1] > Y))     // an upward crossing
+        || ((V[i][1] > Y) && (V[i+1][1] <=  Y))) { // a downward crossing
+            // compute  the actual edge-ray intersect x-coordinate
+            float vt = (float)(Y  - V[i][1]) / (V[i+1][1] - V[i][1]);
+            if (X <  V[i][0] + vt * (V[i+1][0] - V[i][0])) // P.x < intersect
+                 ++cn;   // a valid crossing of y=P.y right of P.x
+        }
+    }
+    
+    if(cn&1 == 0) return false;
+    if(cn&1 == 1) return true;
+    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
+
+}
+
+//---------------------------------------------------------------
+
+// cn_PnPoly(): crossing number test for a point in a polygon
+//      Input:   P = a point,
+//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+//      Return:  0 = outside, 1 = inside
+// This code is patterned after [Franklin, 2000]
+Bool_t BS_Detector_System::Check_PolyCond_Multi_X_Y(Float_t X, Float_t Y, Float_t*** V, int n, int cond_num )
+{
+    int    cn = 0;    // the  crossing number counter
+
+    // loop through all edges of the polygon
+    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
+       if (((V[cond_num][i][1] <= Y) && (V[cond_num][i+1][1] > Y))     // an upward crossing
+        || ((V[cond_num][i][1] > Y) && (V[cond_num][i+1][1] <=  Y))) { // a downward crossing
+            // compute  the actual edge-ray intersect x-coordinate
+            float vt = (float)(Y  - V[cond_num][i][1]) / (V[cond_num][i+1][1] - V[cond_num][i][1]);
+            if (X <  V[cond_num][i][0] + vt * (V[cond_num][i+1][0] - V[cond_num][i][0])) // P.x < intersect
+                 ++cn;   // a valid crossing of y=P.y right of P.x
+        }
+    }
+    
+    if(cn&1 == 0) return false;
+    if(cn&1 == 1) return true;
+
+    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
+
+}
+
+//---------------------------------------------------------------
+
+void BS_Detector_System::Setup_Conditions(){
+        
+    string line;
+    int line_number = 0;
+    
+    const char* format = "%f %f %f %f %f %f %f %f %f %f %f %f %f %f";
+
+    ifstream cond_a("Configuration_Files/FRS_Window_Conditions/lim_csum.txt");
+    
+    lim_csum = new Float_t**[4];
+    
+    for(int i = 0; i < 4; ++i){
+	
+	lim_csum[i] = new Float_t*[7];
+	
+	    for(int j = 0; j < 7; ++j){
+		
+		
+		lim_csum[i][j] = new Float_t[2];
+		
+	    }
+    }
+    
+    
+    while(/*cond_a.good()*/getline(cond_a,line,'\n')){
+	
+	//getline(cond_a,line,'\n');
+	if(line[0] == '#') continue;
+	
+
+	    sscanf(line.c_str(),format,&lim_csum[line_number][0][0],&lim_csum[line_number][0][1]
+					,&lim_csum[line_number][1][0],&lim_csum[line_number][1][1]
+					,&lim_csum[line_number][2][0],&lim_csum[line_number][2][1]
+					,&lim_csum[line_number][3][0],&lim_csum[line_number][3][1]
+					,&lim_csum[line_number][4][0],&lim_csum[line_number][4][1]
+					,&lim_csum[line_number][5][0],&lim_csum[line_number][5][1]
+					,&lim_csum[line_number][6][0],&lim_csum[line_number][6][1]);
+					
+	line_number++;
+	
+	
+    }
+    
+   /*lim_csum = {{{300,1800},{350,1800},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
+				 {{300,1800},{300,1800},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
+				 {{300,1800},{300,1840},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
+				 {{300,1800},{300,1810},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}}};
+	*/			 
+				 
+
+    
+    lim_xsum = new Float_t*[13];
+    lim_ysum = new Float_t*[13];
+    
+    for(int i = 0; i < 13; ++i){
+	
+	
+	lim_xsum[i] = new Float_t[2];
+	lim_ysum[i] = new Float_t[2];
+	
+	//lim_xsum[i][0] = 1;
+	//lim_xsum[i][1] = 8000;
+	//lim_ysum[i][0] = 2;
+	//lim_ysum[i][1] = 8000;
+	
+	
+    }
+    
+    line_number = 0;
+    
+    format = "%f %f";
+
+    ifstream cond_b("Configuration_Files/FRS_Window_Conditions/lim_xsum.txt");
+    
+    while(/*cond_b.good()*/getline(cond_b,line,'\n')){
+	
+	//getline(cond_b,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&lim_xsum[line_number][0],&lim_xsum[line_number][1]);
+					
+	line_number++;
+    }
+    
+    line_number = 0;
+    
+    format = "%f %f";
+
+     ifstream cond_c("Configuration_Files/FRS_Window_Conditions/lim_ysum.txt");
+    
+    while(/*cond_c.good()*/getline(cond_c,line,'\n')){
+	
+	//getline(cond_c,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&lim_ysum[line_number][0],&lim_ysum[line_number][1]);
+					
+	line_number++;
+    }
+    
+    /*lim_xsum = {	{1,8000},  // MW11
+				{1,8000},  // MW21
+				{1,8000},  // MW22
+   				{1,8000},  // MW31
+   				{1,8000},  // MW41
+   				{1,8000},  // MW42
+   				{1,8000},  // MW51
+  				{1,8000},  // MW61
+  				{1,8000},  // MW71
+  				{1,8000},  // MW81
+  				{1,8000},  // MW82
+  				{1,8000},  // MWB1
+  				{1,8000}};  // MWB2
+
+    lim_ysum = { {2,8000},  // MW11
+				{2,8000},  // MW21
+  				{2,8000},  // MW22
+  				{2,8000},  // MW31
+  				{2,8000},  // MW41
+ 				{2,8000},  // MW42
+ 				{2,8000},  // MW51
+ 				{2,8000},  // MW61
+ 				{2,8000},  // MW71
+ 				{2,8000},  // MW81
+ 				{2,8000},  // MW82
+ 				{2,8000},  // MWB1
+ 				{2,8000}};  // MWB2*/
+				
+    
+    
+    /*for(int i=0;i<7;i++){
+	
+	//    cTPC_CSUM[i][0]=MakeWindowCond("TPC/CSUM1",condname,lim_csum1[i][0],
+	//				   lim_csum1[i][1],"CSUM1");
+	char condname[40];
+	
+	sprintf(condname,"TPC/CSUM1%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][0]=MakeWinCond(condname,lim_csum1[i][0],lim_csum1[i][1],"CSUM1");
+	
+	sprintf(condname,"CSUM2%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][1]=MakeWindowCond("TPC/CSUM2",condname,lim_csum2[i][0],lim_csum2[i][1],"CSUM2");
+	
+	sprintf(condname,"CSUM3%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][2]=MakeWindowCond("TPC/CSUM3",condname,lim_csum3[i][0],lim_csum3[i][1],"CSUM3");
+	
+	sprintf(condname,"CSUM4%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][3]=MakeWindowCond("TPC/CSUM4",condname,lim_csum4[i][0],lim_csum4[i][1],"CSUM4");
+    }
+    
+      for(int i=0;i<13;i++){  // up to MW31
+       //up to MWB2 (09.07.2018)
+
+      char condname[40];
+      sprintf(condname,"XSUM%s",mw_name_ext[i]);
+      cMW_XSUM[i] = MakeWindowCond("MW/XSUM", condname, lim_xsum[i][0], lim_xsum[i][1], MW_XSUM);
+
+      sprintf(condname,"YSUM%s",mw_name_ext[i]);
+      cMW_YSUM[i] = MakeWindowCond("MW/YSUM", condname, lim_ysum[i][0], lim_ysum[i][1], MW_YSUM);
+    }*/
+    
+    /*** MUSIC Conditions ***/
+    
+    cMusic1_E = new Float_t*[8];
+    cMusic1_T = new Float_t*[8];
+    cMusic2_E = new Float_t*[8];
+    cMusic2_T = new Float_t*[8];
+    cMusic3_T = new Float_t*[4];
+    cMusic3_E = new Float_t*[4];
+
+    cMusic3_dec = new Float_t[2];
+    
+    for(int i = 0; i < 8; ++i){
+	
+	
+	cMusic1_E[i] = new Float_t[2];
+	cMusic1_T[i] = new Float_t[2];
+	cMusic2_E[i] = new Float_t[2];
+	cMusic2_T[i] = new Float_t[2];
+
+	if(i < 4){
+	    cMusic3_E[i] = new Float_t[2];
+	    cMusic3_T[i] = new Float_t[2];
+	}
+	
+    }
+    
+    
+    line_number = 0;
+    
+    format = "%f %f %f %f";
+
+     ifstream cond_d("Configuration_Files/FRS_Window_Conditions/MUSIC1.txt");
+    
+    while(/*cond_d.good()*/getline(cond_d,line,'\n')){
+	
+	//getline(cond_d,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cMusic1_E[line_number][0],&cMusic1_E[line_number][1],&cMusic1_T[line_number][0],&cMusic1_T[line_number][1]);
+					
+	line_number++;
+    }
+
+    line_number = 0;
+    
+    format = "%f %f %f %f";
+
+     ifstream cond_e("Configuration_Files/FRS_Window_Conditions/MUSIC2.txt");
+    
+    while(/*cond_e.good()*/getline(cond_e,line,'\n')){
+	
+	//getline(cond_e,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cMusic2_E[line_number][0],&cMusic2_E[line_number][1],&cMusic2_T[line_number][0],&cMusic2_T[line_number][1]);
+					
+	line_number++;
+    }
+
+    line_number = 0;
+    
+    format = "%f %f %f %f";
+
+     ifstream cond_f("Configuration_Files/FRS_Window_Conditions/MUSIC3.txt");
+    
+    while(/*cond_f.good()*/getline(cond_f,line,'\n')){
+	
+	//getline(cond_f,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cMusic3_E[line_number][0],&cMusic3_E[line_number][1],&cMusic3_T[line_number][0],&cMusic3_T[line_number][1]);
+					
+	line_number++;
+    }
+
+    
+    line_number = 0;
+    
+    format = "%f %f";
+
+     ifstream cond_g("Configuration_Files/FRS_Window_Conditions/MUSIC_dEc3.txt");
+    
+    while(/*cond_g.good()*/getline(cond_g,line,'\n')){
+	
+	//getline(cond_g,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cMusic3_dec[0],&cMusic3_dec[1]);
+    }
+
+    /***SCINTILATOR Condtions***/
+    
+    cSCI_L = new Float_t[2];
+    cSCI_R = new Float_t[2];
+    cSCI_E = new Float_t[2];
+    cSCI_Tx = new Float_t[2];
+    cSCI_X = new Float_t[2];
+    
+    
+    line_number = 0;
+    
+    format = "%f %f";
+
+     ifstream cond_h("Configuration_Files/FRS_Window_Conditions/SCI_Cons.txt");
+    
+    while(/*cond_h.good()*/getline(cond_h,line,'\n')){
+	
+	//getline(cond_h,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cSCI_L[0],&cSCI_L[1]);
+	    
+	getline(cond_h,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_R[0],&cSCI_R[1]);
+	    
+	getline(cond_h,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_E[0],&cSCI_E[1]);
+	    
+	getline(cond_h,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_Tx[0],&cSCI_Tx[1]);
+	    
+	getline(cond_h,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_X[0],&cSCI_X[1]);
+	    
+    }
+    
+    cSCI_LL2 = new Float_t[2];
+    cSCI_RR2 = new Float_t[2];
+    cSCI_LL3 = new Float_t[2];
+    cSCI_RR3 = new Float_t[2];
+    cSCI_LL4 = new Float_t[2];
+    cSCI_RR4 = new Float_t[2];
+    
+    format = "%f %f";
+
+    ifstream cond_i("Configuration_Files/FRS_Window_Conditions/SCI_LLRR.txt");
+
+    while(/*cond_i.good()*/getline(cond_i,line,'\n')){
+	
+	
+	//getline(cond_i,line,'\n');
+	if(line[0] == '#') continue;	
+	    sscanf(line.c_str(),format,&cSCI_LL2[0],&cSCI_LL2[1]);
+	getline(cond_i,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_RR2[0],&cSCI_RR2[1]);
+	    
+	getline(cond_i,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_LL3[0],&cSCI_LL3[1]);
+	    
+	getline(cond_i,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_RR3[0],&cSCI_RR3[1]);
+	    
+	    
+	getline(cond_i,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_LL4[0],&cSCI_LL4[1]);
+	    
+	getline(cond_i,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_RR4[0],&cSCI_RR4[1]);
+	    
+    }
+    
+    cSCI_detof = new Float_t*[5];
+    
+    for(int i = 0; i < 5; ++i){
+	
+	cSCI_detof[i] = new Float_t[2];
+	
+    }
+    
+    line_number = 0;
+    
+    format = "%f %f";
+
+     ifstream cond_j("Configuration_Files/FRS_Window_Conditions/SCI_dEToF.txt");
+    
+    while(/*cond_j.good()*/getline(cond_j,line,'\n')){
+	
+	//getline(cond_j,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cSCI_detof[line_number][0],&cSCI_detof[line_number][1]);
+					
+	line_number++;
+    }
+
+    /***ID Condtions***/
+    
+    cID_x2 = new Float_t[2];
+    cID_x4 = new Float_t[2];
+    cID_Z_Z = new Float_t[2];
+    
+    format = "%f %f";
+
+     ifstream cond_k("Configuration_Files/FRS_Window_Conditions/ID_x2.txt");
+
+
+    while(/*cond_k.good()*/getline(cond_k,line,'\n')){
+	
+	//getline(cond_k,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cID_x2[0],&cID_x2[1]);
+	    
+    }
+    
+     ifstream cond_l("Configuration_Files/FRS_Window_Conditions/ID_x4.txt");
+
+    while(/*cond_l.good()*/getline(cond_l,line,'\n')){
+	
+	//getline(cond_l,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cID_x4[0],&cID_x4[1]);
+	    
+    }
+    
+     ifstream cond_m("Configuration_Files/FRS_Window_Conditions/ID_Z_Z.txt");
+
+    while(/*cond_m.good()*/getline(cond_m,line,'\n')){
+	
+	//getline(cond_m,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cID_Z_Z[0],&cID_Z_Z[1]);
+	    
+    }
+    
+    
+    cID_x4AoQ_Z = new Float_t*[5];
+    
+    for(int i = 0; i < 5; ++i){
+	
+	cID_x4AoQ_Z[i] = new Float_t[2];
+	
+    }
+    
+    
+    line_number = 0;
+
+     ifstream cond_n("Configuration_Files/FRS_Window_Conditions/ID_Z_Z.txt");
+
+    while(/*cond_n.good()*/getline(cond_n,line,'\n')){
+	
+	//getline(cond_n,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cID_x4AoQ_Z[line_number][0],&cID_x4AoQ_Z[line_number][1]);
+	    
+	line_number++;
+
+    }
+    
+    cID_x2AoQ = new Float_t**[6];
+    cID_Z_AoQ = new Float_t**[5];
+    
+    for(int i = 0; i < 6; ++i){
+	
+	cID_x2AoQ[i] = new Float_t*[6];
+	if (i < 5) cID_Z_AoQ[i] = new Float_t*[6];
+	
+	    for(int j = 0; j < 6; ++j){
+		
+		cID_x2AoQ[i][j] = new Float_t[2];
+		if (i < 5) cID_Z_AoQ[i][j] = new Float_t[2];
+		
+	    }
+	
+    }
+    
+    line_number = 0;
+    int selection_number = 0;
+
+     ifstream cond_o("Configuration_Files/FRS_Window_Conditions/ID_x2AoQ.txt");
+
+    while(/*cond_o.good()*/getline(cond_o,line,'\n')){
+	
+	//getline(cond_o,line,'\n');
+	if(line[0] == '#') continue;
+	if(line[0] == '&'){
+	    selection_number++;
+	    line_number = 0;
+	    continue;
+	}
+	
+	    sscanf(line.c_str(),format,&cID_x2AoQ[selection_number][line_number][0],&cID_x2AoQ[selection_number][line_number][1]);
+	    
+	line_number++;
+
+    }
+    
+    
+    line_number = 0;
+    selection_number = 0;
+
+     ifstream cond_p("Configuration_Files/FRS_Window_Conditions/ID_Z_AoQ.txt");
+
+    while(/*cond_p.good()*/getline(cond_p,line,'\n')){
+	
+	//getline(cond_p,line,'\n');
+	if(line[0] == '#') continue;
+	if(line[0] == '&'){
+	    selection_number++;
+	    line_number = 0;
+	    continue;
+	}
+	    sscanf(line.c_str(),format,&cID_Z_AoQ[selection_number][line_number][0],&cID_Z_AoQ[selection_number][line_number][1]);
+	    
+	line_number++;
+
+    }
+    
+    cID_dEToF = new Float_t*[5];
+
+    for(int i = 0; i < 5; ++i){
+	
+	cID_dEToF[i] = new Float_t[2];
+	
+    }
+    line_number = 0;
+    selection_number = 0;
+
+     ifstream cond_q("Configuration_Files/FRS_Window_Conditions/ID_dEToF.txt");
+
+    while(/*cond_q.good()*/getline(cond_q,line,'\n')){
+	
+	//getline(cond_p,line,'\n');
+	if(line[0] == '#') continue;
+
+	    sscanf(line.c_str(),format,&cID_dEToF[line_number][0],&cID_dEToF[line_number][1]);
+	    
+	line_number++;
+
+    }
+    
+    
+    /*for(int i=0;i<8;i++){
+	
+       sprintf(name,"Music1_E(%f)",i);
+       cMusic1_E[i] = MakeWindowCond("MUSIC/MUSIC(1)/E",name, 10, 4086, "hMUSIC1_E");
+
+        sprintf(name,"Music1_T(%d)",i);
+       cMusic1_T[i] = MakeWindowCond("MUSIC/MUSIC(1)/T",name, 10, 4086,"hMUSIC1_T");
+
+       sprintf(name,"Music2_E(%d)",i);
+       cMusic2_E[i] = MakeWindowCond("MUSIC/MUSIC(2)/E",name, 10, 4086, "hMUSIC2_E");
+
+       sprintf(name,"Music2_T(%d)",i);
+       cMusic2_T[i] = MakeWindowCond("MUSIC/MUSIC(2)/T",name, 10, 4086, "hMUSIC2_T");
+     }
+
+   for(int i=0;i<4;i++){
+       
+       sprintf(name,"Music3_E(%d)",i);
+       cMusic3_E[i] = MakeWindowCond("MUSIC/MUSIC(3)/E",name, 10, 4086, "hMUSIC3_E");
+
+       sprintf(name,"Music3_T(%d)",i);
+       cMusic3_T[i] = MakeWindowCond("MUSIC/MUSIC(3)/T",name, 10, 4086, "hMUSIC3_T");
+    }
+   
+   
+    cMusic3_dec = MakeWindowCond("MUSIC/MUSIC 3","Music3_dec", 10., 4000., "hMUSIC3_dECOR");*/
+    
+    
+    
+    
+    
+}
+
+

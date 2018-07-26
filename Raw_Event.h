@@ -1,17 +1,23 @@
 #ifndef RAW_EVENT_H
 #define RAW_EVENT_H
 
+#include <math.h>
+#include <float.h>
+
+//#include "Rtypes.h"
 
 typedef unsigned long ULong;
 typedef unsigned int UInt;
 typedef unsigned long long ULong64_t;
+typedef float Float_t;
+
 
 class Raw_Event{
 
 private:
 
 
-	/* ##########################################################
+	// ##########################################################
 
 	//FRS
 	// MUSIC PARAMETERS //
@@ -66,7 +72,7 @@ private:
 	Float_t ts2;        // set_DATA_ID_Timestamp
 
 	
-	########################################################## */
+	// ##########################################################
 
 	//White Rabbit
 	ULong64_t WR;
@@ -131,7 +137,7 @@ public:
 	~Raw_Event();
 
 
-	/* ##########################################################
+	// ##########################################################
 
 	// FRS STUFF //
 	void set_DATA_MUSIC(Float_t*,Float_t*);
@@ -143,7 +149,7 @@ public:
 	void set_DATA_ID_Timestamp(Float_t,Float_t,Float_t);
 	// FRS STUFF //
 
-	########################################################## */
+	// ########################################################## 
 
 	void set_DATA_FATIMA(int,int,
 						 double*,double*,double*,
@@ -153,8 +159,7 @@ public:
 	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*);
 	void set_DATA_GALILEO(int,ULong64_t*,int*,int*,ULong64_t*,double*,int*);
 
-
-/* ####################################################
+	// ####################################################
 
 	//temporary FRS getters
 	Float_t get_FRS_dE(int);
@@ -190,17 +195,17 @@ public:
 	Float_t get_FRS_beta3();
 	Float_t get_FRS_gamma();
 	
-	Float_t get_AoQ();
-	Float_t get_AoQ_corr();
-	Float_t get_z();
-	Float_t get_z2();
-	Float_t get_z3();
+	Float_t get_FRS_AoQ();
+	Float_t get_FRS_AoQ_corr();
+	Float_t get_FRS_z();
+	Float_t get_FRS_z2();
+	Float_t get_FRS_z3();
 	
-	Float_t get_timestamp();	
-	Float_t get_ts();	
-	Float_t get_ts2();	
+	Float_t get_FRS_timestamp();	
+	Float_t get_FRS_ts();	
+	Float_t get_FRS_ts2();	
 
- #################################################### */
+	// #################################################### 
 
 
 	//temporary FATIMA getters
