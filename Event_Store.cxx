@@ -72,25 +72,47 @@ void Event_Store::store(Raw_Event* RAW){
 
 //---------------------------------------------------------------
 
+void Event_Store::show_all_addresses(int type){
+    for(int i = 0;i < event_counter[type];++i){
+        cout << i << " " << Event[type][i] << " " << Event_position[type][i] <<  endl;
+    }
+    cout << endl;
+}
+
+//---------------------------------------------------------------
+
 void Event_Store::purge(int type,int i){
     //delete event
     if(i != -9999 && Event[type][i]){
+        
+        cout << "Shifting to " << Event[type][i] << " from ";
+
         delete Event[type][i];
+        
         Event[type][i] = nullptr;
+        Event_WR[type][i] = 0;
+        Event_position[type][i] = -9999;
+
         //shift last event in list to free memory slot
         //nullify pointer of last event
-        if(event_counter[type] > 2){
+        if(i < event_counter[type]-1){
             Event[type][i] = Event[type][event_counter[type]-1];
             Event_WR[type][i] = Event_WR[type][event_counter[type]-1];
-            Event_position[type][i] = Event_position[type][event_counter[type]-1];
+            Event_position[type][i] = i;//Event_position[type][event_counter[type]-1];
         }
+        cout << Event[type][i] << endl;
         Event[type][event_counter[type]-1] = nullptr;
         Event_WR[type][event_counter[type]-1] = 0;
         Event_position[type][event_counter[type]-1] = -9999;
 
+        cout << "Deleted event " << i << " " << event_counter[type] - 1 << " events left" << endl;
         event_counter[type]--;
+
     }
-    else cerr << "Event " << i << " already nullptr -> undefined behavior!" << endl;
+    else{
+        cerr << "Event " << i << " of type " << type << " already nullptr -> undefined behavior!" << endl;
+        exit(0);
+    }
 }
 
 //---------------------------------------------------------------
@@ -102,21 +124,21 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
     double delta = 0;
     double WR_d = (double) WR;
     
-    cout << "-----------------" << endl;
+    //cout << "-----------------" << endl;
     //search through event data for smallest time difference
     for(int i = 0;i < event_counter[type];++i){
         delta = (double) abs(WR - Event_WR[type][i]);
         
-        cout << delta/1000. << " ";
-        if(i % 10 == 0 && i > 0) cout << endl;
+        //cout << delta/1000. << " ";
+        //if(i % 10 == 0 && i > 0) cout << endl;
         
         if(in_time_windows(delta)){
             return_value = i;
             break;
         }
     }
-    cout << endl;
-    cout << "-----------------" << endl;
+    //cout << endl;
+    //cout << "-----------------" << endl;
     return return_value;
 }
 
@@ -161,6 +183,7 @@ void Event_Store::set_permission(int type,int* event_addr,int interest_pos){
 
 void Event_Store::Full_Permission(int type,int* event_addr){
     int position = *event_addr;
+    cout << "DELETE " << Event[type][position] << " @ " << type << " " << position << endl;
     Event[type][position]->set_Match_ID_address_NULL_ALL();
     purge(type,position);
 }
@@ -170,8 +193,12 @@ void Event_Store::Full_Permission(int type,int* event_addr){
 bool Event_Store::compare_match_ID(int type,int* match_ID,int* event_addr){
 
     //check if Event still exists
+    cout << "Compare ID" << endl;
     cout << type << " " << match_ID << " " << event_addr << endl;
     if(!event_addr) return false;
+    cout << "----------------------------------------------" << endl;
+    cout << Event[type][*event_addr] << " <- " << *event_addr << " " << type << " " << event_counter[type] << endl;
+    cout << "----------------------------------------------" << endl;
     if(Event[type][*event_addr]){
         bool correct_match = false;
 
@@ -179,10 +206,12 @@ bool Event_Store::compare_match_ID(int type,int* match_ID,int* event_addr){
         int** match_ID_Event = Event[type][*event_addr]->get_Match_ID_address();
         
         //check if match_id still known (should be the case!)
+        cout << "***" << endl;
         for(int i = 0;i < internal_counter;++i){
             cout << match_ID << " " << match_ID_Event[i] << endl;
             correct_match = correct_match || (match_ID == match_ID_Event[i]);
         }
+        cout << "***" << endl;
         if(!correct_match){
             cerr << "Possible pointer problem in Event_Store::compare_match_ID(...)" << endl;
         }
@@ -220,7 +249,11 @@ void Event_Store::create_Event(int type,Raw_Event* RAW){
             cerr << "Default error in Event_Store switch!" << endl;
             exit(0);
     }
-    cout << "created event " << type << " at " << event_counter[type] << endl;
+    cout << "- - - - - - - -" << endl;
+    cout << "created event " << type << " at " << event_counter[type] << " @ " << Event[type][event_counter[type]] << endl;
+    
+    ev_pos = event_counter[type];
+
     Event_WR[type][event_counter[type]] = RAW->get_WR();
     Event_position[type][event_counter[type]] = event_counter[type];
     event_counter[type]++;

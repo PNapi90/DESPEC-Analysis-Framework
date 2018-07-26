@@ -32,7 +32,7 @@ private:
 	ULong64_t** Event_WR;
 	int** Event_position;
 
-    int amount_interest;
+    int amount_interest,ev_pos;
     int* tmp_pos;
     int* length_array;
     int* length_interest;
@@ -61,6 +61,7 @@ public:
 
 	void store(Raw_Event*);
 	void set_Match_ID_address(int,int*,int*);
+    void show_all_addresses(int);
 
     int get_Match_ID(int,int,int);
     int Time_Comparison(int,ULong64_t);

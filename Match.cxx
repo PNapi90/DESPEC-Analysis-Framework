@@ -11,7 +11,11 @@ Match::Match(int Match_ID,int primary_type,int* primary_pos,int* interest_array,
 
     this->len_interest = len_interest;
     hit_types = new int[len_interest];
-    for(int i = 0;i < len_interest;++i) hit_types[i] = interest_array[i];
+    filled_types = new int[len_interest];
+    for(int i = 0;i < len_interest;++i){
+        hit_types[i] = interest_array[i];
+        filled_types[i] = -1;
+    }
 
     match_filled = 0;
 
@@ -19,6 +23,7 @@ Match::Match(int Match_ID,int primary_type,int* primary_pos,int* interest_array,
     for(int i = 0;i < 6;++i) DATA[i] = nullptr;
 
     DATA[primary_type] = primary_pos;
+    filled_types[match_filled] = primary_type;
     match_filled++;
 
     this->WR = WR;
@@ -45,6 +50,7 @@ void Match::set_Address(int Match_ID){
 
 void Match::set_Data(int type,int* data_pos){
     DATA[type] = data_pos;
+    filled_types[match_filled] = type;
     match_filled++;
 }
 
@@ -57,6 +63,9 @@ int* Match::get_Address(){
 //---------------------------------------------------------------
 
 int** Match::get_Address_Array(){
+    cout << "------- DATA --------" << endl;
+    for(int i = 0;i < 6;++i) cout << DATA[i] << " ";
+    cout << endl;
     return DATA;
 }
 
@@ -68,11 +77,20 @@ int* Match::get_hit_types(){
 
 //---------------------------------------------------------------
 
+int* Match::get_filled_types(){
+    return filled_types;
+}
+
+//---------------------------------------------------------------
+
 bool Match::Full(){
     if(match_filled > len_interest){
         cerr << "Match filled too much" << endl;
         exit(0);
     }
+    cout << "Addresses" << endl;
+    for(int i = 0;i < 6;++i) if(DATA[i]) cout << i << " " <<  DATA[i] << " " << *DATA[i] << endl;
+    //cout << endl;
     return (match_filled == len_interest);
 }
 
@@ -93,7 +111,9 @@ int Match::get_amount_Hits(){
 
 bool Match::Check_Time(ULong64_t WR_tmp){
     double threshold = 10;
-    return (WR_tmp - WR) > threshold;
+    cout << "TD" << endl;
+    cout << WR_tmp << " " << WR << " " << WR_tmp - WR << endl;
+    return ((WR_tmp - WR) > threshold);
 }
 
 //---------------------------------------------------------------

@@ -20,6 +20,7 @@ private:
 
     int len_interest;
     int* hit_types;
+    int* filled_types;
 
     int** DATA;
 
@@ -36,6 +37,7 @@ public:
     int get_amount_Hits();
 
     int* get_hit_types();
+    int* get_filled_types();
     int* get_Address();
     int** get_Address_Array();
 
