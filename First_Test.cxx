@@ -182,6 +182,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 		                                     Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",
 																		FAT_REF_DET, E_gate1, det),
                                              2001, 0, 2000, 3201,-40,40);
+		cout << "Det " << det << " done " << endl;
 	}
 
 	cout<<"Helleurrr"<<endl;
