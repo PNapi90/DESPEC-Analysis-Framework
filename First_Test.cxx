@@ -38,8 +38,7 @@
 
 #include <string>
 
-#define FAT_MAX_DET 36
-#define FAT_REF_DET 0
+
 
 using namespace std;
 
@@ -63,7 +62,12 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	cout << "**** TSCNUnpackProc: Create" << endl;
 	
+	input_data_path_old = "old";
 	
+	
+	FAT_REF_DET = 0;
+
+
 	// ######################################################### //
 	
 	hsci_tofll2 = MakeTH1('D',"hsci_tofll2","hsci_tofll2",1500,0.,62000.);
@@ -100,7 +104,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	
 	
-	cout<<"Helleurrr"<<endl;
+	
 	
 	// ######################################################### //
 
@@ -110,10 +114,10 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FATgate1_high = 1182.;
 	FATgate2_low  = 1328.;
 	FATgate2_high = 1338.;
-	float E_gate1 = FATgate1_low + (FATgate1_high - FATgate1_low)/2;
-	float E_gate2 = FATgate2_low + (FATgate2_high - FATgate2_low)/2;
+	E_gate1 = FATgate1_low + (FATgate1_high - FATgate1_low)/2.;
+	E_gate2 = FATgate2_low + (FATgate2_high - FATgate2_low)/2.;
 	
-	cout<<"Helleurrr"<<endl;
+	
 
 		
 	FAT_Esum  = MakeTH1('D', "FATIMA/ESum", "LaBr Energy (all detectors)",4001,0,4000);
@@ -125,7 +129,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FAT_QDCdtsum_ref_gated = MakeTH1('D', "FATIMA/QDCdt_ref_gated",
 							Form("QDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);				
 	
-	cout<<"Helleurrr"<<endl;
+	
 
 	
 	//statistics
@@ -135,15 +139,16 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FAT_QDC_TDC_hitmap = MakeTH2('D', "FATIMA/Stat/QDC_TDC_hitmap", "FATIMA QDC-TDC hit map",40,0,40, 40,0,40);
 	FAT_correlations = MakeTH2('D', "FATIMA/Stat/det_det_correlations", "FATIMA det-det correlations",40,0,40, 40,0,40);
 	
-	cout<<"Helleurrr"<<endl;
+
 	
-	/*//energy
+	
+	//energy
 	FAT_E = new TH1*[FAT_MAX_DET];
 	FAT_Eraw = new TH1*[FAT_MAX_DET];
 	FAT_E_ratio = new TH2*[FAT_MAX_DET];
 	FAT_gg_ref = new TH2*[FAT_MAX_DET];
 	
-	cout<<"Helleurrr"<<endl;
+	
 	
 	//timing
 	FAT_TDCdt_ref = new TH1*[FAT_MAX_DET];
@@ -152,36 +157,24 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FAT_TDCdt_ref_gated = new TH1*[FAT_MAX_DET];
 	FAT_E_TDCdt_ref_gated = new TH2*[FAT_MAX_DET];
 	
-	cout<<"Helleurrr"<<endl;
-	
-	for (int det = 0;  det< FAT_MAX_DET; det++) {
-		FAT_E[det] = MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", det),
-		                          Form("LaBr%02d energy", det),4001,0,4000);
-		FAT_Eraw[det] = MakeTH1('D', Form("FATIMA/Energy/E_Raw_LaBr%02d", det),
-		                             Form("LaBr%02d energy (raw)", det),2000,0,40000);
-		FAT_E_ratio[det] = MakeTH2('D', Form("FATIMA/Energy/EvsRatio_LaBr%02d", det),
-		                           Form("LaBr%02d energy vs QShort/QLong", det),4001,0,4000, 200,0,1);
-		FAT_gg_ref[det] = MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
-		                          Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, det),1001,0,2000, 1001,0,2000);
-		FAT_TDCdt_ref[det] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
-		                             Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, det),3201,-40,40);		                             
-		FAT_QDCdt_ref[det] = MakeTH1('D', Form("FATIMA/Timing/QDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
-		                             Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, det),3201,-40,40);
-		FAT_TDC_QDC_dt[det] = MakeTH2('D', Form("FATIMA/Timing/TDCdt_QDCdt_LaBr%02d", det),
-		                              Form("TDCdt vs QDCdt LaBr%02d", det),3201,-40,40, 3201,-40,40);
-		FAT_TDCdt_ref_gated[det] = MakeTH1('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
-		                                   Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (on %4.2f keV)",
-																		FAT_REF_DET, E_gate1, det, E_gate2),
-                                           3201,-40,40);
-		FAT_E_TDCdt_ref_gated[det] = MakeTH2('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_E_LaBr%02d", FAT_REF_DET, det),
-		                                     Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",FAT_REF_DET, E_gate1, det),
-							    2001, 0, 2000, 3201,-40,40);
-							    
-		cout<<"Loop Number : "<<det<<endl;
-							    
-	}*/
 
-	cout<<"Helleurrr"<<endl;
+	
+
+
+	for (int det = 0;  det< FAT_MAX_DET; det++) {
+
+		FAT_E[det] = nullptr;
+		FAT_Eraw[det] = nullptr;
+		FAT_E_ratio[det] = nullptr;
+		FAT_gg_ref[det] = nullptr;
+		FAT_TDCdt_ref[det] = nullptr;
+		FAT_QDCdt_ref[det] = nullptr;
+		FAT_TDC_QDC_dt[det] = nullptr;
+		FAT_TDCdt_ref_gated[det] = nullptr;
+		FAT_E_TDCdt_ref_gated[det] = nullptr;
+	}
+
+	
 
 	//*****************
 	
@@ -611,9 +604,13 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//FATIMA CASE
 		if(PrcID_Conv == 3){
+			int det_tmp = 0;
 			double dt1, dt2;
 			for (int i=0; i<RAW->get_FAT_QDCs_fired(); i++) {
-				FAT_Eraw[RAW->get_FAT_QDC_id(i)]->Fill(RAW->get_FAT_QLong_Raw(i));
+				det_tmp = RAW->get_FAT_QDC_id(i);
+				if(!FAT_Eraw[RAW->get_FAT_QDC_id(i)]) FAT_Eraw[det_tmp] = MakeTH1('D', Form("FATIMA/Energy/E_Raw_LaBr%02d", det_tmp),
+		                             Form("LaBr%02d energy (raw)", det_tmp),2000,0,40000);
+				FAT_Eraw[det_tmp]->Fill(RAW->get_FAT_QLong_Raw(i));
 			}
 			
 			int dets_fired = RAW->get_FAT_det_fired();
@@ -622,7 +619,14 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				
 				FAT_hits->Fill(deti);
 				FAT_Esum->Fill(RAW->get_FAT_E(i));
+
+				if(!FAT_E[deti]) MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", deti),
+		                          Form("LaBr%02d energy", deti),4001,0,4000);
+				
 				FAT_E[deti]->Fill(RAW->get_FAT_E(i));
+				if(!FAT_E_ratio[deti]) FAT_E_ratio[deti] = MakeTH2('D', Form("FATIMA/Energy/EvsRatio_LaBr%02d", deti),
+		                           Form("LaBr%02d energy vs QShort/QLong", deti),4001,0,4000, 200,0,1);
+
 				FAT_E_ratio[deti]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_ratio(i));
 				for (int j=0; j<dets_fired; j++) {
 					int detj = RAW->get_FAT_id(j);
@@ -648,16 +652,29 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 						
 					
 					if (deti == FAT_REF_DET) {
+						if(!FAT_gg_ref[detj]) FAT_gg_ref[detj] =  MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+		                          										   Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, detj),4001,0,4000, 200,0,1);
 						FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
 						FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(j), RAW->get_FAT_E(i));
+						if(!FAT_TDCdt_ref[detj]) FAT_TDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+		                             Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);	
 						FAT_TDCdt_ref[detj]->Fill(dt1);
+						if(!FAT_QDCdt_ref[detj]) FAT_QDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/QDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+		                             Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);
 						FAT_QDCdt_ref[detj]->Fill(dt2);
+						if(!FAT_TDC_QDC_dt[detj]) FAT_TDC_QDC_dt[detj] =  MakeTH2('D', Form("FATIMA/Timing/TDCdt_QDCdt_LaBr%02d", detj),
+		                              Form("TDCdt vs QDCdt LaBr%02d", detj),3201,-40,40, 3201,-40,40);
 						FAT_TDC_QDC_dt[detj]->Fill(dt1, dt2);
-						if (RAW->get_FAT_E(i) > FATgate1_low 
-								&& RAW->get_FAT_E(i) < FATgate1_high) {
+						if (RAW->get_FAT_E(i) > FATgate1_low && RAW->get_FAT_E(i) < FATgate1_high) {
+							if(!FAT_E_TDCdt_ref_gated[detj]) FAT_E_TDCdt_ref_gated[detj] = MakeTH2('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_E_LaBr%02d", FAT_REF_DET, detj),
+		                                     														Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",FAT_REF_DET, E_gate1, detj),
+                                             														2001, 0, 2000, 3201,-40,40);
 							FAT_E_TDCdt_ref_gated[detj]->Fill(RAW->get_FAT_E(j), dt1);
 							if (RAW->get_FAT_E(j) > FATgate2_low 
 									&& RAW->get_FAT_E(j) < FATgate2_high) {
+								if(!FAT_TDCdt_ref_gated[detj]) FAT_TDCdt_ref_gated[detj] = MakeTH1('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+		                                   															Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (on %4.2f keV)",
+																									FAT_REF_DET, E_gate1, detj, E_gate2),3201,-40,40);
 								FAT_TDCdt_ref_gated[detj]->Fill(dt1);
 								printf("hit gates\n");									
 							}
