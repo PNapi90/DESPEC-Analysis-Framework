@@ -666,15 +666,15 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		                              Form("TDCdt vs QDCdt LaBr%02d", detj),3201,-40,40, 3201,-40,40);
 						FAT_TDC_QDC_dt[detj]->Fill(dt1, dt2);
 						if (RAW->get_FAT_E(i) > FATgate1_low && RAW->get_FAT_E(i) < FATgate1_high) {
-							if(!FAT_E_TDCdt_ref_gated[detj]) FAT_E_TDCdt_ref_gated[detj] = MakeTH2('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_E_LaBr%02d", FAT_REF_DET, det),
-		                                     														Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",FAT_REF_DET, E_gate1, det),
+							if(!FAT_E_TDCdt_ref_gated[detj]) FAT_E_TDCdt_ref_gated[detj] = MakeTH2('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_E_LaBr%02d", FAT_REF_DET, detj),
+		                                     														Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",FAT_REF_DET, E_gate1, detj),
                                              														2001, 0, 2000, 3201,-40,40);
 							FAT_E_TDCdt_ref_gated[detj]->Fill(RAW->get_FAT_E(j), dt1);
 							if (RAW->get_FAT_E(j) > FATgate2_low 
 									&& RAW->get_FAT_E(j) < FATgate2_high) {
 								if(!FAT_TDCdt_ref_gated[detj]) FAT_TDCdt_ref_gated[detj] = MakeTH1('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
 		                                   															Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (on %4.2f keV)",
-																									FAT_REF_DET, E_gate1, det, E_gate2),3201,-40,40);
+																									FAT_REF_DET, E_gate1, detj, E_gate2),3201,-40,40);
 								FAT_TDCdt_ref_gated[detj]->Fill(dt1);
 								printf("hit gates\n");									
 							}
