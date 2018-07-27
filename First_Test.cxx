@@ -67,7 +67,6 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	FAT_REF_DET = 0;
 
-
 	// ######################################################### //
 	
 	hsci_tofll2 = MakeTH1('D',"hsci_tofll2","hsci_tofll2",1500,0.,62000.);
@@ -300,6 +299,10 @@ TGo4EventProcessor(name) // Histograms defined here //
 	//Having an initialisation (below) and a user setting (above)
 	//like this is probably bad.
 	FAT_gain_match_done = false;
+	
+	
+	cout<<"Yo What's up?"<<endl;
+	
 
 }
 
@@ -620,7 +623,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				FAT_hits->Fill(deti);
 				FAT_Esum->Fill(RAW->get_FAT_E(i));
 
-				if(!FAT_E[deti]) MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", deti),
+				if(!FAT_E[deti]) FAT_E[deti] = MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", deti),
 		                          Form("LaBr%02d energy", deti),4001,0,4000);
 				
 				FAT_E[deti]->Fill(RAW->get_FAT_E(i));

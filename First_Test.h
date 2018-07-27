@@ -178,8 +178,8 @@ using namespace std;
 
 		private:
 		
-			const int FATIMA_reference_det = 1;
-			const int FAT_MAX_DET = 60;
+			const int FATIMA_reference_det = 0;
+			const int FAT_MAX_DET = 36;
 
 			int FAT_REF_DET;
 
