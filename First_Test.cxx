@@ -103,7 +103,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	
 	
-	cout<<"Helleurrr"<<endl;
+	
 	
 	// ######################################################### //
 
@@ -116,7 +116,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	E_gate1 = FATgate1_low + (FATgate1_high - FATgate1_low)/2.;
 	E_gate2 = FATgate2_low + (FATgate2_high - FATgate2_low)/2.;
 	
-	cout<<"Helleurrr"<<endl;
+	
 
 		
 	FAT_Esum  = MakeTH1('D', "FATIMA/ESum", "LaBr Energy (all detectors)",4001,0,4000);
@@ -128,7 +128,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FAT_QDCdtsum_ref_gated = MakeTH1('D', "FATIMA/QDCdt_ref_gated",
 							Form("QDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);				
 	
-	cout<<"Helleurrr"<<endl;
+	
 
 	
 	//statistics
@@ -138,7 +138,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FAT_QDC_TDC_hitmap = MakeTH2('D', "FATIMA/Stat/QDC_TDC_hitmap", "FATIMA QDC-TDC hit map",40,0,40, 40,0,40);
 	FAT_correlations = MakeTH2('D', "FATIMA/Stat/det_det_correlations", "FATIMA det-det correlations",40,0,40, 40,0,40);
 	
-	cout<<"Helleurrr"<<endl;
+	
 	
 	//energy
 	FAT_E = new TH1*[FAT_MAX_DET];
@@ -146,7 +146,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FAT_E_ratio = new TH2*[FAT_MAX_DET];
 	FAT_gg_ref = new TH2*[FAT_MAX_DET];
 	
-	cout<<"Helleurrr"<<endl;
+	
 	
 	//timing
 	FAT_TDCdt_ref = new TH1*[FAT_MAX_DET];
@@ -155,7 +155,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FAT_TDCdt_ref_gated = new TH1*[FAT_MAX_DET];
 	FAT_E_TDCdt_ref_gated = new TH2*[FAT_MAX_DET];
 	
-	cout<<"Helleurrr"<<endl;
+	
 
 	for (int det = 0;  det< FAT_MAX_DET; det++) {
 
@@ -168,11 +168,9 @@ TGo4EventProcessor(name) // Histograms defined here //
 		FAT_TDC_QDC_dt[det] = nullptr;
 		FAT_TDCdt_ref_gated[det] = nullptr;
 		FAT_E_TDCdt_ref_gated[det] = nullptr;
-
-		cout << "Det " << det << " done " << endl;
 	}
 
-	cout<<"Helleurrr"<<endl;
+	
 
 	//*****************
 	
