@@ -38,8 +38,6 @@
 
 #include <string>
 
-#define FAT_MAX_DET 60
-#define FAT_REF_DET 0
 
 using namespace std;
 
@@ -64,6 +62,10 @@ TGo4EventProcessor(name) // Histograms defined here //
 	cout << "**** TSCNUnpackProc: Create" << endl;
 	
 	
+	
+	FAT_REF_DET = 0;
+
+
 	// ######################################################### //
 	
 	hsci_tofll2 = MakeTH1('D',"hsci_tofll2","hsci_tofll2",1500,0.,62000.);
@@ -110,8 +112,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FATgate1_high = 1182.;
 	FATgate2_low  = 1328.;
 	FATgate2_high = 1338.;
-	float E_gate1 = FATgate1_low + (FATgate1_high - FATgate1_low)/2;
-	float E_gate2 = FATgate2_low + (FATgate2_high - FATgate2_low)/2;
+	float E_gate1 = FATgate1_low + (FATgate1_high - FATgate1_low)/2.;
+	float E_gate2 = FATgate2_low + (FATgate2_high - FATgate2_low)/2.;
 	
 	cout<<"Helleurrr"<<endl;
 
@@ -154,7 +156,10 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	cout<<"Helleurrr"<<endl;
 	
+	char det_name[100];
+
 	for (int det = 0;  det< FAT_MAX_DET; det++) {
+
 		FAT_E[det] = MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", det),
 		                          Form("LaBr%02d energy", det),4001,0,4000);
 		FAT_Eraw[det] = MakeTH1('D', Form("FATIMA/Energy/E_Raw_LaBr%02d", det),

@@ -178,8 +178,11 @@ using namespace std;
 
 		private:
 		
-			int FATIMA_reference_det = 1;
-		
+			const int FATIMA_reference_det = 1;
+			const int FAT_MAX_DET = 60;
+
+			int FAT_REF_DET;
+
 			Bool_t ffill;
 			Int_t fshift;
 			ULong64_t White_Rabbbit_old;
@@ -193,7 +196,7 @@ using namespace std;
 			int val_it;
 
 			string input_data_path;
-			string input_data_path_old = "old";
+			const string input_data_path_old = "old";
 
 			bool cals_done,WR_used;
 			bool FAT_make_raw_histograms;
