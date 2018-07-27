@@ -42,8 +42,11 @@ void FATIMA_Gain_Match::load_Gain_Match_File(string GM_filename){
         getline(gain_match_file,line,'\n');
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format,&det_id,&tmp_coeffs[0],&tmp_coeffs[1]);
+	
 
         for(int i = 0;i < 2;++i) gain_match_coeffs[det_id][i] = tmp_coeffs[i];
+	
+	cout<<"Gain Match Coeffs Are... "<<gain_match_coeffs[det_id][0]<<"   and   "<<gain_match_coeffs[det_id][1]<<endl;
     }
 }
 

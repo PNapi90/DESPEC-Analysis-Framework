@@ -14,9 +14,9 @@ using namespace std;
 
 FATIMA_Detector_System::FATIMA_Detector_System(){
 
-    gain_match_used = true;
-	num_TDC_modules = 1;
-	FAT_evt = 0;
+    gain_match_used = false;
+    num_TDC_modules = 1;
+    FAT_evt = 0;
 	
     //set amount of QDCs and TDCs
     max_am_dets = 60;
@@ -219,32 +219,34 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 
             this->pdata--;
 
-			Check_TDC_DATA(); 
+	    Check_TDC_DATA(); 
 
-			if (num_TDC_modules == 0){
+	    if (num_TDC_modules == 0){
 		 
-				TDC_Called = true;
+		TDC_Called = true;
 		
-				this->pdata++;
+		this->pdata++;
 
-			}
+	    }
 	     
-		}else if(TDChead->no == 3145728){
+	}
+	else if(TDChead->no == 3145728){
 	    
-			num_TDC_modules--;
+	    num_TDC_modules--;
 	     
-			if (num_TDC_modules == 0){
+	    if (num_TDC_modules == 0){
 		
-				TDC_Called = true;
+		TDC_Called = true;
 		 
-				this->pdata++;
+		this->pdata++;
 		 
-			}
-		}else{
-	    
-			cout<<"Unknown header word: "<<TDChead->type<<endl;
+	    }
+	}
+	else{
+	
+	    cout<<"Unknown header word: "<<TDChead->type<<endl;
 
-		}
+	}
 	
         this->pdata++;
         
@@ -537,6 +539,8 @@ void FATIMA_Detector_System::Calibrate_TDC(int id){
 void FATIMA_Detector_System::set_Gain_Match_Filename(string GM_filename){
 	
 	FATIMA_GAIN_MATCH = new FATIMA_Gain_Match(GM_filename);
+	
+	gain_match_used = true;
 	
 }
 

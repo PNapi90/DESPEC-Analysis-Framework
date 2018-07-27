@@ -38,7 +38,7 @@
 
 #include <string>
 
-#define FAT_MAX_DET 60
+#define FAT_MAX_DET 36
 #define FAT_REF_DET 0
 
 using namespace std;
@@ -137,7 +137,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	cout<<"Helleurrr"<<endl;
 	
-	//energy
+	/*//energy
 	FAT_E = new TH1*[FAT_MAX_DET];
 	FAT_Eraw = new TH1*[FAT_MAX_DET];
 	FAT_E_ratio = new TH2*[FAT_MAX_DET];
@@ -162,7 +162,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 		FAT_E_ratio[det] = MakeTH2('D', Form("FATIMA/Energy/EvsRatio_LaBr%02d", det),
 		                           Form("LaBr%02d energy vs QShort/QLong", det),4001,0,4000, 200,0,1);
 		FAT_gg_ref[det] = MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
-		                          Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, det),4001,0,4000, 200,0,1);
+		                          Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, det),1001,0,2000, 1001,0,2000);
 		FAT_TDCdt_ref[det] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
 		                             Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, det),3201,-40,40);		                             
 		FAT_QDCdt_ref[det] = MakeTH1('D', Form("FATIMA/Timing/QDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
@@ -174,10 +174,12 @@ TGo4EventProcessor(name) // Histograms defined here //
 																		FAT_REF_DET, E_gate1, det, E_gate2),
                                            3201,-40,40);
 		FAT_E_TDCdt_ref_gated[det] = MakeTH2('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_E_LaBr%02d", FAT_REF_DET, det),
-		                                     Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",
-																		FAT_REF_DET, E_gate1, det),
-                                             2001, 0, 2000, 3201,-40,40);
-	}
+		                                     Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",FAT_REF_DET, E_gate1, det),
+							    2001, 0, 2000, 3201,-40,40);
+							    
+		cout<<"Loop Number : "<<det<<endl;
+							    
+	}*/
 
 	cout<<"Helleurrr"<<endl;
 
@@ -536,9 +538,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		    if(beta) hbeta->Fill(beta);
 		    if(beta3) hbeta3->Fill(beta3);
 		    if(gamma) hgamma->Fill(gamma);
-		    
-		    cout<<"AoQ I Guess?? "<<AoQ<<endl;
-		    
+		    		    
 		    if(AoQ) hAoQ->Fill(AoQ);
 		    if(AoQ_corr) hAoQ_corr->Fill(AoQ_corr);
 		    
