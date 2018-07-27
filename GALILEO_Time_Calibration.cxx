@@ -34,8 +34,7 @@ void GALILEO_Time_Calibration::load_Calibration_File(){
 
     int det_id;
 
-    while(calib_file.good()){
-        getline(calib_file,line,'\n');
+    while(getline(calib_file,line,'\n');){
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format,&det_id,&tmp_sum_coeffs,&tmp_chan_coeffs);
 
