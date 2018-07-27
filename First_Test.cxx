@@ -61,6 +61,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	cout << "**** TSCNUnpackProc: Create" << endl;
 	
+	input_data_path_old = "old";
 	
 	
 	FAT_REF_DET = 0;
@@ -112,8 +113,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FATgate1_high = 1182.;
 	FATgate2_low  = 1328.;
 	FATgate2_high = 1338.;
-	float E_gate1 = FATgate1_low + (FATgate1_high - FATgate1_low)/2.;
-	float E_gate2 = FATgate2_low + (FATgate2_high - FATgate2_low)/2.;
+	E_gate1 = FATgate1_low + (FATgate1_high - FATgate1_low)/2.;
+	E_gate2 = FATgate2_low + (FATgate2_high - FATgate2_low)/2.;
 	
 	cout<<"Helleurrr"<<endl;
 
@@ -155,8 +156,6 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FAT_E_TDCdt_ref_gated = new TH2*[FAT_MAX_DET];
 	
 	cout<<"Helleurrr"<<endl;
-	
-	char det_name[100];
 
 	for (int det = 0;  det< FAT_MAX_DET; det++) {
 
@@ -169,7 +168,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 		FAT_TDC_QDC_dt[det] = nullptr;
 		FAT_TDCdt_ref_gated[det] = nullptr;
 		FAT_E_TDCdt_ref_gated[det] = nullptr;
-		
+
 		cout << "Det " << det << " done " << endl;
 	}
 
@@ -653,8 +652,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 						
 					
 					if (deti == FAT_REF_DET) {
-						if(!FAT_gg_ref[detj]) FAT_gg_ref[detj] =  MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
-		                          										   Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, det),4001,0,4000, 200,0,1);
+						if(!FAT_gg_ref[detj]) FAT_gg_ref[detj] =  MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+		                          										   Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, detj),4001,0,4000, 200,0,1);
 						FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
 						FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(j), RAW->get_FAT_E(i));
 						if(!FAT_TDCdt_ref[detj]) FAT_TDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),

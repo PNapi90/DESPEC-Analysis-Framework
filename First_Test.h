@@ -183,6 +183,8 @@ using namespace std;
 
 			int FAT_REF_DET;
 
+			float E_gate1,E_gate2;
+
 			Bool_t ffill;
 			Int_t fshift;
 			ULong64_t White_Rabbbit_old;
@@ -196,7 +198,7 @@ using namespace std;
 			int val_it;
 
 			string input_data_path;
-			const string input_data_path_old = "old";
+			string input_data_path_old;
 
 			bool cals_done,WR_used;
 			bool FAT_make_raw_histograms;
