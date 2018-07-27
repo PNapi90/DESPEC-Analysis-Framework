@@ -46,7 +46,6 @@ void FATIMA_Gain_Match::load_Gain_Match_File(string GM_filename){
 
         for(int i = 0;i < 2;++i) gain_match_coeffs[det_id][i] = tmp_coeffs[i];
 	
-	cout<<"Gain Match Coeffs Are... "<<gain_match_coeffs[det_id][0]<<"   and   "<<gain_match_coeffs[det_id][1]<<endl;
     }
 }
 
