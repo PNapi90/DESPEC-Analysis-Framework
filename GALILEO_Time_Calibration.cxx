@@ -35,12 +35,13 @@ void GALILEO_Time_Calibration::load_Calibration_File(){
     int det_id;
 
     while(getline(calib_file,line,'\n')){
+        cout << line << endl;
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format,&det_id,&tmp_sum_coeffs,&tmp_chan_coeffs);
 
         calib_coeffs_sum[det_id] = tmp_sum_coeffs;
         calib_coeffs_channels[det_id] = tmp_chan_coeffs;
-	
+        cout << det_id << " " << tmp_sum_coeffs << " " << tmp_chan_coeffs << endl;
     }
 }
 
