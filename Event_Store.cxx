@@ -74,7 +74,7 @@ void Event_Store::store(Raw_Event* RAW){
 
 void Event_Store::show_all_addresses(int type){
     for(int i = 0;i < event_counter[type];++i){
-        cout << i << " " << Event[type][i] << " " << Event_position[type][i] << " " << type <<  endl;
+        cout << i << " " << Event[type][i] << " " << Event_position[type][i] << " " << type << " " << <<  endl;
     }
     cout << endl;
 }
@@ -106,6 +106,7 @@ void Event_Store::purge(int type,int i){
         Event_position[type][event_counter[type]-1] = -9999;
 
         cout << "Deleted event " << i << " " << event_counter[type] - 1 << " events left" << endl;
+        cout << "new ev at " << Event[type][i] << " " << Event_position[type][i] << " " << i << " e " << event_counter[type] << endl; 
         event_counter[type]--;
 
     }
