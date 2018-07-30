@@ -107,24 +107,16 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
     FEBEX_Add* FEBEX_add  = (FEBEX_Add*) this->pdata;
 
     while (FEBEX_add->add == 2781){
-				
-	this->pdata++;
-		
-	FEBEX_add = (FEBEX_Add*) this->pdata;
-
+        this->pdata++;
+        FEBEX_add = (FEBEX_Add*) this->pdata;
     }
 
     FEBEX_Header* FEBEXhead  = (FEBEX_Header*) this->pdata;
-    
-    
-    while(FEBEX_data_loop){
-	
 
-		
-    
+    while(FEBEX_data_loop){
+
         if (FEBEXhead->ff == 255){ // FEBEX module idicator //
-	    
-	
+
             // FEBEXhead->ff;
             // FEBEXhead->chan_head;
             // FEBEXhead->three_four;
@@ -136,8 +128,8 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
             FEBEX_Chan_Size *fbx_size=(FEBEX_Chan_Size*) this->pdata;    
 			
             num_channels = ((fbx_size->chan_size)/4) - 1;
-	    	    
-	    if (num_channels == 0) --num_modules;
+    
+            if (num_channels == 0) num_modules--;
 		
             this->pdata++; // Moves to Event Timestamp //
 
@@ -146,115 +138,87 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
             this->pdata++; // Moves to rest of Event Timestamp //
 			
             FEBEX_Evt_Time *fbx_time=(FEBEX_Evt_Time*) this->pdata;
-	    
-	    ULong64_t tmp_ext_time = ((fbx_hT->ext_time));
+
+            ULong64_t tmp_ext_time = ((fbx_hT->ext_time));
 			
-	    tmp_Sum_Time = (fbx_time->evt_time)+ (tmp_ext_time<<32);//((fbx_hT->ext_time)<<32);
+            tmp_Sum_Time = (fbx_time->evt_time)+ (tmp_ext_time<<32);//((fbx_hT->ext_time)<<32);
 			
 			
             this->pdata++; // Moves to Pileup & Hit Pattern //
 						
             FEBEX_Flag_Hits *fbx_flag=(FEBEX_Flag_Hits*) this->pdata;
 	    
-	    tmp_Pileup = fbx_flag->pile_flags;
+            tmp_Pileup = fbx_flag->pile_flags;
 	    
-	    tmp_Hit_Pattern = fbx_flag->hit_pattern;
+            tmp_Hit_Pattern = fbx_flag->hit_pattern;
 	    
-	    for(int j = 15; j >= 0; j--){
-		
-		if(tmp_Hit_Pattern >= pow(2, j) && tmp_Pileup >= pow(2, j)){
+	        for(int j = 15; j >= 0; j--){
+                if(tmp_Hit_Pattern >= pow(2, j) && tmp_Pileup >= pow(2, j)){
+                    pileup_flags[j] = 1;
+		    
+                    Ge_channels[j] = j;
 
-		    pileup_flags[j] = 1;
-		    
-		    Ge_channels[j] = j;
+                    tmp_Hit_Pattern -= pow(2, j);
+                    num_channels_fired++;
+                }
+                else if(tmp_Hit_Pattern >= pow(2, j)){
+                    Ge_channels[j] = j;
 
-		    tmp_Hit_Pattern -= pow(2, j);
-		    
-		    ++num_channels_fired;
-		    
-		}
-		else if(tmp_Hit_Pattern >= pow(2, j)){
-
-		    Ge_channels[j] = j;
-
-		    tmp_Hit_Pattern -= pow(2, j);
-		    
-		    ++num_channels_fired;
-		    
-		}
-	    }
-	    
-	    
+                    tmp_Hit_Pattern -= pow(2, j);
+                    num_channels_fired++;
+                }
+            }
             this->pdata++; // Moves to DEADBEEF //
-    
         }
-	else if (FEBEXhead->ff == 240){ // FEBEX channel indicator //
-	    
-	    this->pdata--; // Moves back to DEADBEEF so channel loop functions properly //
+        else if (FEBEXhead->ff == 240){ // FEBEX channel indicator //
+            this->pdata--; // Moves back to DEADBEEF so channel loop functions properly //
 
-	    
-	    for(int i=0; i<num_channels; ++i){
-				
-		this->pdata++; // Moves to channel header //
+            for(int i=0; i<num_channels; ++i){
+                this->pdata++; // Moves to channel header //
 
-		FEBEX_Chan_Header *fbx_Ch=(FEBEX_Chan_Header*) this->pdata;
+                FEBEX_Chan_Header *fbx_Ch=(FEBEX_Chan_Header*) this->pdata;
 		
-		int tmp_Ch_ID = fbx_Ch->Ch_ID;
+                int tmp_Ch_ID = fbx_Ch->Ch_ID;
 		
-		if(pileup_flags[tmp_Ch_ID] == 1) this->pdata += 3;
-		else{
-
-		    current_det = GALILEO_map[std::make_pair(board_id, tmp_Ch_ID)];
-						    
-		    det_ids[i] = current_det;
-		    
-		    
-		    Sum_Time[current_det] = tmp_Sum_Time;
-		    
-		
-		    this->pdata++; // Moves to rest of channel timestamp //
+                if(pileup_flags[tmp_Ch_ID] == 1) this->pdata += 3;
+            
+                else{
+                    current_det = GALILEO_map[std::make_pair(board_id, tmp_Ch_ID)];
+                    det_ids[i] = current_det;
+                    Sum_Time[current_det] = tmp_Sum_Time;
+                    this->pdata++; // Moves to rest of channel timestamp //
 	
-		    FEBEX_TS *fbx_Ch_TS=(FEBEX_TS*) this->pdata; 
-		    
-		    ULong64_t tmp_ext_chan_ts = (fbx_Ch->ext_chan_ts);
-		    
-		    Chan_Time[current_det] = ((fbx_Ch_TS->chan_ts)+(tmp_ext_chan_ts<<32))*10; // in nanoseconds
-    
-		    this->pdata++; // Moves to Channel Energy //
-				
-		    FEBEX_En *fbx_Ch_En=(FEBEX_En*) this->pdata; 
+                    FEBEX_TS *fbx_Ch_TS=(FEBEX_TS*) this->pdata; 
+                    ULong64_t tmp_ext_chan_ts = (fbx_Ch->ext_chan_ts);
+
+                    Chan_Time[current_det] = ((fbx_Ch_TS->chan_ts)+(tmp_ext_chan_ts<<32))*10; // in nanoseconds
+                    this->pdata++; // Moves to Channel Energy //
+
+                    FEBEX_En *fbx_Ch_En=(FEBEX_En*) this->pdata; 
 		
-		    Chan_Energy[current_det] = fbx_Ch_En->chan_en;
+                    Chan_Energy[current_det] = fbx_Ch_En->chan_en;
 				    
-		    Calibrate_FEBEX(current_det);
-						
-		    this->pdata++; // Moves to Future Use //
+                    Calibrate_FEBEX(current_det);
+
+                    this->pdata++; // Moves to Future Use //
+
+                    fired_FEBEX_amount++;
 		    
-		    ++fired_FEBEX_amount;
-		    
-		    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
-		    // @@@@ Traces Would Go Here @@@@@ //
-		    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
-		
-		}
+                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
+                // @@@@ Traces Would Go Here @@@@@ //
+                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
+                }
 			    	    
-	    }
-	    
-	    --num_modules;
-	    
-	}
-	
-	if (num_modules != 0){
-	    
-	    this->pdata++;
-	    
-	    FEBEXhead  = (FEBEX_Header*) this->pdata;
-	    
-	}
-	else FEBEX_data_loop = false; // Exits FEBEX Loop //
-	
-    }
+            }
+            num_modules--;
+        }
     
+        if (num_modules != 0){
+            this->pdata++; 
+            FEBEXhead  = (FEBEX_Header*) this->pdata;
+        }
+        else FEBEX_data_loop = false; // Exits FEBEX Loop //
+    }
 }
 
 //---------------------------------------------------------------

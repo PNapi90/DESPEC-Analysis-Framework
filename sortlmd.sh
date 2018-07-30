@@ -1,0 +1,10 @@
+go4analysis -file /media/E07AE2187AE1EB6C/fatimaroof/Eu152_22det_005*lmd
+mv Go4AnalysisASF.root Eu152_22det_5.root
+go4analysis -file /media/E07AE2187AE1EB6C/fatimaroof/Eu152_22det_006*lmd
+mv Go4AnalysisASF.root Eu152_22det_6.root
+#go4analysis -file /media/E07AE2187AE1EB6C/fatimaroof/Eu152_22det_002*lmd
+#mv Go4AnalysisASF.root Eu152_22det_2.root
+#go4analysis -file /media/E07AE2187AE1EB6C/fatimaroof/Eu152_22det_003*lmd
+#mv Go4AnalysisASF.root Eu152_22det_3.root
+#go4analysis -file /media/E07AE2187AE1EB6C/fatimaroof/Eu152_22det_004*lmd
+#mv Go4AnalysisASF.root Eu152_22det_4.root

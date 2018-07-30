@@ -58,35 +58,125 @@ TGo4EventProcessor()
 TSCNUnpackProc::TSCNUnpackProc(const char* name) :
 TGo4EventProcessor(name) // Histograms defined here //
 {
+	FAT_make_raw_histograms = true;
 	
 	cout << "**** TSCNUnpackProc: Create" << endl;
 	
+	input_data_path_old = "old";
 	
-	all =  MakeTH1('D', "je","hey", 2000, 0.,10000);
 	
-	
-	all2 = MakeTH1('D',"2","2",60,-30,30);
+	FAT_REF_DET = 0;
 
-	FAT_E = MakeTH1('D',"FATIMA_E","FATIMA_E",2001,0,8000);
-	FAT_MAT = MakeTH2('D',"FAT_MAT","FAT_MAT",1001,0,4000,1001,0,4000);
-	FAT_MAT_2 = MakeTH2('D',"FAT_MAT_2","FAT_MAT_2",1001,0,4000,1001,0,4000);
+	// ######################################################### //
 	
-	FAT_TDC_Diff = MakeTH1('D',"FATIMA_TDC","FATIMA_TDC",3200,-40,40);
+	hsci_tofll2 = MakeTH1('D',"hsci_tofll2","hsci_tofll2",1500,0.,62000.);
+	hsci_tofll3 = MakeTH1('D',"hsci_tofll3","hsci_tofll3",1500,0.,62000.);
+	hsci_tof2 = MakeTH1('D',"hsci_tof2","hsci_tof2",1000,0.,62000.);
+	hsci_tofrr2 = MakeTH1('D',"hsci_tofrr2","hsci_tofrr2",1500,0.,62000.);
+	hsci_tofrr3 = MakeTH1('D',"hsci_tofrr3","hsci_tofrr3",1500,0.,62000.);
+	hsci_tof3 = MakeTH1('D',"hsci_tof3","hsci_tof3",1000,0.,62000.);
 	
-	for(int i = 0; i<36; ++i){
+	/*hID_x2 = MakeTH1('D',"ID_x2","ID_x2",3000,0,300);
+	hID_y2 = MakeTH1('D',"ID_y2","ID_y2",3000,0,300);
+	hID_a2 = MakeTH1('D',"ID_a2","ID_a2",3000,0,300);
+	hID_b2 = MakeTH1('D',"ID_b2","ID_b2",3000,0,300);
+	
+	hID_x4 = MakeTH1('D',"ID_x4","ID_x4",3000,0,300);
+	hID_y4 = MakeTH1('D',"ID_y4","ID_y4",3000,0,300);
+	hID_a4 = MakeTH1('D',"ID_a4","ID_a4",3000,0,300);
+	hID_b4 = MakeTH1('D',"ID_b4","ID_b4",3000,0,300);*/
+	
+	hbeta = MakeTH1('D',"beta","beta",100,0.,1.);
+	hbeta3 = MakeTH1('D',"beta3","beta3",100,0.,1.);
+	hgamma = MakeTH1('D',"gamma","gamma",100,0.,1.);
+	
+	hAoQ = MakeTH1('D',"AoQ","AoQ",200,1.4,3.0); // 200,1.4,3.0
+	hAoQ_corr = MakeTH1('D',"AoQ_corr","AoQ_corr",200,1.4,3.0); // 200,1.4,3.0
+	
+	hz = MakeTH1('D',"z","z",100,0.,93.);
+	hz2 = MakeTH1('D',"z2","z2",100,0.,93.);
+	hz3 = MakeTH1('D',"z3","z3",100,10.,93.);
+	
+	htimestamp = MakeTH1('D',"timestamp","timestamp",30,0.,300.);
+	hts = MakeTH1('D',"ts","ts",30,0.,300.);
+	hts2 = MakeTH1('D',"ts2","ts2",30,0.,300.);
+	
+	
+	
+	
+	
+	// ######################################################### //
 
-	    FAT_TDC_dT[i] = MakeTH1('D',Form("TDC_Diff_Hists/TDC_Time_Diff%2d",i),Form("TDC Time Difference%2d",i),3201,-40,40);
-	    Energy_Singles[i] = MakeTH1('D',Form("Energy_Singles/Energy_Singles%2d",i),Form("Energy Singles%2d",i),8000,0,8000);
-	    Energy_Coinc[i] = MakeTH1('D',Form("Energy_Coincidences/Energy_Coinc%2d",i),Form("Energy Coincidences%2d",i),8000,0,8000);
-	    FAT_En_vs_dT[i] = MakeTH2('D',Form("Energy_vs_dT/Energy_vs_dT%2d",i),Form("Energy Vs dT%2d",i),1001,0,4000,3201,-40,40);
+	//*****************
+	//Fatima histograms
+	FATgate1_low  = 1172.;
+	FATgate1_high = 1182.;
+	FATgate2_low  = 1328.;
+	FATgate2_high = 1338.;
+	E_gate1 = FATgate1_low + (FATgate1_high - FATgate1_low)/2.;
+	E_gate2 = FATgate2_low + (FATgate2_high - FATgate2_low)/2.;
+	
+	
 
+		
+	FAT_Esum  = MakeTH1('D', "FATIMA/ESum", "LaBr Energy (all detectors)",4001,0,4000);
+	FAT_gg    = MakeTH2('D', "FATIMA/gg", "FATIMA Gamma-Gamma (all detectors)",2001,0,2000, 2001,0,2000);
+	FAT_TDCdtsum = MakeTH1('D', "FATIMA/TDCdtSum", "TDC dt (all detectors)", 3201,-40,40);
+	FAT_QDCdtsum = MakeTH1('D', "FATIMA/QDCdtSum", "QDC dt (all detectors)", 3201,-40,40);
+	FAT_TDCdtsum_ref_gated = MakeTH1('D', "FATIMA/TDCdt_ref_gated",
+							Form("TDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);
+	FAT_QDCdtsum_ref_gated = MakeTH1('D', "FATIMA/QDCdt_ref_gated",
+							Form("QDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);				
+	
+	
+
+	
+	//statistics
+	FAT_hits = MakeTH1('D', "FATIMA/Stat/det_hits", "FATIMA detector statistics",40,0,40);
+	FAT_hits_QDC = MakeTH1('D', "FATIMA/Stat/QDC_hits", "FATIMA QDC statistics",40,0,40);
+	FAT_hits_TDC = MakeTH1('D', "FATIMA/Stat/TDC_hits", "FATIMA TDC statistics",40,0,40);
+	FAT_QDC_TDC_hitmap = MakeTH2('D', "FATIMA/Stat/QDC_TDC_hitmap", "FATIMA QDC-TDC hit map",40,0,40, 40,0,40);
+	FAT_correlations = MakeTH2('D', "FATIMA/Stat/det_det_correlations", "FATIMA det-det correlations",40,0,40, 40,0,40);
+	
+
+	
+	
+	//energy
+	FAT_E = new TH1*[FAT_MAX_DET];
+	FAT_Eraw = new TH1*[FAT_MAX_DET];
+	FAT_E_ratio = new TH2*[FAT_MAX_DET];
+	FAT_gg_ref = new TH2*[FAT_MAX_DET];
+	
+	
+	
+	//timing
+	FAT_TDCdt_ref = new TH1*[FAT_MAX_DET];
+	FAT_QDCdt_ref = new TH1*[FAT_MAX_DET];
+	FAT_TDC_QDC_dt = new TH2*[FAT_MAX_DET];
+	FAT_TDCdt_ref_gated = new TH1*[FAT_MAX_DET];
+	FAT_E_TDCdt_ref_gated = new TH2*[FAT_MAX_DET];
+	
+
+	
+
+
+	for (int det = 0;  det< FAT_MAX_DET; det++) {
+
+		FAT_E[det] = nullptr;
+		FAT_Eraw[det] = nullptr;
+		FAT_E_ratio[det] = nullptr;
+		FAT_gg_ref[det] = nullptr;
+		FAT_TDCdt_ref[det] = nullptr;
+		FAT_QDCdt_ref[det] = nullptr;
+		FAT_TDC_QDC_dt[det] = nullptr;
+		FAT_TDCdt_ref_gated[det] = nullptr;
+		FAT_E_TDCdt_ref_gated[det] = nullptr;
 	}
 
-	hit_mat = MakeTH2('D',"hitmat","hitmat",37,0,36,37,0,36);
+	
 
-	hit_hist = MakeTH1('D',"hits","hits",60,0,60);
-	am_hits = MakeTH1('D',"hits_a","hits_a",51,0,50);
-
+	//*****************
+	
 	C_t = MakeTH1('D',"pl","pl",1001,0,1000);
 
 	tamex_Mult_lead = new TH1*[50];
@@ -148,7 +238,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	    GAL_Chan_E[i] = MakeTH1('D',Form("GALILEO_Energy_Spectra/GALILEO_E%2d",i),Form("GALILEO Channel Energy Channel %2d",i),80001,0,800000);
 	    GAL_Time_Diff_vs_Energy[i] = MakeTH2('D',Form("GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",i),Form("GALILEO Time Difference Vs Channel Energy Channel %2d",i),21,-100,100,10001,0,800000);
 	}
-	tdc_hist = MakeTH1('D',"tdc","tdc",1000,-60,1000);
+
 
 	Trail_LEAD = new TH1**[50];
 	Coarse = new TH1**[50];
@@ -198,8 +288,21 @@ TGo4EventProcessor(name) // Histograms defined here //
 	iterator = 0;
 	cals_done = false;
 	val_it = 0;
-	FAT_gain_match_used = false;
+	
+	//Fix this in Detector_System.cxx either remove the
+	// gain_match_used initialisation in FATIMA_Detector_System
+	//and add a ::set_bool_gain_match(bool) or set FAT_gain_match_used
+	//by the value in FATIMA_Detector_System constructor. Former
+	//seems to make more sense.
+	//FAT_gain_match_used = Detector_Systems[3]->do_gain_matching();
+	FAT_gain_match_used = true;
+	//Having an initialisation (below) and a user setting (above)
+	//like this is probably bad.
 	FAT_gain_match_done = false;
+	
+	
+	cout<<"Yo What's up?"<<endl;
+	
 
 }
 
@@ -238,25 +341,35 @@ TSCNUnpackProc::~TSCNUnpackProc()
 Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 {
     
-    if(Used_Systems[3] && FAT_gain_match_used && !FAT_gain_match_done){
+    if(Used_Systems[3] && FAT_gain_match_used){
 
-		TGo4MbsEvent       *fMbsEvent = dynamic_cast<TGo4MbsEvent*>    (GetInputEvent("Unpack"));   // of step "Unpack";
-		s_filhe* fileheader=fMbsEvent->GetMbsSourceHeader();
+	    TGo4MbsEvent       *fMbsEvent = dynamic_cast<TGo4MbsEvent*>    (GetInputEvent("Unpack"));   // of step "Unpack";
+	    s_filhe* fileheader=fMbsEvent->GetMbsSourceHeader();
 
-	    string input_data_path = fileheader->filhe_file;
-	
-	    cout<<"Filename = "<<input_data_path<<endl;
-	    	    
-	    for(unsigned int i = 0; i<input_data_path.length(); ++i){
-			if(input_data_path[i] == '/') file_pwd = i;
-			else if(input_data_path[i] == '.'){
-		    	file_end = i;
-			    gain_match_filename = "Configuration_Files/FATIMA_Gain_Match_Files/" + input_data_path.substr((file_pwd+1),(file_end - file_pwd -1)) + ".gm";
-				cout<<"gain_match_filename = "<<gain_match_filename<<endl;
-			}
+	    input_data_path = fileheader->filhe_file;
+	    
+	    if(input_data_path == input_data_path_old) FAT_gain_match_done = true;
+	    else if(input_data_path != input_data_path_old) FAT_gain_match_done = false;
+	    
+	    if(!FAT_gain_match_done){
+	    
+		input_data_path_old = input_data_path;
+		
+		cout<<"Filename = "<<input_data_path<<endl;
+			
+		for(unsigned int i = 0; i<input_data_path.length(); ++i){
+			    if(input_data_path[i] == '/') file_pwd = i;
+			    else if(input_data_path[i] == '.'){
+			    file_end = i;
+				gain_match_filename = "Configuration_Files/FATIMA_Gain_Match_Files/" + input_data_path.substr((file_pwd+1),(file_end - file_pwd -1)) + ".gm";
+				    cout<<"gain_match_filename = "<<gain_match_filename<<endl;
+			    }
+		}
+		Detector_Systems[3]->set_Gain_Match_Filename(gain_match_filename);
+		FAT_gain_match_done = true;
+		
 	    }
-	    Detector_Systems[3]->set_Gain_Match_Filename(gain_match_filename);
-	    FAT_gain_match_done = true;
+	    
 	}
 	
 	count++;
@@ -312,15 +425,129 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 		Int_t PrcID=psubevt->GetProcid();
 		
-		//cout<<"ProcID is "<<PrcID<<endl;
+		//cout<<"Proc_ID is : "<<PrcID<<endl;
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 				
 		if(PrcID_Conv == 0){
-		    		    	    
-		   Detector_Systems[PrcID_Conv]->Process_FRS(psubevt);
+			
+		    Detector_Systems[PrcID_Conv]->Process_FRS(psubevt);
+		    
+		    Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
 		    		    
-		   continue;
+		    /*Float_t dE = RAW->get_FRS_dE(int i);
+		    Float_t dE_cor = RAW->get_FRS_dE_corr(int i);
+
+		    Float_t sci_l = RAW->get_FRS_sci_l(int i);
+		    Float_t sci_r = RAW->get_FRS_sci_r(int i);
+		    Float_t sci_e = RAW->get_FRS_sci_e(int i);
+		    Float_t sci_tx = RAW->get_FRS_sci_tx(int i);
+		    Float_t sci_x = RAW->get_FRS_sci_x(int i);*/
+		    
+		    Float_t sci_tofll2 = RAW->get_FRS_tofll2();
+		    Float_t sci_tofll3 = RAW->get_FRS_tofll3();
+		    Float_t sci_tof2 = RAW->get_FRS_tof2();
+		    Float_t sci_tofrr2 = RAW->get_FRS_tofrr2();
+		    Float_t sci_tofrr3 = RAW->get_FRS_tofrr3();
+		    Float_t sci_tof3 = RAW->get_FRS_tof3();
+		
+		    Float_t ID_x2 = RAW->get_FRS_x2();
+		    Float_t ID_y2 = RAW->get_FRS_y2();
+		    Float_t ID_a2 = RAW->get_FRS_a2();
+		    Float_t ID_b2 = RAW->get_FRS_b2();
+		    
+		    Float_t ID_x4 = RAW->get_FRS_x4();
+		    Float_t ID_y4 = RAW->get_FRS_y4();
+		    Float_t ID_a4 = RAW->get_FRS_a4();
+		    Float_t ID_b4 = RAW->get_FRS_b4();
+		    
+		    /*Float_t ID_brho = RAW->get_FRS_brho(int i);
+		    Float_t ID_rho = RAW->get_FRS_rho(int i);*/
+		    
+		    Float_t beta = RAW->get_FRS_beta();
+		    Float_t beta3 = RAW->get_FRS_beta3();
+		    Float_t gamma = RAW->get_FRS_gamma();
+		    
+		    Float_t AoQ = RAW->get_FRS_AoQ();
+		    Float_t AoQ_corr = RAW->get_FRS_AoQ_corr();
+		    
+		    Float_t z = RAW->get_FRS_z();
+		    Float_t z2 = RAW->get_FRS_z2();
+		    Float_t z3 = RAW->get_FRS_z3();
+		    
+		    Float_t timestamp = RAW->get_FRS_timestamp();
+		    Float_t ts = RAW->get_FRS_ts();
+		    Float_t ts2 = RAW->get_FRS_ts2();		    
+		    
+		    /*cout<<"hsci_tofll2 "<<sci_tofll2<<endl;
+		    cout<<"hsci_tofll3 "<<sci_tofll3<<endl;
+		    cout<<"hsci_tof2 "<<sci_tof2<<endl;
+		    cout<<"hsci_tofrr2 "<<sci_tofrr2<<endl;
+		    cout<<"hsci_tofrr3 "<<sci_tofrr3<<endl;
+		    cout<<"hsci_tof3 "<<sci_tof3<<endl;
+		
+		    cout<<"hID_x2 "<<ID_x2<<endl;
+		    cout<<"hID_y2 "<<ID_y2<<endl;
+		    cout<<"hID_a2 "<<ID_a2<<endl;
+		    cout<<"hID_b2 "<<ID_b2<<endl;
+		    
+		    cout<<"hID_x4 "<<ID_x4<<endl;
+		    cout<<"hID_y4 "<<ID_y4<<endl;
+		    cout<<"hID_a4 "<<ID_a4<<endl;
+		    cout<<"hID_b4 "<<ID_b4<<endl;
+		    
+		    
+		    cout<<"hbeta "<<beta<<endl;
+		    cout<<"hbeta3 "<<beta3<<endl;
+		    cout<<"hgamma "<<gamma<<endl;
+		    
+		    cout<<"hAoQ "<<AoQ<<endl;
+		    cout<<"hAoQ_corr "<<AoQ_corr<<endl;
+		    
+		    cout<<"hz "<<z<<endl;
+		    cout<<"hz2 "<<z2<<endl;
+		    cout<<"hz3 "<<z3<<endl;
+		    
+		    cout<<"htimestamp "<<timestamp<<endl;
+		    cout<<"hts "<<ts<<endl;
+		    cout<<"hts2 "<<ts2<<endl;*/
+		    
+		    	    
+		    if(sci_tofll2) hsci_tofll2->Fill(sci_tofll2);
+		    if(sci_tofll3) hsci_tofll3->Fill(sci_tofll3);
+		    if(sci_tof2) hsci_tof2->Fill(sci_tof2);;
+		    if(sci_tofrr2) hsci_tofrr2->Fill(sci_tofrr2);
+		    if(sci_tofrr3) hsci_tofrr3->Fill(sci_tofrr3);
+		    if(sci_tof3) hsci_tof3->Fill(sci_tof3);
+		
+		    /*if(ID_x2) hID_x2->Fill(ID_x2);
+		    if(ID_y2) hID_y2->Fill(ID_y2);
+		    if(ID_a2) hID_a2->Fill(ID_a2);
+		    if(ID_b2) hID_b2->Fill(ID_b2);
+		    
+		    if(ID_x4) hID_x4->Fill(ID_x4);
+		    if(ID_y4) hID_y4->Fill(ID_y4);
+		    if(ID_a4) hID_a4->Fill(ID_a4);
+		    if(ID_b4) hID_b4->Fill(ID_b4);*/
+		    
+		    
+		    if(beta) hbeta->Fill(beta);
+		    if(beta3) hbeta3->Fill(beta3);
+		    if(gamma) hgamma->Fill(gamma);
+		    		    
+		    if(AoQ) hAoQ->Fill(AoQ);
+		    if(AoQ_corr) hAoQ_corr->Fill(AoQ_corr);
+		    
+		    if(z) hz->Fill(z);
+		    if(z2) hz2->Fill(z2);
+		    if(z3) hz3->Fill(z3);
+		    
+		    if(timestamp) htimestamp->Fill(timestamp);
+		    if(ts) hts->Fill(ts);
+		    if(ts2) hts2->Fill(ts2);
+		    
+		    
+		    continue;
 		    
 		}
 			    
@@ -382,122 +609,87 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//FATIMA CASE
 		if(PrcID_Conv == 3){
-			//to get histograms (e.g.)
-			am_FATIMA_hits = RAW->get_FATIMA_am_Fired();
-			int tdc_hits = RAW->get_FATIMA_am_Fired_TDC();
-			if(am_hits > 0) am_hits->Fill(am_FATIMA_hits);
-					    
-			double sum = 0;
-			double tmpE[2];
-			double TDC_times[2] = {0,0};
-			double TDC_time_6[2];
-			int det_iter = 0;
-			bool called_link = false;
-			
-			num_full_FAT_evts = RAW->get_am_FATIMA_Both(); 
-			
-			for(int i = 0; i < num_full_FAT_evts; ++i){
-			    
-			    int Data_Ref_i = RAW->get_FATIMA_Both(i);
-			    int Det_ID_i = RAW->get_FATIMA_det_id(Data_Ref_i);
-			    //int Data_Ref_i = RAW->get_FATIMA_Both(i);
-
-			    tmpE[0] = RAW->get_FATIMA_E(Data_Ref_i);
-			    
-			    if(num_full_FAT_evts == 1){
-				
-				 Energy_Singles[Det_ID_i]->Fill(tmpE[0]);
-
-			    }
-			    if(num_full_FAT_evts == 2){
-				
-				 Energy_Coinc[0]->Fill(tmpE[0]);
-
-
-
-			    }
-			    for(int j = 0; j < num_full_FAT_evts; ++j){
-				
-				int Data_Ref_j = RAW->get_FATIMA_Both(j);		    		    
-				int Det_ID_j = RAW->get_FATIMA_det_id(Data_Ref_j);
-				
-				if(Det_ID_i != Det_ID_j) hit_mat->Fill(Det_ID_i,Det_ID_j);
-				
-				tmpE[0] = RAW->get_FATIMA_E(Data_Ref_i);
-				tmpE[1] = RAW->get_FATIMA_E(Data_Ref_j);
-
-				if(Det_ID_i > Det_ID_j && num_full_FAT_evts > 1) FAT_MAT->Fill(tmpE[0], tmpE[1]);
-				if(Det_ID_i != Det_ID_j && num_full_FAT_evts > 1) FAT_MAT_2->Fill(tmpE[0],tmpE[1]);
-
-				
-				if(Det_ID_i != Det_ID_j /*&& Det_ID_j == 0*/){
-				    
-				    
-				    
-				    //int Data_Ref_j = RAW->get_FATIMA_Both(j);		    		    
-				
-				    double TDC_Time_1 = RAW->get_FATIMA_TDC_T(Data_Ref_i);
-				    double TDC_Time_2 = RAW->get_FATIMA_TDC_T(Data_Ref_j);
-				    
-				    if(Det_ID_j == 0) FAT_TDC_dT[Det_ID_i]->Fill((TDC_Time_1 - TDC_Time_2));
-				    
-				    FAT_En_vs_dT[Det_ID_i]->Fill(tmpE[0],(TDC_Time_1 - TDC_Time_2));
-			
-				}
-			
-			
-			    }
-			    
+			int det_tmp = 0;
+			double dt1, dt2;
+			for (int i=0; i<RAW->get_FAT_QDCs_fired(); i++) {
+				det_tmp = RAW->get_FAT_QDC_id(i);
+				if(!FAT_Eraw[RAW->get_FAT_QDC_id(i)]) FAT_Eraw[det_tmp] = MakeTH1('D', Form("FATIMA/Energy/E_Raw_LaBr%02d", det_tmp),
+		                             Form("LaBr%02d energy (raw)", det_tmp),2000,0,40000);
+				FAT_Eraw[det_tmp]->Fill(RAW->get_FAT_QLong_Raw(i));
 			}
 			
-			if(RAW->CH_51_FIRED() && tdc_hits == 3){
-				int id_tmp = RAW->get_FATIMA_det_id(0);
-				double tdiff = RAW->get_FATIMA_Time_Diff();
-				if(!DIFF_ARR[id_tmp]) DIFF_ARR[id_tmp] = MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",id_tmp),Form("TDC_DIFF_CH_6_to_%d",id_tmp),300,-30000,0);
-				DIFF_ARR[id_tmp]->Fill(tdiff);
-			}
-			int tdc_iter = 0;
-			for(int i = 0;i < tdc_hits;++i){
-				//hit_hist->Fill(RAW->get_FATIMA_det_id(i));
-				if(RAW->get_FATIMA_QDC_TDC_LINKED(i)){
-					//e,g, sum spectrum
-					tmpE[i] = RAW->get_FATIMA_E(i);
-					sum += tmpE[i];
-					hit_hist->Fill(RAW->get_FATIMA_det_id(i));
-					tdc_hist->Fill(RAW->get_FATIMA_TDC_T(i)*1e-6);
-					if(RAW->get_FATIMA_det_id(i) < 50){
-						det_iter = RAW->get_FATIMA_det_id(i);
-					}
-					called_link = true;
-				}
-				else{
-					if(RAW->get_FATIMA_det_id(i) >= 17 && called_link && false){
-						TDC_time_6[tdc_iter] = (double) RAW->get_FATIMA_TDC_T(i);
-						tdc_iter++;
-					}
-				}
+			int dets_fired = RAW->get_FAT_det_fired();
+			for (int i=0; i<dets_fired; i++) {
+				int deti = RAW->get_FAT_id(i);
 				
-				for(int j = 0; j < tdc_hits; ++j){
+				FAT_hits->Fill(deti);
+				FAT_Esum->Fill(RAW->get_FAT_E(i));
 
+				if(!FAT_E[deti]) FAT_E[deti] = MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", deti),
+		                          Form("LaBr%02d energy", deti),4001,0,4000);
+				
+				FAT_E[deti]->Fill(RAW->get_FAT_E(i));
+				if(!FAT_E_ratio[deti]) FAT_E_ratio[deti] = MakeTH2('D', Form("FATIMA/Energy/EvsRatio_LaBr%02d", deti),
+		                           Form("LaBr%02d energy vs QShort/QLong", deti),4001,0,4000, 200,0,1);
 
-				    if (i != j ){
-					 
-					 
-					//cout<<"First timestamp "<<RAW->get_FATIMA_TDC_T(i)<<"  Second timestamp  "<<RAW->get_FATIMA_TDC_T(j)<<endl;
-
-					TDC_times[0] = RAW->get_FATIMA_TDC_T(i);
-					TDC_times[1] = RAW->get_FATIMA_TDC_T(j);
-					 
-					//cout<<(TDC_times[0] - TDC_times[1])*1e-3<<endl;
-
-					FAT_TDC_Diff->Fill(((TDC_times[0] - TDC_times[1])*1e-3));
-				    
-				    }
+				FAT_E_ratio[deti]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_ratio(i));
+				for (int j=0; j<dets_fired; j++) {
+					int detj = RAW->get_FAT_id(j);
+					if ( deti==detj )
+						continue;
+					
+					FAT_gg->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
+					if (deti < detj) {
+						dt1 = RAW->get_FAT_t(i) - RAW->get_FAT_t(j);
+						dt2 = RAW->get_FAT_t_qdc(i) - RAW->get_FAT_t_qdc(j);
+						FAT_TDCdtsum->Fill(dt1);
+						FAT_QDCdtsum->Fill(dt2);
+						FAT_TDCdtsum_ref_gated->Fill(dt1);
+						FAT_QDCdtsum_ref_gated->Fill(dt2);
+					}else{
+						dt1 = RAW->get_FAT_t(j) - RAW->get_FAT_t(i);
+						dt2 = RAW->get_FAT_t_qdc(j) - RAW->get_FAT_t_qdc(i);
+					}	
+						
+						//printf("Gates %4.2lf-%4.2lf  %4.2lf-%4.2lf\n", FATgate1_low, FATgate1_high,
+						//										     FATgate1_low, FATgate1_high);
+						//printf("Energies %4.2lf %4.2lf\n", RAW->get_FAT_E(i), RAW->get_FAT_E(j));
+						
+					
+					if (deti == FAT_REF_DET) {
+						if(!FAT_gg_ref[detj]) FAT_gg_ref[detj] =  MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+		                          										   Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, detj),4001,0,4000, 200,0,1);
+						FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
+						FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(j), RAW->get_FAT_E(i));
+						if(!FAT_TDCdt_ref[detj]) FAT_TDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+		                             Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);	
+						FAT_TDCdt_ref[detj]->Fill(dt1);
+						if(!FAT_QDCdt_ref[detj]) FAT_QDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/QDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+		                             Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);
+						FAT_QDCdt_ref[detj]->Fill(dt2);
+						if(!FAT_TDC_QDC_dt[detj]) FAT_TDC_QDC_dt[detj] =  MakeTH2('D', Form("FATIMA/Timing/TDCdt_QDCdt_LaBr%02d", detj),
+		                              Form("TDCdt vs QDCdt LaBr%02d", detj),3201,-40,40, 3201,-40,40);
+						FAT_TDC_QDC_dt[detj]->Fill(dt1, dt2);
+						if (RAW->get_FAT_E(i) > FATgate1_low && RAW->get_FAT_E(i) < FATgate1_high) {
+							if(!FAT_E_TDCdt_ref_gated[detj]) FAT_E_TDCdt_ref_gated[detj] = MakeTH2('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_E_LaBr%02d", FAT_REF_DET, detj),
+		                                     														Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",FAT_REF_DET, E_gate1, detj),
+                                             														2001, 0, 2000, 3201,-40,40);
+							FAT_E_TDCdt_ref_gated[detj]->Fill(RAW->get_FAT_E(j), dt1);
+							if (RAW->get_FAT_E(j) > FATgate2_low 
+									&& RAW->get_FAT_E(j) < FATgate2_high) {
+								if(!FAT_TDCdt_ref_gated[detj]) FAT_TDCdt_ref_gated[detj] = MakeTH1('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+		                                   															Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (on %4.2f keV)",
+																									FAT_REF_DET, E_gate1, detj, E_gate2),3201,-40,40);
+								FAT_TDCdt_ref_gated[detj]->Fill(dt1);
+								printf("hit gates\n");									
+							}
+						}
+					}
 				}
+
 			}
 			
 			//if(am_FATIMA_hits == 2) FAT_MAT->Fill(RAW->get_FATIMA_E(0),RAW->get_FATIMA_E(1));
-			if(am_FATIMA_hits > 0 && sum > 0) FAT_E->Fill(sum);
 		}
 		//PLASTIC CASE
 		if(PrcID_Conv == 2){

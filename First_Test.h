@@ -26,7 +26,6 @@
 #include "TTree.h"
 
 
-
 // Go4 Includes //
 #include "TGo4UserException.h"
 #include "TGo4Picture.h"
@@ -65,6 +64,10 @@ using namespace std;
 	class TSCNUnpackProc : public TGo4EventProcessor
 	{
 		public:
+			//FATIMA variables
+			double FATgate1_low, FATgate1_high;
+			double FATgate2_low, FATgate2_high;
+			
 			TSCNUnpackProc();
 			TSCNUnpackProc(const char* name);
 			virtual ~TSCNUnpackProc();
@@ -73,18 +76,69 @@ using namespace std;
 
 		protected:
 		
-	
-			TH1* FAT_E;
-			TH2* FAT_MAT;
-			TH2* FAT_MAT_2;
-			TH2* hit_mat;
+
+
+			TH1* hsci_tofll2;
 			
-			TH1* FAT_TDC_dT[36];
-			TH1* Energy_Singles[36];
-			TH1* Energy_Coinc[36];
-			TH2* FAT_En_vs_dT[36];
+			TH1* hsci_tofll3;
+			TH1* hsci_tof2;
+			TH1* hsci_tofrr2;
+			TH1* hsci_tofrr3;
+			TH1* hsci_tof3;
 			
+			TH1* hID_x2;
+			TH1* hID_y2;
+			TH1* hID_a2;
+			TH1* hID_b2;
 			
+			TH1* hID_x4;
+			TH1* hID_y4;
+			TH1* hID_a4;
+			TH1* hID_b4;
+			
+			TH1* hbeta;
+			TH1* hbeta3;
+			TH1* hgamma;
+			
+			TH1* hAoQ;
+			TH1* hAoQ_corr;
+			
+			TH1* hz;
+			TH1* hz2;
+			TH1* hz3;
+			
+			TH1* htimestamp;
+			TH1* hts;
+			TH1* hts2;
+			
+		
+			//Fatima histograms
+			//-general
+			TH1* FAT_Esum;
+			TH2* FAT_gg;
+			TH1* FAT_TDCdtsum;
+			TH1* FAT_QDCdtsum;
+			TH1* FAT_TDCdtsum_ref_gated;		//gates are hard coded
+			TH1* FAT_QDCdtsum_ref_gated;   //for now...
+			//-statistics
+			TH1* FAT_hits;		     //number of hits per detector id
+			TH1* FAT_hits_QDC;
+			TH1* FAT_hits_TDC;
+			TH2* FAT_QDC_TDC_hitmap; //hits of qdc and tdc in same event
+			TH2* FAT_correlations;   //det-det coincidence map
+			//-energy
+			TH1** FAT_E;
+			TH1** FAT_Eraw;
+			TH2** FAT_E_ratio;
+			TH2** FAT_gg_ref;
+			//-timing
+			TH1** FAT_TDCdt_ref;
+			TH1** FAT_QDCdt_ref;
+			TH2** FAT_TDC_QDC_dt;
+			TH1** FAT_TDCdt_ref_gated;
+			TH2** FAT_E_TDCdt_ref_gated;
+
+			//Other histograms			 
 			TH1* WR_HIST;
 			TH1* WR_HIST2;
 			TH1* C_t;
@@ -94,9 +148,7 @@ using namespace std;
 			TH1*** mat;
 			TH1* all;
 			TH1* all2;
-			TH1* hit_hist;
-			TH1* am_hits;
-			TH1* tdc_hist;
+			
 			TH1* WR_F;
 			TH1*** Coarse;
 			TH1** DIFF_ARR;
@@ -129,8 +181,13 @@ using namespace std;
 
 		private:
 		
-			int FATIMA_reference_det = 1;
-		
+			const int FATIMA_reference_det = 0;
+			const int FAT_MAX_DET = 36;
+
+			int FAT_REF_DET;
+
+			float E_gate1,E_gate2;
+
 			Bool_t ffill;
 			Int_t fshift;
 			ULong64_t White_Rabbbit_old;
@@ -143,7 +200,11 @@ using namespace std;
 			double vals[100000];
 			int val_it;
 
+			string input_data_path;
+			string input_data_path_old;
+
 			bool cals_done,WR_used;
+			bool FAT_make_raw_histograms;
 			bool FAT_gain_match_used;
 			bool FAT_gain_match_done;
 			int file_pwd, file_end;
@@ -173,6 +234,7 @@ using namespace std;
 
 			void load_PrcID_File();
 			void get_interest_arrays();
+
 
 			int count;
 			int called[2];

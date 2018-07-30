@@ -47,6 +47,7 @@ public:
 
 	virtual void write() = 0;
 	
+	//virtual bool do_gain_matching() = 0;
 	virtual void set_Gain_Match_Filename(std::string) = 0;
 };
 

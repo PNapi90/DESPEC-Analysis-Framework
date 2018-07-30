@@ -1,0 +1,7 @@
+# Window Conditon for Scintillator ToFs
+# Low Limit           High Limit
+    2.1 		-90
+    2.1  		 90
+    2.5  		 90 
+    2.5 		-90
+    2.1 		-90

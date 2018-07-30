@@ -16,15 +16,15 @@ Raw_Event::~Raw_Event(){}
 
 //---------------------------------------------------------------
 
-/* ################################################################# 
+// ################################################################# 
 
 
 void Raw_Event::set_DATA_MUSIC(Float_t* FRS_dE,Float_t* FRS_dE_cor){
     
     for(int i; i<3; ++i){
 	
-	de[i] = FRS_dE[i];
-	de_cor[i] = FRS_dE_cor[i];
+	dE[i] = FRS_dE[i];
+	dE_cor[i] = FRS_dE_cor[i];
 	
     }	    
 
@@ -52,7 +52,7 @@ void Raw_Event::set_DATA_SCI_ToF(Float_t FRS_sci_tofll2,Float_t FRS_sci_tofll3,F
     sci_tof3   = FRS_sci_tof3;
     
 }
-void Raw_Event::set_DATA_ID_2_4(Float_tID_x2,Float_tID_y2,Float_tID_a2,Float_tID_b2,Float_tID_x4,Float_tID_y4,Float_tID_a4,Float_tID_b4){
+void Raw_Event::set_DATA_ID_2_4(Float_t FRS_ID_x2,Float_t FRS_ID_y2,Float_t FRS_ID_a2,Float_t FRS_ID_b2,Float_t FRS_ID_x4,Float_t FRS_ID_y4,Float_t FRS_ID_a4,Float_t FRS_ID_b4){
     
     ID_x2 = FRS_ID_x2;
     ID_y2 = FRS_ID_y2;
@@ -64,7 +64,7 @@ void Raw_Event::set_DATA_ID_2_4(Float_tID_x2,Float_tID_y2,Float_tID_a2,Float_tID
     ID_b4 = FRS_ID_b4;
     
 }
-void Raw_Event::set_DATA_ID_Beta_Rho(Float_t* FRS_ID_brho,Float_t* FRS_ID_rho,Float_t FRS_beta,Float_t FRS_beta,Float_t FRS_gamma){
+void Raw_Event::set_DATA_ID_Beta_Rho(Float_t* FRS_ID_brho,Float_t* FRS_ID_rho,Float_t FRS_beta,Float_t FRS_beta3,Float_t FRS_gamma){
     
     for(int i; i<2; ++i){
 	
@@ -95,8 +95,9 @@ void Raw_Event::set_DATA_ID_Timestamp(Float_t FRS_timestamp,Float_t FRS_ts,Float
     
 }
 
-################################################################# */
+// #################################################################
 
+<<<<<<< HEAD
 
 int Raw_Event::get_Event_type(){
     return Event_Type;
@@ -106,6 +107,49 @@ int Raw_Event::get_Event_type(){
 
 void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,double* Qs_Raw,double* Ql,double* Qs,double* TDC,ULong64_t* QDC_c,ULong64_t* QDC_f,int* det_ids_QDC,int* det_ids_TDC){
 	this->FAT_FIRED = FAT_FIRED;
+=======
+void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
+								double* Ql_Raw,double* Qs_Raw,
+								double* Ql,
+								ULong64_t* TDC, double* TDC_ns,
+								ULong64_t* QDC_c, double* QDC_f,
+								int* det_ids_QDC,int* det_ids_TDC){
+	
+	
+	this->FAT_QDCs_FIRED = QDC_FIRED;
+	this->FAT_TDCs_FIRED = TDC_FIRED;
+	int dets_fired = 0;
+	for (int i=0; i<QDC_FIRED; i++) {
+		this->FAT_QDC_id[i] = det_ids_QDC[i];
+		this->FAT_QLong[i]  = Ql[i];
+		this->FAT_QLong_Raw[i]  = Ql_Raw[i];
+		this->FAT_QShort_Raw[i] = Qs_Raw[i];
+		this->FAT_QDC_t_coarse[i] = QDC_c[i];
+		this->FAT_QDC_t_fine[i] = QDC_f[i];
+		for (int j=0; j<TDC_FIRED; j++) {
+			if (det_ids_QDC[i] == det_ids_TDC[j]) {
+				this->FAT_id[dets_fired] = det_ids_QDC[i];
+				this->FAT_E[dets_fired] = Ql[i];
+				this->FAT_ratio[dets_fired] = (double) Qs_Raw[i]/Ql_Raw[i];
+				this->FAT_t[dets_fired] = TDC_ns[i];
+				this->FAT_t_qdc[dets_fired] = QDC_c[i];
+				dets_fired++;
+			}
+		}
+	}
+	this->FAT_DET_FIRED = dets_fired;
+	
+	for (int i=0; i<TDC_FIRED; i++) {
+		this->FAT_TDC_id[i]        = det_ids_TDC[i];
+		this->FAT_TDC_timestamp[i] = TDC[i];
+	}
+
+	
+	
+	
+	
+	/*this->FAT_FIRED = FAT_FIRED;
+>>>>>>> 97080b7adad0ce118b0cd5caf551fb5c49caa8fe
 	this->TDC_FIRED = TDC_FIRED;
 
 	int position = -5;
@@ -168,8 +212,12 @@ void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,doubl
 		cout << endl;
 
 	}
+<<<<<<< HEAD
 
     Event_Type = 3;
+=======
+	*/
+>>>>>>> 97080b7adad0ce118b0cd5caf551fb5c49caa8fe
 }
 
 //---------------------------------------------------------------
@@ -237,54 +285,54 @@ void Raw_Event::set_DATA_GALILEO(int GAL_FIRED,ULong64_t* sum_time,int* pileup,i
 }
 //TEMPORARY GETTERS FOR FRS, FATIMA, PLASTIC, and GALILEO
 
-/* #############################################################
+// #############################################################
 
 // FRS
 
-Float_t get_FRS_dE(int i){return dE[i];}
-Float_t get_FRS_dE_corr(int i){return dE_corr[i];}
+Float_t Raw_Event::get_FRS_dE(int i){return dE[i];}
+Float_t Raw_Event::get_FRS_dE_corr(int i){return dE_cor[i];}
 
-Float_t get_FRS_sci_l(int i){return sci_l[i];}
-Float_t get_FRS_sci_r(int i){return sci_r[i];}
-Float_t get_FRS_sci_e(int i){return sci_e[i];}
-Float_t get_FRS_sci_tx(int i){return sci_tx[i];}
-Float_t get_FRS_sci_x(int i){return sci_x[i];}
+Float_t Raw_Event::get_FRS_sci_l(int i){return sci_l[i];}
+Float_t Raw_Event::get_FRS_sci_r(int i){return sci_r[i];}
+Float_t Raw_Event::get_FRS_sci_e(int i){return sci_e[i];}
+Float_t Raw_Event::get_FRS_sci_tx(int i){return sci_tx[i];}
+Float_t Raw_Event::get_FRS_sci_x(int i){return sci_x[i];}
 
-Float_t get_FRS_tofll2(){return tofll2;}
-Float_t get_FRS_tofll3(){return tofll3;}
-Float_t get_FRS_tof2(){return tof2;}
-Float_t get_FRS_tofrr2(){return tofrr2;}
-Float_t get_FRS_tofrr3(){return tofrr3;}
-Float_t get_FRS_tof3(){return tof3;}
+Float_t Raw_Event::get_FRS_tofll2(){return sci_tofll2;}
+Float_t Raw_Event::get_FRS_tofll3(){return sci_tofll3;}
+Float_t Raw_Event::get_FRS_tof2(){return sci_tof2;}
+Float_t Raw_Event::get_FRS_tofrr2(){return sci_tofrr2;}
+Float_t Raw_Event::get_FRS_tofrr3(){return sci_tofrr3;}
+Float_t Raw_Event::get_FRS_tof3(){return sci_tof3;}
 
-Float_t get_FRS_x2(){return x2;}
-Float_t get_FRS_y2(){return y2;}
-Float_t get_FRS_a2(){return a2;}
-Float_t get_FRS_b2(){return b2;}
+Float_t Raw_Event::get_FRS_x2(){return ID_x2;}
+Float_t Raw_Event::get_FRS_y2(){return ID_y2;}
+Float_t Raw_Event::get_FRS_a2(){return ID_a2;}
+Float_t Raw_Event::get_FRS_b2(){return ID_b2;}
 
-Float_t get_FRS_x4(){return x4;}
-Float_t get_FRS_y4(){return y4;}
-Float_t get_FRS_a4(){return a4;}
-Float_t get_FRS_b4(){return b4;}
+Float_t Raw_Event::get_FRS_x4(){return ID_x4;}
+Float_t Raw_Event::get_FRS_y4(){return ID_y4;}
+Float_t Raw_Event::get_FRS_a4(){return ID_a4;}
+Float_t Raw_Event::get_FRS_b4(){return ID_b4;}
 
-Float_t get_FRS_brho(int i){return brho[i];}
-Float_t get_FRS_rho(int i){return rho[i];}
+Float_t Raw_Event::get_FRS_brho(int i){return ID_brho[i];}
+Float_t Raw_Event::get_FRS_rho(int i){return ID_rho[i];}
 
-Float_t get_FRS_beta(){return beta;}
-Float_t get_FRS_beta3(){return beta3;}
-Float_t get_FRS_gamma(){return gamma;}
+Float_t Raw_Event::get_FRS_beta(){return beta;}
+Float_t Raw_Event::get_FRS_beta3(){return beta3;}
+Float_t Raw_Event::get_FRS_gamma(){return gamma;}
 
-Float_t get_AoQ(){return AoQ;}
-Float_t get_AoQ_corr(){return AoQ_corr;}
-Float_t get_z(){return z;}
-Float_t get_z2(){return z2;}
-Float_t get_z3(){return z3;}
+Float_t Raw_Event::get_FRS_AoQ(){return AoQ;}
+Float_t Raw_Event::get_FRS_AoQ_corr(){return AoQ_corr;}
+Float_t Raw_Event::get_FRS_z(){return z;}
+Float_t Raw_Event::get_FRS_z2(){return z2;}
+Float_t Raw_Event::get_FRS_z3(){return z3;}
 
-Float_t get_timestamp(){return timestamp;}
-Float_t get_ts(){return ts;}
-Float_t get_ts2(){return ts2;}
+Float_t Raw_Event::get_FRS_timestamp(){return timestamp;}
+Float_t Raw_Event::get_FRS_ts(){return ts;}
+Float_t Raw_Event::get_FRS_ts2(){return ts2;}
 
-####################################################### */
+// ####################################################### 
 
 //White Rabbit
 
@@ -303,61 +351,35 @@ ULong64_t Raw_Event::get_WR(){return WR;}
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_FATIMA_am_Fired(){return FAT_FIRED;}
+      int Raw_Event::get_FAT_det_fired(){return FAT_DET_FIRED;}
+	  int Raw_Event::get_FAT_id(int i){return FAT_id[i];}
+   double Raw_Event::get_FAT_E(int i){return FAT_E[i];}
+   double Raw_Event::get_FAT_ratio(int i){return FAT_ratio[i];}
+   double Raw_Event::get_FAT_t(int i){return FAT_t[i];}
+   double Raw_Event::get_FAT_t_qdc(int i){return FAT_t_qdc[i];}
+
+      int Raw_Event::get_FAT_QDCs_fired(){return FAT_QDCs_FIRED;}
+      int Raw_Event::get_FAT_QDC_id(int i){return FAT_QDC_id[i];}
+   double Raw_Event::get_FAT_QLong(int i){return FAT_QLong[i];}
+   double Raw_Event::get_FAT_QShort_Raw(int i){return FAT_QShort_Raw[i];}
+   double Raw_Event::get_FAT_QLong_Raw(int i){return FAT_QLong_Raw[i];}
+ULong64_t Raw_Event::get_FAT_QDC_t_Coarse(int i){return FAT_QDC_t_coarse[i];}
+   double Raw_Event::get_FAT_QDC_t_Fine(int i){return FAT_QDC_t_fine[i];}
+
+      int Raw_Event::get_FAT_TDCs_fired(){return FAT_TDCs_FIRED;}
+      int Raw_Event::get_FAT_TDC_id(int i){return FAT_TDC_id[i];}
+   double Raw_Event::get_FAT_TDC_timestamp(int i){return FAT_TDC_timestamp[i];}
+
 
 //---------------------------------------------------------------
 
-bool Raw_Event::CH_51_FIRED(){return ch51;};
 
 //---------------------------------------------------------------
 
-double Raw_Event::get_FATIMA_Time_Diff(){return time_difference;}
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_FATIMA_am_Fired_TDC(){return TDC_FIRED;}
 
-//---------------------------------------------------------------
-
-bool Raw_Event::get_FATIMA_QDC_TDC_LINKED(int i){return used_for_QDC[i];}
-
-//---------------------------------------------------------------
-
-double Raw_Event::get_FATIMA_E(int i){return E[i];}
-//---------------------------------------------------------------
-
-double Raw_Event::get_FATIMA_QShort(int i){return E[i];}
-
-//---------------------------------------------------------------
-
-double Raw_Event::get_FATIMA_E_Raw(int i){return E_Raw[i];}
-//---------------------------------------------------------------
-
-double Raw_Event::get_FATIMA_QShort_Raw(int i){return QShort_Raw[i];}
-
-//---------------------------------------------------------------
-
-double Raw_Event::get_FATIMA_TDC_T(int i){return TDC_timestamp[i];}
-
-//---------------------------------------------------------------
-
-ULong64_t Raw_Event::get_FATIMA_QDC_T_Coarse(int i){return QDC_t_coarse[i];}
-
-//---------------------------------------------------------------
-
-ULong64_t Raw_Event::get_FATIMA_QDC_T_Fine(int i){return QDC_t_fine[i];}
-
-//---------------------------------------------------------------
-
-int Raw_Event::get_FATIMA_det_id(int i){return Det_Nums[i];}
-
-//---------------------------------------------------------------
-
-int Raw_Event::get_FATIMA_Both(int i){return FAT_Both[i];}
-	
-//---------------------------------------------------------------
-
-int Raw_Event::get_am_FATIMA_Both(){return BOTH_FIRED;}
 	
 //---------------------------------------------------------------
 
