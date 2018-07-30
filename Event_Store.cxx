@@ -93,7 +93,7 @@ void Event_Store::purge(int type,int i){
         
         Event[type][i] = nullptr;
         Event_WR[type][i] = 0;
-        Event_position[type][i] = -9999;
+        Event_position[type][i] = i;
 
         //shift last event in list to free memory slot
         //nullify pointer of last event
