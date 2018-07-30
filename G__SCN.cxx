@@ -37,25 +37,24 @@
 namespace std {} using namespace std;
 
 // Header files passed as explicit arguments
+#include "./Events.h"
 #include "./AIDA_Headers.h"
 #include "./TSCNParameter.h"
 #include "./FATIMA_Gain_Match.h"
 #include "./PLASTIC_Data_Stream.h"
 #include "./WR_Structure.h"
-#include "./Events.h"
 #include "./FATIMA_Time_Calibration.h"
 #include "./First_Test.h"
-#include "./GALILEO_Energy_Calibration.h"
 #include "./PLASTIC_Calibrator.h"
 #include "./Raw_Event.h"
-#include "./FATIMA_Detector_System.h"
 #include "./TSCNCalProc.h"
 #include "./TXRSParameter.h"
+#include "./QDC_751.h"
 #include "./Match.h"
 #include "./TAMEX.h"
-#include "./BS_Detector_System.h"
-#include "./FATIMA_Event.h"
+#include "./GALILEO_Time_Calibration.h"
 #include "./TSCNCalEvent.h"
+#include "./FATIMA_Event.h"
 #include "./TDC_1290.h"
 #include "./FEBEX.h"
 #include "./Raw_Event_Storage.h"
@@ -63,15 +62,16 @@ namespace std {} using namespace std;
 #include "./TSCNAnlEvent.h"
 #include "./FATIMA_Energy_Calibration.h"
 #include "./Event_Store.h"
-#include "./Time_EventBuilder.h"
 #include "./PLASTIC_Detector_System.h"
-#include "./QDC_751.h"
+#include "./FATIMA_Detector_System.h"
 #include "./TSCNAnlProc.h"
-#include "./GALILEO_Time_Calibration.h"
+#include "./GALILEO_Energy_Calibration.h"
 #include "./AIDA_Detector_System.h"
 #include "./PLASTIC_Event.h"
+#include "./BS_Detector_System.h"
 #include "./White_Rabbit.h"
 #include "./TSCNAnalysis.h"
+#include "./Time_EventBuilder.h"
 #include "./GALILEO_Detector_System_TEST.h"
 
 // Header files passed via #pragma extra_include
@@ -2131,25 +2131,24 @@ namespace ROOT {
 namespace {
   void TriggerDictionaryInitialization_libGo4UserAnalysis_Impl() {
     static const char* headers[] = {
+"./Events.h",
 "./AIDA_Headers.h",
 "./TSCNParameter.h",
 "./FATIMA_Gain_Match.h",
 "./PLASTIC_Data_Stream.h",
 "./WR_Structure.h",
-"./Events.h",
 "./FATIMA_Time_Calibration.h",
 "./First_Test.h",
-"./GALILEO_Energy_Calibration.h",
 "./PLASTIC_Calibrator.h",
 "./Raw_Event.h",
-"./FATIMA_Detector_System.h",
 "./TSCNCalProc.h",
 "./TXRSParameter.h",
+"./QDC_751.h",
 "./Match.h",
 "./TAMEX.h",
-"./BS_Detector_System.h",
-"./FATIMA_Event.h",
+"./GALILEO_Time_Calibration.h",
 "./TSCNCalEvent.h",
+"./FATIMA_Event.h",
 "./TDC_1290.h",
 "./FEBEX.h",
 "./Raw_Event_Storage.h",
@@ -2157,15 +2156,16 @@ namespace {
 "./TSCNAnlEvent.h",
 "./FATIMA_Energy_Calibration.h",
 "./Event_Store.h",
-"./Time_EventBuilder.h",
 "./PLASTIC_Detector_System.h",
-"./QDC_751.h",
+"./FATIMA_Detector_System.h",
 "./TSCNAnlProc.h",
-"./GALILEO_Time_Calibration.h",
+"./GALILEO_Energy_Calibration.h",
 "./AIDA_Detector_System.h",
 "./PLASTIC_Event.h",
+"./BS_Detector_System.h",
 "./White_Rabbit.h",
 "./TSCNAnalysis.h",
+"./Time_EventBuilder.h",
 "./GALILEO_Detector_System_TEST.h",
 0
     };
@@ -2212,25 +2212,24 @@ class __attribute__((annotate("$clingAutoload$./TSCNAnalysis.h")))  TSCNAnalysis
 #endif
 
 #define _BACKWARD_BACKWARD_WARNING_H
+#include "./Events.h"
 #include "./AIDA_Headers.h"
 #include "./TSCNParameter.h"
 #include "./FATIMA_Gain_Match.h"
 #include "./PLASTIC_Data_Stream.h"
 #include "./WR_Structure.h"
-#include "./Events.h"
 #include "./FATIMA_Time_Calibration.h"
 #include "./First_Test.h"
-#include "./GALILEO_Energy_Calibration.h"
 #include "./PLASTIC_Calibrator.h"
 #include "./Raw_Event.h"
-#include "./FATIMA_Detector_System.h"
 #include "./TSCNCalProc.h"
 #include "./TXRSParameter.h"
+#include "./QDC_751.h"
 #include "./Match.h"
 #include "./TAMEX.h"
-#include "./BS_Detector_System.h"
-#include "./FATIMA_Event.h"
+#include "./GALILEO_Time_Calibration.h"
 #include "./TSCNCalEvent.h"
+#include "./FATIMA_Event.h"
 #include "./TDC_1290.h"
 #include "./FEBEX.h"
 #include "./Raw_Event_Storage.h"
@@ -2238,15 +2237,16 @@ class __attribute__((annotate("$clingAutoload$./TSCNAnalysis.h")))  TSCNAnalysis
 #include "./TSCNAnlEvent.h"
 #include "./FATIMA_Energy_Calibration.h"
 #include "./Event_Store.h"
-#include "./Time_EventBuilder.h"
 #include "./PLASTIC_Detector_System.h"
-#include "./QDC_751.h"
+#include "./FATIMA_Detector_System.h"
 #include "./TSCNAnlProc.h"
-#include "./GALILEO_Time_Calibration.h"
+#include "./GALILEO_Energy_Calibration.h"
 #include "./AIDA_Detector_System.h"
 #include "./PLASTIC_Event.h"
+#include "./BS_Detector_System.h"
 #include "./White_Rabbit.h"
 #include "./TSCNAnalysis.h"
+#include "./Time_EventBuilder.h"
 #include "./GALILEO_Detector_System_TEST.h"
 
 #undef  _BACKWARD_BACKWARD_WARNING_H
