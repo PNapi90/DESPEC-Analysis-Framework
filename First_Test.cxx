@@ -69,37 +69,55 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	// ######################################################### //
 	
-	hsci_tofll2 = MakeTH1('D',"hsci_tofll2","hsci_tofll2",1500,0.,62000.);
-	hsci_tofll3 = MakeTH1('D',"hsci_tofll3","hsci_tofll3",1500,0.,62000.);
-	hsci_tof2 = MakeTH1('D',"hsci_tof2","hsci_tof2",1000,0.,62000.);
-	hsci_tofrr2 = MakeTH1('D',"hsci_tofrr2","hsci_tofrr2",1500,0.,62000.);
-	hsci_tofrr3 = MakeTH1('D',"hsci_tofrr3","hsci_tofrr3",1500,0.,62000.);
-	hsci_tof3 = MakeTH1('D',"hsci_tof3","hsci_tof3",1000,0.,62000.);
+	hsci_tofll2 = MakeTH1('D',"FRS/hsci_tofll2","hsci_tofll2",1500,0.,62000.);
+	hsci_tofll3 = MakeTH1('D',"FRS/hsci_tofll3","hsci_tofll3",1500,0.,62000.);
+	hsci_tof2 = MakeTH1('D',"FRS/hsci_tof2","hsci_tof2",1000,0.,62000.);
+	hsci_tofrr2 = MakeTH1('D',"FRS/hsci_tofrr2","hsci_tofrr2",1500,0.,62000.);
+	hsci_tofrr3 = MakeTH1('D',"FRS/hsci_tofrr3","hsci_tofrr3",1500,0.,62000.);
+	hsci_tof3 = MakeTH1('D',"FRS/hsci_tof3","hsci_tof3",1000,0.,62000.);
 	
-	/*hID_x2 = MakeTH1('D',"ID_x2","ID_x2",3000,0,300);
-	hID_y2 = MakeTH1('D',"ID_y2","ID_y2",3000,0,300);
-	hID_a2 = MakeTH1('D',"ID_a2","ID_a2",3000,0,300);
-	hID_b2 = MakeTH1('D',"ID_b2","ID_b2",3000,0,300);
+	hsci_dt_21l_21r = MakeTH1('D',"FRS/hsci_dt_21l_21r","hsci_dt_21l_21r",5001,0,5000);
+	hsci_dt_41l_41r = MakeTH1('D',"FRS/hsci_dt_41l_41r","hsci_dt_41l_41r",5001,0,5000);
+	hsci_dt_42l_42r = MakeTH1('D',"FRS/hsci_dt_42l_42r","hsci_dt_42l_42r",5001,0,5000);
+	hsci_dt_43l_43r = MakeTH1('D',"FRS/hsci_dt_43l_43r","hsci_dt_42l_43r",5001,0,5000);
+	hsci_dt_81l_81r = MakeTH1('D',"FRS/hsci_dt_81l_81r","hsci_dt_81l_81r",5001,0,5000);
 	
-	hID_x4 = MakeTH1('D',"ID_x4","ID_x4",3000,0,300);
-	hID_y4 = MakeTH1('D',"ID_y4","ID_y4",3000,0,300);
-	hID_a4 = MakeTH1('D',"ID_a4","ID_a4",3000,0,300);
-	hID_b4 = MakeTH1('D',"ID_b4","ID_b4",3000,0,300);*/
 	
-	hbeta = MakeTH1('D',"beta","beta",100,0.,1.);
-	hbeta3 = MakeTH1('D',"beta3","beta3",100,0.,1.);
-	hgamma = MakeTH1('D',"gamma","gamma",100,0.,1.);
+	hsci_dt_21l_41l = MakeTH1('D',"FRS/hsci_dt_21l_41l","hsci_dt_21l_41l",5001,0,5000);
+	hsci_dt_21r_41r = MakeTH1('D',"FRS/hsci_dt_21r_41r","hsci_dt_21r_41r",5001,0,5000);
 	
-	hAoQ = MakeTH1('D',"AoQ","AoQ",200,1.4,3.0); // 200,1.4,3.0
-	hAoQ_corr = MakeTH1('D',"AoQ_corr","AoQ_corr",200,1.4,3.0); // 200,1.4,3.0
+	hsci_dt_21l_42l = MakeTH1('D',"FRS/hsci_dt_21l_42l","hsci_dt_21l_42l",5001,0,5000);
+	hsci_dt_21r_42r = MakeTH1('D',"FRS/hsci_dt_21r_42r","hsci_dt_21r_42r",5001,0,5000);
+
+	hsci_dt_21l_81l = MakeTH1('D',"FRS/hsci_dt_21l_81l","hsci_dt_21l_81l",5001,0,5000);
+	hsci_dt_21r_81r = MakeTH1('D',"FRS/hsci_dt_21r_81r","hsci_dt_21r_81r",5001,0,5000);
+
 	
-	hz = MakeTH1('D',"z","z",100,0.,93.);
-	hz2 = MakeTH1('D',"z2","z2",100,0.,93.);
-	hz3 = MakeTH1('D',"z3","z3",100,10.,93.);
 	
-	htimestamp = MakeTH1('D',"timestamp","timestamp",30,0.,300.);
-	hts = MakeTH1('D',"ts","ts",30,0.,300.);
-	hts2 = MakeTH1('D',"ts2","ts2",30,0.,300.);
+	/*hID_x2 = MakeTH1('D',"ID_x2","ID_x2",3000,0,5000);
+	hID_y2 = MakeTH1('D',"ID_y2","ID_y2",3000,0,5000);
+	hID_a2 = MakeTH1('D',"ID_a2","ID_a2",3000,0,5000);
+	hID_b2 = MakeTH1('D',"ID_b2","ID_b2",3000,0,5000);
+	
+	hID_x4 = MakeTH1('D',"ID_x4","ID_x4",3000,0,5000);
+	hID_y4 = MakeTH1('D',"ID_y4","ID_y4",3000,0,5000);
+	hID_a4 = MakeTH1('D',"ID_a4","ID_a4",3000,0,5000);
+	hID_b4 = MakeTH1('D',"ID_b4","ID_b4",3000,0,5000);*/
+	
+	hbeta = MakeTH1('D',"FRS/beta","beta",100,0.,1.);
+	hbeta3 = MakeTH1('D',"FRS/beta3","beta3",100,0.,1.);
+	hgamma = MakeTH1('D',"FRS/gamma","gamma",100,0.,1.);
+	
+	hAoQ = MakeTH1('D',"FRS/AoQ","AoQ",200,1.4,3.0); // 200,1.4,3.0
+	hAoQ_corr = MakeTH1('D',"FRS/AoQ_corr","AoQ_corr",200,1.4,3.0); // 200,1.4,3.0
+	
+	hz = MakeTH1('D',"FRS/z","z",100,0.,93.);
+	hz2 = MakeTH1('D',"FRS/z2","z2",100,0.,93.);
+	hz3 = MakeTH1('D',"FRS/z3","z3",100,10.,93.);
+	
+	htimestamp = MakeTH1('D',"FRS/timestamp","timestamp",30,0.,300.);
+	hts = MakeTH1('D',"FRS/ts","ts",30,0.,300.);
+	hts2 = MakeTH1('D',"FRS/ts2","ts2",30,0.,300.);
 	
 	
 	
@@ -228,15 +246,24 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	// GALILEO Histograms //
 	
-	//GAL_Evt_Time = MakeTH1('D',"GALILEO_E","GALILEO_E",20001,0,800000);
-	GAL_Pileup = MakeTH1('I',"GALILEO_Pileup","GALILEO Pileup",16,0,16);
-	GAL_Hit_Pat = MakeTH1('I',"GALILEO_Hit_Pat","GALILEO Hit Pattern",16,0,16);
-	GAL_Chan_Time_Diff = MakeTH1('D',"GALILEO_Chan_Time_DIff","GALILEO Channel Time Difference",21,-100,100);
-	GAL_Chan_E_Mat = MakeTH2('D',"GALILEO_E_Mat","GALILEO Channel Energy Matrix",10001,0,800000,10001,0,800000);
+	GAL_Pileup = MakeTH1('I',"GALILEO/GALILEO_Pileup","GALILEO Pileup",16,0,16);
+	GAL_Hit_Pat = MakeTH1('I',"GALILEO/GALILEO_Hit_Pat","GALILEO Hit Pattern",16,0,16);
+	GAL_Chan_E_Mat = MakeTH2('D',"GALILEO/GALILEO_E_Mat","GALILEO Channel Energy Matrix",10001,0,800000,10001,0,800000);
 
-	for(int i=0; i < 5; ++i){
-	    GAL_Chan_E[i] = MakeTH1('D',Form("GALILEO_Energy_Spectra/GALILEO_E%2d",i),Form("GALILEO Channel Energy Channel %2d",i),80001,0,800000);
-	    GAL_Time_Diff_vs_Energy[i] = MakeTH2('D',Form("GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",i),Form("GALILEO Time Difference Vs Channel Energy Channel %2d",i),21,-100,100,10001,0,800000);
+	GAL_Chan_E = new TH1*[32];
+	GAL_Time_Diff_vs_Energy = new TH2*[32];
+	GAL_Chan_Time_Diff = new TH1*[32];
+
+	for(int i=0; i < 32; ++i){
+	    
+	    GAL_Chan_E[i] = NULL;
+	    GAL_Time_Diff_vs_Energy[i] = NULL;
+	    GAL_Chan_Time_Diff[i] = NULL;
+
+	   /* GAL_Chan_E[i] = MakeTH1('D',Form("GALILEO/GALILEO_Energy_Spectra/GALILEO_E%2d",i),Form("GALILEO Channel Energy Channel %2d",i),80001,0,800000);
+	    GAL_Time_Diff_vs_Energy[i] = MakeTH2('D',Form("GALILEO/GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",i),Form("GALILEO Time Difference Vs Channel Energy Channel %2d",i),21,-100,100,10001,0,800000);
+	    GAL_Chan_Time_Diff = MakeTH1('D',"GALILEO/GALILEO_Chan_Time_DIff","GALILEO Channel Time Difference",21,-100,100);
+	    */
 	}
 
 
@@ -295,13 +322,10 @@ TGo4EventProcessor(name) // Histograms defined here //
 	//by the value in FATIMA_Detector_System constructor. Former
 	//seems to make more sense.
 	//FAT_gain_match_used = Detector_Systems[3]->do_gain_matching();
-	FAT_gain_match_used = true;
+	FAT_gain_match_used = false;
 	//Having an initialisation (below) and a user setting (above)
 	//like this is probably bad.
 	FAT_gain_match_done = false;
-	
-	
-	cout<<"Yo What's up?"<<endl;
 	
 
 }
@@ -413,7 +437,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	bool used[5];
 	for(int i = 0;i < 5;++i) used[i] = false;
 	
-	bool WHITE_RABBIT_USED = false;
+	bool WHITE_RABBIT_USED = true;
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -460,6 +484,21 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		    Float_t ID_y4 = RAW->get_FRS_y4();
 		    Float_t ID_a4 = RAW->get_FRS_a4();
 		    Float_t ID_b4 = RAW->get_FRS_b4();
+		    
+		    Int_t sci_dt_21l_21r = RAW->get_FRS_dt_21l_21r();
+		    Int_t sci_dt_41l_41r = RAW->get_FRS_dt_41l_41r();
+		    Int_t sci_dt_42l_42r = RAW->get_FRS_dt_42l_42r();
+		    Int_t sci_dt_43l_43r = RAW->get_FRS_dt_43l_43r();
+		    Int_t sci_dt_81l_81r = RAW->get_FRS_dt_81l_81r();
+		    
+		    Int_t sci_dt_21l_41l = RAW->get_FRS_dt_21l_41l();
+		    Int_t sci_dt_21r_41r = RAW->get_FRS_dt_21r_41r();
+		    
+		    Int_t sci_dt_21l_42l = RAW->get_FRS_dt_21l_42l();
+		    Int_t sci_dt_21r_42r = RAW->get_FRS_dt_21r_42r();
+	    
+		    Int_t sci_dt_21l_81l = RAW->get_FRS_dt_21l_81l();
+		    Int_t sci_dt_21r_81r = RAW->get_FRS_dt_21r_81r();
 		    
 		    /*Float_t ID_brho = RAW->get_FRS_brho(int i);
 		    Float_t ID_rho = RAW->get_FRS_rho(int i);*/
@@ -529,6 +568,21 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		    if(ID_y4) hID_y4->Fill(ID_y4);
 		    if(ID_a4) hID_a4->Fill(ID_a4);
 		    if(ID_b4) hID_b4->Fill(ID_b4);*/
+		    
+		    if(sci_dt_21l_21r) hsci_dt_21l_21r->Fill(sci_dt_21l_21r);
+		    if(sci_dt_41l_41r) hsci_dt_41l_41r->Fill(sci_dt_41l_41r);
+		    if(sci_dt_42l_42r) hsci_dt_42l_42r->Fill(sci_dt_42l_42r);
+		    if(sci_dt_43l_43r) hsci_dt_43l_43r->Fill(sci_dt_43l_43r);
+		    if(sci_dt_81l_81r) hsci_dt_81l_81r->Fill(sci_dt_81l_81r);
+		
+		    if(sci_dt_21l_41l) hsci_dt_21l_41l->Fill(sci_dt_21l_41l);
+		    if(sci_dt_21r_41r) hsci_dt_21r_41r->Fill(sci_dt_21r_41r);
+		    
+		    if(sci_dt_21l_42l) hsci_dt_21l_42l->Fill(sci_dt_21l_42l);
+		    if(sci_dt_21r_42r) hsci_dt_21r_42r->Fill(sci_dt_21r_42r);
+	
+		    if(sci_dt_21l_81l) hsci_dt_21l_81l->Fill(sci_dt_21l_81l);
+		    if(sci_dt_21r_81r) hsci_dt_21r_81r->Fill(sci_dt_21r_81r);
 		    
 		    
 		    if(beta) hbeta->Fill(beta);
@@ -785,29 +839,40 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		    am_GALILEO_hits = RAW->get_GALILEO_am_Fired();
 		    		    		    
 		    
-		    double tmpGAL[2];
+		    double tmpGAL[32];
 
 		    for(int i = 0;i < am_GALILEO_hits;++i){
 			//e,g, sum spectrum
 						
 			tmpGAL[i] = RAW->get_GALILEO_Chan_E(i);
 			
-			GAL_Chan_E[i]->Fill(tmpGAL[i]);
+			if(tmpGAL[i] > 0){
+			     if(!GAL_Chan_E[i]) GAL_Chan_E[i] = MakeTH1('D',Form("GALILEO/GALILEO_Energy_Spectra/GALILEO_E%2d",i),Form("GALILEO Channel Energy Channel %2d",i),80001,0,800000);
+			
+			    GAL_Chan_E[i]->Fill(tmpGAL[i]);
+			}
+			
 			GAL_Pileup->Fill(RAW->get_GALILEO_Pileup(i));
 			GAL_Hit_Pat->Fill(RAW->get_GALILEO_Hit_Pattern(i));
 			
 			for(int j = 0;j < am_GALILEO_hits;++j){
 			    
-			    if(i != j){
+			    if(i != j && i == 0){
 				
+				tmpGAL[j] = RAW->get_GALILEO_Chan_E(j);
+
 				double time_1 = RAW->get_GALILEO_Chan_T(i);
 				double time_2 = RAW->get_GALILEO_Chan_T(j);
-				
+
 				double GAL_chan_time_diff = time_1 - time_2;
 
-				GAL_Chan_Time_Diff->Fill(GAL_chan_time_diff);
+				if(!GAL_Chan_Time_Diff[j]) GAL_Chan_Time_Diff[j] = MakeTH1('D',Form("GALILEO/GALILEO_Chan_Time_DIff%2d",j),Form("GALILEO Channel Time Difference",j),21,-100,100);
+				
+				GAL_Chan_Time_Diff[j]->Fill(GAL_chan_time_diff);
 								
-				GAL_Time_Diff_vs_Energy[i]->Fill(GAL_chan_time_diff,tmpGAL[i]);
+				if(!GAL_Time_Diff_vs_Energy[j]) GAL_Time_Diff_vs_Energy[j] = MakeTH2('D',Form("GALILEO/GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",j),Form("GALILEO Time Difference Vs Channel Energy Channel %2d",j),21,-100,100,10001,0,800000);
+				
+				GAL_Time_Diff_vs_Energy[j]->Fill(GAL_chan_time_diff,tmpGAL[j]);
 				
 			    }
 			    

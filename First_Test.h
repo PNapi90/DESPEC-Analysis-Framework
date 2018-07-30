@@ -93,6 +93,22 @@ using namespace std;
 			TH1* hID_a4;
 			TH1* hID_b4;
 			
+			TH1* hsci_dt_21l_21r;
+			TH1* hsci_dt_41l_41r;
+			TH1* hsci_dt_42l_42r;
+			TH1* hsci_dt_43l_43r;
+			TH1* hsci_dt_81l_81r;
+	
+			TH1* hsci_dt_21l_41l;
+			TH1* hsci_dt_21r_41r;
+	
+			TH1* hsci_dt_21l_42l;
+			TH1* hsci_dt_21r_42r;
+		
+			TH1* hsci_dt_21l_81l;
+			TH1* hsci_dt_21r_81r;
+			
+			
 			TH1* hbeta;
 			TH1* hbeta3;
 			TH1* hgamma;
@@ -169,10 +185,10 @@ using namespace std;
 			//TH1* GAL_Evt_Time;
 			TH1* GAL_Pileup;
 			TH1* GAL_Hit_Pat;
-			TH1* GAL_Chan_Time_Diff;
-			TH1* GAL_Chan_E[5];
+			TH1** GAL_Chan_Time_Diff;
+			TH1** GAL_Chan_E;
 			TH2* GAL_Chan_E_Mat;
-			TH2* GAL_Time_Diff_vs_Energy[5];
+			TH2** GAL_Time_Diff_vs_Energy;
 
 			
 

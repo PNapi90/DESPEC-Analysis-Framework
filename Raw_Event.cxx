@@ -40,6 +40,30 @@ void Raw_Event::set_DATA_SCI(Float_t* FRS_sci_l,Float_t* FRS_sci_r,Float_t* FRS_
     }
 
 }
+
+void Raw_Event::set_DATA_SCI_dT(Int_t FRS_dt_21l_21r, Int_t FRS_dt_41l_41r,
+				Int_t FRS_dt_21l_41l, Int_t FRS_dt_21r_41r,
+				Int_t FRS_dt_42l_42r, Int_t FRS_dt_43l_43r,
+				Int_t FRS_dt_21l_42l, Int_t FRS_dt_21r_42r,
+				Int_t FRS_dt_81l_81r, Int_t FRS_dt_21l_81l, Int_t FRS_dt_21r_81r){
+
+
+	dt_21l_21r = FRS_dt_21l_21r; 
+	dt_41l_41r = FRS_dt_41l_41r;
+	dt_21l_41l = FRS_dt_21l_41l;
+	dt_21r_41r = FRS_dt_21r_41r;
+	dt_42l_42r = FRS_dt_42l_42r;
+	dt_43l_43r = FRS_dt_43l_43r;
+	dt_21l_42l = FRS_dt_21l_42l;
+	dt_21r_42r = FRS_dt_21r_42r;
+	dt_81l_81r = FRS_dt_81l_81r;
+	dt_21l_81l = FRS_dt_21l_81l;
+	dt_21r_81r = FRS_dt_21r_81r;
+
+
+
+
+}
 void Raw_Event::set_DATA_SCI_ToF(Float_t FRS_sci_tofll2,Float_t FRS_sci_tofll3,Float_t FRS_sci_tof2,Float_t FRS_sci_tofrr2,Float_t FRS_sci_tofrr3,Float_t FRS_sci_tof3){
     
     sci_tofll2 = FRS_sci_tofll2;
@@ -274,6 +298,19 @@ Float_t Raw_Event::get_FRS_sci_r(int i){return sci_r[i];}
 Float_t Raw_Event::get_FRS_sci_e(int i){return sci_e[i];}
 Float_t Raw_Event::get_FRS_sci_tx(int i){return sci_tx[i];}
 Float_t Raw_Event::get_FRS_sci_x(int i){return sci_x[i];}
+
+
+Int_t Raw_Event::get_FRS_dt_21l_21r(){return dt_21l_21r;} 
+Int_t Raw_Event::get_FRS_dt_41l_41r(){return dt_41l_41r;}
+Int_t Raw_Event::get_FRS_dt_21l_41l(){return dt_21l_41l;}
+Int_t Raw_Event::get_FRS_dt_21r_41r(){return dt_21r_41r;}
+Int_t Raw_Event::get_FRS_dt_42l_42r(){return dt_42l_42r;}
+Int_t Raw_Event::get_FRS_dt_43l_43r(){return dt_43l_43r;}
+Int_t Raw_Event::get_FRS_dt_21l_42l(){return dt_21l_42l;}
+Int_t Raw_Event::get_FRS_dt_21r_42r(){return dt_21r_42r;}
+Int_t Raw_Event::get_FRS_dt_81l_81r(){return dt_81l_81r;}
+Int_t Raw_Event::get_FRS_dt_21l_81l(){return dt_21l_81l;}
+Int_t Raw_Event::get_FRS_dt_21r_81r(){return dt_21r_81r;}
 
 Float_t Raw_Event::get_FRS_tofll2(){return sci_tofll2;}
 Float_t Raw_Event::get_FRS_tofll3(){return sci_tofll3;}

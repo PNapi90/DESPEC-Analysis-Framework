@@ -4475,6 +4475,8 @@ void BS_Detector_System::get_Event_data(Raw_Event* RAW){
 	    
     RAW->set_DATA_MUSIC(de, de_cor);
     RAW->set_DATA_SCI(sci_l, sci_r, sci_e, sci_tx, sci_x);
+    RAW->set_DATA_SCI_dT(dt_21l_21r, dt_41l_41r, dt_21l_41l, dt_21r_41r, dt_42l_42r, dt_43l_43r,
+			    dt_42l_21l, dt_42r_21r, dt_81l_81r, dt_21l_81l, dt_21r_81r);
     RAW->set_DATA_SCI_ToF(sci_tofll2, sci_tofll3, sci_tof2, sci_tofrr2, sci_tofrr3, sci_tof3);
     RAW->set_DATA_ID_2_4(id_x2, id_y2, id_a2, id_b2, id_x4, id_y4, id_a4, id_b4);
     RAW->set_DATA_ID_Beta_Rho(id_brho, id_rho, id_beta, id_beta3, id_gamma);

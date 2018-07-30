@@ -10,6 +10,7 @@ typedef unsigned long ULong;
 typedef unsigned int UInt;
 typedef unsigned long long ULong64_t;
 typedef float Float_t;
+typedef int Int_t;
 
 
 class Raw_Event{
@@ -32,7 +33,21 @@ private:
 	Float_t sci_e[12];  // set_DATA_SCI
 	Float_t sci_tx[12]; // set_DATA_SCI
 	Float_t sci_x[12];  // set_DATA_SCI
-	  
+	
+	
+	
+	Int_t dt_21l_21r; 
+	Int_t dt_41l_41r;
+	Int_t dt_21l_41l;
+	Int_t dt_21r_41r;
+	Int_t dt_42l_42r;
+	Int_t dt_43l_43r;
+	Int_t dt_21l_42l;
+	Int_t dt_21r_42r;
+	Int_t dt_81l_81r;
+	Int_t dt_21l_81l;
+	Int_t dt_21r_81r;
+ 
 	  
 	Float_t sci_tofll2; // set_DATA_SCI_ToF
 	Float_t sci_tofll3; // set_DATA_SCI_ToF
@@ -142,6 +157,7 @@ public:
 	// FRS STUFF //
 	void set_DATA_MUSIC(Float_t*,Float_t*);
 	void set_DATA_SCI(Float_t*,Float_t*,Float_t*,Float_t*,Float_t*);
+	void set_DATA_SCI_dT(Int_t, Int_t, Int_t, Int_t, Int_t, Int_t, Int_t, Int_t, Int_t, Int_t, Int_t);
 	void set_DATA_SCI_ToF(Float_t,Float_t,Float_t,Float_t,Float_t,Float_t);
 	void set_DATA_ID_2_4(Float_t,Float_t,Float_t,Float_t,Float_t,Float_t,Float_t,Float_t);
 	void set_DATA_ID_Beta_Rho(Float_t*,Float_t*,Float_t,Float_t,Float_t);
@@ -170,6 +186,18 @@ public:
 	Float_t get_FRS_sci_e(int);
 	Float_t get_FRS_sci_tx(int);
 	Float_t get_FRS_sci_x(int);
+	
+	Int_t get_FRS_dt_21l_21r();
+	Int_t get_FRS_dt_41l_41r();
+	Int_t get_FRS_dt_21l_41l();
+	Int_t get_FRS_dt_21r_41r();
+	Int_t get_FRS_dt_42l_42r();
+	Int_t get_FRS_dt_43l_43r();
+	Int_t get_FRS_dt_21l_42l();
+	Int_t get_FRS_dt_21r_42r();
+	Int_t get_FRS_dt_81l_81r();
+	Int_t get_FRS_dt_21l_81l();
+	Int_t get_FRS_dt_21r_81r();
 	
 	Float_t get_FRS_tofll2();
 	Float_t get_FRS_tofll3();
