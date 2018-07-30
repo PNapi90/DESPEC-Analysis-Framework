@@ -203,7 +203,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     int k = 0;
 
 
-    if(expired_counter == 5){
+    if(expired_counter >= 5){
         cout << "====================================" << endl;
         cout << "DELETE PRC " << endl;
         for(int j = 0;j < amount_interest;++j) cout << match_amount[j] << " ";
@@ -259,6 +259,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                     Matches[j][match_amount[j]-1] = nullptr;
                     //decrease amount of current Matches
                     match_amount[j]--;
+                    expired_counter--;
                 }
                 //only increase if no expiration
                 else k++;
@@ -266,7 +267,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
             Event_Storage->show_all_addresses(interest_array[j][0]);
             Event_Storage->show_all_addresses(interest_array[j][1]);
         }
-        expired_counter = 0;
+        
 
         cout << "\n====================================" << endl;
     }
