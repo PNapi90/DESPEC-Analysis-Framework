@@ -86,7 +86,8 @@ void Event_Store::purge(int type,int i){
     //delete event
     if(i != -9999 && Event[type][i]){
         
-        cout << "Shifting to " << Event[type][i] << " from ";
+        cout << "Shifting to " << Event[type][i] << " @ " << Event_position[type][i] << "( ";
+        cout << &Event_position[type][i] <<") " << " from ";
 
         delete Event[type][i];
         
