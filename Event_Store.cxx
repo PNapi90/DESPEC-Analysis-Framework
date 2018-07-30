@@ -103,6 +103,7 @@ void Event_Store::purge(int type,int i){
             Event_position[type][i] = i;//Event_position[type][event_counter[type]-1];
         }
         cout << Event[type][i] << endl;
+        cout << "WITH " << i << " " << event_counter[type]-1 << endl;
         Event[type][event_counter[type]-1] = nullptr;
         Event_WR[type][event_counter[type]-1] = 0;
         Event_position[type][event_counter[type]-1] = -9999;
