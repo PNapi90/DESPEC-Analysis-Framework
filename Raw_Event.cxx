@@ -115,37 +115,37 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 								int* det_ids_QDC,int* det_ids_TDC){
 	
 	
-	this->FAT_QDCs_FIRED = QDC_FIRED;
-	this->FAT_TDCs_FIRED = TDC_FIRED;
+	FAT_QDCs_FIRED = QDC_FIRED;
+	FAT_TDCs_FIRED = TDC_FIRED;
 	int dets_fired = 0;
 	for (int i=0; i<QDC_FIRED; i++) {
-		this->FAT_QDC_id[i] = det_ids_QDC[i];
-		this->FAT_QLong[i]  = Ql[i];
-		this->FAT_QLong_Raw[i]  = Ql_Raw[i];
-		this->FAT_QShort_Raw[i] = Qs_Raw[i];
-		this->FAT_QDC_t_coarse[i] = QDC_c[i];
-		this->FAT_QDC_t_fine[i] = QDC_f[i];
+		FAT_QDC_id[i] = det_ids_QDC[i];
+		FAT_QLong[i]  = Ql[i];
+		FAT_QLong_Raw[i]  = Ql_Raw[i];
+		FAT_QShort_Raw[i] = Qs_Raw[i];
+		FAT_QDC_t_coarse[i] = QDC_c[i];
+		FAT_QDC_t_fine[i] = QDC_f[i];
 		for (int j=0; j<TDC_FIRED; j++) {
 			if (det_ids_QDC[i] == det_ids_TDC[j]) {
-				this->FAT_id[dets_fired] = det_ids_QDC[i];
-				this->FAT_E[dets_fired] = Ql[i];
-				this->FAT_ratio[dets_fired] = (double) Qs_Raw[i]/Ql_Raw[i];
-				this->FAT_t[dets_fired] = TDC_ns[i];
-				this->FAT_t_qdc[dets_fired] = QDC_c[i];
+				FAT_id[dets_fired] = det_ids_QDC[i];
+				FAT_E[dets_fired] = Ql[i];
+				FAT_ratio[dets_fired] = (double) Qs_Raw[i]/Ql_Raw[i];
+				FAT_t[dets_fired] = TDC_ns[i];
+				FAT_t_qdc[dets_fired] = QDC_c[i];
 				dets_fired++;
 			}
 		}
 	}
-	this->FAT_DET_FIRED = dets_fired;
+	FAT_DET_FIRED = dets_fired;
 	
 	for (int i=0; i<TDC_FIRED; i++) {
-		this->FAT_TDC_id[i]        = det_ids_TDC[i];
-		this->FAT_TDC_timestamp[i] = TDC[i];
+		FAT_TDC_id[i]        = det_ids_TDC[i];
+		FAT_TDC_timestamp[i] = TDC[i];
 	}
 
 	
 	
-	
+	/*
 	
 	this->FAT_FIRED = FAT_FIRED;
 
@@ -211,6 +211,7 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 		cout << endl;
 
 	}
+    */
     Event_Type = 3;
 
 }
