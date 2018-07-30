@@ -594,7 +594,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
 		
-
+		cout << "SKIP " << SKIP_EVT_BUILDING << endl;
 			
 		if(!SKIP_EVT_BUILDING){
 			EvtBuilder[0]->set_Event(RAW);
