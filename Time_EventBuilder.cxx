@@ -241,7 +241,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                     
                     //loop over all events in Match
                     for(int o = 0;o < match_hits;++o){
-                        cout << "fff " << filled_types[o] << " " << match_id_ptr << " " << *match_id_ptr << " " << hit_addresses[filled_types[o]] << endl;
+                        cout << "fff " << filled_types[o] << " " << match_id_ptr << " " << *match_id_ptr << " " << hit_addresses[filled_types[o]]  << " " << *hit_addresses[filled_types[o]] << endl;
                         if(filled_types[o] == -1) continue;
                         //get match_id pointer to compare, if Event already deleted
                         if(Event_Storage->compare_match_ID(filled_types[o],match_id_ptr,hit_addresses[filled_types[o]])){
