@@ -82,6 +82,7 @@ void Event_Store::show_all_addresses(int type){
 //---------------------------------------------------------------
 
 void Event_Store::purge(int type,int i){
+    cout << "IN PURGE " << type << " " << i << endl;
     //delete event
     if(i != -9999 && Event[type][i]){
         
@@ -163,6 +164,12 @@ void Event_Store::set_Match_ID_address(int type,int* primary_addr,int* match_id_
 int* Event_Store::get_position(int type){
     tmp_pos = &Event_position[type][event_counter[type]-1];
     return tmp_pos;
+}
+
+void Event_Store::show_positions(int type){
+    cout <<"*** POS ***" << endl;
+    for(int i = 0;i < event_counter[type];++i) cout << i << " " << &Event_position[type][i] << " " << Event_position[type][i] << endl;
+    cout << "*** *** " << endl;    
 }
 
 //---------------------------------------------------------------
