@@ -102,11 +102,6 @@ int Raw_Event::get_Event_type(){
 }
 
 
-
-void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,double* Qs_Raw,double* Ql,double* Qs,double* TDC,ULong64_t* QDC_c,ULong64_t* QDC_f,int* det_ids_QDC,int* det_ids_TDC){
-	this->FAT_FIRED = FAT_FIRED;
-}
-
 void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 								double* Ql_Raw,double* Qs_Raw,
 								double* Ql,
