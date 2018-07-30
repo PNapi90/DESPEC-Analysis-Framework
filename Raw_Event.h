@@ -160,13 +160,12 @@ public:
 	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*);
 	void set_DATA_GALILEO(int,ULong64_t*,int*,int*,ULong64_t*,double*,int*);
 
-<<<<<<< HEAD
 	int get_Event_type();
 
 /* ####################################################
 =======
 	// ####################################################
->>>>>>> 97080b7adad0ce118b0cd5caf551fb5c49caa8fe
+
 
 	//temporary FRS getters
 	Float_t get_FRS_dE(int);
