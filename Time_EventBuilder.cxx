@@ -260,6 +260,12 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                         Matches[j][k] = Matches[j][match_amount[j]-1];
                         cout << "Set to " << Matches[j][match_amount[j]-1]->get_Address() << endl;
                         Matches[j][k]->set_Address(k);
+                        hit_addresses = Matches[j][k]->get_Address_Array();
+                        for(int o = 0;o < 6;++o){
+                            cout << hit_addresses[o] << " ";
+                        }
+                        cout << endl;
+                        cout << "bbb" << endl;
                     }
                     if(k == match_amount[j]-1){
                         cout <<"****here****" << endl;
