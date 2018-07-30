@@ -213,6 +213,11 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
             while(k < match_amount[j]){
                 Event_Storage->show_all_addresses(interest_array[j][0]);
                 Event_Storage->show_all_addresses(interest_array[j][1]);
+                cout << "--------" << endl;
+                for(int o = 0;o < match_amount[j];++o){
+                    cout << o << " " << Matches[j][o]->get_Address() << endl;
+                }
+                cout << "--------" << endl;
                 //check if Match event is already expired
                 //=> difference of WR of Match to current WR too large
                 expired = Matches[j][k]->Check_Time(WR,interest_array[j][k]);
