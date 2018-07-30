@@ -254,7 +254,9 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                         cout << "Set to " << Matches[j][match_amount[j]-1]->get_Address() << endl;
                         Matches[j][k]->set_Address(k);
                     }
-                    
+                    if(k == match_amount[j]-1){
+                        cout <<"****here****" << endl;
+                    }
                     //last event pointing to NULL
                     Matches[j][match_amount[j]-1] = nullptr;
                     //decrease amount of current Matches
