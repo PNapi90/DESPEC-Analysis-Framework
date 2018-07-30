@@ -262,7 +262,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                         Matches[j][k]->set_Address(k);
                         hit_addresses = Matches[j][k]->get_Address_Array();
                         for(int o = 0;o < 6;++o){
-                            cout << hit_addresses[o] << " ";
+                            if(hit_addresses[o]) cout << o << " " <<*hit_addresses[o] << endl;
                         }
                         cout << endl;
                         cout << "bbb" << endl;
