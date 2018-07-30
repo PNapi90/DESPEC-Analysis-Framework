@@ -101,6 +101,8 @@ void Event_Store::purge(int type,int i){
             Event[type][i] = Event[type][event_counter[type]-1];
             Event_WR[type][i] = Event_WR[type][event_counter[type]-1];
             Event_position[type][i] = i;//Event_position[type][event_counter[type]-1];
+            cout << "IN IF" << endl;
+            cout << "new ev at " << Event[type][i] << " " << Event_position[type][i] << endl;
         }
         cout << Event[type][i] << endl;
         cout << "WITH " << i << " " << event_counter[type]-1 << endl;
