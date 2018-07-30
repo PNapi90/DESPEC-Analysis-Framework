@@ -108,7 +108,8 @@ void Event_Store::purge(int type,int i){
         Event_position[type][event_counter[type]-1] = -9999;
 
         cout << "Deleted event " << i << " " << event_counter[type] - 1 << " events left" << endl;
-        cout << "new ev at " << Event[type][i] << " " << Event_position[type][i] << " " << i << " e " << event_counter[type] << endl; 
+        cout << "new ev at " << Event[type][i] << " " << Event_position[type][i];
+        cout << " ("<< &Event_position[type][i] << ") " << i << " e " << event_counter[type] << endl; 
         event_counter[type]--;
 
     }
