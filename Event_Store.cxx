@@ -74,7 +74,7 @@ void Event_Store::store(Raw_Event* RAW){
 
 void Event_Store::show_all_addresses(int type){
     for(int i = 0;i < event_counter[type];++i){
-        cout << i << " " << Event[type][i] << " " << Event_position[type][i] <<  endl;
+        cout << i << " " << Event[type][i] << " " << Event_position[type][i] << " " << type <<  endl;
     }
     cout << endl;
 }
