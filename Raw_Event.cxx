@@ -97,8 +97,6 @@ void Raw_Event::set_DATA_ID_Timestamp(Float_t FRS_timestamp,Float_t FRS_ts,Float
 
 // #################################################################
 
-<<<<<<< HEAD
-
 int Raw_Event::get_Event_type(){
     return Event_Type;
 }
@@ -107,7 +105,8 @@ int Raw_Event::get_Event_type(){
 
 void Raw_Event::set_DATA_FATIMA(int FAT_FIRED,int TDC_FIRED,double* Ql_Raw,double* Qs_Raw,double* Ql,double* Qs,double* TDC,ULong64_t* QDC_c,ULong64_t* QDC_f,int* det_ids_QDC,int* det_ids_TDC){
 	this->FAT_FIRED = FAT_FIRED;
-=======
+}
+
 void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 								double* Ql_Raw,double* Qs_Raw,
 								double* Ql,
@@ -148,8 +147,8 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 	
 	
 	
-	/*this->FAT_FIRED = FAT_FIRED;
->>>>>>> 97080b7adad0ce118b0cd5caf551fb5c49caa8fe
+	this->FAT_FIRED = FAT_FIRED;
+
 	this->TDC_FIRED = TDC_FIRED;
 
 	int position = -5;
@@ -212,12 +211,8 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 		cout << endl;
 
 	}
-<<<<<<< HEAD
-
     Event_Type = 3;
-=======
-	*/
->>>>>>> 97080b7adad0ce118b0cd5caf551fb5c49caa8fe
+
 }
 
 //---------------------------------------------------------------
