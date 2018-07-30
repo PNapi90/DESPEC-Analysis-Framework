@@ -295,7 +295,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	//by the value in FATIMA_Detector_System constructor. Former
 	//seems to make more sense.
 	//FAT_gain_match_used = Detector_Systems[3]->do_gain_matching();
-	FAT_gain_match_used = true;
+	FAT_gain_match_used = false;
 	//Having an initialisation (below) and a user setting (above)
 	//like this is probably bad.
 	FAT_gain_match_done = false;
@@ -424,11 +424,15 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		Int_t lwords = psubevt->GetIntLen();
 	
 		Int_t PrcID=psubevt->GetProcid();
+
+		cout << "PRCID " << PrcID;
 		
 		//cout<<"Proc_ID is : "<<PrcID<<endl;
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
-				
+		
+		cout << " " << PrcID_Conv << endl;
+
 		if(PrcID_Conv == 0){
 			
 		    Detector_Systems[PrcID_Conv]->Process_FRS(psubevt);
