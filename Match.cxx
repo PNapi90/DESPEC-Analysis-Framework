@@ -112,7 +112,7 @@ int Match::get_amount_Hits(){
 bool Match::Check_Time(ULong64_t WR_tmp,int pos){
     double threshold = 10;
     cout << "TD" << endl;
-    cout << WR_tmp << " " << WR << " " << WR_tmp - WR << " " << DATA[pos] << endl;
+    cout << WR_tmp << " " << WR << " " << WR_tmp - WR << " " << DATA[pos] << " " << pos << endl;
     return ((WR_tmp - WR) > threshold);
 }
 
