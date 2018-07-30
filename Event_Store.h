@@ -62,6 +62,7 @@ public:
 	void store(Raw_Event*);
 	void set_Match_ID_address(int,int*,int*);
     void show_all_addresses(int);
+    void show_positions(int);
 
     int get_Match_ID(int,int,int);
     int Time_Comparison(int,ULong64_t);
