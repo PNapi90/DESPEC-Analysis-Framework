@@ -33,7 +33,7 @@ public:
     void Write();
 
     bool Full();
-    bool Check_Time(ULong64_t);
+    bool Check_Time(ULong64_t,int);
     int get_amount_Hits();
 
     int* get_hit_types();

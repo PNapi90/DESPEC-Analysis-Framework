@@ -215,7 +215,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                 Event_Storage->show_all_addresses(interest_array[j][1]);
                 //check if Match event is already expired
                 //=> difference of WR of Match to current WR too large
-                expired = Matches[j][k]->Check_Time(WR);
+                expired = Matches[j][k]->Check_Time(WR,interest_array[j][k]);
                 cout << "Exp -> " << expired << " " << k << endl;
                 if(expired){
                     //get amount of hits and types in Match
