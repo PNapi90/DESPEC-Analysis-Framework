@@ -183,6 +183,7 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
                 if(pileup_flags[tmp_Ch_ID] == 1) this->pdata += 3;
             
                 else{
+		    
                     current_det = GALILEO_map[std::make_pair(board_id, tmp_Ch_ID)];
                     det_ids[i] = current_det;
                     Sum_Time[current_det] = tmp_Sum_Time;

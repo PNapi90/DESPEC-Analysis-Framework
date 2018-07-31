@@ -222,6 +222,7 @@ using namespace std;
 			bool FAT_gain_match_done;
 			int file_pwd, file_end;
 			std::string gain_match_filename;
+			int data_file_number = 0;
 
 			Detector_System** Detector_Systems;
 			Data_Stream** data_stream;

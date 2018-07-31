@@ -263,7 +263,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	   /* GAL_Chan_E[i] = MakeTH1('D',Form("GALILEO/GALILEO_Energy_Spectra/GALILEO_E%2d",i),Form("GALILEO Channel Energy Channel %2d",i),80001,0,800000);
 	    GAL_Time_Diff_vs_Energy[i] = MakeTH2('D',Form("GALILEO/GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",i),Form("GALILEO Time Difference Vs Channel Energy Channel %2d",i),21,-100,100,10001,0,800000);
 	    GAL_Chan_Time_Diff = MakeTH1('D',"GALILEO/GALILEO_Chan_Time_DIff","GALILEO Channel Time Difference",21,-100,100);
-	    */
+	*/
 	}
 
 
@@ -376,6 +376,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	    else if(input_data_path != input_data_path_old) FAT_gain_match_done = false;
 	    
 	    if(!FAT_gain_match_done){
+		
+		data_file_number++;
 	    
 		input_data_path_old = input_data_path;
 		
@@ -398,7 +400,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 	count++;
 		
-	if (count % 100000 == 0) cout << "Event " << count << " Reached!!!";
+	if (count % 100000 == 0) cout << "Event " << count << " Reached!!!"<<"    Data File Number : "<<data_file_number;
 	cout << "\r";
 	    
 	
@@ -865,12 +867,14 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				double time_2 = RAW->get_GALILEO_Chan_T(j);
 
 				double GAL_chan_time_diff = time_1 - time_2;
+				
+				cout<<"GALILEO Channel Difference"<<GAL_chan_time_diff<<endl;
 
-				if(!GAL_Chan_Time_Diff[j]) GAL_Chan_Time_Diff[j] = MakeTH1('D',Form("GALILEO/GALILEO_Chan_Time_DIff%2d",j),Form("GALILEO Channel Time Difference",j),21,-100,100);
+				if(!GAL_Chan_Time_Diff[j]) GAL_Chan_Time_Diff[j] = MakeTH1('D',Form("GALILEO/GALILEO_Chan_Time_DIff%2d",j),Form("GALILEO Channel Time Difference",j),201,-1000,1000);
 				
 				GAL_Chan_Time_Diff[j]->Fill(GAL_chan_time_diff);
 								
-				if(!GAL_Time_Diff_vs_Energy[j]) GAL_Time_Diff_vs_Energy[j] = MakeTH2('D',Form("GALILEO/GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",j),Form("GALILEO Time Difference Vs Channel Energy Channel %2d",j),21,-100,100,10001,0,800000);
+				if(!GAL_Time_Diff_vs_Energy[j]) GAL_Time_Diff_vs_Energy[j] = MakeTH2('D',Form("GALILEO/GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",j),Form("GALILEO Time Difference Vs Channel Energy Channel %2d",j),201,-1000,1000,10001,0,800000);
 				
 				GAL_Time_Diff_vs_Energy[j]->Fill(GAL_chan_time_diff,tmpGAL[j]);
 				

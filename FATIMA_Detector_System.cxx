@@ -389,7 +389,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 			//possibly this should be -= have to verify...
 			fine_time += ((double)(e->fine_time)/1024.);
 	    
-		    QDC_Time_Fine[fired_QDC_amount] = fine_time;
+			QDC_Time_Fine[fired_QDC_amount] = fine_time;
 	    
 			pdata++; // Moves to 6th data value87454dda
 	    
