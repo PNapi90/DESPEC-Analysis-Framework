@@ -42,7 +42,6 @@ Match::~Match(){
 //---------------------------------------------------------------
 
 void Match::set_Address(int Match_ID){
-    cout << this->Match_ID <<" Set match " << Match_ID << endl;
     this->Match_ID = Match_ID;
 }
 
@@ -63,9 +62,6 @@ int* Match::get_Address(){
 //---------------------------------------------------------------
 
 int** Match::get_Address_Array(){
-    cout << "------- DATA --------" << endl;
-    for(int i = 0;i < 6;++i) cout << DATA[i] << " ";
-    cout << endl;
     return DATA;
 }
 
@@ -114,6 +110,12 @@ bool Match::Check_Time(ULong64_t WR_tmp,int pos){
     cout << "TD" << endl;
     cout << WR_tmp << " " << WR << " " << WR_tmp - WR << " " << DATA[pos] << " " << pos << endl;
     return ((WR_tmp - WR) > threshold);
+}
+
+//---------------------------------------------------------------
+
+ULong64_t Match::get_WR(){
+    return WR;
 }
 
 //---------------------------------------------------------------

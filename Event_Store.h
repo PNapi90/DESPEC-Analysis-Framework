@@ -55,13 +55,13 @@ public:
 	
 
 	void set_permission(int,int*,int);
-	void Full_Permission(int,int*);
+	void Full_Permission(int,int);
 
-	bool compare_match_ID(int,int*,int*);
+	bool compare_match_ID(int,int*,int);
 
 	void store(Raw_Event*);
 	void set_Match_ID_address(int,int*,int*);
-    void show_all_addresses(int);
+    void show_all_addresses(int,int);
     void show_positions(int);
 
     int get_Match_ID(int,int,int);

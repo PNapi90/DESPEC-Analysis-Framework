@@ -33,6 +33,7 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
     Event_Storage = new Event_Store(amount_interest,length_interest,interest_array);
 
     expired_counter = 0;
+    first_event = true;
 
 }
 
@@ -96,6 +97,10 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     }
 
     ULong64_t WR = RAW->get_WR();
+    if(first_event){
+        WR_old = WR;
+        first_event = false;
+    }
 
     //save event in respective store
     Event_Storage->store(RAW);
@@ -109,6 +114,12 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 
     int found_matches = 0;
     int* match_id_ptr = nullptr;
+
+    int match_hits = 0;
+    bool expired = false;
+    int** hit_addresses = nullptr;
+    int* hit_types = nullptr;
+    int* filled_types = nullptr;
 
     //get coincidences (self coincidence not possible)
     for(int i = 0;i < 6;++i){
@@ -164,7 +175,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                         match_amount[j]--;
 
                         cout << "new " << match_amount[j] << " " << Matches[j][match_ID[j]] << " " << Matches[j][match_amount[j]] << endl;
-                        for(int p = 0;p < match_amount[j];++p) cout << Matches[j][p] << " ";
+                        for(int p = 0;p < match_amount[j];++p) cout << Matches[j][p]->get_Address() << " ";
                         cout << endl;
                     }
                 }
@@ -185,8 +196,15 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 
                 //get its address and send it to Event_Storage
                 match_id_ptr = Matches[j][match_amount[j]]->get_Address();
-                cout << "Data Address " << tmp_data_pos << " match am " << match_amount[j] << " " << match_id_ptr<< endl;
+                cout << j <<" -> Data Address " << *tmp_data_pos << " match am " << match_amount[j] << " " << *match_id_ptr<< endl;
                 Event_Storage->set_Match_ID_address(tmp_type,tmp_data_pos,match_id_ptr);
+
+                hit_addresses = Matches[j][match_amount[j]]->get_Address_Array();
+                match_hits = Matches[j][match_amount[j]]->get_amount_Hits();
+                filled_types = Matches[j][match_amount[j]]->get_filled_types();
+                cout << "Jj " << j << " Kj " << match_amount[j] << endl;
+                for(int o = 0;o < match_hits;++o) cout << filled_types[o]<< " " << *hit_addresses[filled_types[o]] << endl;
+                cout << endl;
 
                 match_amount[j]++;
             }
@@ -194,35 +212,38 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     }
 
     //too old data has to be deleted
-    int match_hits = 0;
-    bool expired = false;
-    int** hit_addresses = nullptr;
-    int* hit_types = nullptr;
-    int* filled_types = nullptr;
+    
 
     int k = 0;
 
+    ULong64_t max_WR_Difference = 10000*1e3;
 
-    if(expired_counter >= 5){
-        cout << "====================================" << endl;
-        cout << "DELETE PRC " << endl;
-        for(int j = 0;j < amount_interest;++j) cout << match_amount[j] << " ";
-        cout << endl; 
+    if(expired_counter == 5){//WR - WR_old > max_WR_Difference){
+
+        WR_old = ULONG64_MAX;
+        ULong64_t WR_tmp = 0;
         for(int j = 0;j < amount_interest;++j){
             k = 0;
             while(k < match_amount[j]){
-                Event_Storage->show_all_addresses(interest_array[j][0]);
-                Event_Storage->show_all_addresses(interest_array[j][1]);
+                //check if Match event is already expired
+                //=> difference of WR of Match to current WR too large
+                Event_Storage->show_all_addresses(interest_array[j][0],k);
+                Event_Storage->show_all_addresses(interest_array[j][1],k);
                 Event_Storage->show_positions(interest_array[j][1]);
+
+                hit_addresses = Matches[j][k]->get_Address_Array();
+                match_hits = Matches[j][k]->get_amount_Hits();
+                filled_types = Matches[j][k]->get_filled_types();
+                cout << "J " << j << " K " << k << endl;
+                for(int o = 0;o < match_hits;++o) cout << filled_types[o]<< " " << *hit_addresses[filled_types[o]] << endl;
+                cout << endl;
+
                 cout << "--------" << endl;
                 for(int o = 0;o < match_amount[j];++o){
                     cout << o << " " << Matches[j][o]->get_Address() << endl;
                 }
                 cout << "--------" << endl;
-                //check if Match event is already expired
-                //=> difference of WR of Match to current WR too large
                 expired = Matches[j][k]->Check_Time(WR,interest_array[j][k]);
-                cout << "Exp -> " << expired << " " << k << endl;
                 if(expired){
                     //get amount of hits and types in Match
                     match_hits = Matches[j][k]->get_amount_Hits();
@@ -237,20 +258,20 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                     cout << " -> " << hit_types[0] << " " << hit_types[1] << endl;
                     cout << match_hits << " " << match_id_ptr << endl;
                     cout <<"f-> ";
-                    for(int o = 0;o < match_hits;++o) cout << hit_addresses[filled_types[o]] << " ";
+                    for(int o = 0;o < match_hits;++o) cout << filled_types[o]<< " " << *hit_addresses[filled_types[o]] << endl;
                     cout << endl;
-                    
+
                     //loop over all events in Match
                     for(int o = 0;o < match_hits;++o){
                         cout << "fff " << filled_types[o] << " " << match_id_ptr << " " << *match_id_ptr << " " << hit_addresses[filled_types[o]]  << " " << *hit_addresses[filled_types[o]] << endl;
                         if(filled_types[o] == -1) continue;
                         //get match_id pointer to compare, if Event already deleted
-                        if(Event_Storage->compare_match_ID(filled_types[o],match_id_ptr,hit_addresses[filled_types[o]])){
-                            Event_Storage->Full_Permission(filled_types[o],hit_addresses[filled_types[o]]);
+                        if(Event_Storage->compare_match_ID(filled_types[o],match_id_ptr,*hit_addresses[filled_types[o]])){
+                            Event_Storage->Full_Permission(filled_types[o],*hit_addresses[filled_types[o]]);
                         }
                     }
+                    cout << "MATCH " << Matches[j][k]->get_Address() << " NULLED; total " << match_amount[j]-1 << endl;
                     cout << Matches[j][k]->get_Address() << " ";
-                    
                     delete Matches[j][k];
                     Matches[j][k] = nullptr;
 
@@ -258,18 +279,13 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                     //fill empty hole in Match data and reset address variables
                     if(k < match_amount[j]-1){
                         Matches[j][k] = Matches[j][match_amount[j]-1];
-                        cout << "Set to " << Matches[j][match_amount[j]-1]->get_Address() << endl;
                         Matches[j][k]->set_Address(k);
-                        hit_addresses = Matches[j][k]->get_Address_Array();
                         for(int o = 0;o < 6;++o){
                             if(hit_addresses[o]) cout << o << " " <<*hit_addresses[o] << endl;
                         }
-                        cout << endl;
                         cout << "bbb" << endl;
                     }
-                    if(k == match_amount[j]-1){
-                        cout <<"****here****" << endl;
-                    }
+                    
                     //last event pointing to NULL
                     Matches[j][match_amount[j]-1] = nullptr;
                     //decrease amount of current Matches
@@ -277,16 +293,36 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                     expired_counter--;
                 }
                 //only increase if no expiration
-                else k++;
+                else{
+                    Matches[j][k]->set_Address(k);
+                    match_hits = Matches[j][k]->get_amount_Hits();
+                    hit_addresses = Matches[j][k]->get_Address_Array();
+                    hit_types = Matches[j][k]->get_hit_types();
+                    filled_types = Matches[j][k]->get_filled_types();
+                    match_id_ptr = Matches[j][k]->get_Address();
+                    cout << "accepted!" << endl;
+                    cout <<"af-> ";
+                    for(int o = 0;o < match_hits;++o) cout << filled_types[o]<< " " << *hit_addresses[filled_types[o]] << endl;
+                    cout << endl;
+
+                    k++;
+                }
+                cout << "\n1\n-a-a-a-a-a-a-a-" << endl;
+                Event_Storage->show_all_addresses(interest_array[j][0],k);
+                Event_Storage->show_all_addresses(interest_array[j][1],k);
+                cout << "-a-a-a-a-a-a-a-\n2" << endl;
+                
             }
-            Event_Storage->show_all_addresses(interest_array[j][0]);
-            Event_Storage->show_all_addresses(interest_array[j][1]);
+
         }
-        
+        for(int j = 0;j < amount_interest;++j){
+            for(int o = 0;o < k;++o){
+                WR_tmp = Matches[j][o]->get_WR();
+                WR_old = (WR_tmp < WR_old) ? WR_tmp : WR_old;
+            }
+        }
 
-        cout << "\n====================================" << endl;
     }
-
     expired_counter++;
 }
 

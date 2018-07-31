@@ -41,6 +41,8 @@ public:
     int* get_Address();
     int** get_Address_Array();
 
+    ULong64_t get_WR();
+
 };
 
 

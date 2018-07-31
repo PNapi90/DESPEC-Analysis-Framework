@@ -15,6 +15,9 @@
 class Time_EventBuilder : public EventBuilder{
 
 private:
+
+    const ULong64_t ULONG64_MAX = 0xffffffffffffffff;
+
 	const int MEMORY_LIMIT = 1000000;
 
     int match_amount[100];
@@ -26,6 +29,8 @@ private:
     bool Used_Systems[6];
     bool relevance_system[6];
 
+    bool first_event;
+
     bool** relevance_array;
 
 	int amount_interest;
@@ -34,6 +39,8 @@ private:
 	
     Match*** Matches;
 	Event_Store* Event_Storage;
+
+    ULong64_t WR_old;
 
     void create_relevance_array();
     void get_used_Systems();

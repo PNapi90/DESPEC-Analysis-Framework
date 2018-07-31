@@ -578,7 +578,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			cout << "\n---------------------\n";
 		}
 		
-		if(PrcID_Conv != 3) continue;
+		//if(PrcID_Conv != 3) continue;
 
 		//send subevent to respective unpacker
 		Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
