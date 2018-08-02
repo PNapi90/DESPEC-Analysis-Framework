@@ -16,14 +16,34 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
 
     Event = new Events**[6];
     Event_WR = new ULong64_t*[6];
-    Event_position = new int*[6];
+    Event_position = new int**[6];
+
+    Address_arr = new int[MEMORY_LIMIT];
+
+    Fill_at = new int*[6];
+    Fill_am = new int[6];
+
+    Max_Fill = new int[6];
+
     for(int i = 0;i < 6;++i){
         Event[i] = new Events*[MEMORY_LIMIT];
         Event_WR[i] = new ULong64_t[MEMORY_LIMIT];
-        Event_position[i] = new int[MEMORY_LIMIT];
-        for(int j = 0;j < MEMORY_LIMIT;++j) Event[i][j] = nullptr;
+        Event_position[i] = new int*[MEMORY_LIMIT];
+
+        Fill_at[i] = new int[MEMORY_LIMIT];
+        Fill_am[i] = 0;
+
+        Max_Fill[i] = 0;
+
+        for(int j = 0;j < MEMORY_LIMIT;++j){
+            Event[i][j] = nullptr;
+            Event_position[i][j] = nullptr;
+            Fill_at[i][j] = -1;
+        }
         event_counter[i] = 0;
     }
+
+    for(int i = 0;i < MEMORY_LIMIT;++i) Address_arr[i] = i;
 }
 
 //---------------------------------------------------------------
@@ -36,11 +56,12 @@ Event_Store::~Event_Store(){
 
 	int sum_event = 0;
     for(int i = 0;i < 6;++i){
-        for(int j = 0;j < MEMORY_LIMIT;++j) if(Event[i][j]) delete Event[i][j];
+        for(int j = 0;j < MEMORY_LIMIT;++j){
+            if(Event[i][j]) delete Event[i][j];
+        }
         delete[] Event[i];
         delete[] Event_WR[i];
         delete[] Event_position[i];
-
         delete[] sys_interest[i];
 
         sum_event += event_counter[i];
@@ -51,6 +72,8 @@ Event_Store::~Event_Store(){
     delete[] Event_WR;
     delete[] Event_position;
     delete[] sys_interest;
+    delete[] Address_arr;
+    delete[] Max_Fill;
 } 
 
 //---------------------------------------------------------------
@@ -74,12 +97,18 @@ void Event_Store::store(Raw_Event* RAW){
 
 void Event_Store::show_all_addresses(int type,int p){
     string v;
+    if(event_counter[type] == 0) return;
+    cout << "======================" << endl;
+    cout << event_counter[type] << endl;
+    cout << "----------------------" << endl;
     for(int i = 0;i < event_counter[type];++i){
         v = (i == p) ? " <-" : " ";
-        cout << i << " " << Event[type][i] << " " << Event_position[type][i] << " " << type << v <<  endl;
+        if(Event[type][i]) cout << i << " " << Event[type][i] << " " << *Event_position[type][i] << " " << Event_position[type][i] << " " << type << v <<  endl;
+        else cout << i << " -------------" << endl;
         cout.flush();
     }
-    cout << endl;
+    cout << "======================" << endl;
+    
 }
 
 //---------------------------------------------------------------
@@ -94,22 +123,44 @@ void Event_Store::purge(int type,int i){
         
         Event[type][i] = nullptr;
         Event_WR[type][i] = 0;
-        Event_position[type][i] = i;
+        Event_position[type][i] = nullptr;
 
-        //shift last event in list to free memory slot
-        //nullify pointer of last event
-        if(i < event_counter[type]-1){
-            Event[type][i] = Event[type][event_counter[type]-1];
-            Event_WR[type][i] = Event_WR[type][event_counter[type]-1];
-            Event_position[type][i] = i;//Event_position[type][event_counter[type]-1];
+        cout << "Deleted " << type << " " << i << " at " << Address_arr[i] << " total " << event_counter[type] << endl;
+        if(i < event_counter[type] - 1){
+            Fill_at[type][Fill_am[type]] = i;
+            Fill_am[type]++;
+            cout << "Fill arr: ";
+            for(int o = 0;o < Fill_am[type];++o) cout << Fill_at[type][o] << " ";
+            cout << endl;
+            //Max_Fill[type] = (Max_Fill[type] < i) ? i : Max_Fill[type];
         }
+        else{
+            cout << " -> decrease ev num" << endl;
+            event_counter[type]--;
+        }
+        /*if(false){
+
+            //shift last event in list to free memory slot
+            //nullify pointer of last event
+            if(i < event_counter[type]-1){
+                Event[type][i] = Event[type][event_counter[type]-1];
+                Event_WR[type][i] = Event_WR[type][event_counter[type]-1];
+                Event_position[type][i] = Event_position[type][event_counter[type]-1];
+                Address_arr[type][i] = Address_arr[type][event_counter[type]-1];
+            }
         
-        Event[type][event_counter[type]-1] = nullptr;
-        Event_WR[type][event_counter[type]-1] = 0;
-        Event_position[type][event_counter[type]-1] = i;
+            Event[type][event_counter[type]-1] = nullptr;
+            Event_WR[type][event_counter[type]-1] = 0;
+            Event_position[type][event_counter[type]-1] = nullptr;
+        
+            delete Address_arr[type][event_counter[type]-1];
+            Address_arr[type][event_counter[type]-1] = nullptr;
 
-        event_counter[type]--;
+            event_counter[type]--;
 
+            for(int k = 0;k < event_counter[type];++k) cout << Address_arr[type][k] << " " << *Address_arr[type][k] << endl;
+            cout << "---------" << endl;
+        }*/
     }
     else{
         cerr << "Event " << i << " of type " << type << " already nullptr -> undefined behavior!" << endl;
@@ -162,7 +213,7 @@ void Event_Store::set_Match_ID_address(int type,int* primary_addr,int* match_id_
 //---------------------------------------------------------------
 
 int* Event_Store::get_position(int type){
-    return &Event_position[type][event_counter[type]-1];
+    return Event_position[type][ev_pos];
 }
 
 void Event_Store::show_positions(int type){
@@ -189,7 +240,7 @@ void Event_Store::set_permission(int type,int* event_addr,int interest_pos){
 //---------------------------------------------------------------
 
 void Event_Store::Full_Permission(int type,int event_addr){
-    int position = Event_position[type][event_addr];
+    int position = *Event_position[type][event_addr];
     Event[type][position]->set_Match_ID_address_NULL_ALL();
     purge(type,position);
 }
@@ -224,6 +275,26 @@ bool Event_Store::compare_match_ID(int type,int* match_ID,int event_addr){
 //---------------------------------------------------------------
 
 void Event_Store::create_Event(int type,Raw_Event* RAW){
+    
+    bool filled = false;
+
+    int val = 0;
+    if(Fill_am[type] == 0) val = event_counter[type];
+
+    else{
+        val = Fill_at[type][0];
+        cout << "NEW !!!" << endl;
+        for(int i = 0;i < Fill_am[type];++i) cout << Fill_at[type][i] << " ";
+        cout << " <- " << Fill_am[type] << endl;
+        Fill_at[type][0] = Fill_at[type][Fill_am[type]-1];
+        Fill_am[type]--;
+
+        filled = true;
+        //event_counter[type] = Max_Fill[type];
+
+        //Max_Fill[type] = 0;
+    }
+
     switch(type){
         case 0:
             //Event[0][event_counter[0]] = new FRS_Event(sys_interest[0],iter[0],RAW);
@@ -232,10 +303,10 @@ void Event_Store::create_Event(int type,Raw_Event* RAW){
            // Event[1][event_counter[1]] = new AIDA_Event(sys_interest[1],iter[1],RAW);
             break;
         case 2:
-            Event[2][event_counter[2]] = new PLASTIC_Event(sys_interest[2],iter[2],RAW);
+            Event[2][val] = new PLASTIC_Event(sys_interest[2],iter[2],RAW);
             break;
         case 3:
-            Event[3][event_counter[3]] = new FATIMA_Event(sys_interest[3],iter[3],RAW);
+            Event[3][val] = new FATIMA_Event(sys_interest[3],iter[3],RAW);
             break;
         case 4:
             //Event[4][event_counter[4]] = new GALILEO_Event(sys_interest[4],iter[4],RAW);
@@ -247,14 +318,18 @@ void Event_Store::create_Event(int type,Raw_Event* RAW){
             cerr << "Default error in Event_Store switch!" << endl;
             exit(0);
     }
+        
     cout << "- - - - - - - -" << endl;
-    cout << "created event " << type << " at " << event_counter[type] << " @ " << Event[type][event_counter[type]] << endl;
+    cout << "created event " << type << " at " << val << " @ " << Event[type][val] << " total " << event_counter[type] << endl;
     
-    ev_pos = event_counter[type];
+    ev_pos = val;
 
-    Event_WR[type][event_counter[type]] = RAW->get_WR();
-    Event_position[type][event_counter[type]] = event_counter[type];
-    event_counter[type]++;
+    Event_WR[type][val] = RAW->get_WR();
+
+    Event_position[type][val] = &Address_arr[val];
+    
+    if(Fill_am[type] == 0 && !filled) event_counter[type]++;
+
 }
 
 //---------------------------------------------------------------

@@ -27,11 +27,16 @@ private:
 
 	const int MEMORY_LIMIT = 200000;
 
+    int* Address_arr;
+    int* Max_Fill;
+
+    int** Fill_at;
+    int* Fill_am;
+
 	Events*** Event;
-
 	ULong64_t** Event_WR;
-	int** Event_position;
-
+	int*** Event_position;
+    
     int amount_interest,ev_pos;
     int* tmp_pos;
     int* length_array;

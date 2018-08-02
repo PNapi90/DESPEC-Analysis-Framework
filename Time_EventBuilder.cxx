@@ -125,7 +125,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     for(int i = 0;i < 6;++i){
         hits[i] = -1;
         match_ID[i] = -1;
-        continue;
+
         if(i != tmp_type && relevance_system[i]){
             //hit id of smallest WR difference of system tmp_type to i
             //if -1 -> no value within threshold window found
@@ -218,7 +218,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 
     ULong64_t max_WR_Difference = 10000*1e3;
 
-    if(expired_counter == 5){//WR - WR_old > max_WR_Difference){
+    if(WR - WR_old > max_WR_Difference){
 
         WR_old = ULONG64_MAX;
         ULong64_t WR_tmp = 0;
@@ -356,7 +356,7 @@ void Time_EventBuilder::get_DELETE_Permission(int j,int match_ID){
     //get all addresses of data in Matches[j][match_ID] stored in 
     //respective Event_Storage ()
     int** event_address_array = Matches[j][match_ID]->get_Address_Array();
-    for(int i = 0;i < 6;++i) cout << event_address_array[i] << " ";// << event_address_array[1] << endl;
+    for(int i = 0;i < 6;++i) if(event_address_array[i]) cout << i << " " << *event_address_array[i] << endl;// << event_address_array[1] << endl;
     cout << " <--> "<< length_interest[j]  << endl;
 
     //loop over all elements in interest array
