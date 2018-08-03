@@ -186,39 +186,39 @@ BS_Detector_System::BS_Detector_System(){
 
       
     // SCI part
-    de_21l  = 0;          /* dE SCI21 left            */  
-    de_21r  = 0;          /* de SCI21 right           */ 
-    de_41l  = 0;          /* dE SCI41 left            */
-    de_41r  = 0;          /* dE SCI41 right           */
-    de_41u  = 0;          /* dE SCI41 up              */
-    de_41d  = 0;          /* dE SCI41 down            */
-    de_42l  = 0;          /* de SCI42 left            */
-    de_42r  = 0;          /* de SCI42 right           */
-    de_43l  = 0;          /* de SCI43 left            */
-    de_43r  = 0;          /* de SCI43 right           */
-    de_81l  = 0;          /* de SCI81 left            */
-    de_81r  = 0;          /* de SCI81 right           */  
+    de_21l  = 0;         /* dE SCI21 left            */  
+    de_21r  = 0;         /* de SCI21 right           */ 
+    de_41l  = 0;         /* dE SCI41 left            */
+    de_41r  = 0;         /* dE SCI41 right           */
+    de_41u  = 0;         /* dE SCI41 up              */
+    de_41d  = 0;         /* dE SCI41 down            */
+    de_42l  = 0;         /* de SCI42 left            */
+    de_42r  = 0;         /* de SCI42 right           */
+    de_43l  = 0;         /* de SCI43 left            */
+    de_43r  = 0;         /* de SCI43 right           */
+    de_81l  = 0;         /* de SCI81 left            */
+    de_81r  = 0;         /* de SCI81 right           */  
     de_21ld = 0;         /* dE SCI21 left delayed    */  
     de_21rd = 0;         /* de SCI21 right delayed   */ 
-    de_v1l  = 0;          /* dE veto1 left            */  
-    de_v1r  = 0;          /* de veto1 right           */ 
-    de_v2l  = 0;          /* dE veto2 left            */
-    de_v2r  = 0;          /* dE veto2 right           */
-    de_v3   = 0;           /* dE veto3                 */
+    de_v1l  = 0;         /* dE veto1 left            */  
+    de_v1r  = 0;         /* de veto1 right           */ 
+    de_v2l  = 0;         /* dE veto2 left            */
+    de_v2r  = 0;         /* dE veto2 right           */
+    de_v3   = 0;         /* dE veto3                 */
 
 
-    dt_21l_21r   = 0;      /*                          */ 
-    dt_41l_41r   = 0;      /*                          */ 
-    dt_21l_41l   = 0;      /*                          */
-    dt_21r_41r   = 0;      /*                          */
-    dt_42l_42r   = 0;      /*                          */
-    dt_43l_43r   = 0;      /*                          */
-    dt_42l_21l   = 0;      /*                          */
-    dt_42r_21r   = 0;      /*                          */
-    dt_41u_41d   = 0;      /*                          */
-    dt_81l_81r   = 0;
-    dt_21l_81l   = 0;
-    dt_21r_81r   = 0;
+    dt_21l_21r  = 0;     /*                          */ 
+    dt_41l_41r  = 0;     /*                          */ 
+    dt_21l_41l  = 0;     /*                          */
+    dt_21r_41r  = 0;     /*                          */
+    dt_42l_42r  = 0;     /*                          */
+    dt_43l_43r  = 0;     /*                          */
+    dt_42l_21l  = 0;     /*                          */
+    dt_42r_21r  = 0;     /*                          */
+    dt_41u_41d  = 0;     /*                          */
+    dt_81l_81r  = 0;     /*                          */
+    dt_21l_81l  = 0;     /*                          */
+    dt_21r_81r  = 0;     /*                          */
 
     // User multihit TDC
 		
@@ -348,8 +348,8 @@ BS_Detector_System::BS_Detector_System(){
     mw_xsum = new Float_t[13];     /*                          */
     mw_ysum = new Float_t[13];     /*                          */
     
-    mw_x    = new Float_t[13];        /*                          */
-    mw_y    = new Float_t[13];        /*                          */
+    mw_x    = new Float_t[13];     /*                          */
+    mw_y    = new Float_t[13];     /*                          */
     mw_wire = new Float_t[13];     /* special for Helmut       */
     
     z_x_s2 = 0;          
@@ -432,10 +432,10 @@ BS_Detector_System::BS_Detector_System(){
     //      Float_t tpc_angle_y_s4_target2;
     
     
-    tpc_sc21_x = 0;      /* SC21 x                    */
-    tpc_sc41_x = 0;      /* SC41 x                    */
-    tpc_sc21_y = 0;      /* SC21 y                    */
-    tpc_sc41_y = 0;      /* SC41 y                    */
+    tpc_sc21_x = 0;      /* SC21 x                   */
+    tpc_sc41_x = 0;      /* SC41 x                   */
+    tpc_sc21_y = 0;      /* SC21 y                   */
+    tpc_sc41_y = 0;      /* SC41 y                   */
     
     
     sc21_x = 0;          /* SC21                     */

@@ -142,7 +142,7 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 				this->FAT_id[dets_fired] = det_ids_QDC[i];
 				this->FAT_E[dets_fired] = Ql[i];
 				this->FAT_ratio[dets_fired] = (double) Qs_Raw[i]/Ql_Raw[i];
-				this->FAT_t[dets_fired] = TDC_ns[i];
+				this->FAT_t[dets_fired] = TDC_ns[j];
 				this->FAT_t_qdc[dets_fired] = QDC_c[i];
 				dets_fired++;
 			}

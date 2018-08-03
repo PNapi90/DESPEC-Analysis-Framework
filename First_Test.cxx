@@ -665,11 +665,15 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		if(PrcID_Conv == 3){
 			int det_tmp = 0;
 			double dt1, dt2;
+			double En_i, En_j;
+			double FAT_ratio_i;
 			for (int i=0; i<RAW->get_FAT_QDCs_fired(); i++) {
 				det_tmp = RAW->get_FAT_QDC_id(i);
 				if(!FAT_Eraw[RAW->get_FAT_QDC_id(i)]) FAT_Eraw[det_tmp] = MakeTH1('D', Form("FATIMA/Energy/E_Raw_LaBr%02d", det_tmp),
 		                             Form("LaBr%02d energy (raw)", det_tmp),2000,0,40000);
-				FAT_Eraw[det_tmp]->Fill(RAW->get_FAT_QLong_Raw(i));
+				En_i = RAW->get_FAT_QLong_Raw(i);
+				FAT_Eraw[det_tmp]->Fill(En_i);
+				// FAT_Eraw[det_tmp]->Fill(RAW->get_FAT_QLong_Raw(i));
 			}
 			
 			int dets_fired = RAW->get_FAT_det_fired();
@@ -677,22 +681,28 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				int deti = RAW->get_FAT_id(i);
 				
 				FAT_hits->Fill(deti);
-				FAT_Esum->Fill(RAW->get_FAT_E(i));
+				En_i = RAW->get_FAT_E(i);
+				FAT_Esum->Fill(En_i);
+				// FAT_Esum->Fill(RAW->get_FAT_E(i));
 
 				if(!FAT_E[deti]) FAT_E[deti] = MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", deti),
 		                          Form("LaBr%02d energy", deti),4001,0,4000);
 				
-				FAT_E[deti]->Fill(RAW->get_FAT_E(i));
+				FAT_E[deti]->Fill(En_i);
+				// FAT_E[deti]->Fill(RAW->get_FAT_E(i));
 				if(!FAT_E_ratio[deti]) FAT_E_ratio[deti] = MakeTH2('D', Form("FATIMA/Energy/EvsRatio_LaBr%02d", deti),
 		                           Form("LaBr%02d energy vs QShort/QLong", deti),4001,0,4000, 200,0,1);
-
-				FAT_E_ratio[deti]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_ratio(i));
+				FAT_ratio_i = RAW->get_FAT_ratio(i);
+				En_i = RAW->get_FAT_E(i);
+				FAT_E_ratio[deti]->Fill(En_i, FAT_ratio_i);
+				// FAT_E_ratio[deti]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_ratio(i));
 				for (int j=0; j<dets_fired; j++) {
 					int detj = RAW->get_FAT_id(j);
 					if ( deti==detj )
 						continue;
-					
-					FAT_gg->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
+					En_j = RAW->get_FAT_E(j);
+					FAT_gg->Fill(En_i, En_j);
+					// FAT_gg->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
 					if (deti < detj) {
 						dt1 = RAW->get_FAT_t(i) - RAW->get_FAT_t(j);
 						dt2 = RAW->get_FAT_t_qdc(i) - RAW->get_FAT_t_qdc(j);
@@ -713,13 +723,15 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 					if (deti == FAT_REF_DET) {
 						if(!FAT_gg_ref[detj]) FAT_gg_ref[detj] =  MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
 		                          										   Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, detj),4001,0,4000, 200,0,1);
-						FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
-						FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(j), RAW->get_FAT_E(i));
+						FAT_gg_ref[detj]->Fill(En_i, En_j);
+						FAT_gg_ref[detj]->Fill(En_j, En_i);
+						//FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
+						// FAT_gg_ref[detj]->Fill(RAW->get_FAT_E(j), RAW->get_FAT_E(i));
 						if(!FAT_TDCdt_ref[detj]) FAT_TDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
 		                             Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);	
 						FAT_TDCdt_ref[detj]->Fill(dt1);
 						if(!FAT_QDCdt_ref[detj]) FAT_QDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/QDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
-		                             Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);
+		                             Form("QDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);
 						FAT_QDCdt_ref[detj]->Fill(dt2);
 						if(!FAT_TDC_QDC_dt[detj]) FAT_TDC_QDC_dt[detj] =  MakeTH2('D', Form("FATIMA/Timing/TDCdt_QDCdt_LaBr%02d", detj),
 		                              Form("TDCdt vs QDCdt LaBr%02d", detj),3201,-40,40, 3201,-40,40);
