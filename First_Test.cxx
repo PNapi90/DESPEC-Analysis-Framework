@@ -1101,6 +1101,16 @@ void TSCNUnpackProc::get_interest_arrays(){
 								  ,&tmp_values[4],&tmp_values[5]);
 		
 		if(tmp_values[0] != -1){
+			if(tmp_values[1] == -1){
+				cerr << endl;
+				cerr << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+				cerr << "SINGLE COINCIDENCE DETECTED! => EDIT Coincidences_of_Interest.txt FILE!" << endl;
+				cerr << "-> EXITING PROGRAM" << endl;
+				cerr << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+				cerr << endl;
+				exit(0);
+			}
+			
 			for(int i = 0;i < 6;++i){
 				if(tmp_values[i] != -1){
 					interest_array[amount_interest][length_interest[amount_interest]] = tmp_values[i];
