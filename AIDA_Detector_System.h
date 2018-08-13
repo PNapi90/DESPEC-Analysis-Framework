@@ -1,4 +1,3 @@
-
 #ifndef AIDA_DETECTOR_SYSTEM_H
 #define AIDA_DETECTOR_SYSTEM_H
 
@@ -19,9 +18,21 @@ typedef unsigned long long ULong64_t;
 class AIDA_Detector_System : public Detector_System{
 
 private:
+	
+	Int_t* pdata;
+	Int_t* pdata_start;
+    
+	Int_t lwords;
+                
+	Int_t sub_evt_length;
+	
+	double tmp_x, tmp_y, tmp_z;
+	double tmp_stopping_layer;
+	bool x_check, y_check;
+	
+	int** FEE_allocation;
 
-	int* pdata;
-
+	bool* check_FEE64_timestamp;
 
 	ULong64_t tmp_AIDA_t0_0_15;
 	ULong64_t tmp_AIDA_t0_16_35;
@@ -35,10 +46,23 @@ private:
 	ULong64_t tmp_AIDA_Discriminator_end;
 	ULong64_t AIDA_Discriminator_full;
 	
-	bool End_of_AIDA;
-
-	void Check_AIDA_t0_DATA(AIDA_t0_Header*);
-	void Check_AIDA_ADC_DATA();
+	/*int feeChannelOrder[64]={62, 63, 59, 60, 61, 56, 57, 58, 52, 53, 54, 55, 49, 50, 51, 45,
+				 46, 47, 48, 42, 43, 44, 38, 39, 40, 41, 35, 36, 37, 31, 32, 33,
+				 34, 28, 29, 30, 24, 25, 26, 27, 21, 22, 23, 17, 18, 19, 20, 14,
+				 15, 16, 10, 11, 12,  7,  3,  0,  8,  4,  1,  9,  5,  2, 13,  6};*/
+	
+	
+	
+	void load_config_file();
+	
+	void get_coordinate(int, int, AIDA_ADC_1*);
+	void Implant_List_Analyser();
+	
+	void Pause_Timestamp(AIDA_Time_First*);
+	void Resume_Timestamp(AIDA_Time_First*);
+	void Set_AIDA_Timestamp(AIDA_Time_First*);
+	void Set_AIDA_Implantation(AIDA_ADC_1*);
+	void Check_AIDA_ADC_DATA(AIDA_ADC_1*);
 	void Check_AIDA_Disc_DATA();
 
 public:
@@ -51,8 +75,11 @@ public:
 	void Process_FRS(TGo4MbsSubEvent* psubevt){};
 
 
+	void Process_AIDA(TGo4MbsSubEvent* psubevt);
+
+
 	
-	void Process_MBS(int*);
+	void Process_MBS(int*){};
 	void get_Event_data(Raw_Event*);
 	int* get_pdata();
 

@@ -217,6 +217,7 @@ using namespace std;
 			string input_data_path_old;
 
 			bool cals_done,WR_used;
+			bool WHITE_RABBIT_USED;
 			bool FAT_make_raw_histograms;
 			bool FAT_gain_match_used;
 			bool FAT_gain_match_done;
@@ -243,6 +244,8 @@ using namespace std;
 			Int_t get_Conversion(Int_t);
 			void get_used_Systems();
 			void get_WR_Config();
+			
+			void read_setup_parameters();
 
 			void load_PrcID_File();
 			void get_interest_arrays();

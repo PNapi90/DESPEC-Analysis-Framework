@@ -10,6 +10,78 @@ using namespace std;
 typedef unsigned long long ULong64_t;
 
 
+struct AIDA_ADC_1 // Contains bits 36->63 of 64 bit t0 timestamp
+{
+
+	unsigned int ADC_Data	: 16;
+	unsigned int Ch_ID	: 6;
+	unsigned int FEE64	: 6;
+	unsigned int ADC_range	: 1;
+	unsigned int empty	: 1;
+	unsigned int check	: 2;
+	
+};
+
+struct AIDA_ADC_2 // Contains bits 36->63 of 64 bit t0 timestamp
+{
+
+	unsigned int timestampLSB : 28;
+	unsigned int empty	  : 4;
+	
+};
+
+struct AIDA_Info_General // Contains bits 36->63 of 64 bit t0 timestamp
+{
+
+	unsigned int infofield	: 20;
+	unsigned int infocode	: 4;
+	unsigned int FEE64	: 6;
+	unsigned int check	: 2;
+	
+};
+
+struct AIDA_Time_First // Contains bits 36->63 of 64 bit t0 timestamp
+{
+
+	unsigned int time_part	  : 16;
+	unsigned int empty	  : 4;
+	unsigned int infocode	  : 4;
+	unsigned int FEE64_num	  : 6;
+	unsigned int check	  : 2;
+	
+};
+
+struct AIDA_Time_Last // Contains bits 36->63 of 64 bit t0 timestamp
+{
+
+	unsigned int time_part	  : 28;
+	unsigned int empty	  : 4;
+	
+};
+
+struct AIDA_Time_Mid // Contains bits 36->63 of 64 bit t0 timestamp
+{
+
+	unsigned int time_part	  : 20;
+	unsigned int infocode	  : 4;
+	unsigned int empty	  : 6;
+	unsigned int check	  : 2;
+	
+};
+
+struct AIDA_End // Contains bits 36->63 of 64 bit t0 timestamp
+{
+
+	unsigned int empty	  : 32;
+	
+};
+
+
+
+
+
+
+
 struct AIDA_t0_Header // Contains bits 0->15 of 64 bit t0 timestamp
 {  
 

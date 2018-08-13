@@ -1,0 +1,5 @@
+# Setup File for Detector Systems
+# 
+White_Rabbit_Enabled: 1
+#
+FATIMA_Gain_Match_Enabled: 1

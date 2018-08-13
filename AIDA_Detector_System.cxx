@@ -7,75 +7,250 @@ using namespace std;
 //---------------------------------------------------------------
 
 AIDA_Detector_System::AIDA_Detector_System(){
+    
+    check_FEE64_timestamp = new Bool_t[128];
+    
+    for(int i = 0; i < 128; i++) check_FEE64_timestamp[i] = true;
+    
+    FEE_allocation = new int*[24];
+    for(int i = 0;i < 24;++i){
+	    FEE_allocation[i] = new int[3];
+	    for(int j = 0;j < 3;++j){
+		FEE_allocation[i][j] = -1;
+	}
+    
+    }
+    
 
 }
 
 //---------------------------------------------------------------
 
 AIDA_Detector_System::~AIDA_Detector_System(){
+    
+    delete[] check_FEE64_timestamp;
+    delete[] FEE_allocation;
+
 }
 
 //---------------------------------------------------------------
 
-void AIDA_Detector_System::get_Event_data(Raw_Event* RAW){
-
-
-
-}
+void AIDA_Detector_System::get_Event_data(Raw_Event* RAW){}
 
 //---------------------------------------------------------------
 
-void AIDA_Detector_System::Process_MBS(int* pdata){
+void AIDA_Detector_System::load_config_file(){
 
-    this->pdata = pdata;
-    
-    
-    while(!End_of_AIDA){
-    
-	AIDA_t0_Header* t0_head  = (AIDA_t0_Header*) this->pdata;
-	AIDA_ADC_Times* ADC_head  = (AIDA_ADC_Times*) this->pdata;
-	AIDA_1st_Disc* AIDA_disc  = (AIDA_1st_Disc*) this->pdata;
-    
-	if(t0_head->check == 2 && t0_head->second_check == 5) Check_AIDA_t0_DATA(t0_head);
-	else if(ADC_head->check == 3) Check_AIDA_ADC_DATA();
-	else if(AIDA_disc->check == 8 && AIDA_disc->second_check == 6) Check_AIDA_Disc_DATA();
+    const char* format = "%d %d %d %d";
+
+    ifstream file("Configuration_Files/AIDA_strip_map.txt");
+
+    if(file.fail()){
+        cerr << "Could not find AIDA Config File!" << endl;
+        exit(0);
+    }
+
+    string line;
+    int FEE_num,	DSSSD_num,	Front_Back,	Left_Right;
+    while(file.good()){
+        getline(file,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format,&FEE_num,&DSSSD_num,
+					&Front_Back,&Left_Right);
+	FEE_allocation[FEE_num][0] = DSSSD_num;
+	FEE_allocation[FEE_num][1] = Front_Back;
+	FEE_allocation[FEE_num][2] = Left_Right;
 	
-	this->pdata++;
-
-	/*if(something happens)*/ End_of_AIDA = true;
-
     }
 }
 
+
 //---------------------------------------------------------------
 
-void AIDA_Detector_System::Check_AIDA_t0_DATA(AIDA_t0_Header* t0_head){
+/*void AIDA_Detector_System::get_coordinate(int FEE_ID, int Channel_ID, AIDA_ADC_1* ADC_head){
+        
+    if(FEE_allocation[FEE_ID - 1][1] == 0){
+	
+	x_check = true; // Set X to -1
     
-    
-    tmp_AIDA_t0_0_15 = t0_head->t0_1st;
+	if(FEE_allocation[FEE_ID - 1][2] == 1){
+	    
+	    tmp_x = feeChannelOrder[Channel_ID];
+	    
+	}    
+	if(FEE_allocation[FEE_ID - 1][2] == 2){
+	    
+	    tmp_x = (127 - feeChannelOrder[Channel_ID]);
 
-    pdata++;
+	}	
+	
+    }
+    if(FEE_allocation[FEE_ID - 1][1] == 1){
+	
+	y_check = true; // Set Y to -1
     
-    AIDA_t0_Header_2* t0_head_2  = (AIDA_t0_Header_2*) pdata;
+	if(FEE_allocation[FEE_ID - 1][2] == 1){
+	    
+	    tmp_y = feeChannelOrder[Channel_ID];
 
-    tmp_AIDA_t0_36_63 = t0_head_2->t0_3rd;
-    
-    pdata++;
-    
-    AIDA_t0_Header_3* t0_head_3  = (AIDA_t0_Header_3*) pdata;
+	    
+	}    
+	if(FEE_allocation[FEE_ID - 1][2] == 2){
+	    
+	    tmp_y = (127 - feeChannelOrder[Channel_ID]);
+		    
+	}	
+	
+    }
 
-    tmp_AIDA_t0_16_35 = t0_head_3->t0_2nd;
-    
-    
-    AIDA_t0 	 =  tmp_AIDA_t0_0_15 + (tmp_AIDA_t0_16_35 << 28) + (tmp_AIDA_t0_36_63 << 48);
-    AIDA_t0_base =  (tmp_AIDA_t0_16_35 << 28) + (tmp_AIDA_t0_36_63 << 48);
+    if(ADC_head->check == 3 && ADC_head->ADC_range == 1 && x_check && y_check && (FEE_allocation[FEE_ID - 1][0] > tmp_z)){
+	
+	tmp_stopping_layer = FEE_allocation[FEE_ID - 1][0];
+	
+    }
+    if(x_check && y_check) tmp_z = FEE_allocation[FEE_ID - 1][0];
+	
+}*/
+
+//---------------------------------------------------------------
+
+void AIDA_Detector_System::Implant_List_Analyser(/*List of AIDA Implant Events*/){
+
+    //for(int i = 0; i < num_implants; i)
+
+
 
 
 }
 
 //---------------------------------------------------------------
 
-void AIDA_Detector_System::Check_AIDA_ADC_DATA(){
+void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
+    
+    
+    pdata=psubevt->GetDataField();
+    
+    pdata_start = pdata;
+            
+    sub_evt_length  = ((psubevt->GetDlen() - 2) / 2);
+    
+    cout<<"Length = "<<sub_evt_length<<endl;
+    
+    pdata+=5;
+    
+    
+            
+    
+    //while(!End_of_AIDA){
+    while((pdata - pdata_start) < (sub_evt_length)){
+    
+	AIDA_Time_First* t0_head  = (AIDA_Time_First*) this->pdata;
+	AIDA_ADC_1* ADC_head  = (AIDA_ADC_1*) this->pdata;
+	AIDA_1st_Disc* AIDA_disc  = (AIDA_1st_Disc*) this->pdata;
+	
+    	if(t0_head->check == 2 && t0_head->infocode == 2) Pause_Timestamp(t0_head); // Pause Timestamp
+    	else if(t0_head->check == 2 && t0_head->infocode == 3) Resume_Timestamp(t0_head); // Resume Timestamp
+    	else if(t0_head->check == 2 && t0_head->infocode == 4){  // Shouldn't Happen
+
+	    cout<<"Error: AIDA WR Timestamp 2nd Part Should not happen here!"<<endl;
+	    exit(0);
+	     
+	}
+	else if(t0_head->check == 2 && t0_head->infocode == 5) Set_AIDA_Timestamp(t0_head); // White Rabbit Timestamp marker
+	else if(t0_head->check == 2 && t0_head->infocode == 6) Set_AIDA_Timestamp(t0_head); // AIDA Disc Data
+	else if(t0_head->check == 2 && t0_head->infocode == 8){
+	    
+	    cout<<"Error: AIDA Correlation Scaler, not unpackable yet"<<endl; // AIDA Correlation Scaler
+	    exit(0);
+	
+	}
+	else if(ADC_head->check == 3 && ADC_head->ADC_range == 1) Set_AIDA_Implantation(ADC_head);
+	
+	else if(ADC_head->check == 3 && ADC_head->ADC_range == 0) this->pdata++; // Set_AIDA_DECAY/NOISE(ADC_head);
+	
+	else if(AIDA_disc->check == 8 && AIDA_disc->second_check == 6) Check_AIDA_Disc_DATA();
+
+	else{ cout<<"Unidentified Thing:   AIDA Check = "<<t0_head->check<<"  INFO CODE = "<<t0_head->infocode<<"  FEE64???  "<<t0_head->FEE64_num<<endl;
+	    cout << hex << *(this->pdata) <<endl;
+	}
+	
+	this->pdata++;
+
+    }
+    
+    
+    cout<<"END OF AIDA DATA REACHED !!!"<<endl;
+    
+}
+
+//---------------------------------------------------------------
+
+void AIDA_Detector_System::Pause_Timestamp(AIDA_Time_First* t0_head){
+    
+    int FEE64_Module_No = t0_head->FEE64_num;
+    
+    check_FEE64_timestamp[FEE64_Module_No] = false;
+    
+    
+}
+
+//---------------------------------------------------------------
+
+void AIDA_Detector_System::Resume_Timestamp(AIDA_Time_First* t0_head){
+    
+    int FEE64_Module_No = t0_head->FEE64_num;
+    
+    check_FEE64_timestamp[FEE64_Module_No] = true;
+    
+}
+
+//---------------------------------------------------------------
+
+void AIDA_Detector_System::Set_AIDA_Timestamp(AIDA_Time_First* t0_head){
+    
+    //cout<<"AIDA Timestamp!!!"<<endl;
+    
+    tmp_AIDA_t0_0_15 = t0_head->time_part;
+
+    pdata++;
+    
+    AIDA_Time_Last* t0_head_2  = (AIDA_Time_Last*) pdata;
+
+    tmp_AIDA_t0_36_63 = t0_head_2->time_part;
+    
+    pdata++;
+    
+    AIDA_Time_Mid* t0_head_3  = (AIDA_Time_Mid*) pdata;
+
+    tmp_AIDA_t0_16_35 = t0_head_3->time_part;
+    
+    
+    AIDA_t0 	 =  tmp_AIDA_t0_36_63 + (tmp_AIDA_t0_16_35 << 28) + (tmp_AIDA_t0_0_15 << 48);
+    AIDA_t0_base =  (tmp_AIDA_t0_16_35 << 28) + (tmp_AIDA_t0_0_15 << 48);
+    
+    pdata++;
+    
+    cout<<"AIDA Timestamp = "<<AIDA_t0<<endl;
+    cout<<"AIDA Timestamp Base = "<<AIDA_t0_base<<endl;
+
+
+}
+
+//---------------------------------------------------------------
+
+void AIDA_Detector_System::Set_AIDA_Implantation(AIDA_ADC_1* ADC_head){
+    
+    cout<<"Implantation event!!"<<endl;
+    
+    pdata++;
+    
+}
+
+
+void AIDA_Detector_System::Check_AIDA_ADC_DATA(AIDA_ADC_1* ADC_head){
+    
+    
+    
     
     
     pdata++;
@@ -92,7 +267,8 @@ void AIDA_Detector_System::Check_AIDA_ADC_DATA(){
 
 void AIDA_Detector_System::Check_AIDA_Disc_DATA(){
     
-    
+    //cout<<"AIDA Disc!!!"<<endl;
+
     pdata++;
     
     AIDA_1st_Disc_2* AIDA_disc_2 = (AIDA_1st_Disc_2*) pdata;

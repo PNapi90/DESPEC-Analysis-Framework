@@ -289,7 +289,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	// all non used systems intialized as NULL 
 	//-> calling uninitialized system will cause an error !
 	Detector_Systems[0] = !Used_Systems[0] ? NULL : new BS_Detector_System();
-	//Detector_Systems[1] = !Used_Systems[1] ? NULL : new AIDA_Detector_System();
+	Detector_Systems[1] = !Used_Systems[1] ? NULL : new AIDA_Detector_System();
 	Detector_Systems[2] = !Used_Systems[2] ? NULL : new PLASTIC_Detector_System();
 	Detector_Systems[3] = !Used_Systems[3] ? NULL : new FATIMA_Detector_System();
 	Detector_Systems[4] = !Used_Systems[4] ? NULL : new GALILEO_Detector_System();
@@ -309,6 +309,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 	RAW = new Raw_Event();
 
 	load_PrcID_File();
+		
+	read_setup_parameters();
 
 	White_Rabbbit_old = 0;
 	count = 0;
@@ -322,7 +324,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	//by the value in FATIMA_Detector_System constructor. Former
 	//seems to make more sense.
 	//FAT_gain_match_used = Detector_Systems[3]->do_gain_matching();
-	FAT_gain_match_used = false;
+	//FAT_gain_match_used = false;
 	//Having an initialisation (below) and a user setting (above)
 	//like this is probably bad.
 	FAT_gain_match_done = false;
@@ -366,6 +368,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 {
     
     if(Used_Systems[3] && FAT_gain_match_used){
+	
 
 	    TGo4MbsEvent       *fMbsEvent = dynamic_cast<TGo4MbsEvent*>    (GetInputEvent("Unpack"));   // of step "Unpack";
 	    s_filhe* fileheader=fMbsEvent->GetMbsSourceHeader();
@@ -454,6 +457,9 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		//cout<<"Proc_ID is : "<<PrcID<<endl;
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
+		
+		Int_t sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
+		
 				
 		if(PrcID_Conv == 0){
 			
@@ -609,19 +615,27 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			    
 		    
 		if(WHITE_RABBIT_USED){
+			sub_evt_length = sub_evt_length - 5;
 			WR_tmp[iterator] = WR->get_White_Rabbit(pdata);
 			pdata += WR->get_increase();
+						
 		}
 		called[iterator] = PrcID_Conv;
 		
 
 		//cout << WR_tmp[iterator] << " " << iterator << endl;
 
+		if(PrcID_Conv == 1 && sub_evt_length != 0){
+		    
+		    Detector_Systems[PrcID_Conv]->Process_AIDA(psubevt);
+		    
+		}
+		
 		
 
 		//continue;
 
-		if(PrcID_Conv == 3 && false){
+		if(PrcID_Conv == 1 && false){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex << *(pdata + i) << " ";
@@ -988,6 +1002,59 @@ void TSCNUnpackProc::load_PrcID_File(){
 		i++;
 	}
 }
+
+void TSCNUnpackProc::read_setup_parameters(){
+
+    const char* format = "%s %d";
+
+    ifstream file("Configuration_Files/Detector_Setup_File.txt");
+
+    if(file.fail()){
+        cerr << "Could not find File for setup parameters!" << endl;
+        exit(0);
+    }
+
+    string line;
+    string var_name;
+    int dummy_var;
+    
+    file.ignore(256,':');
+    file >> WHITE_RABBIT_USED;//dummy_var;
+    //if (dummy_var == 0) WHITE_RABBIT_USED = false;
+    //else if (dummy_var == 1) WHITE_RABBIT_USED = true;
+    file.ignore(256,':');
+    file >> FAT_gain_match_used;//dummy_var;
+    //if (dummy_var == 0) FAT_gain_match_used = false;
+    //else if (dummy_var == 1) FAT_gain_match_used = true;
+
+    cout<<endl;
+    cout<<endl;
+    cout<<"////////////////////////////////////"<<endl;
+    cout<<"Setup Parameters List: "<<endl;
+    if(WHITE_RABBIT_USED) cout<<"White Rabbit: Enabled"<<endl;
+    else if(!WHITE_RABBIT_USED) cout<<"White Rabbit: Disabled"<<endl;
+    if(FAT_gain_match_used) cout<<"FATIMA Gain Matching: Enabled"<<endl;
+    else if(!FAT_gain_match_used) cout<<"FATIMA Gain Matching: Disabled"<<endl;
+    cout<<"////////////////////////////////////"<<endl;
+    cout<<endl;
+    cout<<endl;
+    /*while(file.good()){
+        getline(file,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format,&var_name,&dummy_var);
+	
+	    cout<<"Hello Again?"<<endl;
+
+		if (var_name == "White_Rabbit_Enabled:" && dummy_var == 1)  WHITE_RABBIT_USED = true;
+		else if (var_name == "White_Rabbit_Enabled:" && dummy_var == 0)  WHITE_RABBIT_USED = false;
+		
+		if (var_name == "FATIMA_Gain_Match_Enabled:" && dummy_var == 1)  FAT_gain_match_used = true;
+		else if (var_name == "FATIMA_Gain_Match_Enabled:" && dummy_var == 0) FAT_gain_match_used  = false;
+		
+    }*/
+}
+
+
 
 
 Int_t TSCNUnpackProc::get_Conversion(Int_t PrcID){

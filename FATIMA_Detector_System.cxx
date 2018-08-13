@@ -14,7 +14,6 @@ using namespace std;
 
 FATIMA_Detector_System::FATIMA_Detector_System(){
 
-    gain_match_used = false;
     num_TDC_modules = 1;
     FAT_evt = 0;
 	
@@ -474,6 +473,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                 //}
 
                 TDC_Time_raw[fired_TDC_amount] = (ULong64_t) (m->measurement);
+                // TDC_Time_raw[fired_TDC_amount] = 25e-3*TDC_Time_raw[fired_TDC_amount];
                 Calibrate_TDC(fired_TDC_amount);
 				fired_TDC_amount++;
                 no_data = false;
