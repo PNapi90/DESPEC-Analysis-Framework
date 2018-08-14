@@ -273,7 +273,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	
 	if(!SKIP_EVT_BUILDING){
-		EvtBuilder = new EventBuilder*[2];
+		EvtBuilder = new EventBuilder*[1];
 		EvtBuilder[0] = new Time_EventBuilder(amount_interest,length_interest,interest_array);
 		//EvtBuilder[1] = new Space_EventBuilder();
 	}
@@ -314,17 +314,25 @@ TSCNUnpackProc::~TSCNUnpackProc()
 {
     
     delete EvtBuilder[0];
+    EvtBuilder[0] = nullptr;
+    //delete[] EvtBuilder;
 
-	Detector_Systems[3]->write();
+
+	//Detector_Systems[3]->write();
 	
+	cout << "Starting Detector_Systems delete process..." << endl;
+	cout.flush();
 	for(int i = 0;i < 6;++i){
-		if(Detector_Systems[i]) delete Detector_Systems[i];
+		if(Used_Systems[i]){ 
+			cout << "Deleting system " << i << endl;
+			delete Detector_Systems[i];
+		}
 		delete[] interest_array[i];
 	}
 	cout << "Deleted Detector_Systems" << endl;
 	delete[] interest_array;
 	delete[] length_interest;
-	delete[] Detector_Systems;
+	//delete[] Detector_Systems;
 	
 	
 
@@ -371,8 +379,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 	count++;
 		
-	if (count % 100000 == 0) cout << "Event " << count << " Reached!!!";
-	cout << "\r";
+	if (count % 100000 == 0) cout << "Event " << count << " Reached!!!" << endl;
+	//cout << "\r";
 	    
 	
 	if(cals_done) return kTRUE; //BAD!!!!
@@ -937,6 +945,17 @@ void TSCNUnpackProc::get_used_Systems(){
 		Used_Systems[i] = (id == 1);
 		i++;
 	}
+	string DET_NAME[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
+
+	cout << "\n=====================================================" << endl;
+	cout << "USED SYSTEMS" << endl;
+	cout << "-----------------------------------------------------" << endl;
+	for(int j = 0;j < 6;++j){
+		if(Used_Systems[j]) cout << DET_NAME[j] << endl;
+	}
+	cout << "=====================================================" << endl;
+
+
 }
 
 

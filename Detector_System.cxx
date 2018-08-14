@@ -21,7 +21,7 @@ class Detector_System{
 
 public:
 
-	virtual ~Detector_System() = 0;
+	virtual ~Detector_System(){};
 
     virtual void Process_MBS(int*) = 0;
     
