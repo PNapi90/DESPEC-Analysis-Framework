@@ -33,7 +33,6 @@ Events::~Events(){
 //---------------------------------------------------------------
 
 void Events::set_Match_ID_address(int* match_id_address){
-    cout << "match id addr " << match_id_address << " " << *match_id_address << " " << length << " " << iterator << endl;
     Match_IDs[iterator] = match_id_address;
     iterator++;
 }
@@ -72,7 +71,6 @@ int Events::get_iterator(){
 //---------------------------------------------------------------
 
 int Events::get_Match_ID(int j){
-    cout << length << " " << j << endl;
     int return_val = (*Match_IDs[j]);
     return return_val;
 }

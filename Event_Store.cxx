@@ -44,6 +44,15 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
     }
 
     for(int i = 0;i < MEMORY_LIMIT;++i) Address_arr[i] = i;
+
+    Verbose_Write = true;
+    if(Verbose_Write){
+        T_DIFF = new TH1D("FAT_PL_WR","FAT_PL_WR",1000,0,1000);
+        T_DIFF_Fine = new TH1D("FAT_PL_WR","FAT_PL_WR",2000,0,2000);
+        TFILE = new TFile("Root_Trees/Verbose_root.root","RECREATE");
+        TFILE->Add(T_DIFF);
+        TFILE->Add(T_DIFF_Fine);
+    }
 }
 
 //---------------------------------------------------------------
@@ -74,6 +83,11 @@ Event_Store::~Event_Store(){
     delete[] sys_interest;
     delete[] Address_arr;
     delete[] Max_Fill;
+
+    if(Verbose_Write){
+        TFILE->Write();
+        TFILE->Close();
+    }
 } 
 
 //---------------------------------------------------------------
@@ -116,7 +130,6 @@ void Event_Store::show_all_addresses(int type,int p){
 void Event_Store::purge(int type,int i){
 
     //delete event
-    cout << "In delete" << endl;
     if(Event[type][i]){
 
         delete Event[type][i];
@@ -125,19 +138,13 @@ void Event_Store::purge(int type,int i){
         Event_WR[type][i] = 0;
         Event_position[type][i] = nullptr;
 
-        cout << "Deleted " << type << " " << i << " at " << Address_arr[i] << " total " << event_counter[type] << endl;
         if(i < event_counter[type] - 1){
             Fill_at[type][Fill_am[type]] = i;
-            Fill_am[type]++;
-            cout << "Fill arr: ";
-            for(int o = 0;o < Fill_am[type];++o) cout << Fill_at[type][o] << " ";
-            cout << endl;
-            //Max_Fill[type] = (Max_Fill[type] < i) ? i : Max_Fill[type];
+            Fill_am[type]++;            
         }
-        else{
-            cout << " -> decrease ev num" << endl;
-            event_counter[type]--;
-        }
+
+        else event_counter[type]--;
+        
         /*if(false){
 
             //shift last event in list to free memory slot
@@ -176,22 +183,20 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
 
     double delta = 0;
     double WR_d = (double) WR;
-    
-    //cout << "-----------------" << endl;
+
     //search through event data for smallest time difference
     for(int i = 0;i < event_counter[type];++i){
         delta = (double) abs(WR - Event_WR[type][i]);
-        
-        //cout << delta/1000. << " ";
-        //if(i % 10 == 0 && i > 0) cout << endl;
-        
+
         if(in_time_windows(delta)){
             return_value = i;
+            if(Verbose_Write){
+                T_DIFF->Fill(delta/1000.);
+                if(delta/1000. <= 1.) T_DIFF_Fine->Fill(delta);
+            }
             break;
         }
     }
-    //cout << endl;
-    //cout << "-----------------" << endl;
     return return_value;
 }
 
@@ -225,12 +230,8 @@ void Event_Store::show_positions(int type){
 //---------------------------------------------------------------
 
 void Event_Store::set_permission(int type,int* event_addr,int interest_pos){
+    
     int position = *event_addr;
-    cout << "jjj " << type << " " << event_addr << " " << interest_pos << " " << position << endl;
-    if(position == -9999){
-        purge(type,position);
-        return;
-    }
     bool full_permission = Event[type][position]->Permission(interest_pos);
 
     //if all events of interest happend -> delete data
@@ -255,10 +256,8 @@ bool Event_Store::compare_match_ID(int type,int* match_ID,int event_addr){
 
         int internal_counter = Event[type][event_addr]->get_iterator();
         int** match_ID_Event = Event[type][event_addr]->get_Match_ID_address();
-        cout << "COMPARING match_id" << endl;
         //check if match_id still known (should be the case!)
         for(int i = 0;i < internal_counter;++i){
-            cout << match_ID << " " << match_ID_Event[i] << endl;
             correct_match = correct_match || (match_ID == match_ID_Event[i]);
         }
         if(!correct_match){
@@ -283,16 +282,10 @@ void Event_Store::create_Event(int type,Raw_Event* RAW){
 
     else{
         val = Fill_at[type][0];
-        cout << "NEW !!!" << endl;
-        for(int i = 0;i < Fill_am[type];++i) cout << Fill_at[type][i] << " ";
-        cout << " <- " << Fill_am[type] << endl;
         Fill_at[type][0] = Fill_at[type][Fill_am[type]-1];
         Fill_am[type]--;
 
         filled = true;
-        //event_counter[type] = Max_Fill[type];
-
-        //Max_Fill[type] = 0;
     }
 
     switch(type){
@@ -319,9 +312,6 @@ void Event_Store::create_Event(int type,Raw_Event* RAW){
             exit(0);
     }
         
-    cout << "- - - - - - - -" << endl;
-    cout << "created event " << type << " at " << val << " @ " << Event[type][val] << " total " << event_counter[type] << endl;
-    
     ev_pos = val;
 
     Event_WR[type][val] = RAW->get_WR();

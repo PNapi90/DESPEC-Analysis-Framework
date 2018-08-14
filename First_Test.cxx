@@ -313,24 +313,21 @@ TGo4EventProcessor(name) // Histograms defined here //
 TSCNUnpackProc::~TSCNUnpackProc()
 {
     
+    delete EvtBuilder[0];
+
 	Detector_Systems[3]->write();
-	double mean = 0;
-	for(int i = 0;i < val_it;++i) mean += vals[i];
-	mean /= (double) val_it;
-	double sq = 0;
-	for(int i = 0;i < val_it;++i) sq += pow(mean - vals[i],2);
-	sq = sqrt(sq)/((double) val_it);
-	cout << "MEAN " << mean << " +- " << sq << endl;
-
-
+	
 	for(int i = 0;i < 6;++i){
 		if(Detector_Systems[i]) delete Detector_Systems[i];
 		delete[] interest_array[i];
 	}
+	cout << "Deleted Detector_Systems" << endl;
 	delete[] interest_array;
 	delete[] length_interest;
 	delete[] Detector_Systems;
 	
+	
+
 	delete RAW;
 	cout << "**** TSCNUnpackProc: Delete" << endl;
 }
@@ -425,13 +422,11 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 		Int_t PrcID=psubevt->GetProcid();
 
-		cout << "PRCID " << PrcID;
-		
+				
 		//cout<<"Proc_ID is : "<<PrcID<<endl;
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 		
-		cout << " " << PrcID_Conv << endl;
 
 		if(PrcID_Conv == 0){
 			
@@ -598,7 +593,6 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
 		
-		cout << "SKIP " << SKIP_EVT_BUILDING << endl;
 			
 		if(!SKIP_EVT_BUILDING){
 			EvtBuilder[0]->set_Event(RAW);

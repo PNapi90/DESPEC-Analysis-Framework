@@ -13,7 +13,7 @@ private:
 
     ULong64_t WR;
 
-    int Match_ID;
+    int Match_ID,primary_type;
     int* Match_ID_Address;
 
     int match_filled;

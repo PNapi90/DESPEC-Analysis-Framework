@@ -7,7 +7,9 @@ using namespace std;
 
 Match::Match(int Match_ID,int primary_type,int* primary_pos,int* interest_array,int len_interest,ULong64_t WR){
     this->Match_ID = Match_ID;
+    this->primary_type = primary_type;
     Match_ID_Address = &(this->Match_ID);
+
 
     this->len_interest = len_interest;
     hit_types = new int[len_interest];
@@ -81,12 +83,9 @@ int* Match::get_filled_types(){
 
 bool Match::Full(){
     if(match_filled > len_interest){
-        cerr << "Match filled too much" << endl;
+        cerr << "Match " << Match_ID << " of primary type " << primary_type << " filled too much" << endl;
         exit(0);
     }
-    cout << "Addresses" << endl;
-    for(int i = 0;i < 6;++i) if(DATA[i]) cout << i << " " <<  DATA[i] << " " << *DATA[i] << endl;
-    //cout << endl;
     return (match_filled == len_interest);
 }
 
@@ -107,8 +106,6 @@ int Match::get_amount_Hits(){
 
 bool Match::Check_Time(ULong64_t WR_tmp,int pos){
     double threshold = 10;
-    cout << "TD" << endl;
-    cout << WR_tmp << " " << WR << " " << WR_tmp - WR << " " << DATA[pos] << " " << pos << endl;
     return ((WR_tmp - WR) > threshold);
 }
 

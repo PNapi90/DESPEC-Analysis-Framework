@@ -17,6 +17,10 @@
 //#include "FINGER_Event.h"
 
 
+#include <TH1.h>
+#include <TFile.h>
+
+
 typedef unsigned long long ULong64_t;
 
 
@@ -53,6 +57,13 @@ private:
     void set_Det_Sys_specific_coincidences();
 
 	inline bool in_time_windows(double);
+
+    //-------------------
+    TH1D* T_DIFF;
+    TH1D* T_DIFF_Fine;
+    TFile* TFILE;
+    bool Verbose_Write;
+    //-------------------
 
 public:
 	Event_Store(int,int*,int**);
