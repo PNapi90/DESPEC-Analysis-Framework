@@ -56,6 +56,11 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
         }
 
     }
+    FAT_positions = new int*[36];
+    for(int i = 0; i < 36; i++){
+	FAT_positions[i] = new int[3];
+	for (int j = 0; j < 3; j++) FAT_positions[i][j] = -1;
+    }
 
     FATIMA_T_CALIB = new FATIMA_Time_Calibration();
     FATIMA_E_CALIB = new FATIMA_Energy_Calibration();
@@ -88,7 +93,7 @@ FATIMA_Detector_System::~FATIMA_Detector_System(){
 	delete[] det_ID_QDC;
 
 	delete[] det_ids_QDC;
-    delete[] det_ids_TDC;
+	delete[] det_ids_TDC;
 
 	delete[] QLong_Raw;
 	delete[] QShort_Raw;
@@ -139,6 +144,36 @@ void FATIMA_Detector_System::load_board_channel_file(){
 		}
     }
 }
+
+//---------------------------------------------------------------
+
+void FATIMA_Detector_System::load_det_angles(){
+
+    const char* format = "%f %f %f";
+
+    ifstream file("Configuration_Files/FATIMA_Detector_Positions.txt");
+
+    if(file.fail()){
+        cerr << "Could not find FATIMA Detector Positions File!" << endl;
+        exit(0);
+    }
+
+    string line;
+    int pos_num = 0;
+    double r, theta, phi;
+
+    while(file.good()){
+        getline(file,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format,&r, &theta, &phi);
+	
+		FAT_positions[pos_num][0] = r;
+		FAT_positions[pos_num][1] = theta;
+		FAT_positions[pos_num][2] = phi;
+		pos_num++;
+    }
+}
+
 
 //---------------------------------------------------------------
 

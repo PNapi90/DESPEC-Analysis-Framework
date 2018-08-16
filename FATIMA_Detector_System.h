@@ -49,21 +49,24 @@ private:
 	//These are used for mapping mod,chn to detector
 	int** det_ID_QDC;
 	int** det_ID_TDC;
+	int** FAT_positions;
 
 	bool exiter;
 	bool no_data;
-    bool QDC_DATA;
-    std::string gain_match_filename;
+	bool QDC_DATA;
+	std::string gain_match_filename;
+	
+	bool gain_match_used; //Set in the constructor
+	bool dist_corr_used;
+	int num_TDC_modules;  //Set in the constructor
     
-    bool gain_match_used; //Set in the constructor
-    bool dist_corr_used;
-    int num_TDC_modules;  //Set in the constructor
-
-	//This is used during individual module unpacking
-    int Fired_QDC_Channels[100][2];
+	    //This is used during individual module unpacking
+	int Fired_QDC_Channels[100][2];
     
 
 	void load_board_channel_file();
+	void load_det_angles();
+	
 	void reset_fired_channels();
 	void Check_QDC_DATA(QDC_Header*);
 	void Check_TDC_DATA();
