@@ -7,7 +7,7 @@ class EventBuilder{
 
 public:
 	
-	virtual ~EventBuilder() = 0;
+	virtual ~EventBuilder(){};
 
 	virtual void set_Event(Raw_Event*) = 0;
 

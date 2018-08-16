@@ -21,7 +21,7 @@ class Detector_System{
 
 public:
 
-	virtual ~Detector_System() = 0;
+    virtual ~Detector_System(){};
 
     virtual void Process_MBS(int*) = 0;
     
@@ -32,8 +32,6 @@ public:
     virtual void get_Event_data(Raw_Event*) = 0;
 
 //    virtual void get_Event_data(Data_Stream*) = 0;
-
-    virtual void read_config_variables(std::string) = 0;
 
     virtual unsigned long** tmp_get_coarse_T() = 0;
 

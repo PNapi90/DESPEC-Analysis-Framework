@@ -103,8 +103,6 @@ public:
 
     int* get_pdata();
     
-    void read_config_variables(std::string){};
-
     ULong** tmp_get_coarse_T();
     int tmp_get_am_hits();
 

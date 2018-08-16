@@ -403,9 +403,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 	count++;
 		
-	if (count % 100000 == 0) cout << "Event " << count << " Reached!!!"<<"    Data File Number : "<<data_file_number;
-	cout << "\r";
-	    
+	if (count % 100000 == 0){
+	    cout << "Event " << count << " Reached!!!"<<"    Data File Number : "<<data_file_number;
+	    cout << "\r";
+	}
 	
 	if(cals_done) return kTRUE; //BAD!!!!
 	//if(count > 500000) return kTRUE;
@@ -460,8 +461,6 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		Int_t sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
 		
-		Detector_Systems[PrcID_Conv]->read_config_variables("Configuration_Files/Detector_Setup_File.txt");
-
 				
 		if(PrcID_Conv == 0){
 			

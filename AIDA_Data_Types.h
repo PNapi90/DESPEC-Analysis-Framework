@@ -51,7 +51,7 @@ class ADCDataItem{
 		unsigned int GetADCData();
 };
 
-class InformationDataItem{
+/*class InformationDataItem{
 
 	private:
 
@@ -82,9 +82,9 @@ class InformationDataItem{
 		unsigned long GetTimestampLSB();
 
 		void SetTimestamp(unsigned long MSB);
-};
+};*/
 
-class CalibratedADCDataItem{
+/*class CalibratedADCDataItem{
 
 	private:
 		short dssd;
@@ -117,7 +117,7 @@ class CalibratedADCDataItem{
 
 		//Comparrison operators
 		bool operator<( const CalibratedADCDataItem &dataItem) const;
-};
+};*/
 
 /*class Cluster{
 

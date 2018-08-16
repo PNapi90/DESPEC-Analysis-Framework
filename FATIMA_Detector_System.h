@@ -70,6 +70,9 @@ private:
 	void Calibrate_QDC(int);
 	void Gain_Match_QDC(int);
 	void Calibrate_TDC(int);
+	
+	void read_config_variables(std::string);
+
 
 	//This could be used to activate deactivate individual
 	//detectors
@@ -102,9 +105,7 @@ public:
 	void Process_MBS(int*);
 	void get_Event_data(Raw_Event*);
 	int* get_pdata();
-	
-	void read_config_variables(std::string);
-	
+		
 
 	unsigned long** tmp_get_coarse_T(){return NULL;};
     int tmp_get_am_hits(){return 0;};
