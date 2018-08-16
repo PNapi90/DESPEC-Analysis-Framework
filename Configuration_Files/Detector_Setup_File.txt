@@ -1,5 +1,22 @@
 # Setup File for Detector Systems
-# 
+#
+#---------------------------- 
+# GENERAL_CONFIGURATION
+# ---------------------------- 
 White_Rabbit_Enabled: 1
 #
-FATIMA_Gain_Match_Enabled: 1
+FATIMA_Gain_Match_Enabled: 0
+#
+Min_Angle_Nearest_Neighbour_Exclusion: 0
+#
+# ---------------------------- 
+# FATIMA_CONFIGURATION
+# ---------------------------- 
+#
+FATIMA_Gain_Match_Enabled: 0
+#
+FATIMA_Distance_Correction: 0
+#
+Number_of_FATIMA_TDC_Modules: 1
+#
+# ---------------------------- 

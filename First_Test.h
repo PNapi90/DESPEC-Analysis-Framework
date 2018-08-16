@@ -217,10 +217,13 @@ using namespace std;
 			string input_data_path_old;
 
 			bool cals_done,WR_used;
-			bool WHITE_RABBIT_USED;
+			bool WHITE_RABBIT_USED; // Read from General Setup File
 			bool FAT_make_raw_histograms;
-			bool FAT_gain_match_used;
+			bool FAT_gain_match_used; // Read from General Setup File
 			bool FAT_gain_match_done;
+			bool FAT_dist_corr_used; // Read from General Setup File
+			int FAT_exclusion_dist; // Read from General Setup File
+			int FAT_num_TDC_modules; // Read from General Setup File
 			int file_pwd, file_end;
 			std::string gain_match_filename;
 			int data_file_number = 0;

@@ -14,7 +14,6 @@ using namespace std;
 
 FATIMA_Detector_System::FATIMA_Detector_System(){
 
-    num_TDC_modules = 1;
     FAT_evt = 0;
 	
     //set amount of QDCs and TDCs
@@ -547,5 +546,32 @@ void FATIMA_Detector_System::set_Gain_Match_Filename(string GM_filename){
 //---------------------------------------------------------------
 
 int* FATIMA_Detector_System::get_pdata(){return pdata;}
+
+//---------------------------------------------------------------
+
+void FATIMA_Detector_System::read_config_variables(string config_filename){
+    
+    ifstream file(config_filename);
+
+    if(file.fail()){
+        cerr << "Could not find File for setup parameters!" << endl;
+        exit(0);
+    }
+
+    string line;
+
+    file.ignore(256,':');
+    file.ignore(256,':');
+    file.ignore(256,':');
+    file.ignore(256,':');
+    file >> gain_match_used;//dummy_var;
+
+    file.ignore(256,':');
+    file >> dist_corr_used;//dummy_var;   
+    
+    file.ignore(256,':');
+    file >> num_TDC_modules;//dummy_var;   
+    
+};
 
 //---------------------------------------------------------------

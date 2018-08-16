@@ -915,7 +915,7 @@ void BS_Detector_System::FRS_Unpack(TGo4MbsSubEvent* psubevent){
 
     pdata = psubevt->GetDataField();
     len = 0;	  
-    vme_chn;
+    //vme_chn;
     lenMax = (psubevt->GetDlen()-2)/2;
     
     const auto it_Crate = ElecMod->MapCrates.find(psubevt->GetProcid());
@@ -1211,7 +1211,7 @@ void BS_Detector_System::FRS_Scaler_Module(int ID){
 
     
     const auto it_Module = it_Crate->second.find(vme_geo);
-	int IdMod = it_Module->second;
+	//int IdMod = it_Module->second;
 	if(it_Module == it_Crate->second.end())
 	    std::cout<<"E> Crate Mapping does not have this module (vmeGEO==) "<<vme_geo<<" in Crate :"<<psubevt->GetProcid()<<std::endl;
     
@@ -1328,9 +1328,9 @@ void BS_Detector_System::FRS_Rest_Of_Unpacking(int ID){
 	    vme_chn = getbits(*pdata,2,1,5);
 	    
 	    vme[ID][vme_geo][vme_chn] = getbits(*pdata,1,1,16);
-	    Int_t vme_statusVD = getbits(*pdata,14,1,1);
-	    Int_t vme_statusUN = getbits(*pdata,13,1,1);
-	    Int_t vme_statusOV = getbits(*pdata,12,1,1);
+	    //Int_t vme_statusVD = getbits(*pdata,14,1,1);
+	    //Int_t vme_statusUN = getbits(*pdata,13,1,1);
+	    //Int_t vme_statusOV = getbits(*pdata,12,1,1);
 	    
 	    pdata++;
 	    
@@ -1783,8 +1783,8 @@ void BS_Detector_System::FRS_Calib(){
 	} 
       for(int i=0; i<64; i++)
 	{
-	  int x_bin = (scaler_time_check % 3000);
-	  int x_bin_short = (scaler_time_check % 300);
+	  //int x_bin = (scaler_time_check % 3000);
+	  //int x_bin_short = (scaler_time_check % 300);
 	  int y_set;
 	  if(check_increase_time[i]>0)
 	    {
@@ -1812,8 +1812,8 @@ void BS_Detector_System::FRS_Calib(){
 	}
       for(int i=0; i<64; i++)
 	{
-	  int x_bin = (scaler_spill_check % 300);
-	  int x_bin_short = (scaler_spill_check % 30);
+	  //int x_bin = (scaler_spill_check % 300);
+	  //int x_bin_short = (scaler_spill_check % 30);
 	  int y_set;
 	  if(check_increase_spill[i]>0)
 	    {
@@ -1847,7 +1847,7 @@ void BS_Detector_System::FRS_Calib(){
     }
   //----- up to here added by YKT 23.05 --------// 
    
-  UInt_t first[64];
+   UInt_t first[64];
   //  Int_t  first[64]; 
 
   if (fbFirstEvent)
@@ -2250,8 +2250,8 @@ void BS_Detector_System::FRS_Calib(){
       
       if(countx>1)
 	{
-	  float x0=tpc->x_factor[i][0]*r_x0 + tpc->x_offset[i][0];
-	  float x1=tpc->x_factor[i][1]*r_x1 + tpc->x_offset[i][1];
+	  //float x0=tpc->x_factor[i][0]*r_x0 + tpc->x_offset[i][0];
+	  //float x1=tpc->x_factor[i][1]*r_x1 + tpc->x_offset[i][1];
 
 	}    
     }
@@ -3152,13 +3152,13 @@ void BS_Detector_System::FRS_Anal(){
 
 
       static const double anode_width = 10.;//cm
-      double music_dX = anode_width*sqrt(id_a4*id_a4+id_b4*id_b4+1.);
+      //double music_dX = anode_width*sqrt(id_a4*id_a4+id_b4*id_b4+1.);
       //h_dEdx_betagammaAll->Fill(id_beta*id_gamma,de[2]/music_dX);
       //h_dEdx_betagammaAllZoom->Fill(id_beta*id_gamma,de[2]/music_dX);
-      double music_dEtemp0 = music_e3[0]*music->e3_gain[0] + music->e3_off[0];
+      //double music_dEtemp0 = music_e3[0]*music->e3_gain[0] + music->e3_off[0];
       for(int i=0;i<4;++i)
 	{
-	  double music_dEtemp = music_e3[i]*music->e3_gain[i] + music->e3_off[i];
+	  //double music_dEtemp = music_e3[i]*music->e3_gain[i] + music->e3_off[i];
 	  //h_dEdx_betagamma[i]->Fill(id_beta*id_gamma,music_dEtemp/music_dX);
 	  /*if(i>0)
 	    h_DiffdEdx_betagamma[i]->Fill(id_beta*id_gamma,(music_dEtemp-music_dEtemp0)/music_dX);*/
@@ -3502,11 +3502,11 @@ void BS_Detector_System::Setup_Parameters(){
   // an->SetupPolyCond("cID_Z_AoQ(0)", 5, my_cID_Z_AoQ_points);
 
 
-  Float_t my_cID_dEToF_points[4][2] = 
+  /*Float_t my_cID_dEToF_points[4][2] = 
     {{    0.,    0.},
      {    0., 4000.},
      {40000., 4000.},
-     {40000.,    0.}}; 
+     {40000.,    0.}}; */
   //an->SetupPolyCond("cID_dEToF", 4, my_cID_dEToF_points);
    
 
@@ -4226,6 +4226,8 @@ void BS_Detector_System::Setup_Parameters(){
 
   frs->a2AoQCorr = 0.00095;
   frs->a4AoQCorr = 0.0000;//0.0015
+  
+  frs->fill_raw_histos = true;
 
 	
   // MUSIC 1 velocity correction 
@@ -4568,8 +4570,8 @@ Bool_t BS_Detector_System::Check_PolyCond(Float_t* P, Float_t** V, int n ){
         }
     }
     
-    if(cn&1 == 0) return false;
-    if(cn&1 == 1) return true;
+    if((cn&1) == 0) return false;
+    if((cn&1) == 1) return true;
     //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
 
 }
@@ -4596,8 +4598,8 @@ Bool_t BS_Detector_System::Check_PolyCond_Multi(Float_t* P, Float_t*** V, int n,
         }
     }
     
-    if(cn&1 == 0) return false;
-    if(cn&1 == 1) return true;
+    if((cn&1) == 0) return false;
+    if((cn&1) == 1) return true;
 
     //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
 
@@ -4623,8 +4625,8 @@ Bool_t BS_Detector_System::Check_PolyCond_X_Y(Float_t X, Float_t Y, Float_t** V,
         }
     }
     
-    if(cn&1 == 0) return false;
-    if(cn&1 == 1) return true;
+    if((cn&1) == 0) return false;
+    if((cn&1) == 1) return true;
     //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
 
 }
@@ -4651,8 +4653,8 @@ Bool_t BS_Detector_System::Check_PolyCond_Multi_X_Y(Float_t X, Float_t Y, Float_
         }
     }
     
-    if(cn&1 == 0) return false;
-    if(cn&1 == 1) return true;
+    if((cn&1) == 0) return false;
+    if((cn&1) == 1) return true;
 
     //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
 

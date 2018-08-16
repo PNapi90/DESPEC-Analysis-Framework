@@ -6,10 +6,14 @@
 #include <string>
 #include <cmath>
 
+#include <stdlib.h>
+#include <cstdlib>
+
 #include <TFile.h>
 #include <TH1.h>
 
 #include "AIDA_Headers.h"
+#include "AIDA_Data_Types.h"
 
 #include "Detector_System.cxx"
 
@@ -26,8 +30,10 @@ private:
                 
 	Int_t sub_evt_length;
 	
-	double tmp_x, tmp_y, tmp_z;
-	double tmp_stopping_layer;
+	int AIDA_counter;
+	
+	int tmp_x, tmp_y, tmp_z;
+	int tmp_stopping_layer;
 	bool x_check, y_check;
 	
 	int** FEE_allocation;
@@ -46,23 +52,30 @@ private:
 	ULong64_t tmp_AIDA_Discriminator_end;
 	ULong64_t AIDA_Discriminator_full;
 	
-	/*int feeChannelOrder[64]={62, 63, 59, 60, 61, 56, 57, 58, 52, 53, 54, 55, 49, 50, 51, 45,
-				 46, 47, 48, 42, 43, 44, 38, 39, 40, 41, 35, 36, 37, 31, 32, 33,
-				 34, 28, 29, 30, 24, 25, 26, 27, 21, 22, 23, 17, 18, 19, 20, 14,
-				 15, 16, 10, 11, 12,  7,  3,  0,  8,  4,  1,  9,  5,  2, 13,  6};*/
+	ADCDataItem decayItem;
+	ADCDataItem implantItem;
+
 	
+	//int* feeChannelOrder/*[64] = {62, 63, 59, 60, 61, 56, 57, 58, 52, 53, 54, 55, 49, 50, 51, 45,
+			  /*46, 47, 48, 42, 43, 44, 38, 39, 40, 41, 35, 36, 37, 31, 32, 33,
+			  34, 28, 29, 30, 24, 25, 26, 27, 21, 22, 23, 17, 18, 19, 20, 14,
+			  15, 16, 10, 11, 12,  7,  3,  0,  8,  4,  1,  9,  5,  2, 13,  6};*/
 	
+	int* feeChannelOrder; /*= {62, 63, 59, 60, 61, 56, 57, 58, 52, 53, 54, 55, 49, 50, 51, 45,
+			  46, 47, 48, 42, 43, 44, 38, 39, 40, 41, 35, 36, 37, 31, 32, 33,
+			  34, 28, 29, 30, 24, 25, 26, 27, 21, 22, 23, 17, 18, 19, 20, 14,
+			  15, 16, 10, 11, 12,  7,  3,  0,  8,  4,  1,  9,  5,  2, 13,  6};*/
 	
 	void load_config_file();
-	
-	void get_coordinate(int, int, AIDA_ADC_1*);
-	void Implant_List_Analyser();
+	void load_channel_order();
+
+	void get_decay_coordinate();
 	
 	void Pause_Timestamp(AIDA_Time_First*);
 	void Resume_Timestamp(AIDA_Time_First*);
 	void Set_AIDA_Timestamp(AIDA_Time_First*);
 	void Set_AIDA_Implantation(AIDA_ADC_1*);
-	void Check_AIDA_ADC_DATA(AIDA_ADC_1*);
+	void Unpack_AIDA_Decay_DATA(AIDA_ADC_1*);
 	void Check_AIDA_Disc_DATA();
 
 public:
@@ -82,6 +95,8 @@ public:
 	void Process_MBS(int*){};
 	void get_Event_data(Raw_Event*);
 	int* get_pdata();
+	
+	void read_config_variables(std::string){};
 
 	unsigned long** tmp_get_coarse_T(){return NULL;};
 

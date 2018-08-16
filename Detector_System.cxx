@@ -29,10 +29,11 @@ public:
 
     virtual void Process_AIDA(TGo4MbsSubEvent* psubevt) = 0;
 
-
     virtual void get_Event_data(Raw_Event*) = 0;
 
 //    virtual void get_Event_data(Data_Stream*) = 0;
+
+    virtual void read_config_variables(std::string) = 0;
 
     virtual unsigned long** tmp_get_coarse_T() = 0;
 

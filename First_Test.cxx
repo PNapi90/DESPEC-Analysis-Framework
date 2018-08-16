@@ -31,7 +31,7 @@
 #include "FATIMA_Detector_System.h"
 #include "PLASTIC_Detector_System.h"
 #include "GALILEO_Detector_System_TEST.h"
-#include "BS_Detector_System.h"
+#include "FRS_Detector_System.h"
 
 #include "Data_Stream.cxx"
 #include "White_Rabbit.h"
@@ -288,7 +288,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	// all non used systems intialized as NULL 
 	//-> calling uninitialized system will cause an error !
-	Detector_Systems[0] = !Used_Systems[0] ? NULL : new BS_Detector_System();
+	Detector_Systems[0] = !Used_Systems[0] ? NULL : new FRS_Detector_System();
 	Detector_Systems[1] = !Used_Systems[1] ? NULL : new AIDA_Detector_System();
 	Detector_Systems[2] = !Used_Systems[2] ? NULL : new PLASTIC_Detector_System();
 	Detector_Systems[3] = !Used_Systems[3] ? NULL : new FATIMA_Detector_System();
@@ -442,7 +442,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	bool used[5];
 	for(int i = 0;i < 5;++i) used[i] = false;
 	
-	bool WHITE_RABBIT_USED = true;
+	//bool WHITE_RABBIT_USED = true;
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -460,6 +460,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		Int_t sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
 		
+		Detector_Systems[PrcID_Conv]->read_config_variables("Configuration_Files/Detector_Setup_File.txt");
+
 				
 		if(PrcID_Conv == 0){
 			
@@ -1017,15 +1019,18 @@ void TSCNUnpackProc::read_setup_parameters(){
     string line;
     string var_name;
     int dummy_var;
-    
+    //file.ignore(256,'GENERAL_CONFIGURATION');
+
+
     file.ignore(256,':');
     file >> WHITE_RABBIT_USED;//dummy_var;
-    //if (dummy_var == 0) WHITE_RABBIT_USED = false;
-    //else if (dummy_var == 1) WHITE_RABBIT_USED = true;
+
     file.ignore(256,':');
     file >> FAT_gain_match_used;//dummy_var;
-    //if (dummy_var == 0) FAT_gain_match_used = false;
-    //else if (dummy_var == 1) FAT_gain_match_used = true;
+
+    file.ignore(256,':');
+    file >> FAT_exclusion_dist;//dummy_var;
+
 
     cout<<endl;
     cout<<endl;
@@ -1035,6 +1040,8 @@ void TSCNUnpackProc::read_setup_parameters(){
     else if(!WHITE_RABBIT_USED) cout<<"White Rabbit: Disabled"<<endl;
     if(FAT_gain_match_used) cout<<"FATIMA Gain Matching: Enabled"<<endl;
     else if(!FAT_gain_match_used) cout<<"FATIMA Gain Matching: Disabled"<<endl;
+    if(FAT_exclusion_dist > 0) cout<<"FATIMA Detectors Excluded if Linear Difference Exceeds "<<FAT_exclusion_dist<<" degrees"<<endl;
+    else if(FAT_exclusion_dist == 0) cout<<"'Nearest Neighbour Exclusion': Disabled (Distance set to 0)"<<endl;
     cout<<"////////////////////////////////////"<<endl;
     cout<<endl;
     cout<<endl;

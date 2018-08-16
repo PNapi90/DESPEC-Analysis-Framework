@@ -56,6 +56,7 @@ private:
     std::string gain_match_filename;
     
     bool gain_match_used; //Set in the constructor
+    bool dist_corr_used;
     int num_TDC_modules;  //Set in the constructor
 
 	//This is used during individual module unpacking
@@ -96,11 +97,14 @@ public:
 	void Process_AIDA(TGo4MbsSubEvent* psubevt){};
 
 
-	
+
 	
 	void Process_MBS(int*);
 	void get_Event_data(Raw_Event*);
 	int* get_pdata();
+	
+	void read_config_variables(std::string);
+	
 
 	unsigned long** tmp_get_coarse_T(){return NULL;};
     int tmp_get_am_hits(){return 0;};
