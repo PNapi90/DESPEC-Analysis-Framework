@@ -149,7 +149,7 @@ void FATIMA_Detector_System::load_board_channel_file(){
 
 void FATIMA_Detector_System::load_det_angles(){
 
-    const char* format = "%f %f %f";
+    const char* format = "%d %lf %lf %lf";
 
     ifstream file("Configuration_Files/FATIMA_Detector_Positions.txt");
 
@@ -159,18 +159,17 @@ void FATIMA_Detector_System::load_det_angles(){
     }
 
     string line;
-    int pos_num = 0;
+    int pos_num;
     double r, theta, phi;
 
     while(file.good()){
         getline(file,line,'\n');
         if(line[0] == '#') continue;
-        sscanf(line.c_str(),format,&r, &theta, &phi);
+        sscanf(line.c_str(),format, &pos_num, &r, &theta, &phi);
 	
 		FAT_positions[pos_num][0] = r;
 		FAT_positions[pos_num][1] = theta;
 		FAT_positions[pos_num][2] = phi;
-		pos_num++;
     }
 }
 
