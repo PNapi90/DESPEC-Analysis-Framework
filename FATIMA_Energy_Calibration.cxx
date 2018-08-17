@@ -51,6 +51,8 @@ double FATIMA_Energy_Calibration::Calibrate(double E,int det_id){
     //calibrate using Horner's method (https://en.wikipedia.org/wiki/Horner%27s_method)
     double Energy_c = calib_coeffs[det_id][0];
     for(int i = 1;i < 5;++i) Energy_c = Energy_c*E + calib_coeffs[det_id][i];
+    
+    Energy_c += (static_cast<double>(rand())/static_cast<double>(RAND_MAX+0.5));
     return Energy_c;
 }
 

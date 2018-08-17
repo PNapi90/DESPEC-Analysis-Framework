@@ -20,7 +20,7 @@ class ADCDataItem{
 		unsigned int channelID;	// Channel ID
 		unsigned int adcRange;		// ADC range: 0 = low energy, 1 = high energy
 		int x_position, y_position, layer_number; // Data Position
-
+		double calibrated_energy;
 		
 
 	public:
@@ -39,6 +39,7 @@ class ADCDataItem{
 		void Set_X(int x);
 		void Set_Y(int y);
 		void Set_Layer(int layer);
+		void Set_CalEnergy(double);
 		int Get_X();
 		int Get_Y();
 		int Get_Layer();

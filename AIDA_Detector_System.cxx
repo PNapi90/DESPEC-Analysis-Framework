@@ -1,4 +1,5 @@
 #include "AIDA_Detector_System.h"
+#include "AIDA_Data_Types.h"
 
 #include <cstdlib>
 
@@ -12,20 +13,43 @@ AIDA_Detector_System::AIDA_Detector_System(){
     
     for(int i = 0; i < 128; i++) check_FEE64_timestamp[i] = true;
     
-    feeChannelOrder = new int[64];
-    for(int i = 0; i < 64; i++) check_FEE64_timestamp[i] = -1;
+    feeChannelOrder = new int[num_channels];
+    for(int i = 0; i < num_channels; i++) check_FEE64_timestamp[i] = -1;
 
-    FEE_allocation = new int*[24];
+    FEE_allocation = new int*[num_FEE64s];
+    FEE_polarity_map = new int[num_FEE64s];
+    channel_offsets_map = new double*[num_channels];
 
-    for(int i = 0;i < 24;++i){
+    for(int i = 0; i < num_FEE64s; ++i){
 	    FEE_allocation[i] = new int[3];
-	    for(int j = 0;j < 3;++j){
-		FEE_allocation[i][j] = -1;
-	}
-    
+	    FEE_polarity_map[i] = 0;
+	    channel_offsets_map[i] = new double[num_channels];
+	    
+	    for(int j = 0; j < 3; ++j)			FEE_allocation[i][j] = -1;
+	    for(int k = 0; k < num_channels; ++k)	channel_offsets_map[i][k] = -1;    
     }
     
-    /*unsigned int feeChannelOrder[64] = {62, 63, 59, 60, 61, 56, 57, 58, 52, 53, 54, 55, 49, 50, 51, 45,
+    ADCLowEnergyGain = new double*[num_FEE64s];
+    ADCHighEnergyGain = new double*[num_FEE64s];
+
+    for(int i = 0; i < num_FEE64s; ++i){
+	    ADCLowEnergyGain[i]  = new double[num_channels];	//keV/ch
+	    ADCHighEnergyGain[i] = new double[num_channels];	//MeV/ch
+	    
+	    for(int j = 0; j < num_channels; ++j){
+
+		ADCLowEnergyGain[i][j]  = 0.7;	//keV/ch
+		ADCHighEnergyGain[i][j] = 0.7; 	//MeV/ch
+		
+	    }
+
+	    
+	    
+	    
+    }
+
+    
+    /*unsigned int feeChannelOrder[num_channels] = {62, 63, 59, 60, 61, 56, 57, 58, 52, 53, 54, 55, 49, 50, 51, 45,
 			  46, 47, 48, 42, 43, 44, 38, 39, 40, 41, 35, 36, 37, 31, 32, 33,
 			  34, 28, 29, 30, 24, 25, 26, 27, 21, 22, 23, 17, 18, 19, 20, 14,
 			  15, 16, 10, 11, 12,  7,  3,  0,  8,  4,  1,  9,  5,  2, 13,  6};*/
@@ -74,9 +98,9 @@ void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
 
 	//cout<<"Number into the cycle  "<<(pdata - pdata_start)<<endl;
     
-	AIDA_Time_First* t0_head  = (AIDA_Time_First*) this->pdata;
-	AIDA_ADC_1* ADC_head  = (AIDA_ADC_1*) this->pdata;
-	AIDA_1st_Disc* AIDA_disc  = (AIDA_1st_Disc*) this->pdata;
+	AIDA_Time_First* t0_head  = (AIDA_Time_First*) pdata;
+	AIDA_ADC_1* ADC_head  = (AIDA_ADC_1*) pdata;
+	AIDA_1st_Disc* AIDA_disc  = (AIDA_1st_Disc*) pdata;
 	
     	if(t0_head->check == 2 && t0_head->infocode == 2) Pause_Timestamp(t0_head); // Pause Timestamp
     	else if(t0_head->check == 2 && t0_head->infocode == 3) Resume_Timestamp(t0_head); // Resume Timestamp
@@ -85,12 +109,12 @@ void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
 	    cout<<"Error: AIDA WR Timestamp 2nd Part Should not happen here!"<<endl;
 	    cout<<"AIDA WR Timestamp was split across Subevents!"<<endl;
 
-	    this->pdata++;
+	    pdata++;
 
 	    //exit(0);
 	     
 	}
-	else if(t0_head->check == 2 && t0_head->infocode == 5) Set_AIDA_Timestamp(t0_head); // White Rabbit Timestamp marker
+	else if(t0_head->check == 2 && t0_head->infocode == 5) Set_AIDA_Timestamp(); // White Rabbit Timestamp marker
 	//else if(t0_head->check == 2 && t0_head->infocode == 6) Set_AIDA_Timestamp(t0_head); // AIDA Disc Data
 	else if(t0_head->check == 2 && t0_head->infocode == 8){
 	    
@@ -98,26 +122,15 @@ void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
 	    exit(0);
 	
 	}
-	else if(ADC_head->check == 3 && ADC_head->ADC_range == 1){
-	    
-	    Set_AIDA_Implantation(ADC_head);
-	
-	    this->pdata++;
-	}
-	else if(ADC_head->check == 3 && ADC_head->ADC_range == 0){
-	    
-	    Unpack_AIDA_Decay_DATA(ADC_head); // Set_AIDA_DECAY/NOISE(ADC_head);
-	
-	    this->pdata++;
-
-	}
-	else if(AIDA_disc->check == 8 && AIDA_disc->second_check == 6) this->pdata++; //Check_AIDA_Disc_DATA();
+	else if(ADC_head->check == 3 && ADC_head->ADC_range == 1) Set_AIDA_Implantation(ADC_head);
+	else if(ADC_head->check == 3 && ADC_head->ADC_range == 0) Unpack_AIDA_Decay_DATA(ADC_head); // Set_AIDA_DECAY/NOISE(ADC_head);
+	else if(AIDA_disc->check == 8 && AIDA_disc->second_check == 6) pdata++; //Check_AIDA_Disc_DATA();
 
 	else{ cout<<"Unidentified Thing:   AIDA Check = "<<t0_head->check<<"  INFO CODE = "<<t0_head->infocode<<"  FEE64???  "<<t0_head->FEE64_num<<endl;
-	    cout << hex << *(this->pdata) <<endl;
+	    cout << hex << *(pdata) <<endl;
 	}
 	
-	this->pdata++;
+	pdata++;
 
     }
     
@@ -149,11 +162,20 @@ void AIDA_Detector_System::Resume_Timestamp(AIDA_Time_First* t0_head){
 
 //---------------------------------------------------------------
 
-void AIDA_Detector_System::Set_AIDA_Timestamp(AIDA_Time_First* t0_head){
+void AIDA_Detector_System::Set_AIDA_Timestamp(){
     
     //cout<<"AIDA Timestamp!!!"<<endl;
     
-    tmp_AIDA_t0_0_15 = t0_head->time_part;
+    tmp_AIDA_t0_0_15  = *pdata   & 0x0000FFFF;  		    
+    tmp_AIDA_t0_36_63 = *pdata++ & 0x0FFFFFFF;  		    
+    tmp_AIDA_t0_16_35 = *pdata++ & 0x000FFFFF;  		    
+    
+    AIDA_t0 	 =  tmp_AIDA_t0_36_63 + (tmp_AIDA_t0_16_35 << 28) + (tmp_AIDA_t0_0_15 << 48);
+    AIDA_t0_base =  (tmp_AIDA_t0_16_35 << 28) + (tmp_AIDA_t0_0_15 << 48);
+    
+    pdata++;
+    
+    /*tmp_AIDA_t0_0_15 = t0_head->time_part;
 
     pdata++;
     
@@ -171,10 +193,10 @@ void AIDA_Detector_System::Set_AIDA_Timestamp(AIDA_Time_First* t0_head){
     AIDA_t0 	 =  tmp_AIDA_t0_36_63 + (tmp_AIDA_t0_16_35 << 28) + (tmp_AIDA_t0_0_15 << 48);
     AIDA_t0_base =  (tmp_AIDA_t0_16_35 << 28) + (tmp_AIDA_t0_0_15 << 48);
     
-    pdata++;
+    pdata++;*/
     
-    //cout<<"AIDA Timestamp = "<<AIDA_t0<<endl;
-    //cout<<"AIDA Timestamp Base = "<<AIDA_t0_base<<endl;
+    cout<<"AIDA Timestamp = "<<AIDA_t0<<endl;
+    cout<<"AIDA Timestamp Base = "<<AIDA_t0_base<<endl;
 
 
 }
@@ -185,6 +207,14 @@ void AIDA_Detector_System::Set_AIDA_Implantation(AIDA_ADC_1* ADC_head){
     
     cout<<"Implantation event!!"<<endl;
     
+    implantItem.Set_Implant_Data(pdata, AIDA_t0_base);
+
+    get_implantation_coordinate();
+    
+    implantItem.Set_CalEnergy(((((double)implantItem.GetADCData()-adcZero)*(double)FEE_polarity_map[implantItem.GetFEE64ID()-1])
+			- channel_offsets_map[implantItem.GetFEE64ID()-1][implantItem.GetChannelID()])*ADCLowEnergyGain[implantItem.GetFEE64ID()-1][implantItem.GetChannelID()]);
+    
+
     pdata++;
     
 }
@@ -199,6 +229,14 @@ void AIDA_Detector_System::Unpack_AIDA_Decay_DATA(AIDA_ADC_1* ADC_head){
     decayItem.Set_Decay_Data(pdata, AIDA_t0_base);
       
     get_decay_coordinate();
+    
+    
+    decayItem.Set_CalEnergy(((((double)decayItem.GetADCData()-adcZero)*(double)FEE_polarity_map[decayItem.GetFEE64ID()-1])
+			- channel_offsets_map[decayItem.GetFEE64ID()-1][decayItem.GetChannelID()])*ADCLowEnergyGain[decayItem.GetFEE64ID()-1][decayItem.GetChannelID()]);
+    
+    
+    
+    pdata++;
     
     //decayItem.Print_Event();
 
@@ -223,6 +261,57 @@ void AIDA_Detector_System::Check_AIDA_Disc_DATA(){
 //---------------------------------------------------------------
 
 void AIDA_Detector_System::get_Event_data(Raw_Event* RAW){}
+
+//---------------------------------------------------------------
+
+void AIDA_Detector_System::load_polarity_file(){
+
+    const char* format = "%d %d";
+
+    ifstream file("Configuration_Files/AIDA_polarity.txt");
+
+    if(file.fail()){
+        cerr << "Could not find AIDA Polarity File!" << endl;
+        exit(0);
+    }
+
+    string line;
+    int FEE_num,	Polarity;
+    while(file.good()){
+        getline(file,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format, &FEE_num, &Polarity);
+	FEE_polarity_map[FEE_num-1] = Polarity;
+	
+    }
+}
+
+
+//---------------------------------------------------------------
+
+void AIDA_Detector_System::load_offsets_file(){
+
+    const char* format = "%d %d %lf";
+
+    ifstream file("Configuration_Files/AIDA_offsets.txt");
+
+    if(file.fail()){
+        cerr << "Could not find AIDA Offsets File!" << endl;
+        exit(0);
+    }
+
+    string line;
+    int FEE_num,	Channel_num;
+    double  Offset;
+    while(file.good()){
+        getline(file,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format, &FEE_num, &Channel_num, &Offset);
+	channel_offsets_map[FEE_num-1][Channel_num] = Offset;
+	
+    }
+}
+
 
 //---------------------------------------------------------------
 
@@ -327,6 +416,57 @@ void AIDA_Detector_System::get_decay_coordinate(){
     tmp_z = FEE_allocation[FEE_ID - 1][0];
     
     decayItem.Set_Layer(tmp_z);
+
+}
+
+//---------------------------------------------------------------
+
+void AIDA_Detector_System::get_implantation_coordinate(){
+    
+    int FEE_ID = implantItem.GetFEE64ID();
+    int Channel_ID = implantItem.GetChannelID();
+
+    if(FEE_allocation[FEE_ID - 1][1] == 0){
+	
+	//x_number++; // Set X to -1
+    
+	if(FEE_allocation[FEE_ID - 1][2] == 1){
+	    
+	    tmp_x = feeChannelOrder[Channel_ID];
+	    
+	}    
+	if(FEE_allocation[FEE_ID - 1][2] == 2){
+	    
+	    tmp_x = (127 - feeChannelOrder[Channel_ID]);
+
+	}
+	
+	implantItem.Set_X(tmp_x);
+	
+    }
+    if(FEE_allocation[FEE_ID - 1][1] == 1){
+	
+	//y_check = true; // Set Y to -1
+    
+	if(FEE_allocation[FEE_ID - 1][2] == 1){
+	    
+	    tmp_y = feeChannelOrder[Channel_ID];
+
+	    
+	}    
+	if(FEE_allocation[FEE_ID - 1][2] == 2){
+	    
+	    tmp_y = (127 - feeChannelOrder[Channel_ID]);
+		    
+	}
+	
+	implantItem.Set_Y(tmp_y);
+	
+    }
+    
+    tmp_z = FEE_allocation[FEE_ID - 1][0];
+    
+    implantItem.Set_Layer(tmp_z);
 
 }
 

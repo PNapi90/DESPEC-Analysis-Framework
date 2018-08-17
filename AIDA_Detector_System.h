@@ -22,6 +22,13 @@ typedef unsigned long long ULong64_t;
 class AIDA_Detector_System : public Detector_System{
 
 private:
+
+	int num_FEE64s = 24;		//Not just the number in use but the highest number ID that is used
+	int num_DSSSDs = 6;		//Total number of DSSD you are implanting in
+	int num_channels = 64;		//Will remain fixed. Number of channels per FEE
+	int masterFEE64 = 6;
+	double adcZero = 32768; 	//2**15
+	
 	
 	Int_t* pdata;
 	Int_t* pdata_start;
@@ -54,26 +61,29 @@ private:
 	
 	ADCDataItem decayItem;
 	ADCDataItem implantItem;
-
-	
-	//int* feeChannelOrder/*[64] = {62, 63, 59, 60, 61, 56, 57, 58, 52, 53, 54, 55, 49, 50, 51, 45,
-			  /*46, 47, 48, 42, 43, 44, 38, 39, 40, 41, 35, 36, 37, 31, 32, 33,
-			  34, 28, 29, 30, 24, 25, 26, 27, 21, 22, 23, 17, 18, 19, 20, 14,
-			  15, 16, 10, 11, 12,  7,  3,  0,  8,  4,  1,  9,  5,  2, 13,  6};*/
 	
 	int* feeChannelOrder; /*= {62, 63, 59, 60, 61, 56, 57, 58, 52, 53, 54, 55, 49, 50, 51, 45,
 			  46, 47, 48, 42, 43, 44, 38, 39, 40, 41, 35, 36, 37, 31, 32, 33,
 			  34, 28, 29, 30, 24, 25, 26, 27, 21, 22, 23, 17, 18, 19, 20, 14,
 			  15, 16, 10, 11, 12,  7,  3,  0,  8,  4,  1,  9,  5,  2, 13,  6};*/
+			  
+	int* FEE_polarity_map;
+	double** channel_offsets_map;
 	
+	double** ADCLowEnergyGain;
+	double** ADCHighEnergyGain;
+	
+	void load_polarity_file();
+	void load_offsets_file();
 	void load_config_file();
 	void load_channel_order();
 
 	void get_decay_coordinate();
+	void get_implantation_coordinate();
 	
 	void Pause_Timestamp(AIDA_Time_First*);
 	void Resume_Timestamp(AIDA_Time_First*);
-	void Set_AIDA_Timestamp(AIDA_Time_First*);
+	void Set_AIDA_Timestamp();
 	void Set_AIDA_Implantation(AIDA_ADC_1*);
 	void Unpack_AIDA_Decay_DATA(AIDA_ADC_1*);
 	void Check_AIDA_Disc_DATA();

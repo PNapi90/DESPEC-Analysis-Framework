@@ -3,29 +3,28 @@
 
 ADCDataItem::ADCDataItem(){
 
-	fee64ID 	= -1;  				//Top 6 bit of chIdentity (22:27) are FEE64 number
-	channelID 	= -1;				//Bottom 6 bits of chIdentity (16:21) are channel number
-	adcRange 	= -1;				//Bit 28 - Veto bit used as ADC range
-	adcData 	= -1; 				//Bits 0:15 of Word 0 is ADC data
-	timestamp 	= -1;				//Word 1, bits 0:27 - Timestamp LSB
-	x_position	= -1;
-	y_position	= -1;
-	layer_number	= -1;
-	
+	fee64ID 	  = -1;  				//Top 6 bit of chIdentity (22:27) are FEE64 number
+	channelID 	  = -1;				//Bottom 6 bits of chIdentity (16:21) are channel number
+	adcRange 	  = -1;				//Bit 28 - Veto bit used as ADC range
+	adcData 	  = -1; 				//Bits 0:15 of Word 0 is ADC data
+	timestamp 	  = -1;				//Word 1, bits 0:27 - Timestamp LSB
+	x_position	  = -1;
+	y_position	  = -1;
+	layer_number	  = -1;
+	calibrated_energy = -1;
 }
 void ADCDataItem::Set_Decay_Data(int* pdata, ULong64_t AIDA_Time_Base){
 
-	ADC_Data = *pdata;
+	//ADC_Data = *pdata;
 
-	fee64ID   = (ADC_Data >> 22) & 0x003F;  			//Top 6 bit of chIdentity (22:27) are FEE64 number
-	channelID = (ADC_Data >> 16) & 0x003F;				//Bottom 6 bits of chIdentity (16:21) are channel number
-	adcRange  = (ADC_Data >> 28 ) & 0x0001;			//Bit 28 - Veto bit used as ADC range
-	adcData   = (ADC_Data & 0xFFFF); 				//Bits 0:15 of Word 0 is ADC data
-	pdata++;
-	ADC_Data = *pdata++;
+	fee64ID   = (*pdata >> 22) & 0x003F;  			//Top 6 bit of chIdentity (22:27) are FEE64 number
+	channelID = (*pdata >> 16) & 0x003F;				//Bottom 6 bits of chIdentity (16:21) are channel number
+	adcRange  = (*pdata >> 28 ) & 0x0001;			//Bit 28 - Veto bit used as ADC range
+	adcData   = (*pdata & 0xFFFF); 				//Bits 0:15 of Word 0 is ADC data
 
-	
-	timestampLSB = (ADC_Data & 0x0FFFFFFF);			//Word 1, bits 0:27 - Timestamp LSB
+	//ADC_Data = *pdata++;
+
+	timestampLSB = (*pdata++ & 0x0FFFFFFF);			//Word 1, bits 0:27 - Timestamp LSB
 	timestamp = AIDA_Time_Base + timestampLSB;
 	
 	/*fee64ID 	= Decay_Header_1->FEE64;  	//Top 6 bit of chIdentity (22:27) are FEE64 number
@@ -39,17 +38,17 @@ void ADCDataItem::Set_Decay_Data(int* pdata, ULong64_t AIDA_Time_Base){
 
 void ADCDataItem::Set_Implant_Data(int* pdata, ULong64_t AIDA_Time_Base){
 
-	ADC_Data = *pdata;
+	//ADC_Data = *pdata;
 
 
-	fee64ID   = (ADC_Data >> 22) & 0x003F;  			//Top 6 bit of chIdentity (22:27) are FEE64 number
-	channelID = (ADC_Data >> 16) & 0x003F;				//Bottom 6 bits of chIdentity (16:21) are channel number
-	adcRange  = (ADC_Data >> 28 ) & 0x0001;			//Bit 28 - Veto bit used as ADC range
-	adcData   = (ADC_Data & 0xFFFF); 				//Bits 0:15 of Word 0 is ADC data
+	fee64ID   = (*pdata >> 22) & 0x003F;  			//Top 6 bit of chIdentity (22:27) are FEE64 number
+	channelID = (*pdata >> 16) & 0x003F;				//Bottom 6 bits of chIdentity (16:21) are channel number
+	adcRange  = (*pdata >> 28 ) & 0x0001;			//Bit 28 - Veto bit used as ADC range
+	adcData   = (*pdata & 0xFFFF); 				//Bits 0:15 of Word 0 is ADC data
 	
-	ADC_Data = *pdata++;
+	//ADC_Data = *pdata++;
 
-	timestampLSB = (ADC_Data & 0x0FFFFFFF);			//Word 1, bits 0:27 - Timestamp LSB
+	timestampLSB = (*pdata++ & 0x0FFFFFFF);			//Word 1, bits 0:27 - Timestamp LSB
 	timestamp = AIDA_Time_Base + timestampLSB;
 
 
@@ -78,6 +77,9 @@ unsigned int ADCDataItem::GetADCData(){
 }
 void ADCDataItem::SetADCRange(short range){
 	adcRange = range;
+}
+void ADCDataItem::Set_CalEnergy(double energyIn){
+	calibrated_energy = energyIn;
 }
 void ADCDataItem::Set_X(int x){
 	x_position = x;
