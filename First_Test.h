@@ -252,6 +252,13 @@ using namespace std;
 
 			void load_PrcID_File();
 			void get_interest_arrays();
+			
+			
+			int** FAT_positions;
+			bool** FAT_neighbour_check;
+			
+			void FAT_det_pos_setup();
+			double distance_between_detectors(double, double, double, double, double, double);
 
 
 			int count;

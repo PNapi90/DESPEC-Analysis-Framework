@@ -311,6 +311,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 	load_PrcID_File();
 		
 	read_setup_parameters();
+	
+	FAT_det_pos_setup();
 
 	White_Rabbbit_old = 0;
 	count = 0;
@@ -713,7 +715,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 				// FAT_E_ratio[deti]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_ratio(i));
 				for (int j=0; j<dets_fired; j++) {
 					int detj = RAW->get_FAT_id(j);
-					if ( deti==detj )
+					if ( deti==detj && FAT_neighbour_check[i][j])
 						continue;
 					En_j = RAW->get_FAT_E(j);
 					FAT_gg->Fill(En_i, En_j);
@@ -1200,10 +1202,71 @@ void TSCNUnpackProc::get_interest_arrays(){
 	cout << "=====================================================" << endl;
 }
 
+void TSCNUnpackProc::FAT_det_pos_setup(){
+
+
+    FAT_positions 	= new int*[36];
+    FAT_neighbour_check = new bool*[36];
+
+    for(int i = 0; i < 36; ++i){
+	FAT_positions[i] = new int[3];
+	FAT_neighbour_check[i] = new bool[36];
+	for (int j = 0; j < 3; ++j) FAT_positions[i][j] = -1;
+	for (int k = 0; k < 36; ++k) FAT_positions[i][k] = false;
+    }
 
 
 
+    const char* format = "%f %f %f";
 
+    ifstream file("Configuration_Files/FATIMA_Detector_Positions.txt");
+
+    if(file.fail()){
+        cerr << "Could not find FATIMA Detector Positions File!" << endl;
+        exit(0);
+    }
+
+    string line;
+    int pos_num = 0;
+    double r, theta, phi;
+
+    while(file.good()){
+        getline(file,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format,&r, &theta, &phi);
+	
+		FAT_positions[pos_num][0] = r;
+		FAT_positions[pos_num][1] = theta;
+		FAT_positions[pos_num][2] = phi;
+		pos_num++;
+    }
+    
+    
+    for(int i = 0; i < 36; ++i){
+	
+	for (int k = 0; k < 36; ++k){
+	    
+	    double dist = distance_between_detectors( FAT_positions[i][0],  FAT_positions[i][1],  FAT_positions[i][2],
+						      FAT_positions[k][0],  FAT_positions[k][1],  FAT_positions[k][2]);
+	    
+	    if(dist <= FAT_exclusion_dist) FAT_neighbour_check[i][k] = false;
+	    
+	}
+    }
+    
+    
+    
+    
+}
+double TSCNUnpackProc::distance_between_detectors(double _r, double _theta, double _phi, double r_, double theta_, double phi_){
+
+    double dist = sqrt(_r*_r + r_*r_ - 2.0*_r*r_*(sin(_theta)*sin(theta_)*cos(_phi - phi_) + cos(_theta)*cos(theta_)));
+
+
+    return dist;
+
+
+}
 
 
 
