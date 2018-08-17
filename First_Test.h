@@ -254,7 +254,7 @@ using namespace std;
 			void get_interest_arrays();
 			
 			
-			int** FAT_positions;
+			double** FAT_positions;
 			bool** FAT_neighbour_check;
 			
 			void FAT_det_pos_setup();

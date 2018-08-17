@@ -1205,19 +1205,19 @@ void TSCNUnpackProc::get_interest_arrays(){
 void TSCNUnpackProc::FAT_det_pos_setup(){
 
 
-    FAT_positions 	= new int*[36];
+    FAT_positions 	= new double*[36];
     FAT_neighbour_check = new bool*[36];
 
     for(int i = 0; i < 36; ++i){
-	FAT_positions[i] = new int[3];
+	FAT_positions[i] = new double[3];
 	FAT_neighbour_check[i] = new bool[36];
 	for (int j = 0; j < 3; ++j) FAT_positions[i][j] = -1;
-	for (int k = 0; k < 36; ++k) FAT_positions[i][k] = false;
+	for (int k = 0; k < 36; ++k) FAT_neighbour_check[i][k] = false;
     }
 
 
 
-    const char* format = "%f %f %f";
+    const char* format = "%d %lf %lf %lf";
 
     ifstream file("Configuration_Files/FATIMA_Detector_Positions.txt");
 
@@ -1227,19 +1227,20 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
     }
 
     string line;
-    int pos_num = 0;
+    int pos_num;
     double r, theta, phi;
 
     while(file.good()){
         getline(file,line,'\n');
         if(line[0] == '#') continue;
-        sscanf(line.c_str(),format,&r, &theta, &phi);
-	
+        sscanf(line.c_str(),format, &pos_num, &r, &theta, &phi);
+		
 		FAT_positions[pos_num][0] = r;
 		FAT_positions[pos_num][1] = theta;
 		FAT_positions[pos_num][2] = phi;
-		pos_num++;
-    }
+		cout<<endl;
+
+	}
     
     
     for(int i = 0; i < 36; ++i){
@@ -1252,6 +1253,7 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 	    if(dist <= FAT_exclusion_dist) FAT_neighbour_check[i][k] = false;
 	    
 	}
+	
     }
     
     
