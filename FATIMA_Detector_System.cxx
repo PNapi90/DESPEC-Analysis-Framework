@@ -220,8 +220,8 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 
     reset_fired_channels();
     
-    num_TDC_modules = 1;
-    
+    num_TDC_modules = num_TDC_modules_fixed;
+        
     //loop over FATIMA modules
     while(!TDC_Called){
 		
@@ -605,8 +605,8 @@ void FATIMA_Detector_System::read_config_variables(string config_filename){
     file >> dist_corr_used;//dummy_var;   
     
     file.ignore(256,':');
-    file >> num_TDC_modules;//dummy_var;   
-    
+    file >> num_TDC_modules_fixed;//dummy_var;   
+        
 };
 
 //---------------------------------------------------------------
