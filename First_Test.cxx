@@ -695,80 +695,81 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			
 			int dets_fired = RAW->get_FAT_det_fired();
 			for (int i=0; i<dets_fired; i++) { /** Loops over only channels in both QDC and TDC **/
+			
 				int deti = RAW->get_FAT_id(i);
 				
 				FAT_hits->Fill(deti);
 				En_i = RAW->get_FAT_E(i);
 				FAT_Esum->Fill(En_i);
-				// FAT_Esum->Fill(RAW->get_FAT_E(i));
 
 				if(!FAT_E[deti]) FAT_E[deti] = MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", deti),
 		                          Form("LaBr%02d energy", deti),4001,0,4000);
 				
 				FAT_E[deti]->Fill(En_i);
-				// FAT_E[deti]->Fill(RAW->get_FAT_E(i));
+
 				if(!FAT_E_ratio[deti]) FAT_E_ratio[deti] = MakeTH2('D', Form("FATIMA/Energy/EvsRatio_LaBr%02d", deti),
 		                           Form("LaBr%02d energy vs QShort/QLong", deti),4001,0,4000, 200,0,1);
+				
 				FAT_ratio_i = RAW->get_FAT_ratio(i);
 				En_i = RAW->get_FAT_E(i);
 				FAT_E_ratio[deti]->Fill(En_i, FAT_ratio_i);
-				// FAT_E_ratio[deti]->Fill(RAW->get_FAT_E(i), RAW->get_FAT_ratio(i));
+
 				for (int j=0; j<dets_fired; j++) { /** Loops over only channels in both QDC and TDC **/
 					int detj = RAW->get_FAT_id(j);
-					if ( deti==detj && FAT_neighbour_check[i][j])/** Excludes nearest neighbour and matching detectors **/
+					if ( deti==detj && FAT_neighbour_check[i][j]){/** Excludes nearest neighbour and matching detectors **/
 
-					En_j = RAW->get_FAT_E(j);
-					FAT_gg->Fill(En_i, En_j);
-					// FAT_gg->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
-					if (deti < detj) { /** Avoids the same detector pairing being counte twice **/
-						dt1 = RAW->get_FAT_t(i) - RAW->get_FAT_t(j);
-						dt2 = RAW->get_FAT_t_qdc(i) - RAW->get_FAT_t_qdc(j);
-						FAT_TDCdtsum->Fill(dt1);
-						FAT_QDCdtsum->Fill(dt2);
-						FAT_TDCdtsum_ref_gated->Fill(dt1);
-						FAT_QDCdtsum_ref_gated->Fill(dt2);
-					}else{ /** Allows the same detector pairing being counte twice **/
-						dt1 = RAW->get_FAT_t(j) - RAW->get_FAT_t(i);
-						dt2 = RAW->get_FAT_t_qdc(j) - RAW->get_FAT_t_qdc(i);
-					}	
-						
-						//printf("Gates %4.2lf-%4.2lf  %4.2lf-%4.2lf\n", FATgate1_low, FATgate1_high,
-						//										     FATgate1_low, FATgate1_high);
-						//printf("Energies %4.2lf %4.2lf\n", RAW->get_FAT_E(i), RAW->get_FAT_E(j));
-						
-					
-					if (deti == FAT_REF_DET) { /** Only occurs for the Reference Detector **/
-						if(!FAT_gg_ref[detj]) FAT_gg_ref[detj] =  MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
-		                          										   Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, detj),2000,0,2000, 2000,0,2000);
-						FAT_gg_ref[detj]->Fill(En_i, En_j);
-						if(!FAT_TDCdt_ref[detj]) FAT_TDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
-		                             Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);	
-						FAT_TDCdt_ref[detj]->Fill(dt1);
-						if(!FAT_QDCdt_ref[detj]) FAT_QDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/QDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
-		                             Form("QDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);
-						FAT_QDCdt_ref[detj]->Fill(dt2);
-						if(!FAT_TDC_QDC_dt[detj]) FAT_TDC_QDC_dt[detj] =  MakeTH2('D', Form("FATIMA/Timing/TDCdt_QDCdt_LaBr%02d", detj),
-		                              Form("TDCdt vs QDCdt LaBr%02d", detj),3201,-40,40, 3201,-40,40);
-						FAT_TDC_QDC_dt[detj]->Fill(dt1, dt2);
-						if (RAW->get_FAT_E(i) > FATgate1_low && RAW->get_FAT_E(i) < FATgate1_high) { /** Only if the energies are withing the energy gate **/
-							if(!FAT_E_TDCdt_ref_gated[detj]) FAT_E_TDCdt_ref_gated[detj] = MakeTH2('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_E_LaBr%02d", FAT_REF_DET, detj),
-		                                     														Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",FAT_REF_DET, E_gate1, detj),
-                                             														2001, 0, 2000, 3201,-40,40);
-							FAT_E_TDCdt_ref_gated[detj]->Fill(RAW->get_FAT_E(j), dt1);
-							if (RAW->get_FAT_E(j) > FATgate2_low 
-									&& RAW->get_FAT_E(j) < FATgate2_high) { /** Only if the energies of the secodn detector are withing the energy gate **/
-								if(!FAT_TDCdt_ref_gated[detj]) FAT_TDCdt_ref_gated[detj] = MakeTH1('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
-		                                   															Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (on %4.2f keV)",
-																									FAT_REF_DET, E_gate1, detj, E_gate2),3201,-40,40);
-								FAT_TDCdt_ref_gated[detj]->Fill(dt1);
-								printf("hit gates\n");									
-							}
-						}
-					}
-				}
-
-			}
-			
+					    En_j = RAW->get_FAT_E(j);
+					    FAT_gg->Fill(En_i, En_j);
+					    // FAT_gg->Fill(RAW->get_FAT_E(i), RAW->get_FAT_E(j));
+					    if (deti < detj) { /** Avoids the same detector pairing being counte twice **/
+						    dt1 = RAW->get_FAT_t(i) - RAW->get_FAT_t(j);
+						    dt2 = RAW->get_FAT_t_qdc(i) - RAW->get_FAT_t_qdc(j);
+						    FAT_TDCdtsum->Fill(dt1);
+						    FAT_QDCdtsum->Fill(dt2);
+						    FAT_TDCdtsum_ref_gated->Fill(dt1);
+						    FAT_QDCdtsum_ref_gated->Fill(dt2);
+					    }
+					    else{ /** Allows the same detector pairing being counte twice **/
+						    dt1 = RAW->get_FAT_t(j) - RAW->get_FAT_t(i);
+						    dt2 = RAW->get_FAT_t_qdc(j) - RAW->get_FAT_t_qdc(i);
+					    }	
+						    
+						    //printf("Gates %4.2lf-%4.2lf  %4.2lf-%4.2lf\n", FATgate1_low, FATgate1_high,
+						    //										     FATgate1_low, FATgate1_high);
+						    //printf("Energies %4.2lf %4.2lf\n", RAW->get_FAT_E(i), RAW->get_FAT_E(j));
+						    
+					    
+					    if (deti == FAT_REF_DET) { /** Only occurs for the Reference Detector **/
+    
+						    if(!FAT_gg_ref[detj]) FAT_gg_ref[detj] =  MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+															       Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, detj),2000,0,2000, 2000,0,2000);
+						    FAT_gg_ref[detj]->Fill(En_i, En_j);
+						    if(!FAT_TDCdt_ref[detj]) FAT_TDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+									    Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);	
+						    FAT_TDCdt_ref[detj]->Fill(dt1);
+						    if(!FAT_QDCdt_ref[detj]) FAT_QDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/QDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+									    Form("QDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);
+						    FAT_QDCdt_ref[detj]->Fill(dt2);
+						    if(!FAT_TDC_QDC_dt[detj]) FAT_TDC_QDC_dt[detj] =  MakeTH2('D', Form("FATIMA/Timing/TDCdt_QDCdt_LaBr%02d", detj),
+									    Form("TDCdt vs QDCdt LaBr%02d", detj),3201,-40,40, 3201,-40,40);
+						    FAT_TDC_QDC_dt[detj]->Fill(dt1, dt2);
+						    if (RAW->get_FAT_E(i) > FATgate1_low && RAW->get_FAT_E(i) < FATgate1_high) { /** Only if the energies are withing the energy gate **/
+    
+							    if(!FAT_E_TDCdt_ref_gated[detj]) FAT_E_TDCdt_ref_gated[detj] = MakeTH2('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_E_LaBr%02d", FAT_REF_DET, detj),
+											    Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",FAT_REF_DET, E_gate1, detj), 2001, 0, 2000, 3201,-40,40);
+							    FAT_E_TDCdt_ref_gated[detj]->Fill(RAW->get_FAT_E(j), dt1);
+							    if (RAW->get_FAT_E(j) > FATgate2_low && RAW->get_FAT_E(j) < FATgate2_high) { /** Only if the energies of the secodn detector are withing the energy gate **/
+    
+								    if(!FAT_TDCdt_ref_gated[detj]) FAT_TDCdt_ref_gated[detj] = MakeTH1('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+															    Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (on %4.2f keV)", FAT_REF_DET, E_gate1, detj, E_gate2),3201,-40,40);
+								    FAT_TDCdt_ref_gated[detj]->Fill(dt1);
+								    printf("hit gates\n");									
+							    }
+						    }
+					    }
+				    }
+			    }
+		    }
 			//if(am_FATIMA_hits == 2) FAT_MAT->Fill(RAW->get_FATIMA_E(0),RAW->get_FATIMA_E(1));
 		}
 		//PLASTIC CASE
@@ -1247,7 +1248,14 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 	    double dist = distance_between_detectors( FAT_positions[i][0],  FAT_positions[i][1],  FAT_positions[i][2],
 						      FAT_positions[k][0],  FAT_positions[k][1],  FAT_positions[k][2]);
 	    
-	    if(dist <= FAT_exclusion_dist) FAT_neighbour_check[i][k] = false;
+	    if(dist > FAT_exclusion_dist){
+		
+		FAT_neighbour_check[i][k] = true;
+	    
+	    
+		cout<<"Woohoo!"<<endl;
+	    
+	    }
 	    
 	}
 	
@@ -1260,7 +1268,8 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 double TSCNUnpackProc::distance_between_detectors(double _r, double _theta, double _phi, double r_, double theta_, double phi_){
 
     double dist = sqrt(_r*_r + r_*r_ - 2.0*_r*r_*(sin(_theta)*sin(theta_)*cos(_phi - phi_) + cos(_theta)*cos(theta_)));
-
+    
+    cout<<"Distance Between Detectors = "<<dist<<endl;
 
     return dist;
 
