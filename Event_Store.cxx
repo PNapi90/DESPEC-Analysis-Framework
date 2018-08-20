@@ -221,6 +221,8 @@ int* Event_Store::get_position(int type){
     return Event_position[type][ev_pos];
 }
 
+//---------------------------------------------------------------
+
 void Event_Store::show_positions(int type){
     cout <<"*** Evt POS ***" << endl;
     for(int i = 0;i < event_counter[type];++i) cout << i << " " << &Event_position[type][i] << " " << Event_position[type][i] << endl;

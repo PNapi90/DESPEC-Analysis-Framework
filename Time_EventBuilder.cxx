@@ -250,15 +250,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                     expired_counter--;
                 }
                 //only increase if no expiration
-                else{
-                    Matches[j][k]->set_Address(k);
-                    match_hits = Matches[j][k]->get_amount_Hits();
-                    hit_addresses = Matches[j][k]->get_Address_Array();
-                    hit_types = Matches[j][k]->get_hit_types();
-                    filled_types = Matches[j][k]->get_filled_types();
-                    match_id_ptr = Matches[j][k]->get_Address();
-                    k++;
-                }
+                else k++;
             }
         }
         for(int j = 0;j < amount_interest;++j){
