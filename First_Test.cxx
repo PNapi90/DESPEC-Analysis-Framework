@@ -1248,14 +1248,7 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 	    double dist = distance_between_detectors( FAT_positions[i][0],  FAT_positions[i][1],  FAT_positions[i][2],
 						      FAT_positions[k][0],  FAT_positions[k][1],  FAT_positions[k][2]);
 	    
-	    if(dist > FAT_exclusion_dist){
-		
-		FAT_neighbour_check[i][k] = true;
-	    
-	    
-		cout<<"Woohoo!"<<endl;
-	    
-	    }
+	    if(dist > FAT_exclusion_dist) FAT_neighbour_check[i][k] = true;
 	    
 	}
 	
@@ -1269,8 +1262,6 @@ double TSCNUnpackProc::distance_between_detectors(double _r, double _theta, doub
 
     double dist = sqrt(_r*_r + r_*r_ - 2.0*_r*r_*(sin(_theta)*sin(theta_)*cos(_phi - phi_) + cos(_theta)*cos(theta_)));
     
-    cout<<"Distance Between Detectors = "<<dist<<endl;
-
     return dist;
 
 
