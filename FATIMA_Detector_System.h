@@ -58,7 +58,8 @@ private:
 	
 	bool gain_match_used; //Set in the constructor
 	bool dist_corr_used;
-	int num_TDC_modules;  //Set in the constructor
+	int num_TDC_modules = 0;  //Set in the constructor
+	int num_TDC_modules_fixed = 0;  //Set in the constructor
     
 	    //This is used during individual module unpacking
 	int Fired_QDC_Channels[100][2];
