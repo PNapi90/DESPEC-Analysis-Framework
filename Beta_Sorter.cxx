@@ -20,6 +20,8 @@ void Beta_Sorter::set_Strip_Event(int* evt_ids,double Energy,ULong64_t Time){
     bool x_or_y = (evt_ids[0] == 1);
     int z_strip = evt_ids[2];
 
+    //what is empty_spot[evt_ids[0]]?
+
     //create new Strip Event
     Strip_Events[evt_ids[0]][empty_spot[evt_ids[0]]] = new Strip_Event(x_or_y,evt_ids[1],z_strip,Energy,Time);
     
@@ -37,14 +39,15 @@ void Beta_Sorter::set_Strip_Event(int* evt_ids,double Energy,ULong64_t Time){
 bool Beta_Sorter::check_Strip_Events(){
 
     bool new_event = false;
+    int beta_Ev_gap = 0;
 
     //check all previous events of opposite type for matching time and energy difference
     for(int i = 0;i < Strip_Ev_amount[1-evt_ids[0]];++i){
         //events not on same z strip? -> skip
-        if(z_strip != Strip_Event[1-evt_ids[0]][i]->get_z_strip()) continue;
+        if(z_strip != Strip_Events[1-evt_ids[0]][i]->get_z_strip()) continue;
         
         //x and y events in predefined time and energy difference?
-        if(Strip_Event[1-evt_ids[0]][i]->get_Energy_Time_Difference(Time,Energy)){
+        if(Strip_Events[1-evt_ids[0]][i]->get_Energy_Time_Difference(Time,Energy)){
 
             //variables for possible new Beta event
             double Energy_shared = (!x_or_y) ? Energy : 0;
@@ -53,26 +56,33 @@ bool Beta_Sorter::check_Strip_Events(){
 
             int* xy = new int[2];
 
-            Time_shared = (Time_shared > 0) ? Time_shared : Strip_Event[0][i]->get_Time();
-            Energy_shared = (Energy_shared > 0) ? Energy_shared : Strip_Event[0][i]->get_Energy();
+            Time_shared = (Time_shared > 0) ? Time_shared : Strip_Events[0][i]->get_Time();
+            Energy_shared = (Energy_shared > 0) ? Energy_shared : Strip_Events[0][i]->get_Energy();
             
             //Beta events are defined by x strip values
             if(x_strip != -1){
                 xy[0] = x_strip;
-                xy[1] = Strip_Event[1][i]->get_strip();
+                xy[1] = Strip_Events[1][i]->get_strip();
             }
             else{
-                xy[0] = Strip_Event[0][i]->get_strip();
+                xy[0] = Strip_Events[0][i]->get_strip();
                 xy[1] = evt_ids[1];
             }
 
             //create new Beta event 
-            Beta_Events[] = new Beta_Event(xy,Time_shared,Energy_shared);
-            Beta_Event_new = ;
-            amount_Beta_Events++;
+            beta_Ev_gap = GAP->get_Beta_Ev_GAP();
+            beta_Ev_gap = (beta_Ev_gap != -1) ? beta_Ev_gap : amount_Beta_Events;
+
+            Beta_Events[beta_Ev_gap] = new Beta_Event(xy,Time_shared,Energy_shared);
+            Beta_Event_pos = beta_Ev_gap;
+            
+            if(beta_Ev_gap == amount_Beta_Events) amount_Beta_Events++;
 
             delete[] xy;
             xy = nullptr;
+
+            delete Strip_Events[0][i];//HERE!!
+            delete Strip_Events[]
 
             new_event = true;
 
@@ -89,18 +99,18 @@ bool Beta_Sorter::check_Strip_Events(){
 void Beta_Sorter::check_Beta_Events(){
     
     double delta = 0;
-    ULong64_t Time_current = Beta_Events[Beta_Event_new]->get_Time();
+    ULong64_t Time_current = Beta_Events[Beta_Event_pos]->get_Time();
 
     bool cluster_found = false;
 
-    int* xy = Beta_Events[Beta_Event_new]->get_xy();
+    int* xy = Beta_Events[Beta_Event_pos]->get_xy();
 
     for(int i = 0;i < amount_Beta_Clusters;++i){
         if(!Beta_Events[i]) continue;
         delta =  (double) (Time_current - Beta_Cluster[i]->get_Time());
         if(abs(delta - offset) < width){
             if(Beta_Cluster[i]->check_XY_Difference(xy)){
-                Beta_Events[Beta_Event_new]->set_Cluster_ID(Beta_Cluster[i]->get_ID());
+                Beta_Events[Beta_Event_pos]->set_Cluster_ID(Beta_Cluster[i]->get_ID());
                 cluster_found = true;
                 break;
             }
@@ -108,8 +118,12 @@ void Beta_Sorter::check_Beta_Events(){
     }
     //no cluster found for Beta_Event -> create new cluster
     if(!cluster_found){
-        Beta_Cluster[amount_Beta_Clusters] = new Beta_Cluster();
-        amount_Beta_Clusters++;
+        
+        int beta_Cl_gap = GAP->set_Beta_Cluster_GAP();
+        beta_Cl_gap = (beta_Cl_gap != -1) ? beta_Cl_gap : amount_Beta_Clusters;
+        Beta_Cluster[beta_Cl_gap] = new Beta_Cluster();
+        
+        if(beta_Cl_gap == amount_Beta_Clusters) amount_Beta_Clusters++;
     }
 
 
@@ -121,7 +135,7 @@ void Beta_Sorter::check_Expired(){
     if(WR - WR_old > max_WR_Difference){
         WR_old = ULONG64_MAX;
         ULong64_t WR_tmp = 0;
-        int* xy_ids = nullptr;
+        int xy_ids = 0;
 
         int cluster_size = 0;
 
@@ -135,15 +149,15 @@ void Beta_Sorter::check_Expired(){
                 //delete all related Beta Events in Cluster
                 cluster_size = Beta_Cluster[i]->get_cluster_size();
                 for(int c = 0;c < cluster_size;++c){
-                    xy_ids = Beta_Cluster[i]->get_XY_IDs(c);
-                    for(int k = 0;k < 2;++k){
-                        delete Beta_Events[xy_ids[k]];
-                        Beta_Events[xy_ids[k]] = nullptr;
-
-                        //hole!
-                    }
+                    xy_ids = Beta_Cluster[i]->get_XY_ID(c);
+                    
+                    GAP->set_Beta_Ev_GAP(xy_ids);
+                    delete Beta_Events[xy_ids];
+                    Beta_Events[xy_ids[k]] = nullptr;
                 }
-                //hole!
+                
+
+                GAP->set_Beta_Cluster_GAP(i);
 
                 delete Beta_Cluster[i];
                 Beta_Cluster[i] = nullptr;
