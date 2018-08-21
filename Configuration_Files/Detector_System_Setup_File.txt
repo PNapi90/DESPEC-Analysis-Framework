@@ -7,7 +7,7 @@ White_Rabbit_Enabled: 1
 #
 FATIMA_Gain_Match_Enabled: 0
 #
-Min_Angle_Nearest_Neighbour_Exclusion: 0
+Min_Distance_Nearest_Neighbour_Exclusion(mm): 260
 #
 # ---------------------------- 
 # FATIMA_CONFIGURATION

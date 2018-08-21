@@ -5,11 +5,11 @@ ADCDataItem::ADCDataItem(){
 
 	fee64ID 	  = -1;  				//Top 6 bit of chIdentity (22:27) are FEE64 number
 	channelID 	  = -1;				//Bottom 6 bits of chIdentity (16:21) are channel number
+	real_channelID 	  = -1;				//Bottom 6 bits of chIdentity (16:21) are channel number
 	adcRange 	  = -1;				//Bit 28 - Veto bit used as ADC range
 	adcData 	  = -1; 				//Bits 0:15 of Word 0 is ADC data
 	timestamp 	  = -1;				//Word 1, bits 0:27 - Timestamp LSB
-	x_position	  = -1;
-	y_position	  = -1;
+	front_back	  = -1;
 	layer_number	  = -1;
 	calibrated_energy = -1;
 }
@@ -25,7 +25,7 @@ void ADCDataItem::Set_Decay_Data(int* pdata, ULong64_t AIDA_Time_Base){
 	//ADC_Data = *pdata++;
 
 	timestampLSB = (*pdata++ & 0x0FFFFFFF);			//Word 1, bits 0:27 - Timestamp LSB
-	timestamp = AIDA_Time_Base + timestampLSB;
+	timestamp = (AIDA_Time_Base + timestampLSB)*10;		// Added to Timestamp base (x10 to convert to nanoseconds)
 	
 	/*fee64ID 	= Decay_Header_1->FEE64;  	//Top 6 bit of chIdentity (22:27) are FEE64 number
 	channelID 	= Decay_Header_1->Ch_ID;	//Bottom 6 bits of chIdentity (16:21) are channel number
@@ -40,7 +40,6 @@ void ADCDataItem::Set_Implant_Data(int* pdata, ULong64_t AIDA_Time_Base){
 
 	//ADC_Data = *pdata;
 
-
 	fee64ID   = (*pdata >> 22) & 0x003F;  			//Top 6 bit of chIdentity (22:27) are FEE64 number
 	channelID = (*pdata >> 16) & 0x003F;				//Bottom 6 bits of chIdentity (16:21) are channel number
 	adcRange  = (*pdata >> 28 ) & 0x0001;			//Bit 28 - Veto bit used as ADC range
@@ -49,7 +48,7 @@ void ADCDataItem::Set_Implant_Data(int* pdata, ULong64_t AIDA_Time_Base){
 	//ADC_Data = *pdata++;
 
 	timestampLSB = (*pdata++ & 0x0FFFFFFF);			//Word 1, bits 0:27 - Timestamp LSB
-	timestamp = AIDA_Time_Base + timestampLSB;
+	timestamp = (AIDA_Time_Base + timestampLSB)*10;		// Added to Timestamp base (x10 to convert to nanoseconds)
 
 
 	/*fee64ID 	= Decay_Header_1->FEE64;  	//Top 6 bit of chIdentity (22:27) are FEE64 number
@@ -60,7 +59,11 @@ void ADCDataItem::Set_Implant_Data(int* pdata, ULong64_t AIDA_Time_Base){
 	*/
 }
 
-unsigned long ADCDataItem::GetTimestamp(){
+void ADCDataItem::SetTimestamp(ULong64_t newTimestamp){
+	timestamp = newTimestamp;
+}
+
+ULong64_t ADCDataItem::GetTimestamp(){
 	return timestamp;
 }
 int ADCDataItem::GetFEE64ID(){
@@ -72,41 +75,36 @@ unsigned int ADCDataItem::GetADCRange(){
 unsigned int ADCDataItem::GetChannelID(){
 	return channelID;
 }
+unsigned int ADCDataItem::GetRealChannelID(){
+	return real_channelID;
+}
 unsigned int ADCDataItem::GetADCData(){
 	return adcData;
 }
 void ADCDataItem::SetADCRange(short range){
 	adcRange = range;
 }
-void ADCDataItem::Set_CalEnergy(double energyIn){
+void ADCDataItem::SetCalEnergy(double energyIn){
 	calibrated_energy = energyIn;
 }
-void ADCDataItem::Set_X(int x){
-	x_position = x;
-	y_position = -1;
+void ADCDataItem::SetRealChannelID(int channelIDIn){
+	real_channelID = channelIDIn;
+}
+void ADCDataItem::SetFront_Back(int x_y){
+	front_back = x_y;
 
 }
-void ADCDataItem::Set_Y(int y){
-	x_position = -1;
-	y_position = y;
-
-}
-void ADCDataItem::Set_Layer(int layer){
+void ADCDataItem::SetLayer(int layer){
     
 	layer_number = layer;
 
 }
-int ADCDataItem::Get_X(){
+int ADCDataItem::GetFront_Back(){
 
-	return x_position;
-
-}
-int ADCDataItem::Get_Y(){
-
-	return y_position;
+	return front_back;
 
 }
-int ADCDataItem::Get_Layer(){
+int ADCDataItem::GetLayer(){
     
 	return layer_number;
 
@@ -115,14 +113,18 @@ void ADCDataItem::Print_Event(){
     
     cout<<"AIDA Event Variables: "<<endl;
     cout<<"-----------------------------"<<endl;
-    cout<<"fee64ID = "<<fee64ID<<endl;
-    cout<<"channelID = "<<channelID<<endl;
-    cout<<"adcRange = "<<adcRange<<endl;
-    cout<<"timestamp = "<<timestamp<<endl;
-    cout<<"x_position = "<<x_position<<endl;
-    cout<<"y_position = "<<y_position<<endl;
-    cout<<"layer_number = "<<layer_number<<endl;
+    cout<<"fee64ID 		= "<<fee64ID<<endl;
+    cout<<"channelID 		= "<<channelID<<endl;
+    cout<<"Real channelID       = "<<real_channelID<<endl;
+    cout<<"adcRange 		= "<<adcRange<<endl;
+    cout<<"Energy 		= "<<adcData<<endl;
+    cout<<"Calibarated Energy 	= "<<calibrated_energy<<endl;
+    cout<<"timestamp 		= "<<timestamp<<endl;
+    cout<<"Front/Back 		= "<<front_back<<endl;
+    cout<<"layer_number         = "<<layer_number<<endl;
     cout<<"-----------------------------"<<endl;
+    cout<<endl;
+    
 
 }
 

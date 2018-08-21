@@ -66,7 +66,7 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
     FATIMA_E_CALIB = new FATIMA_Energy_Calibration();
 
     load_board_channel_file();
-    read_config_variables("Configuration_Files/Detector_Setup_File.txt");
+    read_config_variables("Configuration_Files/Detector_System_Setup_File.txt");
     he_iter = 0;
 
     Det_Hist = new TH1D*[32];
@@ -397,7 +397,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 			active_Channel = Fired_QDC_Channels[i][1];
     
 			active_det = det_ID_QDC[active_board][active_Channel];
-	    
+				    
 			//cout<<"Channel Number = "<<active_Channel<<" Board ID = "<<active_board<<endl;
 			//cout<<"Channel Number = "<<active_det<<endl;
 	    

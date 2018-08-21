@@ -313,7 +313,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	read_setup_parameters();
 	
 	FAT_det_pos_setup();
-
+	
 	White_Rabbbit_old = 0;
 	count = 0;
 	iterator = 0;
@@ -696,6 +696,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			int dets_fired = RAW->get_FAT_det_fired();
 			for (int i=0; i<dets_fired; i++) { /** Loops over only channels in both QDC and TDC **/
 			
+			
 				int deti = RAW->get_FAT_id(i);
 				
 				FAT_hits->Fill(deti);
@@ -716,7 +717,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 				for (int j=0; j<dets_fired; j++) { /** Loops over only channels in both QDC and TDC **/
 					int detj = RAW->get_FAT_id(j);
-					if ( deti==detj && FAT_neighbour_check[i][j]){/** Excludes nearest neighbour and matching detectors **/
+					if ( deti!=detj && FAT_neighbour_check[i][j]){/** Excludes nearest neighbour and matching detectors **/
 
 					    En_j = RAW->get_FAT_E(j);
 					    FAT_gg->Fill(En_i, En_j);
@@ -1008,7 +1009,7 @@ void TSCNUnpackProc::read_setup_parameters(){
 
     const char* format = "%s %d";
 
-    ifstream file("Configuration_Files/Detector_Setup_File.txt");
+    ifstream file("Configuration_Files/Detector_System_Setup_File.txt");
 
     if(file.fail()){
         cerr << "Could not find File for setup parameters!" << endl;
@@ -1039,7 +1040,7 @@ void TSCNUnpackProc::read_setup_parameters(){
     else if(!WHITE_RABBIT_USED) cout<<"White Rabbit: Disabled"<<endl;
     if(FAT_gain_match_used) cout<<"FATIMA Gain Matching: Enabled"<<endl;
     else if(!FAT_gain_match_used) cout<<"FATIMA Gain Matching: Disabled"<<endl;
-    if(FAT_exclusion_dist > 0) cout<<"FATIMA Detectors Excluded if Linear Difference Exceeds "<<FAT_exclusion_dist<<" degrees"<<endl;
+    if(FAT_exclusion_dist > 0) cout<<"FATIMA Detectors Excluded if Linear Difference Exceeds "<<FAT_exclusion_dist<<" mm"<<endl;
     else if(FAT_exclusion_dist == 0) cout<<"'Nearest Neighbour Exclusion': Disabled (Distance set to 0)"<<endl;
     cout<<"////////////////////////////////////"<<endl;
     cout<<endl;
@@ -1058,6 +1059,7 @@ void TSCNUnpackProc::read_setup_parameters(){
 		else if (var_name == "FATIMA_Gain_Match_Enabled:" && dummy_var == 0) FAT_gain_match_used  = false;
 		
     }*/
+        
 }
 
 
@@ -1201,7 +1203,8 @@ void TSCNUnpackProc::get_interest_arrays(){
 }
 
 void TSCNUnpackProc::FAT_det_pos_setup(){
-
+    
+    bool output_position_matrix = false;
 
     FAT_positions 	= new double*[36];
     FAT_neighbour_check = new bool*[36];
@@ -1236,21 +1239,40 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 		FAT_positions[pos_num][0] = r;
 		FAT_positions[pos_num][1] = theta;
 		FAT_positions[pos_num][2] = phi;
-		cout<<endl;
 
 	}
     
     
+    if (output_position_matrix) cout<<"        "<<"0 "<<"1 "<<"2 "<<"3 "<<"4 "<<"5 "<<"6 "<<"7 "<<"8 "
+		    <<"9 "<<"10 "<<"11 "<<"12 "<<"13 "<<"14 "<<"15 "<<"16 "<<"17 "
+		    <<"18 "<<"19 "<<"20 "<<"21 "<<"22 "<<"23 "<<"24 "<<"25 "<<"26 "
+		    <<"27 "<<"28 "<<"29 "<<"30 "<<"31 "<<"32 "<<"33 "<<"34 "<<"35 "<<endl;
+    
     for(int i = 0; i < 36; ++i){
 	
+	if (i >= 10 && output_position_matrix) cout<<"Det "<<i<<": ";
+	if (i < 10  && output_position_matrix) cout<<"Det "<<i<<" : ";
+
 	for (int k = 0; k < 36; ++k){
+	    
+	    if(k > 9 && output_position_matrix) cout<<" ";
 	    
 	    double dist = distance_between_detectors( FAT_positions[i][0],  FAT_positions[i][1],  FAT_positions[i][2],
 						      FAT_positions[k][0],  FAT_positions[k][1],  FAT_positions[k][2]);
 	    
-	    if(dist > FAT_exclusion_dist) FAT_neighbour_check[i][k] = true;
+	    if(dist > FAT_exclusion_dist && i != k){
+		
+		
+		 FAT_neighbour_check[i][k] = true;
+		 
+		 if (output_position_matrix) cout<<"0 ";
+	    
+	    }
+	    else if(output_position_matrix) cout<<"X ";
 	    
 	}
+	
+	if (output_position_matrix) cout<<endl;
 	
     }
     
@@ -1259,6 +1281,12 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
     
 }
 double TSCNUnpackProc::distance_between_detectors(double _r, double _theta, double _phi, double r_, double theta_, double phi_){
+
+    _theta = _theta * M_PI/180.0; 
+    theta_ = theta_ * M_PI/180.0; 
+
+    _phi = _phi * M_PI/180.0; 
+    phi_ = phi_ * M_PI/180.0; 
 
     double dist = sqrt(_r*_r + r_*r_ - 2.0*_r*r_*(sin(_theta)*sin(theta_)*cos(_phi - phi_) + cos(_theta)*cos(theta_)));
     
