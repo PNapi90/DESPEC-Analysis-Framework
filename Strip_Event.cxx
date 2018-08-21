@@ -44,3 +44,24 @@ double Strip_Event::get_Energy(){
 }
 
 //---------------------------------------------------------------
+
+
+int Strip_Event::get_strip(){
+    return strip_id;
+}
+
+//---------------------------------------------------------------
+
+
+bool Strip_Event::get_Energy_Time_Difference(ULong64_t Time_tmp,double Energy_tmp){
+    
+    double delta_t = (double) (Time_tmp - Time);
+    double delta_E = Energy_tmp - Energy;
+
+    bool cond_t = abs(delta_t - offset_t) < width_t;
+    bool cond_E = abs(delta_E - offset_E) < width_E;
+
+    return (cond_E && cond_t);
+}
+
+//---------------------------------------------------------------
