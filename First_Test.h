@@ -253,6 +253,11 @@ using namespace std;
 			void load_PrcID_File();
 			void get_interest_arrays();
 			
+			void Make_Plastic_Histos();
+			
+			void Make_FATIMA_Histos();
+			void Fill_FATIMA_Histos();
+			
 			
 			double** FAT_positions;
 			bool** FAT_neighbour_check;
