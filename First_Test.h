@@ -198,6 +198,7 @@ using namespace std;
 			const int FAT_MAX_DET = 36;
 
 			int FAT_REF_DET;
+			int GAL_REF_DET;
 
 			float E_gate1,E_gate2;
 
@@ -253,10 +254,19 @@ using namespace std;
 			void load_PrcID_File();
 			void get_interest_arrays();
 			
+			void Make_FRS_Histos();
+			void Fill_FRS_Histos();
+			
 			void Make_Plastic_Histos();
+			void Fill_Plastic_Histos();
 			
 			void Make_FATIMA_Histos();
 			void Fill_FATIMA_Histos();
+			
+			void Make_GALILEO_Histos();
+			void Fill_GALILEO_Histos();
+			
+			
 			
 			
 			double** FAT_positions;
