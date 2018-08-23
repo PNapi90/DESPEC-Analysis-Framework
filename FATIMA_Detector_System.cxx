@@ -595,9 +595,8 @@ void FATIMA_Detector_System::read_config_variables(string config_filename){
 
     string line;
 
-    file.ignore(256,':');
-    file.ignore(256,':');
-    file.ignore(256,':');
+    for (int i = 0; i < 5; ++i) file.ignore(256,':');
+    
     file.ignore(256,':');
     file >> gain_match_used;//dummy_var;
 

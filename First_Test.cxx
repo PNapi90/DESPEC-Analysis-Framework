@@ -347,10 +347,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 	
 
-	//========================================================
+	//===========================================================
 	//	the White rabbit time difference of coincident events
 	//	in FATIMA and PLASTIC is roughly (222 +- 8) ns
-	//========================================================
+	//===========================================================
 
 	//rudimentary event builder
 	if(iterator == 2){
@@ -452,6 +452,11 @@ void TSCNUnpackProc::read_setup_parameters(){
     file.ignore(256,':');
     file >> FAT_exclusion_dist;//dummy_var;
 
+    file.ignore(256,':');
+    file >> same_ring_exclusion;//dummy_var;
+    
+    file.ignore(256,':');
+    file >> output_position_matrix;//dummy_var;
 
     cout<<endl;
     cout<<endl;
@@ -625,19 +630,25 @@ void TSCNUnpackProc::get_interest_arrays(){
 
 void TSCNUnpackProc::FAT_det_pos_setup(){
     
-    bool output_position_matrix = false;
-
     FAT_positions 	= new double*[36];
     FAT_neighbour_check = new bool*[36];
+    FAT_angle_diffs	= new double*[36];
 
     for(int i = 0; i < 36; ++i){
 	FAT_positions[i] = new double[3];
+	FAT_angle_diffs[i] = new double[36];
 	FAT_neighbour_check[i] = new bool[36];
 	for (int j = 0; j < 3; ++j) FAT_positions[i][j] = -1;
-	for (int k = 0; k < 36; ++k) FAT_neighbour_check[i][k] = false;
+	for (int k = 0; k < 36; ++k){
+
+	    FAT_neighbour_check[i][k] = true;
+
+	    FAT_angle_diffs[i][k] = -1;
+
+
+	}
+
     }
-
-
 
     const char* format = "%d %lf %lf %lf";
 
@@ -680,16 +691,22 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 	    
 	    double dist = distance_between_detectors( FAT_positions[i][0],  FAT_positions[i][1],  FAT_positions[i][2],
 						      FAT_positions[k][0],  FAT_positions[k][1],  FAT_positions[k][2]);
-	    
-	    if(dist > FAT_exclusion_dist && i != k){
+						      
+	    double angle = angle_between_detectors(FAT_positions[i][0], FAT_positions[k][0], dist);
+
+	    FAT_angle_diffs[i][k] = angle;
+		    
+	    if(dist < FAT_exclusion_dist && (((i < 12 && k < 12) || 
+					    (i < 24 && i > 11 && k < 24 && k > 11) || 
+					    (i > 23 && k > 23)) || !same_ring_exclusion ) || i == k ){
 		
 		
-		 FAT_neighbour_check[i][k] = true;
+		 FAT_neighbour_check[i][k] = false;
 		 
-		 if (output_position_matrix) cout<<"0 ";
+		 if (output_position_matrix) cout<<"X ";
 	    
 	    }
-	    else if(output_position_matrix) cout<<"X ";
+	    else if(output_position_matrix) cout<<"0 ";
 	    
 	}
 	
@@ -715,7 +732,17 @@ double TSCNUnpackProc::distance_between_detectors(double _r, double _theta, doub
 
 
 }
+double TSCNUnpackProc::angle_between_detectors(double _r, double r_, double dist_){
 
+
+    double angle_diff = acos((_r*_r + r_*r_ - dist_*dist_)/(2.0*_r*r_));
+    
+    angle_diff = angle_diff * 180.0/M_PI;
+    
+    return angle_diff;
+
+
+}
 // ################################################################## //
 // ################################################################## //
 // ################# Histogram Filling Section ###################### //
@@ -1152,6 +1179,8 @@ void TSCNUnpackProc::Fill_FATIMA_Histos(){
     double dt1, dt2;
     double En_i, En_j;
     double FAT_ratio_i;
+    
+    // FAT_angle_diffs[deti][detj] will give you the angle between detector i and j // 
     
     
     for (int i=0; i<RAW->get_FAT_QDCs_fired(); i++){ /** Loops over only channels in the QDC **/

@@ -902,10 +902,6 @@ void FRS_Detector_System::Process_FRS(TGo4MbsSubEvent* psubevt){
     FRS_Calib();
     FRS_Anal();
     
-    //cout<<"HOLY SHIT IT ACTUALLY FUCKING WORKED!!! "<<dt_21l_21r<<endl;
-    //cout<<"HOLY FUCK IT STILL WORKS!!! "<<tpc_y[1]<<endl;
-    
-    //cout<<"FUCKITTY FUCK FUCKING HOLY BALLS!!! "<<sci_tofll2<<endl;
 }
 
 //-----------------------------------------------------------------//

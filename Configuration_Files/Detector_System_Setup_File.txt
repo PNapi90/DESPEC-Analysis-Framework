@@ -7,7 +7,11 @@ White_Rabbit_Enabled: 1
 #
 FATIMA_Gain_Match_Enabled: 0
 #
-Min_Distance_Nearest_Neighbour_Exclusion(mm): 260
+Min_Distance_Nearest_Neighbour_Exclusion(mm): 0
+#
+Only_Exclude_Detectors_In_Same_Ring: 1
+#
+Output_Matrix_Of_Exluded_Detector_Pairings: 0
 #
 # ---------------------------- 
 # FATIMA_CONFIGURATION

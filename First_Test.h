@@ -225,6 +225,8 @@ using namespace std;
 			bool FAT_dist_corr_used; // Read from General Setup File
 			int FAT_exclusion_dist; // Read from General Setup File
 			int FAT_num_TDC_modules; // Read from General Setup File
+			bool same_ring_exclusion; // Read from General Setup File
+			bool output_position_matrix; // Read from General Setup File
 			int file_pwd, file_end;
 			std::string gain_match_filename;
 			int data_file_number = 0;
@@ -270,10 +272,12 @@ using namespace std;
 			
 			
 			double** FAT_positions;
+			double** FAT_angle_diffs;
 			bool** FAT_neighbour_check;
 			
 			void FAT_det_pos_setup();
 			double distance_between_detectors(double, double, double, double, double, double);
+			double angle_between_detectors(double, double, double);
 
 
 			int count;
