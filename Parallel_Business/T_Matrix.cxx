@@ -92,7 +92,7 @@ void T_Matrix::set_data(Data_Class_Obj* DATA){
 
 //---------------------------------------------------------------
 
-void T_Matrix::Thread_Part_1(int thr_num){
+void T_Matrix::Thread_T(int thr_num){
     int row_start = thr_num*data_points_per_thr;
     for(int i = row_start;i < data_points_per_thr+row_start;++i){
         T_Rows[i]->set_Row(Time_Arr,Time_Arr[i],i,amount_of_data_points); 
@@ -101,22 +101,66 @@ void T_Matrix::Thread_Part_1(int thr_num){
 
 //---------------------------------------------------------------
 
-void T_Matrix::Thread_Part_2(int thr_num){
+void T_Matrix::Thread_X(int thr_num){
+    cluster_counter[thr_num] = 0;
+
+    int xy_for_sort[1000][2];
     int row_start = thr_num*data_points_per_thr;
-    for(int i = row_start;i < data_points_per_thr+row_start;++i){
-        if(skip_arr[i]) continue;
-        for(int j = 0;j < len_line_X[i];++j) X_row[i][j] = X_Arr[i][relevant_for_x[i][j]];
-        X_row[i][len_line_X[i]] = X_Arr[i][0]; // sort x and y
+    auto sort_ptr = (pair<int,int>*) xy_for_sort;
+
+    int tmp_cluster[10][2];
+    for(int i = 0;i < 10;++i){
+        tmp_cluster[i][0] = 0;
+        tmp_cluster[i][1] = 0;
     }
 
+    int delta_c = 0;
+    int c_counter = -1;
+    bool active_cluster = false;
+    int cluster_of_interest = 0;
 
+    for(int i = row_start;i < data_points_per_thr+row_start;++i){
+        if(skip_arr[i]) continue;
+        for(int j = 0;j < len_line_X[i];++j){
+            xy_for_sort[j][0] = X_Arr[relevant_for_x[i][j]];
+            xy_for_sort[j][1] = relevant_for_x[i][j];
+        }
+        xy_for_sort[len_line_X[i]][0] = X_Arr[i];
+        xy_for_sort[len_line_X[i]][1] = i;
+        
+        sort_ptr = (pair<int,int>*) xy_for_sort;
+        sort(sort_ptr,sort_ptr + len_line_X[i] + 1);
+
+        for(int j = 0;j <= len_line_X[i];++j){
+
+            active_cluster = (xy_for_sort[j][1] == i);
+
+            delta_c = (j == 0) ? -1 : xy_for_sort[j][0] - xy_for_sort[j-1][0];
+                
+            if(delta_c == 1) tmp_cluster[c_counter][1]++;
+            else{
+                c_counter++;
+                tmp_cluster[c_counter][0] = xy_for_sort[j][0];
+                tmp_cluster[c_counter][1] = xy_for_sort[j][0];
+            }
+            if(active_cluster) cluster_of_interest = c_counter;
+        }
+
+        cluster_of_interest_len = tmp_cluster[cluster_of_interest][1] - tmp_cluster[cluster_of_interest][0];
+        
+        Cluster_IDs[cluster_counter[thr_num]+thr_offset][0] = tmp_cluster[c_counter][0];
+        Cluster_IDs[cluster_counter[thr_num]+thr_offset][1] = tmp_cluster[c_counter][1];
+        cluster_counter[thr_num]++;
+
+        sort_ptr = nullptr;
+    }
 }
 
 //---------------------------------------------------------------
 
 thread T_Matrix::threading(int i,int j){
-    if(i == 0) return thread([=] {Thread_Part_1(j);} );
-    else if(i == 1) return thread([=] {Thread_Part_2(j);} );
+    if(i == 0) return thread([=] {Thread_T(j);});
+    else if(i == 1) return thread([=] {Thread_X(j);});
     else cout << "Error: i " << i << " not known" << endl;
 }
 
@@ -132,7 +176,7 @@ void T_Matrix::load_thread_file(){
     ifstream thr_file("Configuration_Files/THREAD_FILE.txt");
     if(thr_file.fail()){
         cout << "No THREAD_FILE found!" << endl;
-        cout << "Using 5 threads for AIDA" << endl;
+        cout << "Using 5 threads for each AIDA xyz plane -> total of 30 threads" << endl;
         am_threads = 5;
     }
     else{
@@ -140,7 +184,7 @@ void T_Matrix::load_thread_file(){
             getline(thr_file,line,'\n');
             if(line[0] == "#") continue;
             sscanf(line.c_str(),"%s %d",dummy_str,&am_threads);
-            cout << "Using " << am_threads << " threads for AIDA" << endl;
+            cout << "Using " << am_threads << " threads for each AIDA xyz plane -> total of " << am_threads*6 << " threads" << endl;
         }
     }
     cout << "-------------------------------------\n" << endl;
