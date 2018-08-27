@@ -1,5 +1,5 @@
-#ifndef T_MATRIX_H
-#define T_MATRIX_H
+#ifndef TX_MATRIX_H
+#define TX_MATRIX_H
 
 #include <fstream>
 #include <iostream>
@@ -11,11 +11,11 @@
 
 typedef unsigned long long ULong64_t;
 
-class T_Matrix{
+class TX_Matrix{
 
 private:
 
-    int amount_of_data_points,am_threads;
+    int amount_of_data_points,am_threads,primary_thread_number;
 
     double am_threads_d,amount_of_data_points_d;
 
@@ -29,8 +29,8 @@ private:
     void load_thread_file();
 
 public:
-    T_Matrix();
-    ~T_Matrix();
+    TX_Matrix();
+    ~TX_Matrix();
     
     void set_data(Data_Class_Obj*);
 };

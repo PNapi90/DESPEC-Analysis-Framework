@@ -59,6 +59,8 @@ void XY_Matrix::threading(int thr_num){
             if(used_Y[y_counter]) continue;
             //compare energies and times of x and y clusters for pairing
             in_time = abs(Cluster_X_Time[x_counter] - Cluster_Y_Time[y_counter]) < max_T;
+            
+            //WRONG!!!
             in_Energy = abs(Cluster_X_Energy[x_counter] - Cluster_Y_Energy[y_counter]) < max_E;
             
             //if pairable x and y, create new XY cluster as possible beta decay
@@ -109,7 +111,7 @@ void XY_Matrix::load_thread_file(){
     cout << "\n-------------------------------------" << endl;
 
     ifstream thr_file("Configuration_Files/THREAD_FILE.txt");
-    if(thr_file.fail()) am_threads = 5;
+    if(thr_file.fail()) am_threads = 1;
     else{
         while(thr_file.good()){
             getline(thr_file,line,'\n');

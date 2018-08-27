@@ -1,21 +1,23 @@
-#include "T_Matrix.h"
+#include "TX_Matrix.h"
 
 using namespace std;
 
 //---------------------------------------------------------------
 
-T_Matrix::T_Matrix(){
+TX_Matrix::TX_Matrix(int primary_thread_number){
     load_thread_file();
     amount_of_data_points = 0;
 
-    T_Rows = new T_Matrix_Row*[max_len];
+    this->primary_thread_number = primary_thread_number;
+
+    T_Rows = new TX_Matrix_Row*[max_len];
     skip_arr = new bool[max_len];
     relevant_for_x = new int*[max_len];
     len_line_X = new int[max_len];
     for(int i = 0;i < max_len;++i){
         len_line_X[i] = 0;
         skip_arr[i] = false;
-        T_Rows[i] = new T_Matrix_Row();
+        T_Rows[i] = new TX_Matrix_Row();
         relevant_for_x[i] = new int[max_len];
         for(int j = 0;j < max_len;++j) relevant_for_x[i][j] = -1;
     }
@@ -32,7 +34,7 @@ T_Matrix::T_Matrix(){
 
 //---------------------------------------------------------------
 
-T_Matrix::~T_Matrix(){
+TX_Matrix::~TX_Matrix(){
     for(int i = 0;i < am_threads;++i){
         delete  T_Rows[i];
         delete[] Thr_Time_Array[i];
@@ -47,7 +49,7 @@ T_Matrix::~T_Matrix(){
 
 //---------------------------------------------------------------
 
-void T_Matrix::set_data(Data_Class_Obj* DATA){
+void TX_Matrix::set_data(Data_Class_Obj* DATA){
     amount_of_data_points = DATA->get_LEN();
     Time_Arr = DATA->get_Time_Array();
 
@@ -92,7 +94,7 @@ void T_Matrix::set_data(Data_Class_Obj* DATA){
 
 //---------------------------------------------------------------
 
-void T_Matrix::Thread_T(int thr_num){
+void TX_Matrix::Thread_T(int thr_num){
     int row_start = thr_num*data_points_per_thr;
     for(int i = row_start;i < data_points_per_thr+row_start;++i){
         T_Rows[i]->set_Row(Time_Arr,Time_Arr[i],i,amount_of_data_points); 
@@ -101,7 +103,7 @@ void T_Matrix::Thread_T(int thr_num){
 
 //---------------------------------------------------------------
 
-void T_Matrix::Thread_X(int thr_num){
+void TX_Matrix::Thread_X(int thr_num){
     cluster_counter[thr_num] = 0;
 
     int xy_for_sort[1000][2];
@@ -158,15 +160,15 @@ void T_Matrix::Thread_X(int thr_num){
 
 //---------------------------------------------------------------
 
-thread T_Matrix::threading(int i,int j){
-    if(i == 0) return thread([=] {Thread_T(j);});
-    else if(i == 1) return thread([=] {Thread_X(j);});
+thread TX_Matrix::threading(int i,int j){
+    if(i == 0) return thread([=] {Thread_T(j);},j);
+    else if(i == 1) return thread([=] {Thread_X(j);},j);
     else cout << "Error: i " << i << " not known" << endl;
 }
 
 //---------------------------------------------------------------
 
-void T_Matrix::load_thread_file(){
+void TX_Matrix::load_thread_file(){
 
     string line;
     char dummy_str[100];
@@ -175,16 +177,18 @@ void T_Matrix::load_thread_file(){
 
     ifstream thr_file("Configuration_Files/THREAD_FILE.txt");
     if(thr_file.fail()){
-        cout << "No THREAD_FILE found!" << endl;
-        cout << "Using 5 threads for each AIDA xyz plane -> total of 30 threads" << endl;
-        am_threads = 5;
+        if(primary_thread_number == 0){
+            cout << "No THREAD_FILE found!" << endl;
+            cout << "Using 1 thread for each AIDA xyz plane" << endl;
+        }
+        am_threads = 1;
     }
     else{
         while(thr_file.good()){
             getline(thr_file,line,'\n');
             if(line[0] == "#") continue;
             sscanf(line.c_str(),"%s %d",dummy_str,&am_threads);
-            cout << "Using " << am_threads << " threads for each AIDA xyz plane -> total of " << am_threads*6 << " threads" << endl;
+            if(primary_thread_number == 0) cout << "Using " << am_threads << " threads for each AIDA xyz plane"  << endl;
         }
     }
     cout << "-------------------------------------\n" << endl;

@@ -1,0 +1,14 @@
+# Configuration file of the AIDA_Data_Streamer's conversion array
+# for x,y and z to a single value
+#
+# Only 3 AIDA strips at the moment, change in AIDA files if more
+# z strips are used
+#
+# format: x (0) or y (1) | z strip | array iterator (everything without |)
+#
+0   0   0
+1   0   1
+0   1   2
+1   1   3
+0   2   4
+1   2   5
