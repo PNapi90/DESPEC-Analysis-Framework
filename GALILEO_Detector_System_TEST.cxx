@@ -18,7 +18,7 @@ GALILEO_Detector_System::GALILEO_Detector_System(){
     max_am_dets = 36;
 
     fired_FEBEX_amount = 0;
-
+    
     Sum_Time = new ULong64_t[max_am_dets];
     Pileup = new int[max_am_dets];
     Hit_Pattern = new int[max_am_dets];
@@ -43,7 +43,7 @@ GALILEO_Detector_System::~GALILEO_Detector_System(){
 	GALILEO_map.clear();
 
 	delete[] det_ids;
-
+	
 	delete[] Sum_Time;
 	delete[] Pileup;
 	delete[] Hit_Pattern;
@@ -76,8 +76,8 @@ void GALILEO_Detector_System::load_board_channel_file(){
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format,&detector_number,&board_id,&channel_num,&dummy);
 	
-	GALILEO_map[std::make_pair(board_id,channel_num)] = detector_number;
-	
+	if (dummy == 1) GALILEO_map[std::make_pair(board_id,channel_num)] = detector_number;
+	if (dummy == 0) GALILEO_map[std::make_pair(board_id,channel_num)] = -1;
     }
 }
 
@@ -185,29 +185,35 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
                 else{
 		    
                     current_det = GALILEO_map[std::make_pair(board_id, tmp_Ch_ID)];
-                    det_ids[i] = current_det;
-                    Sum_Time[current_det] = tmp_Sum_Time;
-                    this->pdata++; // Moves to rest of channel timestamp //
-	
-                    FEBEX_TS *fbx_Ch_TS=(FEBEX_TS*) this->pdata; 
-                    ULong64_t tmp_ext_chan_ts = (fbx_Ch->ext_chan_ts);
-
-                    Chan_Time[current_det] = ((fbx_Ch_TS->chan_ts)+(tmp_ext_chan_ts<<32))*10; // in nanoseconds
-                    this->pdata++; // Moves to Channel Energy //
-
-                    FEBEX_En *fbx_Ch_En=(FEBEX_En*) this->pdata; 
-		
-                    Chan_Energy[current_det] = fbx_Ch_En->chan_en;
-				    
-                    Calibrate_FEBEX(current_det);
-
-                    this->pdata++; // Moves to Future Use //
-
-                    fired_FEBEX_amount++;
 		    
-                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
-                // @@@@ Traces Would Go Here @@@@@ //
-                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
+		    if(current_det != -1){
+			
+			det_ids[i] = current_det;
+			Sum_Time[current_det] = tmp_Sum_Time;
+			this->pdata++; // Moves to rest of channel timestamp //
+	    
+			FEBEX_TS *fbx_Ch_TS=(FEBEX_TS*) this->pdata; 
+			ULong64_t tmp_ext_chan_ts = (fbx_Ch->ext_chan_ts);
+    
+			Chan_Time[current_det] = ((fbx_Ch_TS->chan_ts)+(tmp_ext_chan_ts<<32))*10; // in nanoseconds
+			this->pdata++; // Moves to Channel Energy //
+    
+			FEBEX_En *fbx_Ch_En=(FEBEX_En*) this->pdata; 
+		    
+			Chan_Energy[current_det] = fbx_Ch_En->chan_en;
+					
+			Calibrate_FEBEX(current_det);
+    
+			this->pdata++; // Moves to Future Use //
+    
+			fired_FEBEX_amount++;
+			
+		    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
+		    // @@@@ Traces Would Go Here @@@@@ //
+		    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ //
+		    
+		    }
+		
                 }
 			    	    
             }

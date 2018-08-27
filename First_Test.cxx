@@ -489,8 +489,6 @@ void TSCNUnpackProc::read_setup_parameters(){
 }
 
 
-
-
 Int_t TSCNUnpackProc::get_Conversion(Int_t PrcID){
 
 	for(int i = 0;i < 6;++i){
@@ -1132,7 +1130,9 @@ void TSCNUnpackProc::Make_FATIMA_Histos(){
     FAT_QDCdtsum_ref_gated 	= MakeTH1('D', "FATIMA/QDCdt_ref_gated",
 				Form("QDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);				
     
-    
+    FAT_Angular_Diff_ref_gated 	= MakeTH1('D', "FATIMA/Angular_Diff_ref_gated",
+				    Form("Agular Difference gated on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 360,-360,360);
+
 
     //statistics
     FAT_hits 		= MakeTH1('D', "FATIMA/Stat/det_hits", "FATIMA detector statistics",40,0,40);
@@ -1240,7 +1240,16 @@ void TSCNUnpackProc::Fill_FATIMA_Histos(){
 		    
 		    FAT_TDCdtsum_ref_gated->Fill(dt1);
 		    FAT_QDCdtsum_ref_gated->Fill(dt2);
-		
+		    
+		    if (RAW->get_FAT_E(i) > FATgate1_low && RAW->get_FAT_E(i) < FATgate1_high) { /** Only if the energies are withing the energy gate **/
+
+
+			if (RAW->get_FAT_E(j) > FATgate2_low && RAW->get_FAT_E(j) < FATgate2_high) { /** Only if the energies of the secodn detector are withing the energy gate **/
+
+			    FAT_Angular_Diff_ref_gated->Fill(FAT_angle_diffs[deti][detj]);
+
+			}
+		    }	    
 		}
    
 		if (deti == FAT_REF_DET) { /** Only occurs for the Reference Detector **/
@@ -1276,8 +1285,8 @@ void TSCNUnpackProc::Fill_FATIMA_Histos(){
 			
 			    if(!FAT_TDCdt_ref_gated[detj]) FAT_TDCdt_ref_gated[detj] = MakeTH1('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
 											Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (on %4.2f keV)", FAT_REF_DET, E_gate1, detj, E_gate2),3201,-40,40);
-    
 			    FAT_TDCdt_ref_gated[detj]->Fill(dt1);
+			    
 			    printf("hit gates\n");
        
     									

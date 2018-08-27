@@ -43,6 +43,8 @@ private:
 	int tmp_stopping_layer;
 	bool x_check, y_check;
 	
+	int tmp_FEE64ID;      //FEE64 ID
+
 	int** FEE_allocation;
 
 	bool* check_FEE64_timestamp;

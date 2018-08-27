@@ -24,3 +24,13 @@ FATIMA_Distance_Correction: 0
 Number_of_FATIMA_TDC_Modules: 1
 #
 # ---------------------------- 
+# FRS_CONFIGURATION
+# ----------------------------
+#
+# Name of Directory for FRS Configuration Files
+FRS_Setup_Name: Staring_Setup
+#
+# 0 = Get Hardcoded Variables and write them to FRS_Setup_Name Directory
+# 1 = Get Variables from files in FRS_Setup_Name Directory
+FRS_File_Setup: 1
+#

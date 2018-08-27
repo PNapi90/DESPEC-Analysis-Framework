@@ -133,6 +133,7 @@ using namespace std;
 			TH1* FAT_QDCdtsum;
 			TH1* FAT_TDCdtsum_ref_gated;		//gates are hard coded
 			TH1* FAT_QDCdtsum_ref_gated;   //for now...
+			TH1* FAT_Angular_Diff_ref_gated; // Histogram of Gated Angular Differences
 			//-statistics
 			TH1* FAT_hits;		     //number of hits per detector id
 			TH1* FAT_hits_QDC;

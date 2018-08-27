@@ -118,6 +118,9 @@ void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
 	AIDA_ADC_1* ADC_head  = (AIDA_ADC_1*) pdata;
 	AIDA_1st_Disc* AIDA_disc  = (AIDA_1st_Disc*) pdata;
 	
+	tmp_FEE64ID   = (*pdata >> 22) & 0x003F;  			//tmp_FEE64
+
+	
     	if(t0_head->check == 2 && t0_head->infocode == 2) Pause_Timestamp(t0_head); // Pause Timestamp
     	else if(t0_head->check == 2 && t0_head->infocode == 3) Resume_Timestamp(t0_head); // Resume Timestamp
     	else if(t0_head->check == 2 && t0_head->infocode == 4){  // Shouldn't Happen
@@ -138,8 +141,8 @@ void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
 	    exit(0);
 	
 	}
-	else if(ADC_head->check == 3 && ADC_head->ADC_range == 1) Set_AIDA_Implantation(ADC_head);
-	else if(ADC_head->check == 3 && ADC_head->ADC_range == 0) Unpack_AIDA_Decay_DATA(ADC_head); // Set_AIDA_DECAY/NOISE(ADC_head);
+	else if(ADC_head->check == 3 && ADC_head->ADC_range == 1 && check_FEE64_timestamp[tmp_FEE64ID]) Set_AIDA_Implantation(ADC_head);
+	else if(ADC_head->check == 3 && ADC_head->ADC_range == 0 && check_FEE64_timestamp[tmp_FEE64ID]) Unpack_AIDA_Decay_DATA(ADC_head); // Set_AIDA_DECAY/NOISE(ADC_head);
 	else if(AIDA_disc->check == 8 && AIDA_disc->second_check == 6) pdata++; //Check_AIDA_Disc_DATA();
 
 	else{ cout<<"Unidentified Thing:   AIDA Check = "<<t0_head->check<<"  INFO CODE = "<<t0_head->infocode<<"  FEE64???  "<<t0_head->FEE64_num<<endl;
@@ -159,9 +162,9 @@ void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
 
 void AIDA_Detector_System::Pause_Timestamp(AIDA_Time_First* t0_head){
     
-    int FEE64_Module_No = t0_head->FEE64_num;
+    //int FEE64_Module_No = t0_head->FEE64_num;
     
-    check_FEE64_timestamp[FEE64_Module_No] = false;
+    check_FEE64_timestamp[tmp_FEE64ID] = false;
     
     
 }
@@ -170,9 +173,9 @@ void AIDA_Detector_System::Pause_Timestamp(AIDA_Time_First* t0_head){
 
 void AIDA_Detector_System::Resume_Timestamp(AIDA_Time_First* t0_head){
     
-    int FEE64_Module_No = t0_head->FEE64_num;
+    //int FEE64_Module_No = t0_head->FEE64_num;
     
-    check_FEE64_timestamp[FEE64_Module_No] = true;
+    check_FEE64_timestamp[tmp_FEE64ID] = true;
     
 }
 
