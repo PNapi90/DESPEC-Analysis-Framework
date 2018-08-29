@@ -37,40 +37,20 @@ void AIDA_Processor::PROCESSING(bool* x_or_y,int* x_coord,ULong64_t* Time,double
     Stream->set_DATA(x_or_y,x_coord,Time,Energy,z_strip,amount);
 
     thread t[amount_thr];
-    
-    double* Etmp = nullptr;
-    int* x_tmp = nullptr;
-    ULong64_t* T_tmp = nullptr;
-    bool xy_b = false;
-    int hits_tmp = 0;
 
     //Cluster x/y strips by time, energy and position
     for(int i = 0;i < amount_thr;++i){
-        //x or y strip ? 
-        xy_b = (i % 2 == 1);
-        
-        //data for each strip type
-        Etmp = Stream->get_Energy(xy_b,i);
-        x_tmp = Stream->get_coordinates(xy_b,i);
-        T_tmp = Stream->get_Time(xy_b,i);
-        hits_tmp = Stream->get_amount_of_hits(xy_b,i);
-
         //processing thread t[i]
-        t[i] = thread(TX[i]->Process(xy_b,x_tmp,T_tmp,Etmp,hits_tmp,i),i);
+        t[i] = threading(true,i);
     }
 
     for(int i = 0;i < amount_thr;++i) t[i].join();
 
-    //reset (for safety)
-    Etmp = nullptr;
-    x_tmp = nullptr;
-    T_tmp = nullptr;
-    
     int thread_iterator = 0;
 
     //Cluster X and Y of each z plane to possible beta clusters
     for(int i = 0;i < amount_z_strips;++i){
-        t[i] = thread(XY[i]->Process(TX[thread_iterator],TX[thread_iterator + 1]),i);
+        t[i] = threading(false,thread_iterator);
         thread_iterator += 2;
     }
     
@@ -81,6 +61,22 @@ void AIDA_Processor::PROCESSING(bool* x_or_y,int* x_coord,ULong64_t* Time,double
 
 void AIDA_Processor::get_DATA(Raw_Event* RAW){
     //get data
+    for(int i = 0;i < amount_z_strips;++i) XY[i]->get_DATA(RAW);
+}
+
+//---------------------------------------------------------------
+
+thread AIDA_Processor::threading(bool type,int thr_it){
+    bool xy_b = (thr_it % 2 == 1);
+    if(type){
+        double* Etmp = Stream->get_Energy(xy_b,thr_it);
+        int* x_tmp = Stream->get_coordinates(xy_b,thr_it);
+        ULong64_t T_tmp = Stream->get_Time(xy_b,thr_it);
+        int hits_tmp = Stream->get_amount_of_hits(xy_b,thr_it);
+
+        return thread([=] {TX[i]->Process(xy_b,x_tmp,T_tmp,Etmp,hits_tmp,thr_it);});
+    }
+    else return thread([=] {XY[i]->Process(TX[thr_it],TX[thr_it + 1]);});
 }
 
 //---------------------------------------------------------------

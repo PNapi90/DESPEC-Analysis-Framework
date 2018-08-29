@@ -23,12 +23,15 @@ private:
     TX_Matrix** TX;
     XY_Matrix** XY;
 
+    std::thread threading(bool,int);
+
 
 public:
     AIDA_Processor(int);
     ~AIDA_Processor();
     
     void PROCESSING(bool*,int*,ULong64_t*,double*,int*,int);
+    void Store_and_Purge(bool*,int*,ULong64_t*,double*,int*,int);
     void get_DATA(Raw_Event*);
 };
 

@@ -16,10 +16,25 @@ class TX_Matrix{
 private:
 
     int amount_of_data_points,am_threads,primary_thread_number;
+    int z_strip_number;
+
+    bool x_or_y;
+
 
     double am_threads_d,amount_of_data_points_d;
 
     ULong64_t* Time_Arr;
+    double* Energy_Arr;
+    int* X_Arr;
+
+    ULong64_t* Time_Arr_Save;
+    double* Energy_Arr_Save;
+    int* X_Arr_Save;
+
+    int** relevant_for_x;
+    int* len_line_X;
+
+    ULong64_t Time_Last;
     ULong64_t** Thr_Time_Array;
 
     T_Matrix_Row** T_Rows;
@@ -32,7 +47,7 @@ public:
     TX_Matrix();
     ~TX_Matrix();
     
-    void set_data(Data_Class_Obj*);
+    void Process(int*,ULong64_t*,double*,int,int);
 };
 
 #endif

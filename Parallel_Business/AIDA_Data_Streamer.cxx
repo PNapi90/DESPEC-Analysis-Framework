@@ -30,6 +30,7 @@ AIDA_Data_Streamer::AIDA_Data_Streamer(){
     for(int i = 0;i < 2;++i) for(int j = 0;j < 100;++j) conversion_array[i][j] = -1;
 
     load_conversion_array();
+    reset_iterators();
 }
 
 //---------------------------------------------------------------
@@ -59,7 +60,6 @@ inline int AIDA_Data_Streamer::get_Coord(int z_strip,bool x_or_y){
 
 void AIDA_Data_Streamer::set_DATA(bool* x_or_y,int* x_coord,ULong64_t* Time,double* Energy,int* z_strip,int amount){
     int array_position = 0;
-    reset_iterators();
     for(int i = 0;i < amount;++i){
         //get xyz position from conversion array
         array_position = conversion_array[x_or_y[i]][z_strip[i]];
@@ -100,6 +100,7 @@ inline void AIDA_Data_Streamer::reset_iterators(){
     for(int i = 0;i < z_strip_amount*2;++i) array_iterator[i] = 0;
 }
 
+//---------------------------------------------------------------
 
 inline void AIDA_Data_Streamer::check_array_position(int array_position,int z_strip){
     if(array_position == -1){
@@ -131,6 +132,27 @@ int* AIDA_Data_Streamer::get_Coordinate(bool xy,int z_strip){
 
 int AIDA_Data_Streamer::get_amount_of_hits(bool xy,int z_strip){
     return array_iterator[conversion_array[xy][z_strip]];
+}
+
+//---------------------------------------------------------------
+
+void AIDA_Data_Streamer::Store_and_Purge(bool* x_or_y,int* x_coord,ULong64_t* Time,double* Energy,int z_strip,int amount){
+    int array_position = 0;
+    reset_iterators();
+    for(int i = 0;i < amount;++i){
+        //get xyz position from conversion array
+        array_position = conversion_array[x_or_y[i]][z_strip];
+        //check if array position unknown
+        check_array_position(array_position,z_strip]);
+        
+        //set values
+        this->x_coord[array_position][array_iterator[array_position]] = x_coord[i];
+        this->Time[array_position][array_iterator[array_position]] = Time[i];
+        this->Energy[array_position][array_iterator[array_position]] = Energy[i];
+
+        //increment amount of events for specific x/y/z combination
+        array_iterator[array_position]++;
+    }
 }
 
 //---------------------------------------------------------------

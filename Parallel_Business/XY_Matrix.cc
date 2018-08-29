@@ -6,13 +6,24 @@ using namespace std;
 
 XY_Matrix::XY_Matrix(int local_z){
     this->local_z = local_z;
+
+    len_X = 0;
+    len_Y = 0;
+    am_threads = 1;
+    amount_of_deleted_events = 0;
+    amount_of_events = 0;
+
     load_thread_file();
+
+    Cluster_X = nullptr;
+    Cluster_Y = nullptr;
 }
 
 //---------------------------------------------------------------
 
 XY_Matrix::~XY_Matrix(){
-
+    Cluster_X = nullptr;
+    Cluster_Y = nullptr;
 }
 
 //---------------------------------------------------------------
@@ -28,6 +39,9 @@ void XY_Matrix::set_DATA(X_Cluster** Cluster_X,Y_Cluster** Cluster_Y,int* lens){
     thread t[am_threads];
     for(int i = 0;i < am_threads;++i) t[i] = threading(i);
     for(int i = 0;i < am_threads;++i) t[i].join();
+
+    this->Cluster_X = nullptr;
+    this->Cluster_Y = nullptr;
 } 
 
 //---------------------------------------------------------------
@@ -38,7 +52,7 @@ void XY_Matrix::get_DATA(Raw_Event* RAW){
 
 //---------------------------------------------------------------
 
-void XY_Matrix::threading(int thr_num){
+void XY_Matrix::Thread_XY(int thr_num){
     //check bools for pairing
     bool in_Energy = false;
     bool in_time = false;
@@ -67,7 +81,7 @@ void XY_Matrix::threading(int thr_num){
             if(in_time && in_Energy){
                 Form_XY(pos_tmp,x_counter,y_counter);
                 XY_counter = get_XY_Counter();
-                XY_Clusters[XY_counter[thr_num]] = new XY_Cluster(Cluster_X[x_counter],Cluster_Y[y_counter]);
+                XY_Clusters[XY_counter] = new XY_Cluster(Cluster_X[x_counter],Cluster_Y[y_counter]);
                 //pair found -> continue with next cluster
                 used_X[x_counter] = true;
                 used_Y[y_counter] = true;
@@ -84,6 +98,10 @@ void XY_Matrix::threading(int thr_num){
 
 inline int XY_Matrix::get_XY_Counter(){
     int fill_value = 0;
+
+    //takes care of possible overlaps in increments
+    lock_guard<mutex> lockGuard(MUTEX);
+
     if(amount_of_deleted_events == 0){
         fill_value = amount_of_events;
         amount_of_events++;
@@ -92,6 +110,7 @@ inline int XY_Matrix::get_XY_Counter(){
         fill_value = deleted_events[amount_of_deleted_events-1];
         amount_of_deleted_events--;
     }
+
     return fill_value;
 }
 
@@ -124,7 +143,7 @@ void XY_Matrix::load_thread_file(){
 
 //---------------------------------------------------------------
 
-inline XY_Matrix::Form_XY(double* pos,int x_counter,int y_counter){
+inline void XY_Matrix::Form_XY(double* pos,int x_counter,int y_counter){
     //set amount of relevant x and y strips for cluster
     int x_len = Cluster_X_len[x_counter];
     int y_len = Cluster_Y_len[y_counter];
