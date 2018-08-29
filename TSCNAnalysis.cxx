@@ -164,9 +164,9 @@ Int_t TSCNAnalysis::UserPostLoop()
 Int_t TSCNAnalysis::UserEventFunc()
 {
 //// This function is called once for each event.
-   Int_t value = 0;
+   // unused // Int_t value = 0;
    Int_t count = 0;
-   if(fMbsEvent) value = fMbsEvent->GetDlen()/2+2; // total longwords
+   if(fMbsEvent) // unused // value = fMbsEvent->GetDlen()/2+2; // total longwords
    fEvents++;
    if(fEvents == 1 || IsNewInputFile()) {
       if(fMbsEvent) {

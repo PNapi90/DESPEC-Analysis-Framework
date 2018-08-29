@@ -79,7 +79,7 @@ FRS_Detector_System::FRS_Detector_System(){
     
 
     //set amount of Germanium Detectors
-    /*vme0 = new UInt_t*[21];         // FRS crate                                
+    vme0 = new UInt_t*[21];         // FRS crate                                
     vme1 = new UInt_t*[21];         // TPC crate 
     vme3 = new UInt_t*[21];         // Mtof crate
     vme5 = new UInt_t*[21];          //Main Crate or User Crate
@@ -726,8 +726,17 @@ FRS_Detector_System::FRS_Detector_System(){
     
     Setup_Conditions();
     
-    if (!FRS_File_Setup) Setup_Parameters();
+    if (!FRS_File_Setup){
+	
+	Setup_Parameters();
     
+	ElecMod->setMap();
+
+	ElecMod->Print();
+  
+	cout << "Setup done " << endl;
+
+    }
     if (!FRS_File_Setup) Write_Setup_Parameters();
     
     if (FRS_File_Setup) read_setup_variables_from_file();
@@ -1341,7 +1350,7 @@ void FRS_Detector_System::FRS_Rest_Of_Unpacking(int ID){
 	    std::cout<<"E> Crate Mapping does not have this ProcID :"<<psubevt->GetProcid()<<std::endl;
     
     const auto it_Module = it_Crate->second.find(vme_geo);
-	int IdMod = it_Module->second;
+	//int IdMod = it_Module->second;
     
     if(it_Module == it_Crate->second.end())
 	std::cout<<"E> Crate Mapping does not have this module (vmeGEO--) "<<vme_geo<<" in Crate :"<<psubevt->GetProcid()<<std::endl;
@@ -1688,7 +1697,7 @@ void FRS_Detector_System::FRS_Calib(){
 
 
   int scaler_channel_spill = scaler_channel_spill_all[index_flag];
-  double normalization_factor_spill = normalization_factor_spill_all[index_flag]; //   YKT 23.05
+  // unused // double normalization_factor_spill = normalization_factor_spill_all[index_flag]; //   YKT 23.05
   int scaler_channel_time  = scaler_channel_time_all[index_flag];
   double normalization_factor_time = normalization_factor_time_all[index_flag] ; //  YKT 23.05 
 
@@ -1813,14 +1822,14 @@ void FRS_Detector_System::FRS_Calib(){
 	{
 	  //int x_bin = (scaler_time_check % 3000);
 	  //int x_bin_short = (scaler_time_check % 300);
-	  int y_set;
+	  // unused //int y_set;
 	  if(check_increase_time[i]>0)
 	    {
-	      y_set =  (int)(normalization_factor_time*((Float_t)( check_increase_time[i] ))/((Float_t)( check_increase_time[scaler_channel_time] ))); 
+	      // unused //int y_set =  (int)(normalization_factor_time*((Float_t)( check_increase_time[i] ))/((Float_t)( check_increase_time[scaler_channel_time] ))); 
 	    }
 	  else
 	    {
-	      y_set = 0;
+	      // unused //int y_set = 0;
 	    }
 	}
       for(int i=0; i<64; i++)
@@ -1842,14 +1851,14 @@ void FRS_Detector_System::FRS_Calib(){
 	{
 	  //int x_bin = (scaler_spill_check % 300);
 	  //int x_bin_short = (scaler_spill_check % 30);
-	  int y_set;
+	  // unused //int y_set;
 	  if(check_increase_spill[i]>0)
 	    {
-	      y_set =  (int)(normalization_factor_spill*((Float_t)( check_increase_spill[i] ))/((Float_t)( check_increase_spill[scaler_channel_spill] )));
+	      // unused //int y_set =  (int)(normalization_factor_spill*((Float_t)( check_increase_spill[i] ))/((Float_t)( check_increase_spill[scaler_channel_spill] )));
 	    }
 	  else
 	    {
-	      y_set = 0;
+	      // unused //int y_set = 0;
 	    }
 	}
       //
@@ -1875,7 +1884,7 @@ void FRS_Detector_System::FRS_Calib(){
     }
   //----- up to here added by YKT 23.05 --------// 
    
-   UInt_t first[64];
+  // unused //  UInt_t first[64];
   //  Int_t  first[64]; 
 
   if (fbFirstEvent)
@@ -1885,7 +1894,7 @@ void FRS_Detector_System::FRS_Calib(){
 	  //std::cout <<"In first event loop"<<std::endl ; 
 	  scaler_save[i] = sc_long[i];
 	  //		 std::cout <<"  "<<scaler_save[i] <<"  "<<sc_long[i]<<std::endl ; 
-	  first[i]=sc_long[i];
+	  // unused // first[i]=sc_long[i];
 	}
       /*
       for (int i=32;i<64;i++)
@@ -1921,7 +1930,7 @@ void FRS_Detector_System::FRS_Calib(){
   for (int i=0;i<32;i++)
     if(0!=sc_long[scaler_channel_time])
       {
-	Int_t overload = 0; 
+	// unused //Int_t overload = 0; 
 	//  if(sc_long[i]!=0){            
 	if ( scaler_save[i] > static_cast<Long64_t>(sc_long[i]))
 	  {
@@ -1934,14 +1943,14 @@ void FRS_Detector_System::FRS_Calib(){
 	    //scaler_save[i] = scaler_save[i] - 4294967295;
 	    mon_inc[i] = static_cast<Long64_t>(sc_long[i])+4294967295 - scaler_save[i]; //
 	    //scaler_save[i] = (Long64_t)sc_long[i]);
-	    overload = 1;
+	    // unused //Int_t overload = 1;
 	  }
 	else
 	  mon_inc[i] = static_cast<Long64_t>(sc_long[i]) - scaler_save[i]; //
 	 
 	scaler_save[i] = static_cast<Long64_t>(sc_long[i]);
 	//
-	//if(overload != 0)
+	// unused //if(overload != 0)
 	//std::cout<<"case overload"<<std::endl;
 	if (mon_inc[i]<0)
 	  {
@@ -1960,14 +1969,14 @@ void FRS_Detector_System::FRS_Calib(){
   for (int i=32;i<64;i++)
     if(0!=sc_long[scaler_channel_time])
       {
-	Int_t overload = 0;
+	// unused //Int_t overload = 0;
 	//if (scaler_save[i] > sc_long2[i-32])
 	if (scaler_save[i] > sc_long[i])
 	  { 
 	    //scaler_save[i] = scaler_save[i] - 4294967295;
 	    //mon_inc[i] = static_cast<Long64_t>(sc_long2[i-32]) + 4294967295 - scaler_save[i];
 	    mon_inc[i] = static_cast<Long64_t>(sc_long[i]) + 4294967295 - scaler_save[i];
-	    overload =1;
+	    // unused //Int_t overload =1;
 	  }
 	else
 	  //mon_inc[i] = sc_long2[i-32] - scaler_save[i];
@@ -3179,7 +3188,7 @@ void FRS_Detector_System::FRS_Anal(){
 	}
 
 
-      static const double anode_width = 10.;//cm
+      // static const double anode_width = 10.;//cm
       //double music_dX = anode_width*sqrt(id_a4*id_a4+id_b4*id_b4+1.);
       //h_dEdx_betagammaAll->Fill(id_beta*id_gamma,de[2]/music_dX);
       //h_dEdx_betagammaAllZoom->Fill(id_beta*id_gamma,de[2]/music_dX);
@@ -3395,9 +3404,7 @@ void FRS_Detector_System::Write_Setup_Parameters(){
       cout<<"DANGER WILL ROBINSON DANGER !!!"<<endl;
       
       string response;
-      
-      bool proceed = false;
-      
+           
       while(true){
 	  
 	cout<<"You are about to overwrite your Setup Directory: "<< setup_directory_name<<endl;
@@ -4034,6 +4041,8 @@ Bool_t FRS_Detector_System::Check_PolyCond(Float_t* P, Float_t** V, int n ){
     
     if((cn&1) == 0) return false;
     if((cn&1) == 1) return true;
+    else return false;
+
     //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
 
 }
@@ -4062,6 +4071,7 @@ Bool_t FRS_Detector_System::Check_PolyCond_Multi(Float_t* P, Float_t*** V, int n
     
     if((cn&1) == 0) return false;
     if((cn&1) == 1) return true;
+    else return false;
 
     //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
 
@@ -4089,6 +4099,8 @@ Bool_t FRS_Detector_System::Check_PolyCond_X_Y(Float_t X, Float_t Y, Float_t** V
     
     if((cn&1) == 0) return false;
     if((cn&1) == 1) return true;
+    else return false;
+
     //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
 
 }
@@ -4117,6 +4129,7 @@ Bool_t FRS_Detector_System::Check_PolyCond_Multi_X_Y(Float_t X, Float_t Y, Float
     
     if((cn&1) == 0) return false;
     if((cn&1) == 1) return true;
+    else return false;
 
     //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
 
@@ -6240,14 +6253,5 @@ void FRS_Detector_System::Setup_Parameters(){
   // ElecMod->ModType.push_back("QDC_16");
   // ElecMod->ModType.push_back("QDC_17");
   // ElecMod->ModType.push_back("QDC_18");
-  
-  ElecMod->setMap();
-
-  ElecMod->Print();
-  
-  cout << "Setup done " << endl;
-
-
-
 
 }

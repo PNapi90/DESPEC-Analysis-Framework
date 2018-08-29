@@ -15,7 +15,7 @@ using namespace std;
 FATIMA_Detector_System::FATIMA_Detector_System(){
 
     FAT_evt = 0;
-	
+    unknown_header_counter = 0;
     //set amount of QDCs and TDCs
     max_am_dets = 60;
 
@@ -240,7 +240,7 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
         //QDC channel filled 
         else if(QDChead->check_a == 10){
 	    
-			double length = QDChead->length;
+	    // double length = QDChead->length;
 	    	    
             QDC_DATA = true;
             Check_QDC_DATA(QDChead);
@@ -278,6 +278,21 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 	else{
 	
 	    cout<<"Unknown header word: "<<TDChead->type<<endl;
+	    
+	    unknown_header_counter++;
+	    
+	    if(unknown_header_counter > 10){
+		
+		cout<<endl;
+		cout<<"ERROR: Too many unknown header words in FATIMA unpacker"<<endl;
+		cout<<"Something is probably wrong with the setup configuration"<<endl;
+		cout<<"Most likely White Rabbit is/isn't enabled"<<endl;
+		
+		exit(0);
+		
+		
+	    }
+	    
 
 	}
 	
@@ -459,7 +474,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
     int active_det = 0;
     no_data = true;
     
-    int TDC_loop = 0;
+    // unused // int TDC_loop = 0;
     
     int loop_counter = 0;
     while(!trail){

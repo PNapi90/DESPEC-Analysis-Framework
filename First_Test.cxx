@@ -146,6 +146,9 @@ TSCNUnpackProc::~TSCNUnpackProc()
 
 	for(int i = 0;i < 5;++i){
 		if(Detector_Systems[i]) delete Detector_Systems[i];
+		//cout<<"Detector_Systems "<<i<<" deleted"<<endl;
+		
+
 	}
 	for(int i = 0;i < 10;++i) if(interest_array[i]) delete[] interest_array[i];
 	delete[] interest_array;
@@ -235,8 +238,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 	int subevent_iter = 0;
 
-	bool used[5];
-	for(int i = 0;i < 5;++i) used[i] = false;
+	// unused // bool used[5];
+	// unused // for(int i = 0;i < 5;++i) used[i] = false;
 	
 	//bool WHITE_RABBIT_USED = true;
 	
@@ -256,7 +259,6 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		Int_t sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
 		
-		if(PrcID_Conv != 2) continue;
 				
 		if(PrcID_Conv == 0){
 			
@@ -292,7 +294,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 2 && false){
+		if(PrcID_Conv == 1 && false){
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex << *(pdata + i) << " ";
@@ -330,7 +332,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		if(cals_done) break;
 		//continue;
 		//temporary
-		used[PrcID_Conv] = true;
+		// unused //used[PrcID_Conv] = true;
 		
 		
 		//PLASTIC CASE
@@ -429,7 +431,7 @@ void TSCNUnpackProc::load_PrcID_File(){
 
 void TSCNUnpackProc::read_setup_parameters(){
 
-    const char* format = "%s %d";
+    // unused // const char* format = "%s %d";
 
     ifstream file("Configuration_Files/Detector_System_Setup_File.txt");
 
@@ -440,7 +442,7 @@ void TSCNUnpackProc::read_setup_parameters(){
 
     string line;
     string var_name;
-    int dummy_var;
+    // unused //int dummy_var;
     //file.ignore(256,'GENERAL_CONFIGURATION');
 
 
@@ -695,9 +697,9 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 
 	    FAT_angle_diffs[i][k] = angle;
 		    
-	    if(dist < FAT_exclusion_dist && (((i < 12 && k < 12) || 
+	    if((dist < FAT_exclusion_dist && (((i < 12 && k < 12) || 
 					    (i < 24 && i > 11 && k < 24 && k > 11) || 
-					    (i > 23 && k > 23)) || !same_ring_exclusion ) || i == k ){
+					    (i > 23 && k > 23)) || !same_ring_exclusion )) || i == k ){
 		
 		
 		 FAT_neighbour_check[i][k] = false;
@@ -808,9 +810,9 @@ void TSCNUnpackProc::Fill_FRS_Histos(){
 
     Float_t sci_tofll2, sci_tofll3, sci_tof2, sci_tofrr2, sci_tofrr3, sci_tof3;
 
-    Float_t ID_x2, ID_y2, ID_a2, ID_b2;
+    // unused // Float_t ID_x2, ID_y2, ID_a2, ID_b2;
     
-    Float_t ID_x4, ID_y4, ID_a4, ID_b4;
+    // unused // Float_t ID_x4, ID_y4, ID_a4, ID_b4;
 
     
     Int_t sci_dt_21l_21r, sci_dt_41l_41r, sci_dt_42l_42r, sci_dt_43l_43r, sci_dt_81l_81r;
@@ -844,7 +846,7 @@ void TSCNUnpackProc::Fill_FRS_Histos(){
     sci_tofrr3 = RAW->get_FRS_tofrr3();
     sci_tof3 = RAW->get_FRS_tof3();
 
-    ID_x2 = RAW->get_FRS_x2();
+    /*ID_x2 = RAW->get_FRS_x2();
     ID_y2 = RAW->get_FRS_y2();
     ID_a2 = RAW->get_FRS_a2();
     ID_b2 = RAW->get_FRS_b2();
@@ -852,7 +854,7 @@ void TSCNUnpackProc::Fill_FRS_Histos(){
     ID_x4 = RAW->get_FRS_x4();
     ID_y4 = RAW->get_FRS_y4();
     ID_a4 = RAW->get_FRS_a4();
-    ID_b4 = RAW->get_FRS_b4();
+    ID_b4 = RAW->get_FRS_b4();*/
     
     sci_dt_21l_21r = RAW->get_FRS_dt_21l_21r();
     sci_dt_41l_41r = RAW->get_FRS_dt_41l_41r();
@@ -1016,6 +1018,13 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 	    sum_phys_l[i] = 0;
 	    called_channels[i] = 0;
     }
+
+
+    for(int i = 0; i < 4; ++i){
+    
+	sum_l = 0;
+	sum_t = 0;
+	pl_iter = RAW->get_PLASTIC_am_Fired(i);
 	
 	int pl_n_hits = RAW->get_PLASTIC_tamex_hits();
 	double tmp_fill_val = 0;
@@ -1352,7 +1361,7 @@ void TSCNUnpackProc::Fill_GALILEO_Histos(){
 		
 
 		if(!GAL_Chan_Time_Diff[j]) GAL_Chan_Time_Diff[j] = MakeTH1('D',Form("GALILEO/GALILEO_Chan_Time_DIff%2d",j),
-								    Form("GALILEO Channel Time Difference",j),201,-1000,1000);
+								    Form("GALILEO Channel Time Difference for %2d",j),201,-1000,1000);
 
 		if(!GAL_Time_Diff_vs_Energy[j]) GAL_Time_Diff_vs_Energy[j] = MakeTH2('D',Form("GALILEO/GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",j),
 										Form("GALILEO Time Difference Vs Channel Energy Channel %2d",j),201,-1000,1000,10001,0,800000);

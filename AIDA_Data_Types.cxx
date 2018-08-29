@@ -192,7 +192,7 @@ bool CalibratedADCDataItem::operator<(const CalibratedADCDataItem &dataItem) con
 	return dssd < dataItem.GetDSSD() || (dssd == dataItem.GetDSSD() && side < dataItem.GetSide())
 			|| (dssd == dataItem.GetDSSD() && side == dataItem.GetSide() && strip < dataItem.GetStrip());
 }
-/*Cluster::Cluster(){
+Cluster::Cluster(){
 	dssd = -5;
 	side = -5;
 	stripMin = -5;
