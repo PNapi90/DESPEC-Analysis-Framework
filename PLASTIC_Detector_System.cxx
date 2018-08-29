@@ -71,8 +71,6 @@ PLASTIC_Detector_System::~PLASTIC_Detector_System(){
 
 ULong** PLASTIC_Detector_System::tmp_get_coarse_T(){return (ULong**) edge_coarse;}
 
-
-
 //---------------------------------------------------------------
 
 int PLASTIC_Detector_System::tmp_get_am_hits(){
@@ -92,7 +90,7 @@ int* PLASTIC_Detector_System::tmp_get_iterator(){return iterator;}
 //---------------------------------------------------------------
 
 void PLASTIC_Detector_System::get_Event_data(Raw_Event* RAW){
-    RAW->set_DATA_PLASTIC(iterator,edge_coarse,edge_fine,ch_ID_edge,coarse_T,fine_T); 
+    RAW->set_DATA_PLASTIC(iterator,edge_coarse,edge_fine,ch_ID_edge,coarse_T,fine_T,tamex_iter); 
 }
 
 //---------------------------------------------------------------
@@ -103,6 +101,7 @@ void PLASTIC_Detector_System::Process_MBS(int* pdata){
 
     //reset old iterator array and old TAMEX data
     for(int i = 0;i < tamex_iter;++i) iterator[i] = 0;
+
     reset_edges();
     tamex_end = false;
     tamex_iter = 0;
@@ -146,7 +145,7 @@ void PLASTIC_Detector_System::Process_TAMEX(){
     
     //check if end of TAMEX MBS reached
     bool ongoing = (head->identify == tamex_identifier) && (head->identify_2 == 0) && (head->sfp_id == 1 || head->sfp_id == 0);
-
+    
     if(!ongoing){
         tamex_end = true;
         return;
@@ -164,13 +163,19 @@ void PLASTIC_Detector_System::Process_TAMEX(){
 
     //next word
     pdata++;
+    
     //get amount of fired tdcs (without last trailing words)
     TAMEX_FIRED* fire = (TAMEX_FIRED*) pdata;
     am_fired[tamex_iter] = (fire->am_fired)/4 - 2;
-
     
+    if(am_fired[tamex_iter] < 0){
+        cerr << "NEGATIVE TAMEX FIRED AMOUNT ENCOUNTERED!" << endl;
+        exit(0);
+    }
+
     //next word
     pdata++;
+   
     //begin of data header
     TAMEX_BEGIN* begin = (TAMEX_BEGIN*) pdata;
     if(begin->aa != aa){
@@ -181,8 +186,10 @@ void PLASTIC_Detector_System::Process_TAMEX(){
 
     //next word
     pdata++;
+    
     //get trigger 
     get_trigger();
+    
     //move on to leading and trailing edges
     if(am_fired[tamex_iter] > 3) get_edges();
     else no_edges[tamex_iter] = true;
@@ -209,6 +216,7 @@ void PLASTIC_Detector_System::skip_padding(){
 //---------------------------------------------------------------
 
 void PLASTIC_Detector_System::get_trigger(){
+	
     //check place holder in stream
     PLACE_HOLDER* hold = (PLACE_HOLDER*) pdata;
     
@@ -229,6 +237,7 @@ void PLASTIC_Detector_System::get_trigger(){
 
     //next word
     pdata++;
+    
 }
 
 //---------------------------------------------------------------
@@ -254,7 +263,7 @@ void PLASTIC_Detector_System::get_edges(){
 
     //loop over remaining words (getting leading and trailing edge data)
     written = false;
-
+	
     while(no_error_reached()){
         //check place holder in stream
         PLACE_HOLDER* hold = (PLACE_HOLDER*) pdata;
@@ -275,6 +284,7 @@ void PLASTIC_Detector_System::get_edges(){
         //next word 
         pdata++;
        
+        
         //extract data
         TAMEX_DATA* data = (TAMEX_DATA*) pdata;
             
@@ -283,9 +293,7 @@ void PLASTIC_Detector_System::get_edges(){
         ch_ID_edge[tamex_iter][iterator[tamex_iter]] = data->ch_ID;
         lead_arr[tamex_iter][iterator[tamex_iter]] = 1 - (data->ch_ID % 2);
 
-        //cout << "debug edges" << endl;
-        //cout << dec << tamex_iter << " " << data->ch_ID << " " << endl;
-        
+       
         //trailing edge reached
         iterator[tamex_iter]++;
 
@@ -308,11 +316,11 @@ bool PLASTIC_Detector_System::no_error_reached(){
 void PLASTIC_Detector_System::check_error(){
     //next word
     //pdata++;
-
+    
     TAMEX_ERROR* error = (TAMEX_ERROR*) pdata;
     
     if(error->error != error_code){
-        cerr << "wrong error header in TAMEX!" << endl;
+        cerr << "wrong error header in TAMEX @ word " << hex << *pdata << endl;
         exit(0);
     }
     if(error->err_code != 0){
@@ -341,7 +349,7 @@ void PLASTIC_Detector_System::check_trailer(){
 void PLASTIC_Detector_System::calibrate_ONLINE(){
 
     //send data to ROOT histograms in Calibrator object
-    PLASTIC_Calibration->get_data(edge_fine,ch_ID_edge,2,iterator);
+    PLASTIC_Calibration->get_data(edge_fine,ch_ID_edge,tamex_iter,iterator);
     double max_count = 30000.;
     cal_count++;
     if(cal_count % 1000 == 0){

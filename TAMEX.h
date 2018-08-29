@@ -22,8 +22,8 @@ struct PADDING
 
 struct TAMEX_FIRED
 {
-    unsigned int am_fired   : 8;
-    unsigned long empty     : 24;
+    unsigned int am_fired   : 12;
+    unsigned long empty     : 20;
 };
 
 struct TAMEX_CHANNEL_HEADER
