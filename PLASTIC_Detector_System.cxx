@@ -312,6 +312,7 @@ void PLASTIC_Detector_System::check_error(){
     TAMEX_ERROR* error = (TAMEX_ERROR*) pdata;
     
     if(error->error != error_code){
+	
         cerr << "wrong error header in TAMEX!" << endl;
         exit(0);
     }
