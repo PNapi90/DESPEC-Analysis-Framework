@@ -129,6 +129,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	FAT_gain_match_done = false;
 	
+	Cout_counter = 0;
+	
 
 }
 
@@ -198,10 +200,13 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	}
 	
 	count++;
+	if(count == 1) cout << endl;
 		
 	if (count % 100000 == 0){
+		cout << "\r";
 	    cout << "Event " << count << " Reached!!!"<<"    Data File Number : "<<data_file_number;
-	    cout << "\r";
+	    cout <<"\t\t\t\t";
+	    cout.flush();
 	}
 	
 	if(cals_done) return kTRUE; //BAD!!!!
@@ -251,13 +256,16 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 		Int_t PrcID=psubevt->GetProcid();
 		
-		//cout<<"Proc_ID is : "<<PrcID<<endl;
+		
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 		
 		Int_t sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
-		
-				
+		if(Cout_counter < 20 && false){
+			cout<<"Proc_ID is : "<<PrcID;//<<endl;
+			cout << " -> Conv " << PrcID_Conv << endl;
+			Cout_counter++;
+		}	
 		if(PrcID_Conv == 0){
 			
 		    Detector_Systems[PrcID_Conv]->Process_FRS(psubevt);
@@ -941,6 +949,7 @@ void TSCNUnpackProc::Fill_FRS_Histos(){
 
 void TSCNUnpackProc::Make_Plastic_Histos(){
     
+    cout << "CREATING PLASTIC HISTOGRAMS" << endl;
     
     C_t = MakeTH1('D',"pl","pl",1001,0,1000);
     

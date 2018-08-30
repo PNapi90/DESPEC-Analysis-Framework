@@ -114,7 +114,7 @@ FRS_Detector_System::FRS_Detector_System(){
     vme3s_MT = new Int_t*[32];           // Mtof TDC (V1290) 
     vme3s_MT_trailing = new Int_t*[32];  // Mtof TDC (V1290) 
     
-    for(int i; i < 32; ++i){
+    for(int i = 0; i < 32; ++i){
 	
 	vme2s[i] 		= new Int_t[10];           // User TDC (V1290) 
 	vme2s_trailing[i] 	= new Int_t[10];  // User TDC (V1290) 
@@ -598,7 +598,7 @@ FRS_Detector_System::FRS_Detector_System(){
 	sci_b_veto_r = new Bool_t[4];  
 	sci_b_veto_e = new Bool_t[3];
 	
-	for(int i; i < 12; ++i){
+	for(int i = 0; i < 12; ++i){
 	    
 	    sci_l[i] = 0;  
 	    sci_r[i] = 0;  
@@ -749,7 +749,7 @@ FRS_Detector_System::FRS_Detector_System(){
 FRS_Detector_System::~FRS_Detector_System(){
 
     
-    for(int i; i < 32; ++i){
+    for(int i = 0; i < 32; ++i){
 	
 	delete[] vme2s[i];           // User TDC (V1290) 
 	delete[] vme2s_trailing[i];  // User TDC (V1290) 
@@ -4761,7 +4761,7 @@ void FRS_Detector_System::read_setup_variables_from_file(){
     
     // Magnetic Field Values
     
-    for(int i; i < 4; ++i){
+    for(int i = 0; i < 4; ++i){
 	
 	frs_f.ignore(256,':');
 	frs_f >> frs->bfield[i];

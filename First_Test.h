@@ -292,6 +292,7 @@ using namespace std;
 			int count;
 			int called[2];
 			int iterator;
+			int Cout_counter;
 
 			ULong64_t WR_tmp[2];
 
