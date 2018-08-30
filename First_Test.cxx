@@ -206,8 +206,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	    
 	    cout << "\r";
 	    cout << "Event " << count << " Reached!!!"<<"    Data File Number : "<<data_file_number;
-	    //cout <<"\t\t\t\t";
-	    //cout.flush();
+	    cout <<"\t\t\t\t";
+	    cout.flush();
 	}
 	
 	if(cals_done) return kTRUE; //BAD!!!!
@@ -331,9 +331,9 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
 		
 		
-		cout<<"Proc ID Conversion = "<<PrcID_Conv<<endl;
-		cout<<"Plastic Calibration = "<<PLASTIC_CALIBRATION<<endl;
-		cout<<"cals_done = "<<cals_done<<endl;
+		//cout<<"Proc ID Conversion = "<<PrcID_Conv<<endl;
+		//cout<<"Plastic Calibration = "<<PLASTIC_CALIBRATION<<endl;
+		//cout<<"cals_done = "<<cals_done<<endl;
 		
 		/*	
 		if(!SKIP_EVT_BUILDING){
@@ -1017,7 +1017,7 @@ void TSCNUnpackProc::Make_Plastic_Histos(){
 
 void TSCNUnpackProc::Fill_Plastic_Histos(){
     
-    cout << "FILLING PLASTIC HISTOGRAMS" << endl;
+    //cout << "FILLING PLASTIC HISTOGRAMS" << endl;
 
     int pl_iter = 0;
     int sum_l = 0;

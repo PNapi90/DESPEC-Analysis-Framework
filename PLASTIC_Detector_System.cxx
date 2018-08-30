@@ -9,6 +9,8 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
     //calibration enabled?
     get_Calib_type();
     cal_count = 0;
+    
+    Calibration_Done = false;
 
     PLASTIC_Calibration = new PLASTIC_Calibrator(CALIBRATE);
 
