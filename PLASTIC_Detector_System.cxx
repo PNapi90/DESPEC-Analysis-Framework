@@ -338,6 +338,7 @@ void PLASTIC_Detector_System::check_trailer(){
         cerr << "Unknown TAMEX trailer format!" << endl;
         exit(0);
     }
+    //else Trailer_Reached = true;
 
 }
 
