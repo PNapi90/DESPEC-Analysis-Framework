@@ -270,7 +270,9 @@ using namespace std;
 			void Fill_GALILEO_Histos();
 			
 			
+			bool Check_Cal_Plastic();
 			
+			bool PLASTIC_CALIBRATION;
 			
 			double** FAT_positions;
 			double** FAT_angle_diffs;

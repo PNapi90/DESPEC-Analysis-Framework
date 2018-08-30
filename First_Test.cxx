@@ -99,6 +99,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) Detector_Systems[i] = NULL;
 
 	get_interest_arrays();
+	
+	PLASTIC_CALIBRATION = Used_Systems[2] ? Check_Cal_Plastic() : false;
 
 	/*
 	if(!SKIP_EVT_BUILDING){
@@ -336,7 +338,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		
 		//PLASTIC CASE
-		if(PrcID_Conv == 2) Fill_Plastic_Histos();
+		if(PrcID_Conv == 2 && !PLASTIC_CALIBRATION) Fill_Plastic_Histos();
 		
 		//FATIMA CASE
 		if(PrcID_Conv == 3) Fill_FATIMA_Histos();
@@ -1376,4 +1378,29 @@ void TSCNUnpackProc::Fill_GALILEO_Histos(){
 	    }
 	}
     }    
+}
+
+bool TSCNUnpackProc::Check_Cal_Plastic(){
+	ifstream data("Configuration_Files/PLASTIC_CALIB_FILE.txt");
+    if(data.fail()){
+        cerr << "Could not find Calibration type file for PLASTIC" << endl;
+        exit(0);
+    }
+    string line;
+    const char* format = "%s %d";
+    char s[100];
+    int val;
+    bool CALIBRATE = false;
+    bool FORCE = false;
+
+    while(data.good()){
+        getline(data,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format,&s,&val);
+        if(string(s) == string("ONLINE")) CALIBRATE = (val == 1);
+        if(string(s) == string("FORCE")) FORCE = (val == 1);
+    }
+    
+    return CALIBRATE;
+	
 }
