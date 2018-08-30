@@ -203,10 +203,11 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	if(count == 1) cout << endl;
 		
 	if (count % 100000 == 0){
-		cout << "\r";
+	    
+	    cout << "\r";
 	    cout << "Event " << count << " Reached!!!"<<"    Data File Number : "<<data_file_number;
-	    cout <<"\t\t\t\t";
-	    cout.flush();
+	    //cout <<"\t\t\t\t";
+	    //cout.flush();
 	}
 	
 	if(cals_done) return kTRUE; //BAD!!!!
@@ -246,6 +247,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 	//bool WHITE_RABBIT_USED = true;
 	
+	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
 		subevent_iter++;
@@ -256,7 +258,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 		Int_t PrcID=psubevt->GetProcid();
 		
-		
+		//cout<<"Proc   ID is : "<<PrcID<<endl;
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 		
@@ -328,6 +330,11 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
 		
+		
+		cout<<"Proc ID Conversion = "<<PrcID_Conv<<endl;
+		cout<<"Plastic Calibration = "<<PLASTIC_CALIBRATION<<endl;
+		cout<<"cals_done = "<<cals_done<<endl;
+		
 		/*	
 		if(!SKIP_EVT_BUILDING){
 			EvtBuilder[0]->set_Event(RAW);
@@ -342,6 +349,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		
 		//PLASTIC CASE
+		
+		//cout<<"Proc ID Conversion = "<<PrcID_Conv<<endl;
+		//cout<<"Plastic Calibration = "<<PLASTIC_CALIBRATION<<endl;
+		
 		if(PrcID_Conv == 2 && !PLASTIC_CALIBRATION) Fill_Plastic_Histos();
 		
 		//FATIMA CASE
@@ -1006,6 +1017,8 @@ void TSCNUnpackProc::Make_Plastic_Histos(){
 
 void TSCNUnpackProc::Fill_Plastic_Histos(){
     
+    cout << "FILLING PLASTIC HISTOGRAMS" << endl;
+
     int pl_iter = 0;
     int sum_l = 0;
     int sum_t = 0;

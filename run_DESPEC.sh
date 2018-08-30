@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 
 #use script via . run_DESPEC.sh <input_file_name> <output_file_name>
 

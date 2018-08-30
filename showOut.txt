@@ -1,18 +1,18 @@
 GO4-*> Reading library: libGo4UserAnalysis  
 GO4-*> Find user analysis class TSCNAnalysis  
 GO4-*> !!! Find constructor with prototype TSCNAnalysis::TSCNAnalysis(int, char**)  
-GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffc52f35bd0)  
+GO4-*> Process: new TSCNAnalysis(1, (char**)0x7fff704b4fb0)  
 GO4-*> Welcome to Go4 Analysis Framework Release v5.3.0 (build 50300) !  
 **** TSCNAnalysis: Create Go4Analysis
 GO4-*> Analysis: Added analysis step Unpack  
 GO4-*> Analysis: Added analysis step Calibration  
 GO4-*> Analysis: Added analysis step Analysis  
 GO4-*> Main: starting analysis in batch mode ...    
-GO4-!> Fail to open AutoSave file out_test.root  
-GO4-*> Analysis LoadObjects: Failed to load from file out_test.root  
-GO4-*> TGo4MbsFile: Open file ../Center_Pos_0001.lmd  
+GO4-!> Fail to open AutoSave file Test_again.root  
+GO4-*> Analysis LoadObjects: Failed to load from file Test_again.root  
+GO4-*> TGo4MbsFile: Open file ./../Center_Pos_0001.lmd  
 GO4-*> UnpackFactory: Create input event for MBS  
-GO4-*> Event MbsEvent101 has source ../Center_Pos_0001.lmd class: TGo4MbsFile  
+GO4-*> Event MbsEvent101 has source ./../Center_Pos_0001.lmd class: TGo4MbsFile  
 GO4-*> UnpackFactory: Create event processor UnpackProc  
 **** TSCNUnpackProc: Create
 set MUSIC parameters
@@ -218,14 +218,14 @@ GO4-*> Analysis --  Initializing EventClasses done.
 First Analysis Step index: 	0
 Last Analysis Step index: 	2
 Autosave Interval: 		500 s
-Autosave File: 		out_test.root 
+Autosave File: 		Test_again.root 
 Autosave File compression: 	5 
 Autosave overwrite mode: 	0 
 Autosave enabled: 		1 
 ----------------------------------------------  
  ++++ Analysis Step Unpack ++++	 
   Eventsource: TGo4MbsFile 
-    Name: 	../Center_Pos_0001.lmd 
+    Name: 	./../Center_Pos_0001.lmd 
     Timeout: 	1 s
     Startevent: 	0	 Stopevent: 	0 
     Event interval: 	0
@@ -247,11 +247,14 @@ Tagfile: GO4-NOLMDTAG
 
 **************************************
 GO4-*> Analysis loop is starting...  
-GO4-*> Start file: ../Center_Pos_0001.lmd tagfile:none first:0 last:0 delta:0  
+GO4-*> Start file: ./../Center_Pos_0001.lmd tagfile:none first:0 last:0 delta:0  
 
+Proc ID Conversion = 2
+Plastic Calibration = 0
+cals_done = 56
 
 First event #: 447251
-Event 100000 Reached!!!    Data File Number : 0				Event 200000 Reached!!!    Data File Number : 0				Event 300000 Reached!!!    Data File Number : 0				Event 400000 Reached!!!    Data File Number : 0				Event 500000 Reached!!!    Data File Number : 0				Event 600000 Reached!!!    Data File Number : 0				Event 700000 Reached!!!    Data File Number : 0				Event 800000 Reached!!!    Data File Number : 0				Event 900000 Reached!!!    Data File Number : 0				Event 1000000 Reached!!!    Data File Number : 0				Event 1100000 Reached!!!    Data File Number : 0				GO4-*> End of event source TGo4MbsFile: name:../Center_Pos_0001.lmd msg:-I-f_evt: no more event file:../Center_Pos_0001.lmd  
+Event 100000 Reached!!!    Data File Number : 0Event 200000 Reached!!!    Data File Number : 0Event 300000 Reached!!!    Data File Number : 0Event 400000 Reached!!!    Data File Number : 0Event 500000 Reached!!!    Data File Number : 0Event 600000 Reached!!!    Data File Number : 0Event 700000 Reached!!!    Data File Number : 0Event 800000 Reached!!!    Data File Number : 0Event 900000 Reached!!!    Data File Number : 0Event 1000000 Reached!!!    Data File Number : 0Event 1100000 Reached!!!    Data File Number : 0GO4-*> End of event source TGo4MbsFile: name:./../Center_Pos_0001.lmd msg:-I-f_evt: no more event file:./../Center_Pos_0001.lmd  
 **** TSCNAnalysis: PostLoop
 Last event: 0 Total events: 1169031
 
@@ -263,8 +266,8 @@ RunID:
 	Comments: 
 GO4-*> Go4 EventEndException  appeared in 1169031 cycle.  
 **** TSCNAnalysis: Delete
-GO4-*> Opening AutoSave file out_test.root with RECREATE mode  
-GO4-*> AutoSave file out_test.root was closed.  
+GO4-*> Opening AutoSave file Test_again.root with RECREATE mode  
+GO4-*> AutoSave file Test_again.root was closed.  
 ------------------
 Detector_System FRS deleted
 Detector_System AIDA deleted
