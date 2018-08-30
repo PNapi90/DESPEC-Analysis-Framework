@@ -195,7 +195,7 @@ void PLASTIC_Calibrator::get_data(double** fine_T,UInt** ch_id,int tamex_iter,in
 void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 
 	//Root file to check histograms
-	TFile* ROOT_FILE = new TFile("Root_Trees/PLASTIC_TREE.root","RECREATE");
+	//TFile* ROOT_FILE = new TFile("Root_Trees/PLASTIC_TREE.root","RECREATE");
 
 	//output file stream
 	ofstream cal_file;
@@ -233,8 +233,8 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 			if(fired[i][j]){
 
 				//add pdf and cdf to root file
-				ROOT_FILE->Add(Fine_Hist[i][j]);
-				ROOT_FILE->Add(Fine_Hist[i][j]->GetCumulative());
+				//ROOT_FILE->Add(Fine_Hist[i][j]);
+				//ROOT_FILE->Add(Fine_Hist[i][j]->GetCumulative());
 
 				sprintf(filename,"Configuration_Files/Calibration_PLASTIC/Calib_%d_%d.dat",i,j);
 				cal_file.open(filename);
@@ -282,7 +282,7 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 	cout << "-----------------------------------------------------------------" << endl;
 	cout << endl;
 
-	ROOT_FILE->Write();
+	//ROOT_FILE->Write();
 		
 	map_file.close();
 

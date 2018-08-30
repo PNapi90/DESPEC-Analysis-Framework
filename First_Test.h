@@ -164,19 +164,25 @@ using namespace std;
 			TH1* all2;
 			
 			TH1* WR_F;
-			TH1*** Coarse;
-			TH1** DIFF_ARR;
+			
+			
+			//Plastic histograms
 			TH1*** tamex_Mult_Ch_lead;
 			TH1*** tamex_Mult_Ch_trail;
+			TH2** tamex_mult_mat_lead;
+			TH2** tamex_mult_mat_trail;
+			TH1*** Trail_LEAD;
+			TH1**** LEAD_LEAD;
+			TH1*** Coarse;
+			TH1** DIFF_ARR;
+			
 			
 			TH1* FAT_TDC_Diff; // ****NEWLY ADDED****
 			
 
-			TH2** tamex_mult_mat_lead;
-			TH2** tamex_mult_mat_trail;
+			
 
-			TH1*** Trail_LEAD;
-			TH1**** LEAD_LEAD;
+			
 			//for the SIS modules
 
 			

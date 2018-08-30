@@ -64,14 +64,6 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	input_data_path_old = "old";
 	
-	Make_FRS_Histos();
-	
-	Make_FATIMA_Histos();
-
-	Make_Plastic_Histos();
-	
-	Make_GALILEO_Histos();
-	
 	WR_used = false;
 
 	//used_systems
@@ -97,10 +89,21 @@ TGo4EventProcessor(name) // Histograms defined here //
 	Detector_Systems[4] = !Used_Systems[4] ? NULL : new GALILEO_Detector_System();
 
 	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) Detector_Systems[i] = NULL;
-
-	get_interest_arrays();
 	
 	PLASTIC_CALIBRATION = Used_Systems[2] ? Check_Cal_Plastic() : false;
+	
+	//Only create histograms if system is used
+	if(Used_Systems[0]) Make_FRS_Histos();
+	
+	if(Used_Systems[3]) Make_FATIMA_Histos();
+
+	if(Used_Systems[2] && !PLASTIC_CALIBRATION) Make_Plastic_Histos();
+	
+	if(Used_Systems[4]) Make_GALILEO_Histos();
+	
+	get_interest_arrays();
+	
+	
 
 	/*
 	if(!SKIP_EVT_BUILDING){
@@ -136,8 +139,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 TSCNUnpackProc::~TSCNUnpackProc()
 {
     string DET_NAME[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
-	Detector_Systems[3]->write();
-	cout << "Hello Matt" << endl;
+	//Detector_Systems[3]->write();
 	cout << "------------------" << endl;
 	for(int i = 0;i < 5;++i){
 		if(Detector_Systems[i]){
@@ -977,22 +979,19 @@ void TSCNUnpackProc::Make_Plastic_Histos(){
     DIFF_ARR = new TH1*[36];
     for(int i = 0;i < 36;++i) DIFF_ARR[i] = NULL;//MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),300,-30000,0);
     
-    Trail_LEAD = new TH1**[50];
-    Coarse = new TH1**[50];
+    Trail_LEAD = new TH1**[100];
+    Coarse = new TH1**[100];
     //lead_lead = new TH1**[4];
 
-    for(int i = 0;i < 50;++i){
-
-	Trail_LEAD[i] = new TH1*[50];
-	Coarse[i] = new TH1*[50];
-	//lead_lead[i] = new TH1*[17];
-	for(int j = 0;j < 50;++j){
-
-	    Trail_LEAD[i][j] = NULL;
-	    Coarse[i][j] = NULL;
-	    //	lead_lead[i][j] = NULL;
-	
-	}
+    for(int i = 0;i < 100;++i){
+		Trail_LEAD[i] = new TH1*[100];
+		Coarse[i] = new TH1*[100];
+		//lead_lead[i] = new TH1*[17];
+		for(int j = 0;j < 100;++j){
+			Trail_LEAD[i][j] = NULL;
+			Coarse[i][j] = NULL;
+			//lead_lead[i][j] = NULL;
+		}
     }
 }
 
