@@ -1003,24 +1003,19 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 
     int phys_ch = 0;
     int phys_ch_tmp = 0;
-    int sum_phys_l[50];
-    int sum_phys_t[50];
-    int called_channels[50];
-    for(int i = 0; i < 50; ++i){
+    int sum_phys_l[100];
+    int sum_phys_t[100];
+    int called_channels[100];
+    for(int i = 0; i < 100; ++i){
 	
 	    sum_phys_t[i] = 0;
 	    sum_phys_l[i] = 0;
 	    called_channels[i] = 0;
     }
-
-
-    for(int i = 0; i < 4; ++i){
-    
-	sum_l = 0;
-	sum_t = 0;
-	pl_iter = RAW->get_PLASTIC_am_Fired(i);
 	
-	int pl_n_hits = RAW->get_PLASTIC_tamex_hits();
+	int pl_n_hits = 0;
+    	
+	pl_n_hits = RAW->get_PLASTIC_tamex_hits();
 	double tmp_fill_val = 0;
 	for(int i = 0; i < pl_n_hits; ++i){
 	    sum_l = 0;
@@ -1103,7 +1098,6 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 		    tamex_Mult_trail[i]->Fill(sum_t);
 	    }
 	}
-    }
 }
 
 
