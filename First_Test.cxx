@@ -135,23 +135,17 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 TSCNUnpackProc::~TSCNUnpackProc()
 {
-    
+    string DET_NAME[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
 	Detector_Systems[3]->write();
-	double mean = 0;
-	for(int i = 0;i < val_it;++i) mean += vals[i];
-	mean /= (double) val_it;
-	double sq = 0;
-	for(int i = 0;i < val_it;++i) sq += pow(mean - vals[i],2);
-	sq = sqrt(sq)/((double) val_it);
-	cout << "MEAN " << mean << " +- " << sq << endl;
-
-
+	
+	cout << "------------------" << endl;
 	for(int i = 0;i < 5;++i){
-		if(Detector_Systems[i]) delete Detector_Systems[i];
-		//cout<<"Detector_Systems "<<i<<" deleted"<<endl;
-		
-
+		if(Detector_Systems[i]){
+			delete Detector_Systems[i];
+			cout<<"Detector_System " << DET_NAME[i] << " deleted" << endl;
+		}
 	}
+	cout << "------------------" << endl;
 	for(int i = 0;i < 10;++i) if(interest_array[i]) delete[] interest_array[i];
 	delete[] interest_array;
 	delete[] length_interest;
@@ -1391,14 +1385,12 @@ bool TSCNUnpackProc::Check_Cal_Plastic(){
     char s[100];
     int val;
     bool CALIBRATE = false;
-    bool FORCE = false;
 
     while(data.good()){
         getline(data,line,'\n');
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format,&s,&val);
         if(string(s) == string("ONLINE")) CALIBRATE = (val == 1);
-        if(string(s) == string("FORCE")) FORCE = (val == 1);
     }
     
     return CALIBRATE;
