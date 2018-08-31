@@ -174,7 +174,7 @@ double PLASTIC_Calibrator::get_Calibration_val(double value,int tamex_id_tmp,int
 			break;
 		}
 	}
-	return return_val/1000.; // for ns
+	return return_val/1000.; // Converts to ns
 }
 
 //---------------------------------------------------------------
