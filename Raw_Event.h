@@ -10,6 +10,7 @@ typedef unsigned long ULong;
 typedef unsigned int UInt;
 typedef unsigned long long ULong64_t;
 typedef float Float_t;
+typedef int Int_t;
 
 
 class Raw_Event{
@@ -32,7 +33,21 @@ private:
 	Float_t sci_e[12];  // set_DATA_SCI
 	Float_t sci_tx[12]; // set_DATA_SCI
 	Float_t sci_x[12];  // set_DATA_SCI
-	  
+	
+	
+	
+	Int_t dt_21l_21r; 
+	Int_t dt_41l_41r;
+	Int_t dt_21l_41l;
+	Int_t dt_21r_41r;
+	Int_t dt_42l_42r;
+	Int_t dt_43l_43r;
+	Int_t dt_21l_42l;
+	Int_t dt_21r_42r;
+	Int_t dt_81l_81r;
+	Int_t dt_21l_81l;
+	Int_t dt_21r_81r;
+ 
 	  
 	Float_t sci_tofll2; // set_DATA_SCI_ToF
 	Float_t sci_tofll3; // set_DATA_SCI_ToF
@@ -99,6 +114,7 @@ private:
 	
 
 	//PLASTIC
+	int amount_hit_tamex;
 	int iterator[4];
 	double trigger_coarse[100];
 	double trigger_fine[100];
@@ -143,6 +159,7 @@ public:
 	// FRS STUFF //
 	void set_DATA_MUSIC(Float_t*,Float_t*);
 	void set_DATA_SCI(Float_t*,Float_t*,Float_t*,Float_t*,Float_t*);
+	void set_DATA_SCI_dT(Int_t, Int_t, Int_t, Int_t, Int_t, Int_t, Int_t, Int_t, Int_t, Int_t, Int_t);
 	void set_DATA_SCI_ToF(Float_t,Float_t,Float_t,Float_t,Float_t,Float_t);
 	void set_DATA_ID_2_4(Float_t,Float_t,Float_t,Float_t,Float_t,Float_t,Float_t,Float_t);
 	void set_DATA_ID_Beta_Rho(Float_t*,Float_t*,Float_t,Float_t,Float_t);
@@ -157,7 +174,7 @@ public:
 						 ULong64_t*,double*,
 						 ULong64_t*,double*,
 						 int*,int*);
-	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*);
+	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*,int);
 	void set_DATA_GALILEO(int,ULong64_t*,int*,int*,ULong64_t*,double*,int*);
 
 	int get_Event_type();
@@ -176,6 +193,18 @@ public:
 	Float_t get_FRS_sci_e(int);
 	Float_t get_FRS_sci_tx(int);
 	Float_t get_FRS_sci_x(int);
+	
+	Int_t get_FRS_dt_21l_21r();
+	Int_t get_FRS_dt_41l_41r();
+	Int_t get_FRS_dt_21l_41l();
+	Int_t get_FRS_dt_21r_41r();
+	Int_t get_FRS_dt_42l_42r();
+	Int_t get_FRS_dt_43l_43r();
+	Int_t get_FRS_dt_21l_42l();
+	Int_t get_FRS_dt_21r_42r();
+	Int_t get_FRS_dt_81l_81r();
+	Int_t get_FRS_dt_21l_81l();
+	Int_t get_FRS_dt_21r_81r();
 	
 	Float_t get_FRS_tofll2();
 	Float_t get_FRS_tofll3();
@@ -248,6 +277,7 @@ ULong64_t get_FAT_QDC_t_Coarse(int i);
 	int get_PLASTIC_physical_trail_hits(int,int);
 	double get_PLASTIC_coarse_lead(int,int);
 	double get_PLASTIC_TOT(int,int);
+	int get_PLASTIC_tamex_hits();
 
 	//temporary GALILEO getters
 	int get_GALILEO_am_Fired();

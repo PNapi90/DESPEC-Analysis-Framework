@@ -43,20 +43,20 @@
 
 //-----------------------------------------------------------
 TSCNAnlProc::TSCNAnlProc() :
-  TGo4EventProcessor(),
+  TGo4EventProcessor()/*,
   fParam1(0),
   fTimeDiff(0),
   fGatedHist(0),
   fCoincQ1A1(0),
   fCoincQ1T1(0),
-  fconHis1(0)
+  fconHis1(0)*/
 {
 }
 //-----------------------------------------------------------
 TSCNAnlProc::TSCNAnlProc(const char* name) :
    TGo4EventProcessor(name)
 {
-  cout << "**** TSCNAnlProc: Create" << endl;
+  /*cout << "**** TSCNAnlProc: Create" << endl;
   fParam1 = (TSCNParameter*)  GetParameter("SCNParameter");
  
 
@@ -70,7 +70,7 @@ TSCNAnlProc::TSCNAnlProc(const char* name) :
   fWinCon1   = MakeWinCond("wincon1", -100, 100, 0, 3000);
 
   fconHis1->Enable();
-  fWinCon1->Enable();
+  fWinCon1->Enable();*/
 
 
  }
@@ -99,7 +99,7 @@ Bool_t TSCNAnlProc::BuildEvent(TGo4EventElement* dest)
 
   Double_t tdc_event[SCN_NUM_CHAN];
   Double_t tdc_event_diff[SCN_NUM_CHAN];
-  Double_t timediffdata;
+  // unused // Double_t timediffdata;
 
 
 
@@ -128,7 +128,7 @@ Bool_t TSCNAnlProc::BuildEvent(TGo4EventElement* dest)
 
   //-----the fitting algorithms--------
   
-  double pos_x=0, pos_y=0;
+  // unused // double pos_x=0, pos_y=0;
 
   //--------filling the time difference histogram  -------
 

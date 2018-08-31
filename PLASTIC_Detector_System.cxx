@@ -9,6 +9,8 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
     //calibration enabled?
     get_Calib_type();
     cal_count = 0;
+    
+    Calibration_Done = false;
 
     PLASTIC_Calibration = new PLASTIC_Calibrator(CALIBRATE);
 
@@ -92,7 +94,7 @@ int* PLASTIC_Detector_System::tmp_get_iterator(){return iterator;}
 //---------------------------------------------------------------
 
 void PLASTIC_Detector_System::get_Event_data(Raw_Event* RAW){
-    RAW->set_DATA_PLASTIC(iterator,edge_coarse,edge_fine,ch_ID_edge,coarse_T,fine_T); 
+    RAW->set_DATA_PLASTIC(iterator,edge_coarse,edge_fine,ch_ID_edge,coarse_T,fine_T,tamex_iter); 
 }
 
 //---------------------------------------------------------------
@@ -146,7 +148,7 @@ void PLASTIC_Detector_System::Process_TAMEX(){
     
     //check if end of TAMEX MBS reached
     bool ongoing = (head->identify == tamex_identifier) && (head->identify_2 == 0) && (head->sfp_id == 1 || head->sfp_id == 0);
-
+    
     if(!ongoing){
         tamex_end = true;
         return;
@@ -167,6 +169,11 @@ void PLASTIC_Detector_System::Process_TAMEX(){
     //get amount of fired tdcs (without last trailing words)
     TAMEX_FIRED* fire = (TAMEX_FIRED*) pdata;
     am_fired[tamex_iter] = (fire->am_fired)/4 - 2;
+    
+    if(am_fired[tamex_iter] < 0){
+        cerr << "NEGATIVE TAMEX FIRED AMOUNT ENCOUNTERED!" << endl;
+        exit(0);
+    }
 
     
     //next word
@@ -312,7 +319,7 @@ void PLASTIC_Detector_System::check_error(){
     TAMEX_ERROR* error = (TAMEX_ERROR*) pdata;
     
     if(error->error != error_code){
-        cerr << "wrong error header in TAMEX!" << endl;
+        cerr << "wrong error header in TAMEX @ word " << hex << *pdata << endl;
         exit(0);
     }
     if(error->err_code != 0){
@@ -333,6 +340,7 @@ void PLASTIC_Detector_System::check_trailer(){
         cerr << "Unknown TAMEX trailer format!" << endl;
         exit(0);
     }
+    //else Trailer_Reached = true;
 
 }
 
@@ -341,7 +349,7 @@ void PLASTIC_Detector_System::check_trailer(){
 void PLASTIC_Detector_System::calibrate_ONLINE(){
 
     //send data to ROOT histograms in Calibrator object
-    PLASTIC_Calibration->get_data(edge_fine,ch_ID_edge,2,iterator);
+    PLASTIC_Calibration->get_data(edge_fine,ch_ID_edge,tamex_iter,iterator);
     double max_count = 30000.;
     cal_count++;
     if(cal_count % 1000 == 0){

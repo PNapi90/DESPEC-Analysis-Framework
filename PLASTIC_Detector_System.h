@@ -36,6 +36,7 @@ private:
 
     int* pdata;
 
+    int unknown;
     int increase;
     int add;
     int aa;
@@ -92,6 +93,8 @@ public:
     //void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*){};
     void Process_FRS(TGo4MbsSubEvent* psubevt){};
 
+    void Process_AIDA(TGo4MbsSubEvent* psubevt){};
+
     //functions from abstract class Detector_System
     void Process_MBS(int*);
 
@@ -100,7 +103,7 @@ public:
 
 
     int* get_pdata();
-
+    
     ULong** tmp_get_coarse_T();
     int tmp_get_am_hits();
 

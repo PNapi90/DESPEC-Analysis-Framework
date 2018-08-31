@@ -21,13 +21,14 @@ class Detector_System{
 
 public:
 
-	virtual ~Detector_System(){};
+    virtual ~Detector_System(){};
 
     virtual void Process_MBS(int*) = 0;
     
-    //virtual void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*) = 0;
+
     virtual void Process_FRS(TGo4MbsSubEvent* psubevt) = 0;
 
+    virtual void Process_AIDA(TGo4MbsSubEvent* psubevt) = 0;
 
     virtual void get_Event_data(Raw_Event*) = 0;
 

@@ -14,10 +14,8 @@ using namespace std;
 
 FATIMA_Detector_System::FATIMA_Detector_System(){
 
-    gain_match_used = false;
-    num_TDC_modules = 1;
     FAT_evt = 0;
-	
+    unknown_header_counter = 0;
     //set amount of QDCs and TDCs
     max_am_dets = 60;
 
@@ -58,11 +56,17 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
         }
 
     }
+    FAT_positions = new int*[36];
+    for(int i = 0; i < 36; i++){
+	FAT_positions[i] = new int[3];
+	for (int j = 0; j < 3; j++) FAT_positions[i][j] = -1;
+    }
 
     FATIMA_T_CALIB = new FATIMA_Time_Calibration();
     FATIMA_E_CALIB = new FATIMA_Energy_Calibration();
 
     load_board_channel_file();
+    read_config_variables("Configuration_Files/Detector_System_Setup_File.txt");
     he_iter = 0;
 
     Det_Hist = new TH1D*[32];
@@ -89,7 +93,7 @@ FATIMA_Detector_System::~FATIMA_Detector_System(){
 	delete[] det_ID_QDC;
 
 	delete[] det_ids_QDC;
-    delete[] det_ids_TDC;
+	delete[] det_ids_TDC;
 
 	delete[] QLong_Raw;
 	delete[] QShort_Raw;
@@ -143,6 +147,35 @@ void FATIMA_Detector_System::load_board_channel_file(){
 
 //---------------------------------------------------------------
 
+void FATIMA_Detector_System::load_det_angles(){
+
+    const char* format = "%d %lf %lf %lf";
+
+    ifstream file("Configuration_Files/FATIMA_Detector_Positions.txt");
+
+    if(file.fail()){
+        cerr << "Could not find FATIMA Detector Positions File!" << endl;
+        exit(0);
+    }
+
+    string line;
+    int pos_num;
+    double r, theta, phi;
+
+    while(file.good()){
+        getline(file,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format, &pos_num, &r, &theta, &phi);
+	
+		FAT_positions[pos_num][0] = r;
+		FAT_positions[pos_num][1] = theta;
+		FAT_positions[pos_num][2] = phi;
+    }
+}
+
+
+//---------------------------------------------------------------
+
 void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
     bool called = false;
     int a = 0;
@@ -187,8 +220,8 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 
     reset_fired_channels();
     
-    num_TDC_modules = 1;
-    
+    num_TDC_modules = num_TDC_modules_fixed;
+        
     //loop over FATIMA modules
     while(!TDC_Called){
 		
@@ -207,7 +240,7 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
         //QDC channel filled 
         else if(QDChead->check_a == 10){
 	    
-			double length = QDChead->length;
+	    // double length = QDChead->length;
 	    	    
             QDC_DATA = true;
             Check_QDC_DATA(QDChead);
@@ -245,6 +278,21 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 	else{
 	
 	    cout<<"Unknown header word: "<<TDChead->type<<endl;
+	    
+	    unknown_header_counter++;
+	    
+	    if(unknown_header_counter > 10){
+		
+		cout<<endl;
+		cout<<"ERROR: Too many unknown header words in FATIMA unpacker"<<endl;
+		cout<<"Something is probably wrong with the setup configuration"<<endl;
+		cout<<"Most likely White Rabbit is/isn't enabled"<<endl;
+		
+		exit(0);
+		
+		
+	    }
+	    
 
 	}
 	
@@ -364,7 +412,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 			active_Channel = Fired_QDC_Channels[i][1];
     
 			active_det = det_ID_QDC[active_board][active_Channel];
-	    
+				    
 			//cout<<"Channel Number = "<<active_Channel<<" Board ID = "<<active_board<<endl;
 			//cout<<"Channel Number = "<<active_det<<endl;
 	    
@@ -389,7 +437,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 			//possibly this should be -= have to verify...
 			fine_time += ((double)(e->fine_time)/1024.);
 	    
-		    QDC_Time_Fine[fired_QDC_amount] = fine_time;
+			QDC_Time_Fine[fired_QDC_amount] = fine_time;
 	    
 			pdata++; // Moves to 6th data value87454dda
 	    
@@ -426,7 +474,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
     int active_det = 0;
     no_data = true;
     
-    int TDC_loop = 0;
+    // unused // int TDC_loop = 0;
     
     int loop_counter = 0;
     while(!trail){
@@ -474,6 +522,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                 //}
 
                 TDC_Time_raw[fired_TDC_amount] = (ULong64_t) (m->measurement);
+                // TDC_Time_raw[fired_TDC_amount] = 25e-3*TDC_Time_raw[fired_TDC_amount];
                 Calibrate_TDC(fired_TDC_amount);
 				fired_TDC_amount++;
                 no_data = false;
@@ -547,5 +596,31 @@ void FATIMA_Detector_System::set_Gain_Match_Filename(string GM_filename){
 //---------------------------------------------------------------
 
 int* FATIMA_Detector_System::get_pdata(){return pdata;}
+
+//---------------------------------------------------------------
+
+void FATIMA_Detector_System::read_config_variables(string config_filename){
+    
+    ifstream file(config_filename);
+
+    if(file.fail()){
+        cerr << "Could not find File for setup parameters!" << endl;
+        exit(0);
+    }
+
+    string line;
+
+    for (int i = 0; i < 5; ++i) file.ignore(256,':');
+    
+    file.ignore(256,':');
+    file >> gain_match_used;//dummy_var;
+
+    file.ignore(256,':');
+    file >> dist_corr_used;//dummy_var;   
+    
+    file.ignore(256,':');
+    file >> num_TDC_modules_fixed;//dummy_var;   
+        
+};
 
 //---------------------------------------------------------------

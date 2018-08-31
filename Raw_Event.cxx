@@ -42,6 +42,30 @@ void Raw_Event::set_DATA_SCI(Float_t* FRS_sci_l,Float_t* FRS_sci_r,Float_t* FRS_
     }
 
 }
+
+void Raw_Event::set_DATA_SCI_dT(Int_t FRS_dt_21l_21r, Int_t FRS_dt_41l_41r,
+				Int_t FRS_dt_21l_41l, Int_t FRS_dt_21r_41r,
+				Int_t FRS_dt_42l_42r, Int_t FRS_dt_43l_43r,
+				Int_t FRS_dt_21l_42l, Int_t FRS_dt_21r_42r,
+				Int_t FRS_dt_81l_81r, Int_t FRS_dt_21l_81l, Int_t FRS_dt_21r_81r){
+
+
+	dt_21l_21r = FRS_dt_21l_21r; 
+	dt_41l_41r = FRS_dt_41l_41r;
+	dt_21l_41l = FRS_dt_21l_41l;
+	dt_21r_41r = FRS_dt_21r_41r;
+	dt_42l_42r = FRS_dt_42l_42r;
+	dt_43l_43r = FRS_dt_43l_43r;
+	dt_21l_42l = FRS_dt_21l_42l;
+	dt_21r_42r = FRS_dt_21r_42r;
+	dt_81l_81r = FRS_dt_81l_81r;
+	dt_21l_81l = FRS_dt_21l_81l;
+	dt_21r_81r = FRS_dt_21r_81r;
+
+
+
+
+}
 void Raw_Event::set_DATA_SCI_ToF(Float_t FRS_sci_tofll2,Float_t FRS_sci_tofll3,Float_t FRS_sci_tof2,Float_t FRS_sci_tofrr2,Float_t FRS_sci_tofrr3,Float_t FRS_sci_tof3){
     
     sci_tofll2 = FRS_sci_tofll2;
@@ -110,40 +134,42 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 								int* det_ids_QDC,int* det_ids_TDC){
 	
 	
-	FAT_QDCs_FIRED = QDC_FIRED;
-	FAT_TDCs_FIRED = TDC_FIRED;
+	this->FAT_QDCs_FIRED = QDC_FIRED;
+	this->FAT_TDCs_FIRED = TDC_FIRED;
 	int dets_fired = 0;
 	for (int i=0; i<QDC_FIRED; i++) {
-		FAT_QDC_id[i] = det_ids_QDC[i];
-		FAT_QLong[i]  = Ql[i];
-		FAT_QLong_Raw[i]  = Ql_Raw[i];
-		FAT_QShort_Raw[i] = Qs_Raw[i];
-		FAT_QDC_t_coarse[i] = QDC_c[i];
-		FAT_QDC_t_fine[i] = QDC_f[i];
+		this->FAT_QDC_id[i] = det_ids_QDC[i];
+		if (det_ids_QDC[i] == 35) cout<<"I am in QDC"<<endl;
+		this->FAT_QLong[i]  = Ql[i];
+		this->FAT_QLong_Raw[i]  = Ql_Raw[i];
+		this->FAT_QShort_Raw[i] = Qs_Raw[i];
+		this->FAT_QDC_t_coarse[i] = QDC_c[i];
+		this->FAT_QDC_t_fine[i] = QDC_f[i];
 		for (int j=0; j<TDC_FIRED; j++) {
 			if (det_ids_QDC[i] == det_ids_TDC[j]) {
-				FAT_id[dets_fired] = det_ids_QDC[i];
-				FAT_E[dets_fired] = Ql[i];
-				FAT_ratio[dets_fired] = (double) Qs_Raw[i]/Ql_Raw[i];
-				FAT_t[dets_fired] = TDC_ns[i];
-				FAT_t_qdc[dets_fired] = QDC_c[i];
+				this->FAT_id[dets_fired] = det_ids_QDC[i];
+				if (det_ids_TDC[j] == 35) cout<<"I am in TDC"<<endl;
+
+				this->FAT_E[dets_fired] = Ql[i];
+				this->FAT_ratio[dets_fired] = (double) Qs_Raw[i]/Ql_Raw[i];
+				this->FAT_t[dets_fired] = TDC_ns[j];
+				this->FAT_t_qdc[dets_fired] = QDC_c[i];
 				dets_fired++;
 			}
 		}
 	}
-	FAT_DET_FIRED = dets_fired;
+	this->FAT_DET_FIRED = dets_fired;
 	
 	for (int i=0; i<TDC_FIRED; i++) {
-		FAT_TDC_id[i]        = det_ids_TDC[i];
-		FAT_TDC_timestamp[i] = TDC[i];
+		this->FAT_TDC_id[i]        = det_ids_TDC[i];
+		this->FAT_TDC_timestamp[i] = TDC[i];
 	}
 
 	
 	
-	/*
 	
-	this->FAT_FIRED = FAT_FIRED;
-
+	
+	/*this->FAT_FIRED = FAT_FIRED;
 	this->TDC_FIRED = TDC_FIRED;
 
 	int position = -5;
@@ -213,10 +239,11 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 
 //---------------------------------------------------------------
 
-void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine,UInt** ch_ed,double* Coarse_Trigger,double* Fine_Trigger){
-
+void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine,UInt** ch_ed,double* Coarse_Trigger,double* Fine_Trigger,int amount_hit_tamex){
+	
+	this->amount_hit_tamex = amount_hit_tamex;
 	//reset lead and trail hits
-	for(int i = 0;i < 4;++i){
+	for(int i = 0;i < amount_hit_tamex;++i){
 		for(int j = 0;j < 17;++j){
 			leading_hits_ch[i][j] = 0;
 			trailing_hits_ch[i][j] = 0;
@@ -224,7 +251,7 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 	}
 
 	//loop over all 4 tamex modules
-	for(int i = 0;i < 4;++i){
+	for(int i = 0;i < amount_hit_tamex;++i){
 		iterator[i] = it[i];
 		trigger_coarse[i] = Coarse_Trigger[i];
 		trigger_fine[i] = Fine_Trigger[i];
@@ -234,7 +261,7 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 		for(int j = 0;j < iterator[i];++j){
 			ch_ID[i][j] = ch_ed[i][j];
 			if(ch_ID[i][j] % 2 == 1){
-				coarse_T_edge_lead[i][j] = (double) Edge_Coarse[i][j];
+				coarse_T_edge_lead[i][j] = (double) Edge_Coarse[i][j]*5;
 				fine_T_edge_lead[i][j] = (double) Edge_fine[i][j];
 				
 				phys_channel[i][j] = (ch_ID[i][j]+1)/2;
@@ -242,7 +269,7 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 				leading_hits_ch[i][phys_channel[i][j]]++;
 			}
 			else{
-				coarse_T_edge_trail[i][j] = (double)  Edge_Coarse[i][j];
+				coarse_T_edge_trail[i][j] = (double)  Edge_Coarse[i][j]*5;
 				fine_T_edge_trail[i][j] =(double)  Edge_fine[i][j];
 				
 				trailing_hits[i]++;
@@ -288,6 +315,19 @@ Float_t Raw_Event::get_FRS_sci_r(int i){return sci_r[i];}
 Float_t Raw_Event::get_FRS_sci_e(int i){return sci_e[i];}
 Float_t Raw_Event::get_FRS_sci_tx(int i){return sci_tx[i];}
 Float_t Raw_Event::get_FRS_sci_x(int i){return sci_x[i];}
+
+
+Int_t Raw_Event::get_FRS_dt_21l_21r(){return dt_21l_21r;} 
+Int_t Raw_Event::get_FRS_dt_41l_41r(){return dt_41l_41r;}
+Int_t Raw_Event::get_FRS_dt_21l_41l(){return dt_21l_41l;}
+Int_t Raw_Event::get_FRS_dt_21r_41r(){return dt_21r_41r;}
+Int_t Raw_Event::get_FRS_dt_42l_42r(){return dt_42l_42r;}
+Int_t Raw_Event::get_FRS_dt_43l_43r(){return dt_43l_43r;}
+Int_t Raw_Event::get_FRS_dt_21l_42l(){return dt_21l_42l;}
+Int_t Raw_Event::get_FRS_dt_21r_42r(){return dt_21r_42r;}
+Int_t Raw_Event::get_FRS_dt_81l_81r(){return dt_81l_81r;}
+Int_t Raw_Event::get_FRS_dt_21l_81l(){return dt_21l_81l;}
+Int_t Raw_Event::get_FRS_dt_21r_81r(){return dt_21r_81r;}
 
 Float_t Raw_Event::get_FRS_tofll2(){return sci_tofll2;}
 Float_t Raw_Event::get_FRS_tofll3(){return sci_tofll3;}
@@ -378,6 +418,10 @@ ULong64_t Raw_Event::get_FAT_QDC_t_Coarse(int i){return FAT_QDC_t_coarse[i];}
 
 //---------------------------------------------------------------
 
+int Raw_Event::get_PLASTIC_tamex_hits(){return amount_hit_tamex;}
+
+//---------------------------------------------------------------
+
 int Raw_Event::get_PLASTIC_am_Fired(int i){return iterator[i];}
 
 //---------------------------------------------------------------
@@ -392,7 +436,7 @@ int Raw_Event::get_PLASTIC_CH_ID(int i,int j){return ch_ID[i][j];}
 
 double Raw_Event::get_PLASTIC_lead_T(int i,int j){
 	//cout << "SEND l" << coarse_T_edge_lead[i][j] << " " << fine_T_edge_lead[i][j]  << " " <<  coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j] << endl;
-	return (coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j]);
+	return (coarse_T_edge_lead[i][j] - fine_T_edge_lead[i][j]);
 }
 
 //---------------------------------------------------------------
@@ -407,15 +451,15 @@ double Raw_Event::get_PLASTIC_coarse_lead(int i,int j){
 
 double Raw_Event::get_PLASTIC_trail_T(int i,int j){
 	//cout << "SEND t" << coarse_T_edge_trail[i][j] << " " << fine_T_edge_trail[i][j] << endl;
-	return (coarse_T_edge_trail[i][j]*5 - fine_T_edge_trail[i][j]);
+	return (coarse_T_edge_trail[i][j] - fine_T_edge_trail[i][j]);
 }
 
 //---------------------------------------------------------------
 
 double Raw_Event::get_PLASTIC_TOT(int i,int j){
     // i is board ID, j is physical channel
-    double T_lead = (coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j]);
-    double T_trail = (coarse_T_edge_trail[i][j+1]*5 - fine_T_edge_trail[i][j+1]);
+    double T_lead = (coarse_T_edge_lead[i][j] - fine_T_edge_lead[i][j]);
+    double T_trail = (coarse_T_edge_trail[i][j+1] - fine_T_edge_trail[i][j+1]);
 
     return T_trail - T_lead;
 }

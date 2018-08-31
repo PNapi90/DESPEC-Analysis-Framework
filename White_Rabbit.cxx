@@ -68,9 +68,11 @@ void White_Rabbit::set_triggered_detector(int WR_d){
 
 void White_Rabbit::process_White_Rabbit(int* pdata){
 
-    //check for White Rabbit header in pdata 
-    WR_Header *wrh = (WR_Header*) pdata;
-    int WR_d = wrh->check_wr;
+    //check for White Rabbit header in pdata
+    
+    // unused // WR_Header *wrh = (WR_Header*) pdata;
+    // unused // int WR_d = wrh->check_wr;
+    
     //set_triggered_detector(WR_d);
     
 
