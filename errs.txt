@@ -1,0 +1,77 @@
+==19316== Memcheck, a memory error detector
+==19316== Copyright (C) 2002-2011, and GNU GPL'd, by Julian Seward et al.
+==19316== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+==19316== Command: go4analysis -file data/fatima_bplast_wr.lmd
+==19316== 
+==19316== Conditional jump or move depends on uninitialised value(s)
+==19316==    at 0x4FFFD9C: TObject::TObject() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x505E825: TMap::TMap(int, int) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5053F1E: TClassTable::TClassTable() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5055304: TClassTable::Add(char const*, short, std::type_info const&, void (*)(), int) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x508E4AC: ROOT::TGenericClassInfo::TGenericClassInfo(char const*, int, char const*, int, std::type_info const&, ROOT::TInitBehavior const*, void (*)(), TVirtualIsAProxy*, int, int) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0xAFDD51A: ROOTDict::GenerateInitInstanceLocal(TGo4EventSource const*) (G__Go4Analysis.cxx:68)
+==19316==    by 0xB08FA7D: __static_initialization_and_destruction_0(int, int) (G__Go4Analysis.cxx:81)
+==19316==    by 0xB08FE91: _GLOBAL__sub_I_G__Go4Analysis.cxx (G__Go4Analysis.cxx:25439)
+==19316==    by 0x400E0FF: call_init (dl-init.c:85)
+==19316==    by 0x400E1F6: _dl_init (dl-init.c:134)
+==19316==    by 0x4000B59: ??? (in /lib/x86_64-linux-gnu/ld-2.13.so)
+==19316==    by 0x2: ???
+==19316== 
+==19316== Conditional jump or move depends on uninitialised value(s)
+==19316==    at 0x4FFFD9C: TObject::TObject() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x4FF7BD5: TInetAddress::TInetAddress(char const*, unsigned int, int, int) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x50A9CE0: TUnixSystem::GetHostByName(char const*) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5047B9B: TUUID::GetNodeIdentifier() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5047E2F: TUUID::TUUID() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5007335: TProcessID::AddProcessID() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x501933A: TROOT::TROOT(char const*, char const*, void (**)()) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5019E03: ROOT::GetROOT() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x4FCDE1F: _GLOBAL__sub_I_TROOT.cxx (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x400E0FF: call_init (dl-init.c:85)
+==19316==    by 0x400E1F6: _dl_init (dl-init.c:134)
+==19316==    by 0x4000B59: ??? (in /lib/x86_64-linux-gnu/ld-2.13.so)
+==19316== 
+==19316== Conditional jump or move depends on uninitialised value(s)
+==19316==    at 0x4FFEE13: TObject::~TObject() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5047C13: TUUID::GetNodeIdentifier() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5047E2F: TUUID::TUUID() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5007335: TProcessID::AddProcessID() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x501933A: TROOT::TROOT(char const*, char const*, void (**)()) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5019E03: ROOT::GetROOT() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x4FCDE1F: _GLOBAL__sub_I_TROOT.cxx (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x400E0FF: call_init (dl-init.c:85)
+==19316==    by 0x400E1F6: _dl_init (dl-init.c:134)
+==19316==    by 0x4000B59: ??? (in /lib/x86_64-linux-gnu/ld-2.13.so)
+==19316==    by 0x2: ???
+==19316==    by 0x7FF0002A6: ???
+==19316== 
+==19316== Conditional jump or move depends on uninitialised value(s)
+==19316==    at 0x4FFFD9C: TObject::TObject() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5096CC9: ROOT::TSchemaRule::ProcessList(TObjArray*, TString const&) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x50993A9: ROOT::TSchemaRule::SetFromRule(char const*) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x508197F: TClass::AddRule(char const*) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x50831BC: (anonymous namespace)::ReadRulesContent(_IO_FILE*) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5083384: TClass::ReadRules() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5019922: TROOT::TROOT(char const*, char const*, void (**)()) (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x5019E03: ROOT::GetROOT() (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x4FCDE1F: _GLOBAL__sub_I_TROOT.cxx (in /cvmfs/csee.gsi.de/root/534-36/lib/libCore.so)
+==19316==    by 0x400E0FF: call_init (dl-init.c:85)
+==19316==    by 0x400E1F6: _dl_init (dl-init.c:134)
+==19316==    by 0x4000B59: ??? (in /lib/x86_64-linux-gnu/ld-2.13.so)
+==19316== 
+==19316== 
+==19316== HEAP SUMMARY:
+==19316==     in use at exit: 2,452,277 bytes in 29,191 blocks
+==19316==   total heap usage: 48,558 allocs, 19,367 frees, 4,048,485 bytes allocated
+==19316== 
+==19316== LEAK SUMMARY:
+==19316==    definitely lost: 0 bytes in 0 blocks
+==19316==    indirectly lost: 0 bytes in 0 blocks
+==19316==      possibly lost: 1,890 bytes in 53 blocks
+==19316==    still reachable: 2,450,387 bytes in 29,138 blocks
+==19316==         suppressed: 0 bytes in 0 blocks
+==19316== Rerun with --leak-check=full to see details of leaked memory
+==19316== 
+==19316== For counts of detected and suppressed errors, rerun with: -v
+==19316== Use --track-origins=yes to see where uninitialised values come from
+==19316== ERROR SUMMARY: 12 errors from 4 contexts (suppressed: 4 from 4)

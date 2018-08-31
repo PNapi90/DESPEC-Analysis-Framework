@@ -13,20 +13,23 @@ protected:
     int length,iterator;
     int* positions;
 
+    bool* Permission_array;
+
     int** Match_IDs;
 
 public:
-    Events();
+    Events(int*,int);
     ~Events();
 
     void set_Match_ID_address(int*);
-    void set_Match_ID_address_to_NULL_ALL();
+    void set_Match_ID_address_NULL_ALL();
     
     bool Permission(int);
 
     int get_iterator();
+    int get_Match_ID(int);
 
-    int* get_Match_ID_adress(int);
+    int** get_Match_ID_address();
 };
 
 #endif

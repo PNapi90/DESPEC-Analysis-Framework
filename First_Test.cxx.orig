@@ -64,15 +64,160 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	input_data_path_old = "old";
 	
-	Make_FRS_Histos();
+<<<<<<< HEAD
 	
-	Make_FATIMA_Histos();
+	FAT_REF_DET = 0;
 
-	Make_Plastic_Histos();
+	// ######################################################### //
 	
-	Make_GALILEO_Histos();
+	hsci_tofll2 = MakeTH1('D',"hsci_tofll2","hsci_tofll2",1500,0.,62000.);
+	hsci_tofll3 = MakeTH1('D',"hsci_tofll3","hsci_tofll3",1500,0.,62000.);
+	hsci_tof2 = MakeTH1('D',"hsci_tof2","hsci_tof2",1000,0.,62000.);
+	hsci_tofrr2 = MakeTH1('D',"hsci_tofrr2","hsci_tofrr2",1500,0.,62000.);
+	hsci_tofrr3 = MakeTH1('D',"hsci_tofrr3","hsci_tofrr3",1500,0.,62000.);
+	hsci_tof3 = MakeTH1('D',"hsci_tof3","hsci_tof3",1000,0.,62000.);
 	
+	/*hID_x2 = MakeTH1('D',"ID_x2","ID_x2",3000,0,300);
+	hID_y2 = MakeTH1('D',"ID_y2","ID_y2",3000,0,300);
+	hID_a2 = MakeTH1('D',"ID_a2","ID_a2",3000,0,300);
+	hID_b2 = MakeTH1('D',"ID_b2","ID_b2",3000,0,300);
+	
+	hID_x4 = MakeTH1('D',"ID_x4","ID_x4",3000,0,300);
+	hID_y4 = MakeTH1('D',"ID_y4","ID_y4",3000,0,300);
+	hID_a4 = MakeTH1('D',"ID_a4","ID_a4",3000,0,300);
+	hID_b4 = MakeTH1('D',"ID_b4","ID_b4",3000,0,300);*/
+	
+	hbeta = MakeTH1('D',"beta","beta",100,0.,1.);
+	hbeta3 = MakeTH1('D',"beta3","beta3",100,0.,1.);
+	hgamma = MakeTH1('D',"gamma","gamma",100,0.,1.);
+	
+	hAoQ = MakeTH1('D',"AoQ","AoQ",200,1.4,3.0); // 200,1.4,3.0
+	hAoQ_corr = MakeTH1('D',"AoQ_corr","AoQ_corr",200,1.4,3.0); // 200,1.4,3.0
+	
+	hz = MakeTH1('D',"z","z",100,0.,93.);
+	hz2 = MakeTH1('D',"z2","z2",100,0.,93.);
+	hz3 = MakeTH1('D',"z3","z3",100,10.,93.);
+	
+	htimestamp = MakeTH1('D',"timestamp","timestamp",30,0.,300.);
+	hts = MakeTH1('D',"ts","ts",30,0.,300.);
+	hts2 = MakeTH1('D',"ts2","ts2",30,0.,300.);
+	
+	
+	
+	
+	
+	// ######################################################### //
+
+	//*****************
+	//Fatima histograms
+	FATgate1_low  = 1172.;
+	FATgate1_high = 1182.;
+	FATgate2_low  = 1328.;
+	FATgate2_high = 1338.;
+	E_gate1 = FATgate1_low + (FATgate1_high - FATgate1_low)/2.;
+	E_gate2 = FATgate2_low + (FATgate2_high - FATgate2_low)/2.;
+	
+	
+
+		
+	FAT_Esum  = MakeTH1('D', "FATIMA/ESum", "LaBr Energy (all detectors)",4001,0,4000);
+	FAT_gg    = MakeTH2('D', "FATIMA/gg", "FATIMA Gamma-Gamma (all detectors)",2001,0,2000, 2001,0,2000);
+	FAT_TDCdtsum = MakeTH1('D', "FATIMA/TDCdtSum", "TDC dt (all detectors)", 3201,-40,40);
+	FAT_QDCdtsum = MakeTH1('D', "FATIMA/QDCdtSum", "QDC dt (all detectors)", 3201,-40,40);
+	FAT_TDCdtsum_ref_gated = MakeTH1('D', "FATIMA/TDCdt_ref_gated",
+							Form("TDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);
+	FAT_QDCdtsum_ref_gated = MakeTH1('D', "FATIMA/QDCdt_ref_gated",
+							Form("QDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);				
+	
+	
+
+	
+	//statistics
+	FAT_hits = MakeTH1('D', "FATIMA/Stat/det_hits", "FATIMA detector statistics",40,0,40);
+	FAT_hits_QDC = MakeTH1('D', "FATIMA/Stat/QDC_hits", "FATIMA QDC statistics",40,0,40);
+	FAT_hits_TDC = MakeTH1('D', "FATIMA/Stat/TDC_hits", "FATIMA TDC statistics",40,0,40);
+	FAT_QDC_TDC_hitmap = MakeTH2('D', "FATIMA/Stat/QDC_TDC_hitmap", "FATIMA QDC-TDC hit map",40,0,40, 40,0,40);
+	FAT_correlations = MakeTH2('D', "FATIMA/Stat/det_det_correlations", "FATIMA det-det correlations",40,0,40, 40,0,40);
+	
+
+	
+	
+	//energy
+	FAT_E = new TH1*[FAT_MAX_DET];
+	FAT_Eraw = new TH1*[FAT_MAX_DET];
+	FAT_E_ratio = new TH2*[FAT_MAX_DET];
+	FAT_gg_ref = new TH2*[FAT_MAX_DET];
+	
+	
+	
+	//timing
+	FAT_TDCdt_ref = new TH1*[FAT_MAX_DET];
+	FAT_QDCdt_ref = new TH1*[FAT_MAX_DET];
+	FAT_TDC_QDC_dt = new TH2*[FAT_MAX_DET];
+	FAT_TDCdt_ref_gated = new TH1*[FAT_MAX_DET];
+	FAT_E_TDCdt_ref_gated = new TH2*[FAT_MAX_DET];
+	
+
+	
+
+
+	for (int det = 0;  det< FAT_MAX_DET; det++) {
+
+		FAT_E[det] = nullptr;
+		FAT_Eraw[det] = nullptr;
+		FAT_E_ratio[det] = nullptr;
+		FAT_gg_ref[det] = nullptr;
+		FAT_TDCdt_ref[det] = nullptr;
+		FAT_QDCdt_ref[det] = nullptr;
+		FAT_TDC_QDC_dt[det] = nullptr;
+		FAT_TDCdt_ref_gated[det] = nullptr;
+		FAT_E_TDCdt_ref_gated[det] = nullptr;
+	}
+
+	
+
+	//*****************
+	
+	C_t = MakeTH1('D',"pl","pl",1001,0,1000);
+
+	tamex_Mult_lead = new TH1*[50];
+	tamex_Mult_trail = new TH1*[50];
+
+	tamex_Mult_Ch_lead = new TH1**[50];
+	tamex_Mult_Ch_trail = new TH1**[50];
+
+	tamex_mult_mat_lead = new TH2*[50];
+	tamex_mult_mat_trail = new TH2*[50];
+
+	LEAD_LEAD = new TH1***[50];
+
+	for(int i = 0;i < 50;++i){
+		
+		tamex_Mult_lead[i] = NULL;
+		tamex_Mult_trail[i] = NULL;
+
+		tamex_mult_mat_lead[i] = NULL;
+		tamex_mult_mat_trail[i] = NULL;
+
+		tamex_Mult_Ch_lead[i] = new TH1*[50];
+		tamex_Mult_Ch_trail[i] = new TH1*[50];
+		LEAD_LEAD[i] = new TH1**[50];
+		for(int j = 0;j < 50;++j){
+			tamex_Mult_Ch_lead[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,j),Form("tamex_lead_ch_%d_%d",i,j),100,0,100);
+			tamex_Mult_Ch_trail[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,j),Form("tamex_trail_ch_%d_%d",i,j),100,0,100);
+			LEAD_LEAD[i][j] = new TH1*[50];
+			for(int k = 0;k < 50;++k) LEAD_LEAD[i][j][k] = NULL;
+		}
+	}
+
+
+	DIFF_ARR = new TH1*[36];
+	for(int i = 0;i < 36;++i) DIFF_ARR[i] = NULL;//MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),300,-30000,0);
+
+	WR_used = true;
+=======
 	WR_used = false;
+>>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
 
 	//used_systems
 	get_used_Systems();
@@ -98,15 +243,28 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) Detector_Systems[i] = NULL;
 	
-	get_interest_arrays();
+	PLASTIC_CALIBRATION = Used_Systems[2] ? Check_Cal_Plastic() : false;
+	
+	//Only create histograms if system is used
+	if(Used_Systems[0]) Make_FRS_Histos();
+	
+	if(Used_Systems[3]) Make_FATIMA_Histos();
 
-	/*
+	if(Used_Systems[2] && !PLASTIC_CALIBRATION) Make_Plastic_Histos();
+	
+	if(Used_Systems[4]) Make_GALILEO_Histos();
+	
+	get_interest_arrays();
+	
+	
+
+	
 	if(!SKIP_EVT_BUILDING){
-		EvtBuilder = new EventBuilder*[2];
+		EvtBuilder = new EventBuilder*[1];
 		EvtBuilder[0] = new Time_EventBuilder(amount_interest,length_interest,interest_array);
 		//EvtBuilder[1] = new Space_EventBuilder();
 	}
-	*/
+	
 	//Raw_Event object to handle data
 	RAW = new Raw_Event();
 
@@ -122,7 +280,21 @@ TGo4EventProcessor(name) // Histograms defined here //
 	cals_done = false;
 	val_it = 0;
 	
+<<<<<<< HEAD
+	//Fix this in Detector_System.cxx either remove the
+	// gain_match_used initialisation in FATIMA_Detector_System
+	//and add a ::set_bool_gain_match(bool) or set FAT_gain_match_used
+	//by the value in FATIMA_Detector_System constructor. Former
+	//seems to make more sense.
+	//FAT_gain_match_used = Detector_Systems[3]->do_gain_matching();
+	FAT_gain_match_used = false;
+	//Having an initialisation (below) and a user setting (above)
+	//like this is probably bad.
+=======
+>>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
 	FAT_gain_match_done = false;
+	
+	Cout_counter = 0;
 	
 
 }
@@ -133,37 +305,44 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 TSCNUnpackProc::~TSCNUnpackProc()
 {
-    
-	Detector_Systems[3]->write();
-	double mean = 0;
-	for(int i = 0;i < val_it;++i) mean += vals[i];
-	mean /= (double) val_it;
-	double sq = 0;
-	for(int i = 0;i < val_it;++i) sq += pow(mean - vals[i],2);
-	sq = sqrt(sq)/((double) val_it);
-	cout << "MEAN " << mean << " +- " << sq << endl;
-
 <<<<<<< HEAD
+    
+    delete EvtBuilder[0];
+    EvtBuilder[0] = nullptr;
+    //delete[] EvtBuilder;
 
-	for(int i = 0;i < 5;++i){
-		if(Detector_Systems[i]) delete Detector_Systems[i];
-	}
-	for(int i = 0;i < 10;++i) if(interest_array[i]) delete[] interest_array[i];
-=======
-	for(int i = 0;i < 6;++i){
-		if(Detector_Systems[i]) delete Detector_Systems[i];
-		//cout<<"Detector_Systems "<<i<<" deleted"<<endl;
-		delete[] interest_array[i];
-		//cout<<"Interest_array "<<i<<" deleted"<<endl;
 
-	}
-
+	//Detector_Systems[3]->write();
 	
->>>>>>> 916f9b997deed96bd5f527134ef9646a532ff7a3
+	cout << "Starting Detector_Systems delete process..." << endl;
+	cout.flush();
+	for(int i = 0;i < 6;++i){
+		if(Used_Systems[i]){ 
+			cout << "Deleting system " << i << endl;
+			delete Detector_Systems[i];
+		}
+		delete[] interest_array[i];
+	}
+	cout << "Deleted Detector_Systems" << endl;
+=======
+    string DET_NAME[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
+	//Detector_Systems[3]->write();
+	cout << "------------------" << endl;
+	for(int i = 0;i < 5;++i){
+		if(Detector_Systems[i]){
+			delete Detector_Systems[i];
+			cout<<"Detector_System " << DET_NAME[i] << " deleted" << endl;
+		}
+	}
+	cout << "------------------" << endl;
+	for(int i = 0;i < 10;++i) if(interest_array[i]) delete[] interest_array[i];
+>>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
 	delete[] interest_array;
 	delete[] length_interest;
-	delete[] Detector_Systems;
+	//delete[] Detector_Systems;
 	
+	
+
 	delete RAW;
 	cout << "**** TSCNUnpackProc: Delete" << endl;
 }
@@ -209,10 +388,19 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	}
 	
 	count++;
+	if(count == 1) cout << endl;
 		
+<<<<<<< HEAD
+	if (count % 100000 == 0) cout << "Event " << count << " Reached!!!" << endl;
+	//cout << "\r";
+=======
 	if (count % 100000 == 0){
-	    cout << "Event " << count << " Reached!!!"<<"    Data File Number : "<<data_file_number;
+>>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
+	    
 	    cout << "\r";
+	    cout << "Event " << count << " Reached!!!"<<"    Data File Number : "<<data_file_number;
+	    cout <<"\t\t\t\t";
+	    cout.flush();
 	}
 	
 	if(cals_done) return kTRUE; //BAD!!!!
@@ -252,6 +440,11 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 	//bool WHITE_RABBIT_USED = true;
 	
+<<<<<<< HEAD
+	bool WHITE_RABBIT_USED = true;
+=======
+>>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
+	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
 		subevent_iter++;
@@ -261,15 +454,27 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		Int_t lwords = psubevt->GetIntLen();
 	
 		Int_t PrcID=psubevt->GetProcid();
-		
+<<<<<<< HEAD
+
+				
 		//cout<<"Proc_ID is : "<<PrcID<<endl;
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 		
-		Int_t sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
+
+=======
 		
-		if(PrcID_Conv != 2) continue;
-				
+		//cout<<"Proc   ID is : "<<PrcID<<endl;
+
+		Int_t PrcID_Conv = get_Conversion(PrcID);
+		
+		Int_t sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
+		if(Cout_counter < 20 && false){
+			cout<<"Proc_ID is : "<<PrcID;//<<endl;
+			cout << " -> Conv " << PrcID_Conv << endl;
+			Cout_counter++;
+		}	
+>>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
 		if(PrcID_Conv == 0){
 			
 		    Detector_Systems[PrcID_Conv]->Process_FRS(psubevt);
@@ -304,7 +509,11 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		//continue;
 
-		if(PrcID_Conv == 2 && false){
+<<<<<<< HEAD
+		if((PrcID_Conv == 3 || PrcID_Conv == 2) && false){
+=======
+		if(PrcID_Conv == 1 && false){
+>>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex << *(pdata + i) << " ";
@@ -313,12 +522,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			cout << "\n---------------------\n";
 		}
 		
-
+		//if(PrcID_Conv != 3) continue;
 
 		//send subevent to respective unpacker
 		Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
-		
-		
 		
 		//get mbs stream data from unpacker (pointer copy solution)
 		pdata = Detector_Systems[PrcID_Conv]->get_pdata();
@@ -327,17 +534,29 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		//get data from subevent
 		Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
 		
+		//set White Rabbit to RAW
+		RAW->set_WR(WR_tmp[iterator]);
+		cout << dec;
 
 		//if(PrcID_Conv == 3) Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
 
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
 		
+<<<<<<< HEAD
+			
+=======
+		
+		//cout<<"Proc ID Conversion = "<<PrcID_Conv<<endl;
+		//cout<<"Plastic Calibration = "<<PLASTIC_CALIBRATION<<endl;
+		//cout<<"cals_done = "<<cals_done<<endl;
+		
 		/*	
+>>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
 		if(!SKIP_EVT_BUILDING){
 			EvtBuilder[0]->set_Event(RAW);
 			//EvtBuilder[1]->set_Event(RAW);
 		}
-		*/
+		
 		
 		if(cals_done) break;
 		//continue;
@@ -346,7 +565,11 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		
 		//PLASTIC CASE
-		if(PrcID_Conv == 2) Fill_Plastic_Histos();
+		
+		//cout<<"Proc ID Conversion = "<<PrcID_Conv<<endl;
+		//cout<<"Plastic Calibration = "<<PLASTIC_CALIBRATION<<endl;
+		
+		if(PrcID_Conv == 2 && !PLASTIC_CALIBRATION) Fill_Plastic_Histos();
 		
 		//FATIMA CASE
 		if(PrcID_Conv == 3) Fill_FATIMA_Histos();
@@ -530,6 +753,17 @@ void TSCNUnpackProc::get_used_Systems(){
 		Used_Systems[i] = (id == 1);
 		i++;
 	}
+	string DET_NAME[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
+
+	cout << "\n=====================================================" << endl;
+	cout << "USED SYSTEMS" << endl;
+	cout << "-----------------------------------------------------" << endl;
+	for(int j = 0;j < 6;++j){
+		if(Used_Systems[j]) cout << DET_NAME[j] << endl;
+	}
+	cout << "=====================================================" << endl;
+
+
 }
 
 
@@ -953,6 +1187,7 @@ void TSCNUnpackProc::Fill_FRS_Histos(){
 
 void TSCNUnpackProc::Make_Plastic_Histos(){
     
+    cout << "CREATING PLASTIC HISTOGRAMS" << endl;
     
     C_t = MakeTH1('D',"pl","pl",1001,0,1000);
     
@@ -991,127 +1226,127 @@ void TSCNUnpackProc::Make_Plastic_Histos(){
     DIFF_ARR = new TH1*[36];
     for(int i = 0;i < 36;++i) DIFF_ARR[i] = NULL;//MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),300,-30000,0);
     
-    Trail_LEAD = new TH1**[50];
-    Coarse = new TH1**[50];
+    Trail_LEAD = new TH1**[100];
+    Coarse = new TH1**[100];
     //lead_lead = new TH1**[4];
 
-    for(int i = 0;i < 50;++i){
-
-	Trail_LEAD[i] = new TH1*[50];
-	Coarse[i] = new TH1*[50];
-	//lead_lead[i] = new TH1*[17];
-	for(int j = 0;j < 50;++j){
-
-	    Trail_LEAD[i][j] = NULL;
-	    Coarse[i][j] = NULL;
-	    //	lead_lead[i][j] = NULL;
-	
-	}
+    for(int i = 0;i < 100;++i){
+		Trail_LEAD[i] = new TH1*[100];
+		Coarse[i] = new TH1*[100];
+		//lead_lead[i] = new TH1*[17];
+		for(int j = 0;j < 100;++j){
+			Trail_LEAD[i][j] = NULL;
+			Coarse[i][j] = NULL;
+			//lead_lead[i][j] = NULL;
+		}
     }
 }
 
 void TSCNUnpackProc::Fill_Plastic_Histos(){
     
+    //cout << "FILLING PLASTIC HISTOGRAMS" << endl;
+
     int pl_iter = 0;
     int sum_l = 0;
     int sum_t = 0;
 
     int phys_ch = 0;
     int phys_ch_tmp = 0;
-    int sum_phys_l[50];
-    int sum_phys_t[50];
-    int called_channels[50];
-    int stuck_int = 0;
-    for(int i = 0; i < 50; ++i){
+    int sum_phys_l[100];
+    int sum_phys_t[100];
+    int called_channels[100];
+    for(int i = 0; i < 100; ++i){
 	
 	    sum_phys_t[i] = 0;
 	    sum_phys_l[i] = 0;
 	    called_channels[i] = 0;
     }
 	
-	int pl_n_hits = RAW->get_PLASTIC_tamex_hits();
+	int pl_n_hits = 0;
+    	
+	pl_n_hits = RAW->get_PLASTIC_tamex_hits();
 	double tmp_fill_val = 0;
-    for(int i = 0; i < pl_n_hits; ++i){
-		sum_l = 0;
-		sum_t = 0;
-		pl_iter = RAW->get_PLASTIC_am_Fired(i);
+	for(int i = 0; i < pl_n_hits; ++i){
+	    sum_l = 0;
+	    sum_t = 0;
+	    pl_iter = RAW->get_PLASTIC_am_Fired(i);
+    
+	    if(pl_iter > 1000) pl_iter = 0;
+
+	    for(int j = 0; j < pl_iter; ++j){
+		    phys_ch = RAW->get_PLASTIC_physical_channel(i,j);
+		    called_channels[j] = phys_ch;
+
+		    sum_phys_l[phys_ch] += RAW->get_PLASTIC_physical_lead_hits(i,phys_ch);
+		    sum_phys_t[phys_ch] += RAW->get_PLASTIC_physical_trail_hits(i,phys_ch);
 	
-		if(pl_iter > 1000) pl_iter = 0;
 
-		for(int j = 0; j < pl_iter; ++j){
-			phys_ch = RAW->get_PLASTIC_physical_channel(i,j);
-			called_channels[j] = phys_ch;
-
-			sum_phys_l[phys_ch] += RAW->get_PLASTIC_physical_lead_hits(i,phys_ch);
-			sum_phys_t[phys_ch] += RAW->get_PLASTIC_physical_trail_hits(i,phys_ch);
-	    
-
-			sum_l += RAW->get_PLASTIC_lead_hits(i);
-			sum_t += RAW->get_PLASTIC_trail_hits(i);
-	    
-	    
-			if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("trail_minus_lead/trail_minus_lead_board%d_ch%d",i,phys_ch),
-								    Form("trail_minus_lead_board%d_ch%d",i,phys_ch),500,0,500);
-	    
-			if(j % 2 == 0){
-				tmp_fill_val = (double) (RAW->get_PLASTIC_trail_T(i,j+1)-RAW->get_PLASTIC_lead_T(i,j));
-				Trail_LEAD[i][phys_ch]->Fill(tmp_fill_val);
+		    sum_l += RAW->get_PLASTIC_lead_hits(i);
+		    sum_t += RAW->get_PLASTIC_trail_hits(i);
+	
+	
+		    if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("trail_minus_lead/trail_minus_lead_board%d_ch%d",i,phys_ch),
+								Form("trail_minus_lead_board%d_ch%d",i,phys_ch),500,0,500);
+	
+		    if(j % 2 == 0){
+			    tmp_fill_val = (double) (RAW->get_PLASTIC_trail_T(i,j+1)-RAW->get_PLASTIC_lead_T(i,j));
+			    Trail_LEAD[i][phys_ch]->Fill(tmp_fill_val);
+		
+			    for(int k = 0;k < pl_iter;++k){
 		    
-				for(int k = 0;k < pl_iter;++k){
+				    phys_ch_tmp = RAW->get_PLASTIC_physical_channel(i,k);
 			
-					phys_ch_tmp = RAW->get_PLASTIC_physical_channel(i,k);
-			    
-					if(k % 2 == 0 && k != j){
-			
-						if(!LEAD_LEAD[i][phys_ch][phys_ch_tmp]){
-							LEAD_LEAD[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("lead_minus_lead/lead_minus_lead_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),
-														    Form("lead_minus_lead_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),500,-1000,1000);
-						}
-						tmp_fill_val = (double)(RAW->get_PLASTIC_lead_T(i,j) - RAW->get_PLASTIC_lead_T(i,k));
-						LEAD_LEAD[i][phys_ch][phys_ch_tmp]->Fill(tmp_fill_val);
-					}
-				}
-			}
-			if(!Coarse[i][phys_ch]) Coarse[i][phys_ch] = MakeTH1('D',Form("coarse_%d_%d",i,phys_ch),
-							    Form("coarse_%d_%d",i,phys_ch),500,0,5000);
+				    if(k % 2 == 0 && k != j){
+		    
+					    if(!LEAD_LEAD[i][phys_ch][phys_ch_tmp]){
+						    LEAD_LEAD[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("lead_minus_lead/lead_minus_lead_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),
+														Form("lead_minus_lead_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),500,-1000,1000);
+					    }
+					    tmp_fill_val = (double)(RAW->get_PLASTIC_lead_T(i,j) - RAW->get_PLASTIC_lead_T(i,k));
+					    LEAD_LEAD[i][phys_ch][phys_ch_tmp]->Fill(tmp_fill_val);
+				    }
+			    }
+		    }
+		    if(!Coarse[i][phys_ch]) Coarse[i][phys_ch] = MakeTH1('D',Form("coarse_%d_%d",i,phys_ch),
+							Form("coarse_%d_%d",i,phys_ch),500,0,5000);
 
-			if(j % 2 == 0) Coarse[i][phys_ch]->Fill(RAW->get_PLASTIC_coarse_lead(i,j));
+		    if(j % 2 == 0) Coarse[i][phys_ch]->Fill(RAW->get_PLASTIC_coarse_lead(i,j));
 
 
-		}
-		for(int j = 0;j < pl_iter;++j){
+	    }
+	    for(int j = 0;j < pl_iter;++j){
 
-			if(sum_phys_l[called_channels[j]] > 0){
+		    if(sum_phys_l[called_channels[j]] > 0){
 
-				if(!tamex_Mult_Ch_lead[i][called_channels[j]]) tamex_Mult_Ch_lead[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,called_channels[j]),
-														Form("tamex_lead_ch_%d_%d",i,called_channels[j]),30,0,30);
-				if(!tamex_mult_mat_lead[i]) tamex_mult_mat_lead[i] = MakeTH2('D',Form("tamex_mat_lead_%d",i),
-									    Form("tamex_mat_lead_%d",i),20,0,20,30,0,30);
-				tamex_Mult_Ch_lead[i][called_channels[j]]->Fill(sum_phys_l[called_channels[j]]);
-				tamex_mult_mat_lead[i]->Fill(called_channels[j],sum_phys_l[called_channels[j]]);
-			}
-			if(sum_phys_t[called_channels[j]] > 0){
+			    if(!tamex_Mult_Ch_lead[i][called_channels[j]]) tamex_Mult_Ch_lead[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,called_channels[j]),
+													    Form("tamex_lead_ch_%d_%d",i,called_channels[j]),30,0,30);
+			    if(!tamex_mult_mat_lead[i]) tamex_mult_mat_lead[i] = MakeTH2('D',Form("tamex_mat_lead_%d",i),
+									Form("tamex_mat_lead_%d",i),20,0,20,30,0,30);
+			    tamex_Mult_Ch_lead[i][called_channels[j]]->Fill(sum_phys_l[called_channels[j]]);
+			    tamex_mult_mat_lead[i]->Fill(called_channels[j],sum_phys_l[called_channels[j]]);
+		    }
+		    if(sum_phys_t[called_channels[j]] > 0){
 
-				if(!tamex_Mult_Ch_trail[i][called_channels[j]]) tamex_Mult_Ch_trail[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,called_channels[j]),Form("tamex_trail_ch_%d_%d",i,called_channels[j]),30,0,30);
-				if(!tamex_mult_mat_trail[i]) tamex_mult_mat_trail[i] = MakeTH2('D',Form("tamex_mat_trail_%d",i),Form("tamex_mat_trail_%d",i),20,0,20,30,0,30);
-				tamex_Mult_Ch_trail[i][called_channels[j]]->Fill(sum_phys_t[called_channels[j]]);
-				tamex_mult_mat_trail[i]->Fill(called_channels[j],sum_phys_t[called_channels[j]]);
-			}
+			    if(!tamex_Mult_Ch_trail[i][called_channels[j]]) tamex_Mult_Ch_trail[i][called_channels[j]] = MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,called_channels[j]),Form("tamex_trail_ch_%d_%d",i,called_channels[j]),30,0,30);
+			    if(!tamex_mult_mat_trail[i]) tamex_mult_mat_trail[i] = MakeTH2('D',Form("tamex_mat_trail_%d",i),Form("tamex_mat_trail_%d",i),20,0,20,30,0,30);
+			    tamex_Mult_Ch_trail[i][called_channels[j]]->Fill(sum_phys_t[called_channels[j]]);
+			    tamex_mult_mat_trail[i]->Fill(called_channels[j],sum_phys_t[called_channels[j]]);
+		    }
 
-			sum_phys_l[called_channels[j]] = 0;
-			sum_phys_t[called_channels[j]] = 0;
-		}
-		if(sum_l > 0){
-			if(!tamex_Mult_lead[i]) tamex_Mult_lead[i] = MakeTH1('D',Form("tamex_lead_%d",i),
-							    Form("tamex_lead_%d",i),100,0,100);		
-			tamex_Mult_lead[i]->Fill(sum_l);
-		}
-		if(sum_t > 0){
-			if(!tamex_Mult_trail[i]) tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),
-							    Form("tamex_trail_%d",i),100,0,100);
-			tamex_Mult_trail[i]->Fill(sum_t);
-		}
-    }
+		    sum_phys_l[called_channels[j]] = 0;
+		    sum_phys_t[called_channels[j]] = 0;
+	    }
+	    if(sum_l > 0){
+		    if(!tamex_Mult_lead[i]) tamex_Mult_lead[i] = MakeTH1('D',Form("tamex_lead_%d",i),
+							Form("tamex_lead_%d",i),100,0,100);		
+		    tamex_Mult_lead[i]->Fill(sum_l);
+	    }
+	    if(sum_t > 0){
+		    if(!tamex_Mult_trail[i]) tamex_Mult_trail[i] = MakeTH1('D',Form("tamex_trail_%d",i),
+							Form("tamex_trail_%d",i),100,0,100);
+		    tamex_Mult_trail[i]->Fill(sum_t);
+	    }
+	}
 }
 
 
@@ -1379,4 +1614,27 @@ void TSCNUnpackProc::Fill_GALILEO_Histos(){
 	    }
 	}
     }    
+}
+
+bool TSCNUnpackProc::Check_Cal_Plastic(){
+	ifstream data("Configuration_Files/PLASTIC_CALIB_FILE.txt");
+    if(data.fail()){
+        cerr << "Could not find Calibration type file for PLASTIC" << endl;
+        exit(0);
+    }
+    string line;
+    const char* format = "%s %d";
+    char s[100];
+    int val;
+    bool CALIBRATE = false;
+
+    while(data.good()){
+        getline(data,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format,&s,&val);
+        if(string(s) == string("ONLINE")) CALIBRATE = (val == 1);
+    }
+    
+    return CALIBRATE;
+	
 }

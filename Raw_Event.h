@@ -146,6 +146,7 @@ private:
 
 	bool ch51;
 
+	int Event_Type;
 
 
 public:
@@ -176,7 +177,12 @@ public:
 	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*,int);
 	void set_DATA_GALILEO(int,ULong64_t*,int*,int*,ULong64_t*,double*,int*);
 
+	int get_Event_type();
+
+
+
 	// ####################################################
+
 
 	//temporary FRS getters
 	Float_t get_FRS_dE(int);

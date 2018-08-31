@@ -77,6 +77,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 	WR_HIST2 = MakeTH1('D',"WR2","WR2",2001,-10,4000);
 	WR_F = MakeTH1('D',"WRf","WRf",2001,-10,4000);
 	
+	
+
 	//create Detector Systems
 	Detector_Systems = new Detector_System*[6];
 
@@ -107,7 +109,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	/*
 	if(!SKIP_EVT_BUILDING){
-		EvtBuilder = new EventBuilder*[2];
+		EvtBuilder = new EventBuilder*[1];
 		EvtBuilder[0] = new Time_EventBuilder(amount_interest,length_interest,interest_array);
 		//EvtBuilder[1] = new Space_EventBuilder();
 	}
@@ -127,6 +129,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	cals_done = false;
 	val_it = 0;
 	
+
 	FAT_gain_match_done = false;
 	
 	Cout_counter = 0;
@@ -537,6 +540,17 @@ void TSCNUnpackProc::get_used_Systems(){
 		Used_Systems[i] = (id == 1);
 		i++;
 	}
+	string DET_NAME[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
+
+	cout << "\n=====================================================" << endl;
+	cout << "USED SYSTEMS" << endl;
+	cout << "-----------------------------------------------------" << endl;
+	for(int j = 0;j < 6;++j){
+		if(Used_Systems[j]) cout << DET_NAME[j] << endl;
+	}
+	cout << "=====================================================" << endl;
+
+
 }
 
 

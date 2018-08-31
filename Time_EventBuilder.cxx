@@ -17,16 +17,23 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
         interest_array[i] = new int[length_interest[i]];
         for(int j = 0;j < length_interest[i];++j) interest_array[i][j] = interest_array_tmp[i][j];
     }
+    
+    Matches = new Match**[amount_interest];
+    for(int i = 0;i < amount_interest;++i){
+        Matches[i] = new Match*[MEMORY_LIMIT];
+        for(int j = 0;j < MEMORY_LIMIT;++j) Matches[i][j] = nullptr;
+    }
 
     found_matches = 0;
     for(int i = 0;i < 100;++i) match_amount[i] = 0;
 
     create_relevance_array();
 
-    check_kinds_overlap();
-
     //set event storage
     Event_Storage = new Event_Store(amount_interest,length_interest,interest_array);
+
+    expired_counter = 0;
+    first_event = true;
 
 }
 
@@ -34,38 +41,22 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
 
 Time_EventBuilder::~Time_EventBuilder(){
 
+    cout << "Deleting Time_EventBuilder..." << endl;
     delete Event_Storage;
+    cout << "Deleted Event_Storage" << endl;
 
     for(int i = 0;i < amount_interest;++i){
         delete[] interest_array[i];
         delete[] relevance_array[i];
+        for(int j = 0;j < MEMORY_LIMIT;++j) if(Matches[i][j]) delete Matches[i][j];
+        delete[] Matches[i];
     }
+    delete[] Matches;
     delete[] relevance_array;
     delete[] interest_array;
     delete[] length_interest;
+    cout << "Time_EventBuilder deleted!" << endl;
 
-}
-
-//---------------------------------------------------------------
-
-void Time_EventBuilder::check_kinds_overlap(){
-    //maximum amount of calls for each system
-    for(int i = 0;i < 6;++i) max_calls[i] = 0;
-
-    //loop over all possible Detector Systems
-    for(int i = 0;i < 6;++i){
-        iter[i] = 0;
-        for(int j = 0;j < amount_interest;++j){
-            for(int k = 0;k < length_interest[j];++k){
-                max_calls[interest_array[j][k]]++;
-                if(interest_array[j][k] == i){
-                    overlap_arr[i][iter[i]] = j;
-                    iter[i]++;
-                    break;
-                }
-            }
-        }
-    }
 }
 
 //---------------------------------------------------------------
@@ -98,7 +89,9 @@ void Time_EventBuilder::create_relevance_array(){
 
 void Time_EventBuilder::set_Event(Raw_Event* RAW){
     //get PrcID from RAW
-    int tmp_type = RAW->get_Type();
+    int tmp_type = RAW->get_Event_type();
+
+    if(!relevance_system[tmp_type]) return;
 
     //PrcID check
     if(tmp_type > 5 || tmp_type < 0){
@@ -107,6 +100,10 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     }
 
     ULong64_t WR = RAW->get_WR();
+    if(first_event){
+        WR_old = WR;
+        first_event = false;
+    }
 
     //save event in respective store
     Event_Storage->store(RAW);
@@ -116,55 +113,64 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 
     //hits[i] != -1 if hit in system i
     int hits[6];
-    int match_ID[6];
+    int match_ID[50];
 
     int found_matches = 0;
     int* match_id_ptr = nullptr;
+
+    int match_hits = 0;
+    bool expired = false;
+    int** hit_addresses = nullptr;
+    int* hit_types = nullptr;
+    int* filled_types = nullptr;
 
     //get coincidences (self coincidence not possible)
     for(int i = 0;i < 6;++i){
         hits[i] = -1;
         match_ID[i] = -1;
-        if(i != tmp_type){
+
+        if(i != tmp_type && relevance_system[i]){
             //hit id of smallest WR difference of system tmp_type to i
             //if -1 -> no value within threshold window found
             hits[i] = Event_Storage->Time_Comparison(i,WR);
 
             //check if coincidence and system relevant for user analysis
-            if(hits[i] == -1 || !relevance_system[i]) continue;
+            if(hits[i] == -1) continue;
 
             //check Match objects for each relevance array row
             for(int j = 0;j < amount_interest;++j){
                 if(relevance_array[i][j]){
                     //get Match id of coincident event
                     match_ID[j] = Event_Storage->get_Match_ID(i,hits[i],j);
-                    
+
                     //pointer on MatchID (allows for dynamic change of Match address)
                     match_id_ptr = Matches[j][match_ID[j]]->get_Address();
 
                     //set Match id to new event
                     Event_Storage->set_Match_ID_address(tmp_type,tmp_data_pos,match_id_ptr);
-                    
+
                     //set data address in respective event store of tmp_type event
                     Matches[j][match_ID[j]]->set_Data(tmp_type,tmp_data_pos);
 
                     //check if match is filled
                     if(Matches[j][match_ID[j]]->Full()){
-
                         //write and delete data
                         Matches[j][match_ID[j]]->Write();
 
                         //get delete permission for Event_Store data
                         get_DELETE_Permission(j,match_ID[j]);
-
+                        
                         delete Matches[j][match_ID[j]];
+                        Matches[j][match_ID[j]] = nullptr;
 
                         //fill empty hole in Match data and reset address variables
-                        Matches[j][match_ID[j]] = Matches[j][match_amount[j]];
-                        Matches[j][match_ID[j]]->set_Address(match_ID[j]);
+                        if(match_ID[j] < match_amount[j]-1){
+                            Matches[j][match_ID[j]] = Matches[j][match_amount[j]-1];
+                            Matches[j][match_ID[j]]->set_Address(match_ID[j]);
+                        }
 
                         //last event pointing to nullptr
-                        Matches[j][match_amount[j]] = nullptr;
+                        Matches[j][match_amount[j]-1] = nullptr;
                         match_amount[j]--;
                     }
                 }
@@ -179,54 +185,83 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
         for(int j = 0;j < amount_interest;++j){
             //if new event's system relevant for analysis
             if(relevance_array[tmp_type][j]){
-                //create new Match object with 
-                Matches[j][match_amount[j]] = new Match(match_amount[j],j,tmp_data_pos,interest_array[j],length_interest[j]);
+                //create new Match object
+                Matches[j][match_amount[j]] = new Match(match_amount[j],tmp_type,tmp_data_pos,
+                                                        interest_array[j],length_interest[j],WR);
+
+                //get its address and send it to Event_Storage
+                match_id_ptr = Matches[j][match_amount[j]]->get_Address();
+                Event_Storage->set_Match_ID_address(tmp_type,tmp_data_pos,match_id_ptr);
+
+                hit_addresses = Matches[j][match_amount[j]]->get_Address_Array();
+                match_hits = Matches[j][match_amount[j]]->get_amount_Hits();
+                filled_types = Matches[j][match_amount[j]]->get_filled_types();
+                
                 match_amount[j]++;
             }
         }
     }
 
     //too old data has to be deleted
-    int match_hits = 0;
-    bool expired = false;
-    int** hit_addresses = nullptr;
-    int* hit_types = nullptr;
+    
 
-    for(int j = 0;j < amount_interest;++j){
-        for(int k = 0;k < match_amount[j];++k){
-            //check if Match event is already expired
-            //=> difference of WR of Match to current WR too large
-            expired = Matches[j][k]->Check_Time(WR);
-            if(expired){
-                //get amount of hits and types in Match
-                match_hits = Matches[j][k]->get_amount_Hits();
-                hit_addresses = Matches[j][k]->get_Address_Array();
-                hit_types = Matches[j][k]->get_hit_types();
-                match_id_ptr = Matches[j][k]->get_Address();
+    int k = 0;
 
-                //loop over all events in Match
-                for(int o = 0;o < match_hits;++o){
-                    //get match_id pointer to compare, if Event already deleted
-                    if(Event_Storage->compare_match_ID(hit_types[o],match_id_ptr,hit_addresses[o])){
-                        Event_Storage->Full_Permission(hit_types[o],hit_addresses[o]);
+    ULong64_t max_WR_Difference = 10000*1e3;
+
+    if(WR - WR_old > max_WR_Difference){
+
+        WR_old = ULONG64_MAX;
+        ULong64_t WR_tmp = 0;
+        for(int j = 0;j < amount_interest;++j){
+            k = 0;
+            while(k < match_amount[j]){
+                //check if Match event is already expired               
+                expired = Matches[j][k]->Check_Time(WR,interest_array[j][k]);
+                if(expired){
+                    //get amount of hits and types in Match
+                    match_hits = Matches[j][k]->get_amount_Hits();
+                    hit_addresses = Matches[j][k]->get_Address_Array();
+                    hit_types = Matches[j][k]->get_hit_types();
+                    filled_types = Matches[j][k]->get_filled_types();
+                    match_id_ptr = Matches[j][k]->get_Address();
+
+                    //loop over all events in Match
+                    for(int o = 0;o < match_hits;++o){
+                        if(filled_types[o] == -1) continue;
+                        //get match_id pointer to compare, if Event already deleted
+                        if(Event_Storage->compare_match_ID(filled_types[o],match_id_ptr,*hit_addresses[filled_types[o]])){
+                            Event_Storage->Full_Permission(filled_types[o],*hit_addresses[filled_types[o]]);
+                        }
                     }
+                    delete Matches[j][k];
+                    Matches[j][k] = nullptr;
+                    
+                    //fill empty hole in Match data and reset address variables
+                    if(k < match_amount[j]-1){
+                        Matches[j][k] = Matches[j][match_amount[j]-1];
+                        Matches[j][k]->set_Address(k);
+                    }
+                    
+                    //last event pointing to NULL
+                    Matches[j][match_amount[j]-1] = nullptr;
+                    //decrease amount of current Matches
+                    match_amount[j]--;
+                    expired_counter--;
                 }
-
-                delete Matches[j][k];
-
-                //fill empty hole in Match data and reset address variables
-                Matches[j][k] = Matches[j][match_amount[j]];
-                Matches[j][k]->set_Address(k);
-
-                //last event pointing to nullptr
-                Matches[j][match_amount[j]] = nullptr;
-                //decrease amount of current Matches
-                match_amount[j]--;
-                //decrease iterator(avoids loosing access to shifted Matches)
-                k--;
+                //only increase if no expiration
+                else k++;
             }
         }
+        for(int j = 0;j < amount_interest;++j){
+            for(int o = 0;o < k;++o){
+                WR_tmp = Matches[j][o]->get_WR();
+                WR_old = (WR_tmp < WR_old) ? WR_tmp : WR_old;
+            }
+        }
+
     }
+    expired_counter++;
 }
 
 //---------------------------------------------------------------
@@ -265,7 +300,7 @@ void Time_EventBuilder::get_DELETE_Permission(int j,int match_ID){
         //get Detector system type
         type = interest_array[j][i];
         //set delete permission from Match with id {j,match_ID}
-        Event_Storage->set_permission(type,event_address_array[i],j);
+        Event_Storage->set_permission(type,event_address_array[type],j);
     }
 }
 

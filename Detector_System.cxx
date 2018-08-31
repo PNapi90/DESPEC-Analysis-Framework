@@ -25,6 +25,7 @@ public:
 
     virtual void Process_MBS(int*) = 0;
     
+
     virtual void Process_FRS(TGo4MbsSubEvent* psubevt) = 0;
 
     virtual void Process_AIDA(TGo4MbsSubEvent* psubevt) = 0;

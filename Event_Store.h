@@ -3,10 +3,11 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <cmath>
 
 #include "Raw_Event.h"
 
-#include "Events.cxx"
+#include "Events.h"
 
 //#include "FRS_Event.h"
 //#include "AIDA_Event.h"
@@ -14,6 +15,10 @@
 #include "FATIMA_Event.h"
 //#include "GALILEO_Event.h"
 //#include "FINGER_Event.h"
+
+
+#include <TH1.h>
+#include <TFile.h>
 
 
 typedef unsigned long long ULong64_t;
@@ -26,19 +31,26 @@ private:
 
 	const int MEMORY_LIMIT = 200000;
 
+    int* Address_arr;
+    int* Max_Fill;
+
+    int** Fill_at;
+    int* Fill_am;
+
 	Events*** Event;
-
-	double** Event_WR;
-	int** Event_position;
-
-    int amount_interests;
+	ULong64_t** Event_WR;
+	int*** Event_position;
+    
+    int amount_interest,ev_pos;
+    int* tmp_pos;
     int* length_array;
-    int** interest_array
+    int* length_interest;
+    int** interest_array;
 
 	int event_counter[6];
     
     int iter[6];
-    int* sys_interest;
+    int** sys_interest;
 
 	void purge(int,int);
 	void create_Event(int,Raw_Event*);
@@ -46,24 +58,32 @@ private:
 
 	inline bool in_time_windows(double);
 
+    //-------------------
+    TH1D* T_DIFF;
+    TH1D* T_DIFF_Fine;
+    TFile* TFILE;
+    bool Verbose_Write;
+    //-------------------
+
 public:
 	Event_Store(int,int*,int**);
 	~Event_Store();
 	
 
 	void set_permission(int,int*,int);
-	void Full_Permission(int,int*);
+	void Full_Permission(int,int);
 
-	bool compare_match_ID(int,int*,int*);
+	bool compare_match_ID(int,int*,int);
 
 	void store(Raw_Event*);
-	void Time_Comparison(int,ULong64_t);
 	void set_Match_ID_address(int,int*,int*);
+    void show_all_addresses(int,int);
+    void show_positions(int);
+
+    int get_Match_ID(int,int,int);
+    int Time_Comparison(int,ULong64_t);
 
 	int* get_position(int);
-
-
-
 
 };
 
