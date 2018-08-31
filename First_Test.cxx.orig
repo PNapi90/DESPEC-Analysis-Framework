@@ -65,6 +65,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	input_data_path_old = "old";
 	
 <<<<<<< HEAD
+<<<<<<< Updated upstream
 	
 	FAT_REF_DET = 0;
 
@@ -130,6 +131,75 @@ TGo4EventProcessor(name) // Histograms defined here //
 							Form("QDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);				
 	
 	
+=======
+	WR_used = false;
+=======
+	
+	FAT_REF_DET = 0;
+
+	// ######################################################### //
+	
+	hsci_tofll2 = MakeTH1('D',"hsci_tofll2","hsci_tofll2",1500,0.,62000.);
+	hsci_tofll3 = MakeTH1('D',"hsci_tofll3","hsci_tofll3",1500,0.,62000.);
+	hsci_tof2 = MakeTH1('D',"hsci_tof2","hsci_tof2",1000,0.,62000.);
+	hsci_tofrr2 = MakeTH1('D',"hsci_tofrr2","hsci_tofrr2",1500,0.,62000.);
+	hsci_tofrr3 = MakeTH1('D',"hsci_tofrr3","hsci_tofrr3",1500,0.,62000.);
+	hsci_tof3 = MakeTH1('D',"hsci_tof3","hsci_tof3",1000,0.,62000.);
+	
+	/*hID_x2 = MakeTH1('D',"ID_x2","ID_x2",3000,0,300);
+	hID_y2 = MakeTH1('D',"ID_y2","ID_y2",3000,0,300);
+	hID_a2 = MakeTH1('D',"ID_a2","ID_a2",3000,0,300);
+	hID_b2 = MakeTH1('D',"ID_b2","ID_b2",3000,0,300);
+	
+	hID_x4 = MakeTH1('D',"ID_x4","ID_x4",3000,0,300);
+	hID_y4 = MakeTH1('D',"ID_y4","ID_y4",3000,0,300);
+	hID_a4 = MakeTH1('D',"ID_a4","ID_a4",3000,0,300);
+	hID_b4 = MakeTH1('D',"ID_b4","ID_b4",3000,0,300);*/
+	
+	hbeta = MakeTH1('D',"beta","beta",100,0.,1.);
+	hbeta3 = MakeTH1('D',"beta3","beta3",100,0.,1.);
+	hgamma = MakeTH1('D',"gamma","gamma",100,0.,1.);
+	
+	hAoQ = MakeTH1('D',"AoQ","AoQ",200,1.4,3.0); // 200,1.4,3.0
+	hAoQ_corr = MakeTH1('D',"AoQ_corr","AoQ_corr",200,1.4,3.0); // 200,1.4,3.0
+	
+	hz = MakeTH1('D',"z","z",100,0.,93.);
+	hz2 = MakeTH1('D',"z2","z2",100,0.,93.);
+	hz3 = MakeTH1('D',"z3","z3",100,10.,93.);
+	
+	htimestamp = MakeTH1('D',"timestamp","timestamp",30,0.,300.);
+	hts = MakeTH1('D',"ts","ts",30,0.,300.);
+	hts2 = MakeTH1('D',"ts2","ts2",30,0.,300.);
+	
+	
+	
+	
+	
+	// ######################################################### //
+
+	//*****************
+	//Fatima histograms
+	FATgate1_low  = 1172.;
+	FATgate1_high = 1182.;
+	FATgate2_low  = 1328.;
+	FATgate2_high = 1338.;
+	E_gate1 = FATgate1_low + (FATgate1_high - FATgate1_low)/2.;
+	E_gate2 = FATgate2_low + (FATgate2_high - FATgate2_low)/2.;
+	
+	
+
+		
+	FAT_Esum  = MakeTH1('D', "FATIMA/ESum", "LaBr Energy (all detectors)",4001,0,4000);
+	FAT_gg    = MakeTH2('D', "FATIMA/gg", "FATIMA Gamma-Gamma (all detectors)",2001,0,2000, 2001,0,2000);
+	FAT_TDCdtsum = MakeTH1('D', "FATIMA/TDCdtSum", "TDC dt (all detectors)", 3201,-40,40);
+	FAT_QDCdtsum = MakeTH1('D', "FATIMA/QDCdtSum", "QDC dt (all detectors)", 3201,-40,40);
+	FAT_TDCdtsum_ref_gated = MakeTH1('D', "FATIMA/TDCdt_ref_gated",
+							Form("TDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);
+	FAT_QDCdtsum_ref_gated = MakeTH1('D', "FATIMA/QDCdt_ref_gated",
+							Form("QDC dt gates on %5.2f keV and %5.2f keV (all detectors)", E_gate1, E_gate2), 3201,-40,40);				
+	
+	
+>>>>>>> Stashed changes
 
 	
 	//statistics
@@ -215,9 +285,13 @@ TGo4EventProcessor(name) // Histograms defined here //
 	for(int i = 0;i < 36;++i) DIFF_ARR[i] = NULL;//MakeTH1('D',Form("TDC_DIFF_CH_6_to_%d",i),Form("TDC_DIFF_CH_6_to_%d",i),300,-30000,0);
 
 	WR_used = true;
+<<<<<<< Updated upstream
 =======
 	WR_used = false;
 >>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
+=======
+>>>>>>> EvtBuild_Dev
+>>>>>>> Stashed changes
 
 	//used_systems
 	get_used_Systems();
@@ -281,6 +355,10 @@ TGo4EventProcessor(name) // Histograms defined here //
 	val_it = 0;
 	
 <<<<<<< HEAD
+<<<<<<< Updated upstream
+=======
+=======
+>>>>>>> Stashed changes
 	//Fix this in Detector_System.cxx either remove the
 	// gain_match_used initialisation in FATIMA_Detector_System
 	//and add a ::set_bool_gain_match(bool) or set FAT_gain_match_used
@@ -290,8 +368,12 @@ TGo4EventProcessor(name) // Histograms defined here //
 	FAT_gain_match_used = false;
 	//Having an initialisation (below) and a user setting (above)
 	//like this is probably bad.
+<<<<<<< Updated upstream
 =======
 >>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
+=======
+>>>>>>> EvtBuild_Dev
+>>>>>>> Stashed changes
 	FAT_gain_match_done = false;
 	
 	Cout_counter = 0;
@@ -305,6 +387,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 TSCNUnpackProc::~TSCNUnpackProc()
 {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
     
     delete EvtBuilder[0];
@@ -325,6 +408,8 @@ TSCNUnpackProc::~TSCNUnpackProc()
 	}
 	cout << "Deleted Detector_Systems" << endl;
 =======
+=======
+>>>>>>> Stashed changes
     string DET_NAME[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
 	//Detector_Systems[3]->write();
 	cout << "------------------" << endl;
@@ -336,7 +421,10 @@ TSCNUnpackProc::~TSCNUnpackProc()
 	}
 	cout << "------------------" << endl;
 	for(int i = 0;i < 10;++i) if(interest_array[i]) delete[] interest_array[i];
+<<<<<<< Updated upstream
 >>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
+=======
+>>>>>>> Stashed changes
 	delete[] interest_array;
 	delete[] length_interest;
 	//delete[] Detector_Systems;
@@ -395,7 +483,10 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	//cout << "\r";
 =======
 	if (count % 100000 == 0){
+<<<<<<< Updated upstream
 >>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
+=======
+>>>>>>> Stashed changes
 	    
 	    cout << "\r";
 	    cout << "Event " << count << " Reached!!!"<<"    Data File Number : "<<data_file_number;
@@ -441,9 +532,15 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	//bool WHITE_RABBIT_USED = true;
 	
 <<<<<<< HEAD
+<<<<<<< Updated upstream
 	bool WHITE_RABBIT_USED = true;
 =======
 >>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
+=======
+=======
+	bool WHITE_RABBIT_USED = true;
+>>>>>>> EvtBuild_Dev
+>>>>>>> Stashed changes
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -454,6 +551,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		Int_t lwords = psubevt->GetIntLen();
 	
 		Int_t PrcID=psubevt->GetProcid();
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 
 				
@@ -468,13 +566,30 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		Int_t PrcID_Conv = get_Conversion(PrcID);
 		
+=======
+
+		cout << "PRCID " << PrcID;
+		
+		//cout<<"Proc   ID is : "<<PrcID<<endl;
+
+		Int_t PrcID_Conv = get_Conversion(PrcID);
+		
+<<<<<<< HEAD
+>>>>>>> Stashed changes
 		Int_t sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
 		if(Cout_counter < 20 && false){
 			cout<<"Proc_ID is : "<<PrcID;//<<endl;
 			cout << " -> Conv " << PrcID_Conv << endl;
 			Cout_counter++;
 		}	
+<<<<<<< Updated upstream
 >>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
+=======
+=======
+		cout << " " << PrcID_Conv << endl;
+
+>>>>>>> EvtBuild_Dev
+>>>>>>> Stashed changes
 		if(PrcID_Conv == 0){
 			
 		    Detector_Systems[PrcID_Conv]->Process_FRS(psubevt);
@@ -510,10 +625,17 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		//continue;
 
 <<<<<<< HEAD
+<<<<<<< Updated upstream
 		if((PrcID_Conv == 3 || PrcID_Conv == 2) && false){
 =======
 		if(PrcID_Conv == 1 && false){
 >>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
+=======
+		if(PrcID_Conv == 1 && false){
+=======
+		if((PrcID_Conv == 3 || PrcID_Conv == 2) && false){
+>>>>>>> EvtBuild_Dev
+>>>>>>> Stashed changes
 			cout << "---------------------\n";
 			for(int i = 0;i < lwords;++i){
 				cout << hex << *(pdata + i) << " ";
@@ -543,15 +665,25 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
 		
 <<<<<<< HEAD
+<<<<<<< Updated upstream
 			
 =======
+=======
+>>>>>>> Stashed changes
 		
 		//cout<<"Proc ID Conversion = "<<PrcID_Conv<<endl;
 		//cout<<"Plastic Calibration = "<<PLASTIC_CALIBRATION<<endl;
 		//cout<<"cals_done = "<<cals_done<<endl;
 		
 		/*	
+<<<<<<< Updated upstream
 >>>>>>> 8c8864e02e1b2154dfc665380be60c8ac6f63108
+=======
+=======
+		cout << "SKIP " << SKIP_EVT_BUILDING << endl;
+			
+>>>>>>> EvtBuild_Dev
+>>>>>>> Stashed changes
 		if(!SKIP_EVT_BUILDING){
 			EvtBuilder[0]->set_Event(RAW);
 			//EvtBuilder[1]->set_Event(RAW);
