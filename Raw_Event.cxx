@@ -252,7 +252,7 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 		for(int j = 0;j < iterator[i];++j){
 			ch_ID[i][j] = ch_ed[i][j];
 			if(ch_ID[i][j] % 2 == 1){
-				coarse_T_edge_lead[i][j] = (double) Edge_Coarse[i][j];
+				coarse_T_edge_lead[i][j] = (double) Edge_Coarse[i][j]*5;
 				fine_T_edge_lead[i][j] = (double) Edge_fine[i][j];
 				
 				phys_channel[i][j] = (ch_ID[i][j]+1)/2;
@@ -260,7 +260,7 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 				leading_hits_ch[i][phys_channel[i][j]]++;
 			}
 			else{
-				coarse_T_edge_trail[i][j] = (double)  Edge_Coarse[i][j];
+				coarse_T_edge_trail[i][j] = (double)  Edge_Coarse[i][j]*5;
 				fine_T_edge_trail[i][j] =(double)  Edge_fine[i][j];
 				
 				trailing_hits[i]++;
@@ -423,7 +423,7 @@ int Raw_Event::get_PLASTIC_CH_ID(int i,int j){return ch_ID[i][j];}
 
 double Raw_Event::get_PLASTIC_lead_T(int i,int j){
 	//cout << "SEND l" << coarse_T_edge_lead[i][j] << " " << fine_T_edge_lead[i][j]  << " " <<  coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j] << endl;
-	return (coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j]);
+	return (coarse_T_edge_lead[i][j] - fine_T_edge_lead[i][j]);
 }
 
 //---------------------------------------------------------------
@@ -438,15 +438,15 @@ double Raw_Event::get_PLASTIC_coarse_lead(int i,int j){
 
 double Raw_Event::get_PLASTIC_trail_T(int i,int j){
 	//cout << "SEND t" << coarse_T_edge_trail[i][j] << " " << fine_T_edge_trail[i][j] << endl;
-	return (coarse_T_edge_trail[i][j]*5 - fine_T_edge_trail[i][j]);
+	return (coarse_T_edge_trail[i][j] - fine_T_edge_trail[i][j]);
 }
 
 //---------------------------------------------------------------
 
 double Raw_Event::get_PLASTIC_TOT(int i,int j){
     // i is board ID, j is physical channel
-    double T_lead = (coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j]);
-    double T_trail = (coarse_T_edge_trail[i][j+1]*5 - fine_T_edge_trail[i][j+1]);
+    double T_lead = (coarse_T_edge_lead[i][j] - fine_T_edge_lead[i][j]);
+    double T_trail = (coarse_T_edge_trail[i][j+1] - fine_T_edge_trail[i][j+1]);
 
     return T_trail - T_lead;
 }
