@@ -58,22 +58,34 @@ inline int AIDA_Data_Streamer::get_Coord(int z_strip,bool x_or_y){
 //---------------------------------------------------------------
 
 
-void AIDA_Data_Streamer::set_DATA(bool* x_or_y,int* x_coord,ULong64_t* Time,double* Energy,int* z_strip,int amount){
+void AIDA_Data_Streamer::set_DATA(AIDA_Decay_Event_Store* Store){
+    
+    //get Data from AIDA_Decay_Event_Store
+    bool* x_or_y_tmp = Store->get_x_or_y();
+    int* x_coord_tmp = Store->get_x_coord();
+    ULong64_t* Time_tmp = Store->get_Time();
+    double* Energy_tmp = Store->get_Energy();
+    int* z_strip_tmp = Store->get_z_strip();
+    int amount_tmp = Store->get_amount_of_events();
+
     int array_position = 0;
-    for(int i = 0;i < amount;++i){
+    for(int i = 0;i < amount_tmp;++i){
         //get xyz position from conversion array
-        array_position = conversion_array[x_or_y[i]][z_strip[i]];
+        array_position = conversion_array[x_or_y_tmp[i]][z_strip_tmp[i]];
         //check if array position unknown
-        check_array_position(array_position,z_strip[i]);
+        check_array_position(array_position,z_strip_tmp[i]);
         
         //set values
-        this->x_coord[array_position][array_iterator[array_position]] = x_coord[i];
-        this->Time[array_position][array_iterator[array_position]] = Time[i];
-        this->Energy[array_position][array_iterator[array_position]] = Energy[i];
+        x_coord[array_position][array_iterator[array_position]] = x_coord_tmp[i];
+        Time[array_position][array_iterator[array_position]] = Time_tmp[i];
+        Energy[array_position][array_iterator[array_position]] = Energy_tmp[i];
 
         //increment amount of events for specific x/y/z combination
         array_iterator[array_position]++;
     }
+
+    //reset Data in store
+    Store->Reset();
 }
 
 //---------------------------------------------------------------

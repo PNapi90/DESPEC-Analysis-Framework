@@ -4,16 +4,17 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-XY_Matrix::XY_Matrix(int local_z){
-    this->local_z = local_z;
+XY_Matrix::XY_Matrix(int am_threads){
+    
 
     len_X = 0;
     len_Y = 0;
-    am_threads = 1;
+    this->am_threads = am_threads;
+
+    am_threads_d = (double) am_threads;
+
     amount_of_deleted_events = 0;
     amount_of_events = 0;
-
-    load_thread_file();
 
     Cluster_X = nullptr;
     Cluster_Y = nullptr;
@@ -34,6 +35,16 @@ void XY_Matrix::set_DATA(X_Cluster** Cluster_X,Y_Cluster** Cluster_Y,int* lens){
     len_X = lens[0];
     len_Y = lens[1];
     
+    data_points_per_thr_x = lens[0]/am_threads;
+    double amount_of_data_points_d = (double) data_points_per_thr_x;
+    double remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr_x;
+    data_points_per_thr_last_x = ((int) remaining*am_threads) + data_points_per_thr_x;
+
+    data_points_per_thr_y = lens[1]/am_threads;
+    amount_of_data_points_d = (double) data_points_per_thr_y;
+    remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr_y;
+    data_points_per_thr_last_y = ((int) remaining*am_threads) + data_points_per_thr_y;
+
     amount_of_deleted_events = 0;
     
     thread t[am_threads];
@@ -56,20 +67,27 @@ void XY_Matrix::Thread_XY(int thr_num){
     //check bools for pairing
     bool in_Energy = false;
     bool in_time = false;
+
+    int data_points_per_thr_x_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last_x : data_points_per_thr_x;
+    int data_points_per_thr_y_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last_y : data_points_per_thr_y;
     
     //get start values for loops based on thread number
-    int start_x = thr_num*data_points_per_thr_x;
-    int start_y = thr_num*data_points_per_thr_y;
+    int start_x = thr_num*data_points_per_thr_x_tmp;
+    int start_y = thr_num*data_points_per_thr_y_tmp;
     double* pos_tmp = new double[2];
     
     //arrays for already paired events (bools initialized as false)
-    bool used_X[data_points_per_thr]{};
-    bool used_Y[data_points_per_thr]{};
+    bool used_X[data_points_per_thr_x_tmp];
+    bool used_Y[data_points_per_thr_y_tmp];
+
+    for(int i = 0;i < data_points_per_thr_x_tmp;++i) used_X[i] = false;
+    for(int i = 0;i < data_points_per_thr_y_tmp;++i) used_Y[i] = false;
+    
 
     //loop over x strips and y strips
-    for(int x_counter = start_x;x_counter < data_points_per_thr_x + start_x;++x_counter){
+    for(int x_counter = start_x;x_counter < data_points_per_thr_x_tmp + start_x;++x_counter){
         if(used_X[x_counter]) continue;
-        for(int y_counter = start_y;y_counter < data_points_per_thr_y + start_y;++y_counter){
+        for(int y_counter = start_y;y_counter < data_points_per_thr_y_tmp + start_y;++y_counter){
             if(used_Y[y_counter]) continue;
             //compare energies and times of x and y clusters for pairing
             in_time = abs(Cluster_X_Time[x_counter] - Cluster_Y_Time[y_counter]) < max_T;
@@ -118,27 +136,6 @@ inline int XY_Matrix::get_XY_Counter(){
 
 thread XY_Matrix::threading(int j){
     return thread([=] {Thread_XY(j);});
-}
-
-//---------------------------------------------------------------
-
-void XY_Matrix::load_thread_file(){
-
-    string line;
-    char dummy_str[100];
-
-    cout << "\n-------------------------------------" << endl;
-
-    ifstream thr_file("Configuration_Files/THREAD_FILE.txt");
-    if(thr_file.fail()) am_threads = 1;
-    else{
-        while(thr_file.good()){
-            getline(thr_file,line,'\n');
-            if(line[0] == "#") continue;
-            sscanf(line.c_str(),"%s %d",dummy_str,&am_threads);
-        }
-    }
-    am_threads_d = (double) am_threads;
 }
 
 //---------------------------------------------------------------

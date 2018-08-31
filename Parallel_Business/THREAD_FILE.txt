@@ -1,0 +1,17 @@
+# This file sets the amount of threads used by the AIDA Decay Event Builder
+#  
+# Since AIDA has multiple layers N and 128 x and 128 y strips for each layer, a total of
+# N*2 threads are used, if primary threading is enabled (PRIMARY -> 1 (0 for single threaded))
+#
+# In addition, the Event Building has been parallelized to work in an (almost) arbitrary amount
+# of sub-threads. For each primary thread, the number of sub-threads is set by the
+# variable SUB (see below)
+#
+# =================================================================================
+# However, first check how many threads in total are reasonable for your system!
+# =================================================================================
+#
+# If threading is enabled, the total number of used threads hence is N*2*SUB
+#
+PRIMARY     1
+SUB         5

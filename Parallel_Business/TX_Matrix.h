@@ -15,7 +15,7 @@ class TX_Matrix{
 
 private:
 
-    int amount_of_data_points,am_threads,primary_thread_number;
+    int amount_of_data_points,am_threads;
     int z_strip_number;
 
     bool x_or_y;
@@ -41,10 +41,13 @@ private:
 
     bool* skip_arr;
 
-    void load_thread_file();
+    void Thread_X(int);
+    void Thread_T(int);
+    
+    std::thread threading(bool,int);
 
 public:
-    TX_Matrix();
+    TX_Matrix(int);
     ~TX_Matrix();
     
     void Process(int*,ULong64_t*,double*,int,int);

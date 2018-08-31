@@ -18,6 +18,9 @@ class XY_Matrix{
 private:
 
     int local_z;
+    int data_points_per_thr_x,data_points_per_thr_last_x;
+    int data_points_per_thr_y,data_points_per_thr_last_y;
+    
     int len_X,len_Y;
     int am_threads;
     int amount_of_deleted_events;
@@ -33,7 +36,6 @@ private:
     inline int get_XY_Counter();
     
     void Thread_XY(int);
-    void load_thread_file();
     inline void Form_XY(double*,int,int);
 
 public:

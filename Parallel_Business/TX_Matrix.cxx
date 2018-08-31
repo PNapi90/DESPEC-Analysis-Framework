@@ -4,14 +4,13 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-TX_Matrix::TX_Matrix(int primary_thread_number){
-    load_thread_file();
+TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
+    //load_thread_file();
     amount_of_data_points = 0;
+    this->am_threads = am_threads;
 
-    this->primary_thread_number = primary_thread_number;
-
-    x_or_y = primary_thread_number % 2 == 1;
-    z_strip_number = primary_thread_number/((int) 2);
+    x_or_y = (strip_iterator % 2 == 1);
+    z_strip_number = strip_iterator/((int) 2);
 
     T_Rows = new TX_Matrix_Row*[max_len];
     skip_arr = new bool[max_len];
@@ -83,6 +82,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     //data point splitting for threading
     data_points_per_thr = amount_of_data_points/am_threads;
     amount_of_data_points_d = (double) amount_of_data_points;
+    double am_threads_d = (double) am_threads;
     double remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr;
     data_points_per_thr_last = ((int) remaining*am_threads) + data_points_per_thr;
 
@@ -144,7 +144,7 @@ inline bool TX_Matrix::keep_Event(int i){
 
 //---------------------------------------------------------------
 
-void TX_Matrix::Save_Event(int i){
+void TX_Matrix::Save_Matrix_Row(int i){
     Time_Arr_Save[save_iter] = Time_Arr[i];
     X_Arr_Save[save_iter] = X_Arr[i];
     Energy_Arr_Save[save_iter] = Energy_Arr[i];
@@ -168,8 +168,9 @@ void TX_Matrix::reset_Saved(){
 //---------------------------------------------------------------
 
 void TX_Matrix::Thread_T(int thr_num){
-    int row_start = thr_num*data_points_per_thr;
-    for(int i = row_start;i < data_points_per_thr+row_start;++i){
+    int data_points_per_thr_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
+    int row_start = thr_num*data_points_per_thr_tmp;
+    for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         T_Rows[i]->set_Row(Time_Arr,Time_Arr[i],i,amount_of_data_points); 
     }
 }
@@ -182,7 +183,9 @@ void TX_Matrix::Thread_X(int thr_num){
     
     //temporary sort array for position sorting
     int xy_for_sort[1000][2];
-    int row_start = thr_num*data_points_per_thr;
+
+    int data_points_per_thr_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
+    int row_start = thr_num*data_points_per_thr_tmp;
     auto sort_ptr = (pair<int,int>*) xy_for_sort;
 
     //temporary cluster for sorting
@@ -194,7 +197,7 @@ void TX_Matrix::Thread_X(int thr_num){
     int cluster_of_interest = 0;
 
     //loop over all events in thread
-    for(int i = row_start;i < data_points_per_thr+row_start;++i){
+    for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         //skip if event not of interest (see Process(...))
         if(skip_arr[i]) continue;
 
@@ -245,38 +248,6 @@ void TX_Matrix::Thread_X(int thr_num){
 thread TX_Matrix::threading(bool i,int j){
     if(i) return thread([=] {Thread_T(j);});
     else return thread([=] {Thread_X(j);});
-}
-
-//---------------------------------------------------------------
-
-void TX_Matrix::load_thread_file(){
-
-    string line;
-    char dummy_str[100];
-
-    bool cout_checker = primary_thread_number == 0;
-
-    if(cout_checker) cout << "\n-------------------------------------" << endl;
-
-    ifstream thr_file("Configuration_Files/THREAD_FILE.txt");
-    if(thr_file.fail()){
-        if(cout_checker){
-            cout << "No THREAD_FILE found!" << endl;
-            cout << "Using 1 thread for each AIDA xyz plane" << endl;
-        }
-        am_threads = 1;
-    }
-    else{
-        while(thr_file.good()){
-            getline(thr_file,line,'\n');
-            if(line[0] == "#") continue;
-            sscanf(line.c_str(),"%s %d",dummy_str,&am_threads);
-            am_threads = (am_threads > 0) ? am_threads : 1;
-            if(cout_checker) cout << "Using " << am_threads << " threads for each AIDA xyz plane"  << endl;
-        }
-    }
-    if(cout_checker) cout << "-------------------------------------\n" << endl;
-    am_threads_d = (double) am_threads;
 }
 
 //---------------------------------------------------------------

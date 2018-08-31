@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <string>
 
+#include "AIDA_Decay_Event_Store.h"
+
 typedef unsigned long long ULong64_t;
 
 class AIDA_Data_Streamer{
@@ -36,6 +38,8 @@ public:
     double* get_Energy(bool,int);
     ULong64_t* get_Time(bool,int);
     int* get_Coordinate(bool,int);
+
+    void set_DATA(AIDA_Decay_Event_Store*);
 
     int get_amount_of_hits(bool,int);
     
