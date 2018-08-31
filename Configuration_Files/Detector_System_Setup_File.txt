@@ -1,0 +1,36 @@
+# Setup File for Detector Systems
+#
+#---------------------------- 
+# GENERAL_CONFIGURATION
+# ---------------------------- 
+White_Rabbit_Enabled: 0
+#
+FATIMA_Gain_Match_Enabled: 0
+#
+Min_Distance_Nearest_Neighbour_Exclusion(mm): 0
+#
+Only_Exclude_Detectors_In_Same_Ring: 1
+#
+Output_Matrix_Of_Exluded_Detector_Pairings: 0
+#
+# ---------------------------- 
+# FATIMA_CONFIGURATION
+# ---------------------------- 
+#
+FATIMA_Gain_Match_Enabled: 0
+#
+FATIMA_Distance_Correction: 0
+#
+Number_of_FATIMA_TDC_Modules: 1
+#
+# ---------------------------- 
+# FRS_CONFIGURATION
+# ----------------------------
+#
+# Name of Directory for FRS Configuration Files
+FRS_Setup_Name: Staring_Setup
+#
+# 0 = Get Hardcoded Variables and write them to FRS_Setup_Name Directory
+# 1 = Get Variables from files in FRS_Setup_Name Directory
+FRS_File_Setup: 1
+#

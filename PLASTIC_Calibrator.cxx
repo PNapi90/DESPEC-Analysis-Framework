@@ -34,8 +34,8 @@ PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
 	}
 	else{
 		bins_x_arr = new double[nbins];
-		Cal_arr = new double**[10];
-		for(int i = 0;i < 10;++i){
+		Cal_arr = new double**[100];
+		for(int i = 0;i < 100;++i){
 			Cal_arr[i] = new double*[100];
 			for(int j = 0;j < 100;++j) Cal_arr[i][j] = new double[nbins];
 		}
@@ -58,7 +58,7 @@ PLASTIC_Calibrator::~PLASTIC_Calibrator(){
 		delete[] fired;
 	}
 	else{
-		for(int i = 0;i < iter;++i){
+		for(int i = 0;i < 100;++i){
 			for(int j = 0;j < 100;++j) if(Cal_arr[i][j]) delete[] Cal_arr[i][j];
 			delete[] Cal_arr[i];
 			delete[] wired_tamex_ch[i];
@@ -181,6 +181,7 @@ double PLASTIC_Calibrator::get_Calibration_val(double value,int tamex_id_tmp,int
 
 void PLASTIC_Calibrator::get_data(double** fine_T,UInt** ch_id,int tamex_iter,int* iterator){
 	//write into corresponding root histograms
+	
 	for(int i = 0;i < tamex_iter;++i){
 		for(int j = 0;j < iterator[i];++j){
 			Fine_Hist[i][ch_id[i][j]]->Fill(fine_T[i][j]);
@@ -194,7 +195,7 @@ void PLASTIC_Calibrator::get_data(double** fine_T,UInt** ch_id,int tamex_iter,in
 void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 
 	//Root file to check histograms
-	TFile* ROOT_FILE = new TFile("Root_Trees/PLASTIC_TREE.root","RECREATE");
+	//TFile* ROOT_FILE = new TFile("Root_Trees/PLASTIC_TREE.root","RECREATE");
 
 	//output file stream
 	ofstream cal_file;
@@ -232,8 +233,8 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 			if(fired[i][j]){
 
 				//add pdf and cdf to root file
-				ROOT_FILE->Add(Fine_Hist[i][j]);
-				ROOT_FILE->Add(Fine_Hist[i][j]->GetCumulative());
+				//ROOT_FILE->Add(Fine_Hist[i][j]);
+				//ROOT_FILE->Add(Fine_Hist[i][j]->GetCumulative());
 
 				sprintf(filename,"Configuration_Files/Calibration_PLASTIC/Calib_%d_%d.dat",i,j);
 				cal_file.open(filename);
@@ -281,7 +282,7 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 	cout << "-----------------------------------------------------------------" << endl;
 	cout << endl;
 
-	ROOT_FILE->Write();
+	//ROOT_FILE->Write();
 		
 	map_file.close();
 

@@ -18,8 +18,9 @@ class ADCDataItem{
 		unsigned int dataType;     // Data type: 0 = Sample waveform, 1 = Sample Length, 2 = Info Data, 3 = ADC Data
 		int fee64ID;      //FEE64 ID
 		unsigned int channelID;	// Channel ID
+		unsigned int real_channelID;	// Real Channel ID (Channel ID on board)
 		unsigned int adcRange;		// ADC range: 0 = low energy, 1 = high energy
-		int x_position, y_position, layer_number; // Data Position
+		int front_back, layer_number; // Data Position
 		double calibrated_energy;
 		
 
@@ -34,20 +35,21 @@ class ADCDataItem{
 		void Set_Decay_Data(int*, ULong64_t);
 		void Set_Implant_Data(int*, ULong64_t);
 		
-		void SetTimestamp(unsigned long newTimestamp);
+		void SetTimestamp(ULong64_t newTimestamp);
 		void SetADCRange(short range);
-		void Set_X(int x);
-		void Set_Y(int y);
-		void Set_Layer(int layer);
-		void Set_CalEnergy(double);
-		int Get_X();
-		int Get_Y();
-		int Get_Layer();
+		void SetChannelID(int);
+		void SetRealChannelID(int);
+		void SetFront_Back(int);
+		void SetLayer(int layer);
+		void SetCalEnergy(double);
+		int GetFront_Back();
+		int GetLayer();
 		void Print_Event();
 
-		unsigned long GetTimestamp();
+		ULong64_t GetTimestamp();
 		int GetFEE64ID();
 		unsigned int GetChannelID();
+		unsigned int GetRealChannelID();
 		unsigned int GetADCRange();
 		unsigned int GetADCData();
 };

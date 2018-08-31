@@ -38,6 +38,8 @@
 
 #include "Gtypes.h"
 
+#include <sys/stat.h>
+#include <sys/types.h>
 
 
 using namespace std;
@@ -45,6 +47,29 @@ using namespace std;
 //---------------------------------------------------------------
 
 FRS_Detector_System::FRS_Detector_System(){
+    
+    
+    
+    read_config_variables("Configuration_Files/Detector_System_Setup_File.txt");
+    
+    frs = new TXRSParameter("FRSPar");
+    
+    mw = new TMWParameter("MWPar");
+    
+    music = new TMUSICParameter("MUSICPar");
+    
+    tpc = new TTPCParameter("TPCPar");
+    
+    sci = new TSCIParameter("SCIPar");
+    
+    id = new TIDParameter("IDPar");
+    
+    si = new TSIParameter("SIPar");
+    
+    ElecMod = new TModParameter("ModPar");
+    
+    mrtof = new TMRTOFMSParameter("MRTOFMSPar");
+
     
     /*for(int i; i < 6; ++i){
 	vme 	= new UInt_t**[i];         // FRS crate
@@ -54,7 +79,7 @@ FRS_Detector_System::FRS_Detector_System(){
     
 
     //set amount of Germanium Detectors
-    /*vme0 = new UInt_t*[21];         // FRS crate                                
+    vme0 = new UInt_t*[21];         // FRS crate                                
     vme1 = new UInt_t*[21];         // TPC crate 
     vme3 = new UInt_t*[21];         // Mtof crate
     vme5 = new UInt_t*[21];          //Main Crate or User Crate
@@ -89,7 +114,7 @@ FRS_Detector_System::FRS_Detector_System(){
     vme3s_MT = new Int_t*[32];           // Mtof TDC (V1290) 
     vme3s_MT_trailing = new Int_t*[32];  // Mtof TDC (V1290) 
     
-    for(int i; i < 32; ++i){
+    for(int i = 0; i < 32; ++i){
 	
 	vme2s[i] 		= new Int_t[10];           // User TDC (V1290) 
 	vme2s_trailing[i] 	= new Int_t[10];  // User TDC (V1290) 
@@ -573,7 +598,7 @@ FRS_Detector_System::FRS_Detector_System(){
 	sci_b_veto_r = new Bool_t[4];  
 	sci_b_veto_e = new Bool_t[3];
 	
-	for(int i; i < 12; ++i){
+	for(int i = 0; i < 12; ++i){
 	    
 	    sci_l[i] = 0;  
 	    sci_r[i] = 0;  
@@ -701,7 +726,20 @@ FRS_Detector_System::FRS_Detector_System(){
     
     Setup_Conditions();
     
-    Setup_Parameters();
+    if (!FRS_File_Setup){
+	
+	Setup_Parameters();
+    
+	ElecMod->setMap();
+
+	ElecMod->Print();
+  
+	cout << "Setup done " << endl;
+
+    }
+    if (!FRS_File_Setup) Write_Setup_Parameters();
+    
+    if (FRS_File_Setup) read_setup_variables_from_file();
 
     
 }
@@ -711,7 +749,7 @@ FRS_Detector_System::FRS_Detector_System(){
 FRS_Detector_System::~FRS_Detector_System(){
 
     
-    for(int i; i < 32; ++i){
+    for(int i = 0; i < 32; ++i){
 	
 	delete[] vme2s[i];           // User TDC (V1290) 
 	delete[] vme2s_trailing[i];  // User TDC (V1290) 
@@ -902,10 +940,6 @@ void FRS_Detector_System::Process_FRS(TGo4MbsSubEvent* psubevt){
     FRS_Calib();
     FRS_Anal();
     
-    //cout<<"HOLY SHIT IT ACTUALLY FUCKING WORKED!!! "<<dt_21l_21r<<endl;
-    //cout<<"HOLY FUCK IT STILL WORKS!!! "<<tpc_y[1]<<endl;
-    
-    //cout<<"FUCKITTY FUCK FUCKING HOLY BALLS!!! "<<sci_tofll2<<endl;
 }
 
 //-----------------------------------------------------------------//
@@ -1316,7 +1350,7 @@ void FRS_Detector_System::FRS_Rest_Of_Unpacking(int ID){
 	    std::cout<<"E> Crate Mapping does not have this ProcID :"<<psubevt->GetProcid()<<std::endl;
     
     const auto it_Module = it_Crate->second.find(vme_geo);
-	int IdMod = it_Module->second;
+	//int IdMod = it_Module->second;
     
     if(it_Module == it_Crate->second.end())
 	std::cout<<"E> Crate Mapping does not have this module (vmeGEO--) "<<vme_geo<<" in Crate :"<<psubevt->GetProcid()<<std::endl;
@@ -1663,7 +1697,7 @@ void FRS_Detector_System::FRS_Calib(){
 
 
   int scaler_channel_spill = scaler_channel_spill_all[index_flag];
-  double normalization_factor_spill = normalization_factor_spill_all[index_flag]; //   YKT 23.05
+  // unused // double normalization_factor_spill = normalization_factor_spill_all[index_flag]; //   YKT 23.05
   int scaler_channel_time  = scaler_channel_time_all[index_flag];
   double normalization_factor_time = normalization_factor_time_all[index_flag] ; //  YKT 23.05 
 
@@ -1788,14 +1822,14 @@ void FRS_Detector_System::FRS_Calib(){
 	{
 	  //int x_bin = (scaler_time_check % 3000);
 	  //int x_bin_short = (scaler_time_check % 300);
-	  int y_set;
+	  // unused //int y_set;
 	  if(check_increase_time[i]>0)
 	    {
-	      y_set =  (int)(normalization_factor_time*((Float_t)( check_increase_time[i] ))/((Float_t)( check_increase_time[scaler_channel_time] ))); 
+	      // unused //int y_set =  (int)(normalization_factor_time*((Float_t)( check_increase_time[i] ))/((Float_t)( check_increase_time[scaler_channel_time] ))); 
 	    }
 	  else
 	    {
-	      y_set = 0;
+	      // unused //int y_set = 0;
 	    }
 	}
       for(int i=0; i<64; i++)
@@ -1817,14 +1851,14 @@ void FRS_Detector_System::FRS_Calib(){
 	{
 	  //int x_bin = (scaler_spill_check % 300);
 	  //int x_bin_short = (scaler_spill_check % 30);
-	  int y_set;
+	  // unused //int y_set;
 	  if(check_increase_spill[i]>0)
 	    {
-	      y_set =  (int)(normalization_factor_spill*((Float_t)( check_increase_spill[i] ))/((Float_t)( check_increase_spill[scaler_channel_spill] )));
+	      // unused //int y_set =  (int)(normalization_factor_spill*((Float_t)( check_increase_spill[i] ))/((Float_t)( check_increase_spill[scaler_channel_spill] )));
 	    }
 	  else
 	    {
-	      y_set = 0;
+	      // unused //int y_set = 0;
 	    }
 	}
       //
@@ -1850,7 +1884,7 @@ void FRS_Detector_System::FRS_Calib(){
     }
   //----- up to here added by YKT 23.05 --------// 
    
-   UInt_t first[64];
+  // unused //  UInt_t first[64];
   //  Int_t  first[64]; 
 
   if (fbFirstEvent)
@@ -1860,7 +1894,7 @@ void FRS_Detector_System::FRS_Calib(){
 	  //std::cout <<"In first event loop"<<std::endl ; 
 	  scaler_save[i] = sc_long[i];
 	  //		 std::cout <<"  "<<scaler_save[i] <<"  "<<sc_long[i]<<std::endl ; 
-	  first[i]=sc_long[i];
+	  // unused // first[i]=sc_long[i];
 	}
       /*
       for (int i=32;i<64;i++)
@@ -1896,7 +1930,7 @@ void FRS_Detector_System::FRS_Calib(){
   for (int i=0;i<32;i++)
     if(0!=sc_long[scaler_channel_time])
       {
-	Int_t overload = 0; 
+	// unused //Int_t overload = 0; 
 	//  if(sc_long[i]!=0){            
 	if ( scaler_save[i] > static_cast<Long64_t>(sc_long[i]))
 	  {
@@ -1909,14 +1943,14 @@ void FRS_Detector_System::FRS_Calib(){
 	    //scaler_save[i] = scaler_save[i] - 4294967295;
 	    mon_inc[i] = static_cast<Long64_t>(sc_long[i])+4294967295 - scaler_save[i]; //
 	    //scaler_save[i] = (Long64_t)sc_long[i]);
-	    overload = 1;
+	    // unused //Int_t overload = 1;
 	  }
 	else
 	  mon_inc[i] = static_cast<Long64_t>(sc_long[i]) - scaler_save[i]; //
 	 
 	scaler_save[i] = static_cast<Long64_t>(sc_long[i]);
 	//
-	//if(overload != 0)
+	// unused //if(overload != 0)
 	//std::cout<<"case overload"<<std::endl;
 	if (mon_inc[i]<0)
 	  {
@@ -1935,14 +1969,14 @@ void FRS_Detector_System::FRS_Calib(){
   for (int i=32;i<64;i++)
     if(0!=sc_long[scaler_channel_time])
       {
-	Int_t overload = 0;
+	// unused //Int_t overload = 0;
 	//if (scaler_save[i] > sc_long2[i-32])
 	if (scaler_save[i] > sc_long[i])
 	  { 
 	    //scaler_save[i] = scaler_save[i] - 4294967295;
 	    //mon_inc[i] = static_cast<Long64_t>(sc_long2[i-32]) + 4294967295 - scaler_save[i];
 	    mon_inc[i] = static_cast<Long64_t>(sc_long[i]) + 4294967295 - scaler_save[i];
-	    overload =1;
+	    // unused //Int_t overload =1;
 	  }
 	else
 	  //mon_inc[i] = sc_long2[i-32] - scaler_save[i];
@@ -3154,7 +3188,7 @@ void FRS_Detector_System::FRS_Anal(){
 	}
 
 
-      static const double anode_width = 10.;//cm
+      // static const double anode_width = 10.;//cm
       //double music_dX = anode_width*sqrt(id_a4*id_a4+id_b4*id_b4+1.);
       //h_dEdx_betagammaAll->Fill(id_beta*id_gamma,de[2]/music_dX);
       //h_dEdx_betagammaAllZoom->Fill(id_beta*id_gamma,de[2]/music_dX);
@@ -3352,181 +3386,1938 @@ void FRS_Detector_System::FRS_Anal(){
     
 }
 
+void FRS_Detector_System::Write_Setup_Parameters(){
+    
+  setup_directory_name = "./Configuration_Files/FRS_Setups/" + setup_directory_name;
+    
+  int n = setup_directory_name.length(); 
+    
+  char char_setup_directory_name[n+1]; 
+    
+  strcpy(char_setup_directory_name, setup_directory_name.c_str()); 
+   
+  if (mkdir(char_setup_directory_name, 0777)==-1){
+      
+      cout<<endl;
+      cout<<endl;
 
+      cout<<"DANGER WILL ROBINSON DANGER !!!"<<endl;
+      
+      string response;
+           
+      while(true){
+	  
+	cout<<"You are about to overwrite your Setup Directory: "<< setup_directory_name<<endl;
+	cout<<"Do you mean to do this? (y/n)"<<endl;
+	cin>>response;
+	if (response == 'y') break;
+	else if (response == 'n') exit(0);
+	else{
+	    
+	     cout<<endl;
+	     cout<<"Input '" << response << "' was not valid!"<<endl;
+	     cout<<"Please enter 'y' for yes and 'n' for no"<<endl;
+	     cout<<endl;
 
-void FRS_Detector_System::Setup_Parameters(){
-
-  /*fFRSPar = new TXRSParameter("FRSPar");
-  AddParameter(fFRSPar);
-
-  fMWPar = new TMWParameter("MWPar");
-  AddParameter(fMWPar);
-
-  fMUSICPar = new TMUSICParameter("MUSICPar");
-  AddParameter(fMUSICPar);
-
-  fTPCPar = new TTPCParameter("TPCPar");
-  AddParameter(fTPCPar);
-
-  fSCIPar = new TSCIParameter("SCIPar");
-  AddParameter(fSCIPar);
-
-  fIDPar = new TIDParameter("IDPar");
-  AddParameter(fIDPar);
-
-  fSIPar = new TSIParameter("SIPar");
-  AddParameter(fSIPar);
-
-  ModPar = new TModParameter("ModPar");
-  AddParameter(ModPar);
-  
-  MRtofPar = new TMRTOFMSParameter("MRTOFMSPar");
-  AddParameter(MRtofPar);*/
-
+	}
+      
+      }
+      
+      mkdir(char_setup_directory_name, 0777);
+      
+  }
 
   // look up analysis object and all parameters
   
-  frs = new TXRSParameter("FRSPar");
-  //AddParameter(fFRSPar);
+  string setup_filename = setup_directory_name + "/FRS.txt";
+  ofstream frs_f(setup_filename);
 
-  mw = new TMWParameter("MWPar");
-  //AddParameter(fMWPar);
+  setup_filename = setup_directory_name + "/MW.txt";
+  ofstream mw_f(setup_filename);
 
-  music = new TMUSICParameter("MUSICPar");
-  //AddParameter(fMUSICPar);
+  setup_filename = setup_directory_name + "/MUSIC.txt";
+  ofstream music_f(setup_filename);
 
-  tpc = new TTPCParameter("TPCPar");
-  //AddParameter(fTPCPar);
+  setup_filename = setup_directory_name + "/TPC.txt";
+  ofstream tpc_f(setup_filename);
 
-  sci = new TSCIParameter("SCIPar");
-  //AddParameter(fSCIPar);
+  setup_filename = setup_directory_name + "/SCI.txt";
+  ofstream sci_f(setup_filename);
 
-  id = new TIDParameter("IDPar");
-  //AddParameter(fIDPar);
+  setup_filename = setup_directory_name + "/ID.txt";
+  ofstream id_f(setup_filename);
 
-  si = new TSIParameter("SIPar");
-  //AddParameter(fSIPar);
+  setup_filename = setup_directory_name + "/SI.txt";
+  ofstream si_f(setup_filename);
 
-  ElecMod = new TModParameter("ModPar");
-  //AddParameter(ModPar);
+  setup_filename = setup_directory_name + "/ElecMod.txt";
+  ofstream ElecMod_f(setup_filename);
+
+  setup_filename = setup_directory_name + "/MRToF.txt";
+  ofstream mrtof_f(setup_filename);
   
-  mrtof = new TMRTOFMSParameter("MRTOFMSPar");
-  //AddParameter(MRtofPar);
   
-  //ElecMod = new TModParameter("ModPar");
+  /*ofstream frs_f("FRS.txt");
+
+  ofstream mw_f("MW.txt");
+
+  ofstream music_f("MUSIC.txt");
+
+  ofstream tpc_f("TPC.txt");
+
+  ofstream sci_f("SCI.txt");
+
+  ofstream id_f("ID.txt");
+
+  ofstream si_f("SI.txt");
+
+  ofstream ElecMod_f("ElecMod.txt");
+
+  ofstream mrtof_f("MRToF.txt");*/
+
+
+  //======
+  //  MW
+  //======
+  
+  mw_f << "#MWPC Parameters"<< endl;
+  mw_f << "#"<< endl;
+
+  mw_f << "#MWPC X Factors"<< endl;
+  mw_f << "#"<< endl;
+
+  for(int i = 0; i < 11; ++i){
+      
+    mw_f << "mw->x_factor["<< i << "]: " << mw->x_factor[i] << endl;
+      
+  }
+  
+  mw_f << "#"<< endl;
+  mw_f << "#MWPC X Offsets" << endl;
+  mw_f << "#"<< endl;
+
+  for(int i = 0; i < 11; ++i){
+      
+    mw_f << "mw->x_offset["<< i << "]: "<< mw->x_offset[i] << endl;
+      
+  }
+  mw_f << "#"<< endl;
+  mw_f << "#MWPC Y Factors" << endl;
+  mw_f << "#"<< endl;
+
+  for(int i = 0; i < 11; ++i){
+      
+    mw_f << "mw->y_factor["<< i << "]: "<< mw->y_factor[i] << endl;
+      
+  }
+  
+  mw_f << "#"<< endl;
+  mw_f << "#MWPC Y Offsets" << endl;
+  mw_f << "#"<< endl;
+
+  for(int i = 0; i < 11; ++i){
+      
+    mw_f << "mw->y_offset["<< i << "]: "<< mw->y_offset[i]<< endl;
+      
+  }
+  
+  mw_f << "#"<< endl;
+  mw_f << "#MWPC TDC Gains" << endl;
+  mw_f << "#"<< endl;
+
+  for(int i = 0; i < 13; ++i){
+
+      for(int j = 0; j < 5; ++j){
+	  
+	    mw_f << "mw->gain_tdc["<< j << "][" << i << "]: " << mw->gain_tdc[j][i] << endl;
+	  
+      }
+      
+      id_f << "#" << endl;
+
+      
+  }
+  
+  
+  //======
+  //  FRS
+  //======
+  
+    frs_f << "#FRS Parameters" << endl;
+
+
+    frs_f << "#" << endl;
+    frs_f << "frs->dist_focS2: " << frs->dist_focS2 << endl;
+    
+    frs_f << "#" << endl;
+    frs_f << "frs->dist_MW21: " << frs->dist_MW21 << endl;
+    frs_f << "frs->dist_MW22: " << frs->dist_MW22 << endl;
+    
+    frs_f << "#" << endl;
+    frs_f << "frs->dist_SC21: " << frs->dist_SC21 << endl;
+    
+    frs_f << "#" << endl;
+    frs_f << "frs->dist_focS4: " << frs->dist_focS4 << endl;
+    
+    frs_f << "#" << endl;
+    frs_f << "frs->dist_MUSIC1: " << frs->dist_MUSIC1 << endl;
+    frs_f << "frs->dist_MUSIC2: " << frs->dist_MUSIC2 << endl;
+    frs_f << "frs->dist_MUSIC3: " << frs->dist_MUSIC3 << endl;
+    
+    frs_f << "#" << endl;
+    frs_f << "#DO NOT CHANGE" << endl;
+
+    frs_f << "frs->dist_MUSICa1: " << frs->dist_MUSICa1 << endl;
+    frs_f << "frs->dist_MUSICa2: " << frs->dist_MUSICa2 << endl;
+    frs_f << "frs->dist_MUSICa3: " << frs->dist_MUSICa3 << endl;
+    frs_f << "frs->dist_MUSICa4: " << frs->dist_MUSICa4 << endl;
+    
+    frs_f << "#" << endl;
+ 
+  //=========
+  // MUSICs
+  //=========
+  
+  music_f << "#MUSIC Parameters" << endl;
+  music_f << "#" << endl;
+  
+  music_f << "#MUSIC41 Offsets" << endl;
+  music_f << "#" << endl;
+
+  for(int i = 0; i < 8; ++i){
+      
+          music_f << "music->e1_off[" << i << "]: " << music->e1_off[i] << endl;
+      
+  }
+  
+  music_f << "#MUSIC41 Gains" << endl;
+  music_f << "#" << endl;
+
+  for(int i = 0; i < 8; ++i){
+      
+     music_f << "music->e1_gain[" << i << "]: " << music->e1_gain[i] << endl;
+
+  }
+  
+  music_f << "#MUSIC42 Offsets" << endl;
+  music_f << "#" << endl;
+
+  for(int i = 0; i < 8; ++i){
+      
+          music_f << "music->e2_off[" << i << "]: " << music->e2_off[i] << endl;      
+      
+  }
+  
+  music_f << "#MUSIC42 Gains" << endl;
+  music_f << "#" << endl;
+
+  for(int i = 0; i < 8; ++i){
+      
+     music_f << "music->e2_gain[" << i << "]: " << music->e2_gain[i] << endl;
+
+  }
+  
+  music_f << "#MUSIC43 Offsets" << endl;
+  music_f << "#" << endl;
+
+  for(int i = 0; i < 4; ++i){
+      
+          music_f << "music->e3_off[" << i << "]: " << music->e3_off[i] << endl;
+
+  }
+  
+  music_f << "#MUSIC43 Gains" << endl;
+  music_f << "#" << endl;
+
+  for(int i = 0; i < 4; ++i){
+      
+     music_f << "music->e3_gain[" << i << "]: " << music->e3_gain[i] << endl;
+
+  }
+  
+  music_f << "#MUSIC Position Correction" << endl;
+  music_f << "#" << endl;
+
+  for(int i = 0; i < 7; ++i){
+      
+     music_f << "music->pos_a1[" << i << "]: " << music->pos_a1[i] << endl;
+
+  }
+
+  //=========
+  //  TPCs
+  //=========
+  
+  tpc_f << "#TPC Parameters" << endl;
+  tpc_f << "#" << endl;
+  
+  
+  for(int i = 0; i < 7; ++i){
+      
+     if (i < 2) tpc_f << "#TPC" << (i+1) << "at S2 (TPC2" << (i+1) << ") in vacuum" << endl;
+     if (i > 1 && i < 4) tpc_f << "#TPC" << (i+1) << "at S2 (TPC2" << (i+1) << ") in air" << endl;
+     if (i > 3 && i < 6) tpc_f << "#TPC" << (i+1) << "at S4 (TPC4" << (i-3) << ") in air" << endl;
+     if (i == 6) tpc_f << "#TPC at S3 (TPC31)" << endl;
+     
+
+     tpc_f << "#" << endl;
+     tpc_f << "#Factors" << endl;
+     tpc_f << "#" << endl;
+
+     for(int j = 0; j < 2; ++j) tpc_f << "tpc->x_factor[" << i << "][" << j << "]: " << tpc->x_factor[i][j] << endl;
+     for(int k = 0; k < 2; ++k) tpc_f << "tpc->y_factor[" << i << "]["  << k << "]: " << tpc->y_factor[i][k] << endl;
+     
+     tpc_f << "#Offsets" << endl;
+     tpc_f << "#" << endl;
+
+     for(int j = 0; j < 2; ++j) tpc_f << "tpc->x_offset[" << i << "][" << j << "]: " << tpc->x_offset[i][j] << endl;
+     for(int k = 0; k < 2; ++k) tpc_f << "tpc->y_offset[" << i << "]["  << k << "]: " << tpc->y_offset[i][k] << endl;
+     
+     tpc_f << "#" << endl;
+
+  }
+  
+  
+  //===========
+  // Plastics
+  //===========
+  
+  sci_f << "#Scintillator Parameters" << endl;
+  sci_f << "#Index 2 for Sc21" << endl;
+  sci_f << "#" << endl;
+  for(int i = 0; i < 7; ++i) sci_f << "sci->x_a[" << i << "][2]: " << sci->x_a[i][2] << endl;
+  sci_f << "#" << endl;
+
+  sci_f << "#Index 5 for Sc41" << endl;
+  sci_f << "#" << endl;
+  for(int i = 0; i < 7; ++i) sci_f << "sci->x_a[" << i << "][5]: " << sci->x_a[i][5] << endl;
+  sci_f << "#" << endl;
+
+  sci_f << "#Index 6 for Sc42" << endl;
+  sci_f << "#" << endl;
+  for(int i = 0; i < 7; ++i) sci_f << "sci->x_a[" << i << "][6]: " << sci->x_a[i][6] << endl;
+  sci_f << "#" << endl;
+
+  sci_f << "#Index 7 for Sc43" << endl;
+  sci_f << "#" << endl;
+  for(int i = 0; i < 7; ++i) sci_f << "sci->x_a[" << i << "][7]: " << sci->x_a[i][7] << endl;
+  sci_f << "#" << endl;
+  
+  sci_f << "#Index 10 for Sc81" << endl;
+  sci_f << "#" << endl;
+  for(int i = 0; i < 7; ++i) sci_f << "sci->x_a[" << i << "][10]: " << sci->x_a[i][10] << endl;
+
 
   
-  //TModParameter* ElecMod = dynamic_cast<TModParameter*>(an->GetParameter("ModPar"));
+  sci_f << "#" << endl;
+  sci_f << "#Time of Flight Offsets" << endl;
+  sci_f << "#" << endl;
+
+  sci_f << "sci->tac_off[0]  (SC21L-R): " 	<< sci->tac_off[0] << endl;
+  sci_f << "sci->tac_off[1]  (SC41L-R): " 	<< sci->tac_off[1] << endl;
+  sci_f << "sci->tac_off[2]  (SC41L-SC21L): " 	<< sci->tac_off[2] << endl;
+  sci_f << "sci->tac_off[3]  (SC41R-SC21R): " 	<< sci->tac_off[3] << endl;
+  sci_f << "sci->tac_off[4]  (SC42L-R): "	<< sci->tac_off[4] << endl;
+  sci_f << "sci->tac_off[5]  (SC42L-SC21L): " 	<< sci->tac_off[5] << endl;
+  sci_f << "sci->tac_off[6]  (SC42R-SC21R): " 	<< sci->tac_off[6] << endl;
+  sci_f << "sci->tac_off[7]  (SC43L-R): "	<< sci->tac_off[7] << endl;
+  sci_f << "sci->tac_off[8]  (SC81L-R): " 	<< sci->tac_off[8] << endl;
+  sci_f << "sci->tac_off[9]  (SC81L-SC21L): " 	<< sci->tac_off[9] << endl;
+  sci_f << "sci->tac_off[10] (SC81R-SC21R): " 	<< sci->tac_off[10] << endl;
+  
+  sci_f << "#" << endl;
+  sci_f << "#Time of Flight Factors" << endl;
+  sci_f << "#" << endl;
+
+  sci_f << "sci->tac_factor[0]  (SC21L-R): " 		<< sci->tac_factor[0] << endl;
+  sci_f << "sci->tac_factor[1]  (SC41L-R): " 		<< sci->tac_factor[1] << endl;
+  sci_f << "sci->tac_factor[2]  (SC41L-SC21L): " 	<< sci->tac_factor[2] << endl;
+  sci_f << "sci->tac_factor[3]  (SC41R-SC21R): " 	<< sci->tac_factor[3] << endl;
+  sci_f << "sci->tac_factor[4]  (SC42L-R): " 		<< sci->tac_factor[4] << endl;
+  sci_f << "sci->tac_factor[5]  (SC42L-SC21L): " 	<< sci->tac_factor[5] << endl;
+  sci_f << "sci->tac_factor[6]  (SC42R-SC21R): " 	<< sci->tac_factor[6] << endl;
+  sci_f << "sci->tac_factor[7]  (SC43L-R): " 		<< sci->tac_factor[7] << endl;
+  sci_f << "sci->tac_factor[8]  (SC81L-R): " 		<< sci->tac_factor[8] << endl;
+  sci_f << "sci->tac_factor[9]  (SC81L-SC21L): " 	<< sci->tac_factor[9] << endl;
+  sci_f << "sci->tac_factor[10] (SC81R-SC21R): " 	<< sci->tac_factor[10] << endl;
+  
+  sci_f << "#" << endl;
+  sci_f << "#Time of Flight Factors not for online" << endl;
+  sci_f << "#" << endl;
+
+  sci_f << "sci->tof_bll2  (not used online): " << sci->tof_bll2 << endl;
+  sci_f << "sci->tof_brr2  (not used online): " << sci->tof_brr2 << endl;
+  sci_f << "sci->tof_bll3  (not used online): " << sci->tof_bll3 << endl;
+  sci_f << "sci->tof_brr3  (not used online): " << sci->tof_brr3 << endl;
+  sci_f << "sci->tof_bll4  (not used online): " << sci->tof_bll4 << endl;
+  sci_f << "sci->tof_brr4  (not used online): " << sci->tof_brr4 << endl;
+  
+  sci_f << "#Time of Flight Offsets" << endl;
+  sci_f << "#" << endl;
+
+  sci_f << "sci->tof_a2  (Tof S41-S21): " << sci->tof_a2 << endl;
+  sci_f << "sci->tof_a3  (Tof S42-S21): " << sci->tof_a3 << endl;
+  sci_f << "sci->tof_a4  (Tof S81-S21): " << sci->tof_a4 << endl;
+  sci_f << "#" << endl;
+
+  
+  //===========
+  // ID
+  //===========
+  
+  id_f << "#ID Information" << endl;
+  id_f << "#ID ToF Paths and Offsets" << endl;
+  id_f << "#" << endl;
+
+  id_f << "id->id_tofoff2: " << id->id_tofoff2 << endl;
+  id_f << "id->id_path2: " << id->id_path2 << endl;
+  id_f << "#" << endl;
+
+  id_f << "id->id_tofoff3: " << id->id_tofoff3 << endl;
+  id_f << "id->id_path3: " << id->id_path3 << endl;
+  id_f << "#" << endl;
+
+  id_f << "id->id_tofoff4: " << id->id_tofoff4 << endl;
+  id_f << "id->id_path4: " << id->id_path4 << endl;
+  
+  id_f << "#" << endl;
+  id_f << "#ID Z and A over Q" << endl;
+  id_f << "#" << endl;
+
+  for(int i = 0; i < 5; ++i) id_f << "id->ID_Z_AoverQ_num[" << i << "]: " << id->ID_Z_AoverQ_num[i] << endl;
+  
+  id_f << "#" << endl;
+
+  for(int i = 0; i < 5; ++i){
+      
+	for(int j = 0; j < 2; ++j){
+
+	    for(int k = 0; k < 5; ++k) id_f << "id->ID_Z_AoverQ[" << i << "][" << k << "][" << j << "]: " << id->ID_Z_AoverQ[i][k][j] << endl;    
+	    
+	}
+      
+	id_f << "#" << endl;
+
+  }
+  
+  id_f << "#" << endl;
+  id_f << "#ID A over Q (X2)" << endl;
+  id_f << "#" << endl;
+
+  
+  
+  for(int i = 0; i < 6; ++i) id_f << "id->ID_x2AoverQ_num[" << i << "]: " << id->ID_x2AoverQ_num[i] << endl;
+  
+  for(int i = 0; i < 6; ++i){
+      
+	for(int j = 0; j < 2; ++j){
+
+	    for(int k = 0; k < 5; ++k) id_f << "id->ID_x2AoverQ[" << i << "][" << k << "][" << j << "]: " << id->ID_x2AoverQ[i][k][j] << endl;    
+	    
+	}
+      
+        id_f << "#" << endl;
+
+  }
+  
+  frs_f << "#" << endl;
+  frs_f << "#Magnetic Field Values" << endl;
+  frs_f << "#" << endl;
+
+  for(int i = 0; i < 4; ++i){
+
+    if (i == 0 || i == 2) frs_f << "frs->bfield[" << i << "] FRS D3 Field: " << frs->bfield[i] << endl;
+    if (i == 1 || i == 3) frs_f << "frs->bfield[" << i << "] FRS D4 Field: " << frs->bfield[i] << endl;
+
+  }
+
+  frs_f << "#" << endl;
+  frs_f << "#Dispersion" << endl;
+  frs_f << "#" << endl;
+
+  for(int i = 0; i < 2; ++i) frs_f << "frs->dispersion[" << i << "]: " << frs->dispersion[i] << endl;
+
+  frs_f << "#" << endl;
+  frs_f << "#Magnification" << endl;
+  frs_f << "#" << endl;
+
+  frs_f << "frs->magnification[1]: " << frs->magnification[1] << endl;
+
+  frs_f << "#" << endl;
+  frs_f << "#Rho 0 Values" << endl;
+  frs_f << "#" << endl;
+
+  frs_f << "frs->rho0[0] FRS (D1+D2)/2 radius: "<< frs->rho0[0]  << endl;
+  frs_f << "frs->rho0[1] FRS (D3+D4)/2 radius: "<< frs->rho0[1]  << endl;
+
+  frs_f << "#" << endl;
+  frs_f << "#Z Offsets" << endl;
+  frs_f << "#" << endl;
+
+  frs_f << "frs->primary_z: "<< frs->primary_z << endl;
+  frs_f << "frs->offset_z: "<< frs->offset_z << endl;
+  frs_f << "frs->offset_z2: "<< frs->offset_z2  << endl;
+  frs_f << "frs->offset_z3: "<< frs->offset_z3  << endl;
+
+  frs_f << "#" << endl;
+  frs_f << "#AoQ Corr" << endl;
+  frs_f << "#" << endl;
+
+  frs_f << "frs->a2AoQCorr: " << frs->a2AoQCorr << endl;
+  frs_f << "frs->a4AoQCorr: " << frs->a2AoQCorr << endl;
+  
+  
+  id_f << "#" << endl;
+  id_f << "#MUSIC 1 Velocity Correction" << endl;
+  id_f << "#" << endl;
+  for(int i = 0; i < 4; ++i) id_f << " id->vel_a[" << i << "]: " << id->vel_a[i] << endl;
+  id_f << "#" << endl;
+
+  id_f << "#MUSIC 2 Velocity Correction" << endl;
+  id_f << "#" << endl;
+  for(int i = 0; i < 4; ++i) id_f << " id->vel_a2[" << i << "]: " << id->vel_a2[i] << endl;
+  id_f << "#" << endl;
+
+  id_f << "#MUSIC 3 Velocity Correction" << endl;
+  id_f << "#" << endl;
+  for(int i = 0; i < 4; ++i) id_f << " id->vel_a3[" << i << "]: " << id->vel_a3[i] << endl;
+  id_f << "#" << endl;
+
+  id_f << "#Gate on Z" << endl;
+  id_f << "#" << endl;
+  id_f << "id->zgate_low: " << id->zgate_low  << endl;
+  id_f << "id->zgate_high: "<< id->zgate_high << endl;
+  id_f << "#" << endl;
+
+
+  //=======
+  //  Si
+  //=======
+  
+  si_f << "#Silicon Parameters" << endl;
+  si_f << "#" << endl;
+  
+  si_f << "si->si_factor1: " << si->si_factor1 << endl;
+  si_f << "si->si_offset1: " << si->si_offset1 << endl;
+  si_f << "#" << endl;
+
+  si_f << "si->si_factor2: " << si->si_factor2 << endl;
+  si_f << "si->si_offset2: " << si->si_offset2 << endl;
+  si_f << "#" << endl;
+
+  si_f << "si->si_factor3: " << si->si_factor3 << endl;
+  si_f << "si->si_offset3: " << si->si_offset3 << endl;
+  si_f << "#" << endl;
+
+  si_f << "si->si_factor4: " << si->si_factor4 << endl;
+  si_f << "si->si_offset4: " << si->si_offset4 << endl;
+  si_f << "#" << endl;
+
+  
+  si_f << "#Silicon DSSD Factors" << endl;
+  si_f << "#" << endl;
+
+  for(int i = 0; i < 32; ++i) si_f << "si->dssd_factor[" << i << "]: " << si->dssd_factor[i] << endl;
+
+  si_f << "#Silicon DSSD Offsets" << endl;
+  si_f << "#" << endl;
+
+  for(int i = 0; i < 32; ++i) si_f << "si->dssd_offset[" << i << "]: " << si->dssd_offset[i] << endl;
+  si_f << "#" << endl;
+  
+  //=========
+  //MR-TOF-MS
+  //=========
+  
+  mrtof_f << "#MRToF Parameters" << endl;
+  mrtof_f << "#" << endl;
+
+  
+  mrtof_f << "mrtof->MRTOFMS_a: "    << mrtof->MRTOFMS_a    << endl;
+  mrtof_f << "mrtof->MRTOFMS_b: "    << mrtof->MRTOFMS_b    << endl;
+  mrtof_f << "mrtof->MRTOFMS_t0: "   << mrtof->MRTOFMS_t0   << endl;
+  mrtof_f << "mrtof->MRTOFMS_TXRS: " << mrtof->MRTOFMS_TXRS << endl;
+
+
+  cout<< "Variables All Written to Respective Files in Directory : "<< setup_directory_name <<endl; 
+    
+    
+}
+    
+void FRS_Detector_System::get_Event_data(Raw_Event* RAW){
+	    
+    RAW->set_DATA_MUSIC(de, de_cor);
+    RAW->set_DATA_SCI(sci_l, sci_r, sci_e, sci_tx, sci_x);
+    RAW->set_DATA_SCI_dT(dt_21l_21r, dt_41l_41r, dt_21l_41l, dt_21r_41r, dt_42l_42r, dt_43l_43r,
+			    dt_42l_21l, dt_42r_21r, dt_81l_81r, dt_21l_81l, dt_21r_81r);
+    RAW->set_DATA_SCI_ToF(sci_tofll2, sci_tofll3, sci_tof2, sci_tofrr2, sci_tofrr3, sci_tof3);
+    RAW->set_DATA_ID_2_4(id_x2, id_y2, id_a2, id_b2, id_x4, id_y4, id_a4, id_b4);
+    RAW->set_DATA_ID_Beta_Rho(id_brho, id_rho, id_beta, id_beta3, id_gamma);
+    RAW->set_DATA_ID_Z_AoQ(id_AoQ, id_AoQ_corr, id_z, id_z2, id_z3);
+    RAW->set_DATA_ID_Timestamp(timestamp, ts, ts2);
+	
+}
+
+//---------------------------------------------------------------
+
+void FRS_Detector_System::Process_MBS(int* pdata){}
+
+int* FRS_Detector_System::get_pdata(){return pdata;}
+
+//---------------------------------------------------------------
+
+Float_t FRS_Detector_System::rand0_5(){
+    
+  return rand()*1./RAND_MAX;// - 0.5; 
+    
+}
+
+//---------------------------------------------------------------
+
+Int_t FRS_Detector_System::getbits(Int_t value, int nword, int start, int length){
+    
+  UInt_t buf = (UInt_t) value;
+  buf = buf >> ((nword-1)*16 + start - 1);
+  buf = buf & ((1 << length) - 1);
+  return buf;
+  
+}
+
+//---------------------------------------------------------------
+
+Int_t FRS_Detector_System::get2bits(Int_t value, int nword, int start, int length){
+    
+  UInt_t buf = (UInt_t) value;
+  buf = buf >> ((nword-1)*32 + start - 1);
+  buf = buf & ((1 << length) - 1);
+  return buf;
+  
+}
+
+//---------------------------------------------------------------
+Bool_t FRS_Detector_System::Check_WinCond(Float_t P, Float_t* V){
+    
+    if(P >= V[0] && P <= V[1]) return true;
+    else return false;
+
+}
+
+//---------------------------------------------------------------
+Bool_t FRS_Detector_System::Check_WinCond_Multi(Float_t P, Float_t** V, int cond_num){
+    
+    if(P >= V[cond_num][0] && P <= V[cond_num][1]) return true;
+    else return false;
+
+}
+
+//---------------------------------------------------------------
+Bool_t FRS_Detector_System::Check_WinCond_Multi_Multi(Float_t P, Float_t*** V, int cond_num, int cond_num_2){
+    
+    if(P >= V[cond_num][cond_num_2][0] && P <= V[cond_num][cond_num_2][1]) return true;
+    else return false;
+
+}
+
+//---------------------------------------------------------------
+
+// cn_PnPoly(): crossing number test for a point in a polygon
+//      Input:   P = a point,
+//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+//      Return:  0 = outside, 1 = inside
+// This code is patterned after [Franklin, 2000]
+Bool_t FRS_Detector_System::Check_PolyCond(Float_t* P, Float_t** V, int n ){
+    int    cn = 0;    // the  crossing number counter
+
+    // loop through all edges of the polygon
+    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
+       if (((V[i][1] <= P[1]) && (V[i+1][1] > P[1]))     // an upward crossing
+        || ((V[i][1] > P[1]) && (V[i+1][1] <=  P[1]))) { // a downward crossing
+            // compute  the actual edge-ray intersect x-coordinate
+            float vt = (float)(P[1]  - V[i][1]) / (V[i+1][1] - V[i][1]);
+            if (P[0] <  V[i][0] + vt * (V[i+1][0] - V[i][0])) // P.x < intersect
+                 ++cn;   // a valid crossing of y=P.y right of P.x
+        }
+    }
+    
+    if((cn&1) == 0) return false;
+    if((cn&1) == 1) return true;
+    else return false;
+
+    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
+
+}
+
+//---------------------------------------------------------------
+
+// cn_PnPoly(): crossing number test for a point in a polygon
+//      Input:   P = a point,
+//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+//      Return:  0 = outside, 1 = inside
+// This code is patterned after [Franklin, 2000]
+Bool_t FRS_Detector_System::Check_PolyCond_Multi(Float_t* P, Float_t*** V, int n, int cond_num )
+{
+    int    cn = 0;    // the  crossing number counter
+
+    // loop through all edges of the polygon
+    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
+       if (((V[cond_num][i][1] <= P[1]) && (V[cond_num][i+1][1] > P[1]))     // an upward crossing
+        || ((V[cond_num][i][1] > P[1]) && (V[cond_num][i+1][1] <=  P[1]))) { // a downward crossing
+            // compute  the actual edge-ray intersect x-coordinate
+            float vt = (float)(P[1]  - V[cond_num][i][1]) / (V[cond_num][i+1][1] - V[cond_num][i][1]);
+            if (P[0] <  V[cond_num][i][0] + vt * (V[cond_num][i+1][0] - V[cond_num][i][0])) // P.x < intersect
+                 ++cn;   // a valid crossing of y=P.y right of P.x
+        }
+    }
+    
+    if((cn&1) == 0) return false;
+    if((cn&1) == 1) return true;
+    else return false;
+
+    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
+
+}
+//---------------------------------------------------------------
+
+// cn_PnPoly(): crossing number test for a point in a polygon
+//      Input:   P = a point,
+//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+//      Return:  0 = outside, 1 = inside
+// This code is patterned after [Franklin, 2000]
+Bool_t FRS_Detector_System::Check_PolyCond_X_Y(Float_t X, Float_t Y, Float_t** V, int n ){
+    int    cn = 0;    // the  crossing number counter
+
+    // loop through all edges of the polygon
+    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
+       if (((V[i][1] <= Y) && (V[i+1][1] > Y))     // an upward crossing
+        || ((V[i][1] > Y) && (V[i+1][1] <=  Y))) { // a downward crossing
+            // compute  the actual edge-ray intersect x-coordinate
+            float vt = (float)(Y  - V[i][1]) / (V[i+1][1] - V[i][1]);
+            if (X <  V[i][0] + vt * (V[i+1][0] - V[i][0])) // P.x < intersect
+                 ++cn;   // a valid crossing of y=P.y right of P.x
+        }
+    }
+    
+    if((cn&1) == 0) return false;
+    if((cn&1) == 1) return true;
+    else return false;
+
+    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
+
+}
+
+//---------------------------------------------------------------
+
+// cn_PnPoly(): crossing number test for a point in a polygon
+//      Input:   P = a point,
+//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+//      Return:  0 = outside, 1 = inside
+// This code is patterned after [Franklin, 2000]
+Bool_t FRS_Detector_System::Check_PolyCond_Multi_X_Y(Float_t X, Float_t Y, Float_t*** V, int n, int cond_num )
+{
+    int    cn = 0;    // the  crossing number counter
+
+    // loop through all edges of the polygon
+    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
+       if (((V[cond_num][i][1] <= Y) && (V[cond_num][i+1][1] > Y))     // an upward crossing
+        || ((V[cond_num][i][1] > Y) && (V[cond_num][i+1][1] <=  Y))) { // a downward crossing
+            // compute  the actual edge-ray intersect x-coordinate
+            float vt = (float)(Y  - V[cond_num][i][1]) / (V[cond_num][i+1][1] - V[cond_num][i][1]);
+            if (X <  V[cond_num][i][0] + vt * (V[cond_num][i+1][0] - V[cond_num][i][0])) // P.x < intersect
+                 ++cn;   // a valid crossing of y=P.y right of P.x
+        }
+    }
+    
+    if((cn&1) == 0) return false;
+    if((cn&1) == 1) return true;
+    else return false;
+
+    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
+
+}
+
+//---------------------------------------------------------------
+
+void FRS_Detector_System::Setup_Conditions(){
+        
+    string line;
+    int line_number = 0;
+    
+    const char* format = "%f %f %f %f %f %f %f %f %f %f %f %f %f %f";
+
+    ifstream cond_a("Configuration_Files/FRS_Window_Conditions/lim_csum.txt");
+    
+    lim_csum = new Float_t**[4];
+    
+    for(int i = 0; i < 4; ++i){
+	
+	lim_csum[i] = new Float_t*[7];
+	
+	    for(int j = 0; j < 7; ++j){
+		
+		
+		lim_csum[i][j] = new Float_t[2];
+		
+	    }
+    }
+    
+    
+    while(/*cond_a.good()*/getline(cond_a,line,'\n')){
+	
+	//getline(cond_a,line,'\n');
+	if(line[0] == '#') continue;
+	
+
+	    sscanf(line.c_str(),format,&lim_csum[line_number][0][0],&lim_csum[line_number][0][1]
+					,&lim_csum[line_number][1][0],&lim_csum[line_number][1][1]
+					,&lim_csum[line_number][2][0],&lim_csum[line_number][2][1]
+					,&lim_csum[line_number][3][0],&lim_csum[line_number][3][1]
+					,&lim_csum[line_number][4][0],&lim_csum[line_number][4][1]
+					,&lim_csum[line_number][5][0],&lim_csum[line_number][5][1]
+					,&lim_csum[line_number][6][0],&lim_csum[line_number][6][1]);
+					
+	line_number++;
+	
+	
+    }
+    
+   /*lim_csum = {{{300,1800},{350,1800},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
+				 {{300,1800},{300,1800},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
+				 {{300,1800},{300,1840},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
+				 {{300,1800},{300,1810},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}}};
+	*/			 
+				 
 
     
-  /*TXRSAnalysis* an = dynamic_cast<TXRSAnalysis*> (TGo4Analysis::Instance());
-  if (an==0) {
-    cout << "!!!  Script should be run in FRS analysis" << endl;
-  }
-  
-  ElecMod = dynamic_cast<TModParameter*>(an->GetParameter("ModPar"));
-  if (ElecMod==0) {
-    cout << "!!! Parameter ModPar not found " << endl;
-  }
-  
-  
+    lim_xsum = new Float_t*[13];
+    lim_ysum = new Float_t*[13];
+    
+    for(int i = 0; i < 13; ++i){
+	
+	
+	lim_xsum[i] = new Float_t[2];
+	lim_ysum[i] = new Float_t[2];
+	
+	//lim_xsum[i][0] = 1;
+	//lim_xsum[i][1] = 8000;
+	//lim_ysum[i][0] = 2;
+	//lim_ysum[i][1] = 8000;
+	
+	
+    }
+    
+    line_number = 0;
+    
+    format = "%f %f";
+
+    ifstream cond_b("Configuration_Files/FRS_Window_Conditions/lim_xsum.txt");
+    
+    while(/*cond_b.good()*/getline(cond_b,line,'\n')){
+	
+	//getline(cond_b,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&lim_xsum[line_number][0],&lim_xsum[line_number][1]);
+					
+	line_number++;
+    }
+    
+    line_number = 0;
+    
+    format = "%f %f";
+
+     ifstream cond_c("Configuration_Files/FRS_Window_Conditions/lim_ysum.txt");
+    
+    while(/*cond_c.good()*/getline(cond_c,line,'\n')){
+	
+	//getline(cond_c,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&lim_ysum[line_number][0],&lim_ysum[line_number][1]);
+					
+	line_number++;
+    }
+    
+    /*lim_xsum = {	{1,8000},  // MW11
+				{1,8000},  // MW21
+				{1,8000},  // MW22
+   				{1,8000},  // MW31
+   				{1,8000},  // MW41
+   				{1,8000},  // MW42
+   				{1,8000},  // MW51
+  				{1,8000},  // MW61
+  				{1,8000},  // MW71
+  				{1,8000},  // MW81
+  				{1,8000},  // MW82
+  				{1,8000},  // MWB1
+  				{1,8000}};  // MWB2
+
+    lim_ysum = { {2,8000},  // MW11
+				{2,8000},  // MW21
+  				{2,8000},  // MW22
+  				{2,8000},  // MW31
+  				{2,8000},  // MW41
+ 				{2,8000},  // MW42
+ 				{2,8000},  // MW51
+ 				{2,8000},  // MW61
+ 				{2,8000},  // MW71
+ 				{2,8000},  // MW81
+ 				{2,8000},  // MW82
+ 				{2,8000},  // MWB1
+ 				{2,8000}};  // MWB2*/
+				
+    
+    
+    /*for(int i=0;i<7;i++){
+	
+	//    cTPC_CSUM[i][0]=MakeWindowCond("TPC/CSUM1",condname,lim_csum1[i][0],
+	//				   lim_csum1[i][1],"CSUM1");
+	char condname[40];
+	
+	sprintf(condname,"TPC/CSUM1%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][0]=MakeWinCond(condname,lim_csum1[i][0],lim_csum1[i][1],"CSUM1");
+	
+	sprintf(condname,"CSUM2%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][1]=MakeWindowCond("TPC/CSUM2",condname,lim_csum2[i][0],lim_csum2[i][1],"CSUM2");
+	
+	sprintf(condname,"CSUM3%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][2]=MakeWindowCond("TPC/CSUM3",condname,lim_csum3[i][0],lim_csum3[i][1],"CSUM3");
+	
+	sprintf(condname,"CSUM4%s",tpc_name_ext1[i]);
+	cTPC_CSUM[i][3]=MakeWindowCond("TPC/CSUM4",condname,lim_csum4[i][0],lim_csum4[i][1],"CSUM4");
+    }
+    
+      for(int i=0;i<13;i++){  // up to MW31
+       //up to MWB2 (09.07.2018)
+
+      char condname[40];
+      sprintf(condname,"XSUM%s",mw_name_ext[i]);
+      cMW_XSUM[i] = MakeWindowCond("MW/XSUM", condname, lim_xsum[i][0], lim_xsum[i][1], MW_XSUM);
+
+      sprintf(condname,"YSUM%s",mw_name_ext[i]);
+      cMW_YSUM[i] = MakeWindowCond("MW/YSUM", condname, lim_ysum[i][0], lim_ysum[i][1], MW_YSUM);
+    }*/
+    
+    /*** MUSIC Conditions ***/
+    
+    cMusic1_E = new Float_t*[8];
+    cMusic1_T = new Float_t*[8];
+    cMusic2_E = new Float_t*[8];
+    cMusic2_T = new Float_t*[8];
+    cMusic3_T = new Float_t*[4];
+    cMusic3_E = new Float_t*[4];
+
+    cMusic3_dec = new Float_t[2];
+    
+    for(int i = 0; i < 8; ++i){
+	
+	
+	cMusic1_E[i] = new Float_t[2];
+	cMusic1_T[i] = new Float_t[2];
+	cMusic2_E[i] = new Float_t[2];
+	cMusic2_T[i] = new Float_t[2];
+
+	if(i < 4){
+	    cMusic3_E[i] = new Float_t[2];
+	    cMusic3_T[i] = new Float_t[2];
+	}
+	
+    }
+    
+    
+    line_number = 0;
+    
+    format = "%f %f %f %f";
+
+     ifstream cond_d("Configuration_Files/FRS_Window_Conditions/MUSIC1.txt");
+    
+    while(/*cond_d.good()*/getline(cond_d,line,'\n')){
+	
+	//getline(cond_d,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cMusic1_E[line_number][0],&cMusic1_E[line_number][1],&cMusic1_T[line_number][0],&cMusic1_T[line_number][1]);
+					
+	line_number++;
+    }
+
+    line_number = 0;
+    
+    format = "%f %f %f %f";
+
+     ifstream cond_e("Configuration_Files/FRS_Window_Conditions/MUSIC2.txt");
+    
+    while(/*cond_e.good()*/getline(cond_e,line,'\n')){
+	
+	//getline(cond_e,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cMusic2_E[line_number][0],&cMusic2_E[line_number][1],&cMusic2_T[line_number][0],&cMusic2_T[line_number][1]);
+					
+	line_number++;
+    }
+
+    line_number = 0;
+    
+    format = "%f %f %f %f";
+
+     ifstream cond_f("Configuration_Files/FRS_Window_Conditions/MUSIC3.txt");
+    
+    while(/*cond_f.good()*/getline(cond_f,line,'\n')){
+	
+	//getline(cond_f,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cMusic3_E[line_number][0],&cMusic3_E[line_number][1],&cMusic3_T[line_number][0],&cMusic3_T[line_number][1]);
+					
+	line_number++;
+    }
+
+    
+    line_number = 0;
+    
+    format = "%f %f";
+
+     ifstream cond_g("Configuration_Files/FRS_Window_Conditions/MUSIC_dEc3.txt");
+    
+    while(/*cond_g.good()*/getline(cond_g,line,'\n')){
+	
+	//getline(cond_g,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cMusic3_dec[0],&cMusic3_dec[1]);
+    }
+
+    /***SCINTILATOR Condtions***/
+    
+    cSCI_L = new Float_t[2];
+    cSCI_R = new Float_t[2];
+    cSCI_E = new Float_t[2];
+    cSCI_Tx = new Float_t[2];
+    cSCI_X = new Float_t[2];
+    
+    
+    line_number = 0;
+    
+    format = "%f %f";
+
+     ifstream cond_h("Configuration_Files/FRS_Window_Conditions/SCI_Cons.txt");
+    
+    while(/*cond_h.good()*/getline(cond_h,line,'\n')){
+	
+	//getline(cond_h,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cSCI_L[0],&cSCI_L[1]);
+	    
+	getline(cond_h,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_R[0],&cSCI_R[1]);
+	    
+	getline(cond_h,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_E[0],&cSCI_E[1]);
+	    
+	getline(cond_h,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_Tx[0],&cSCI_Tx[1]);
+	    
+	getline(cond_h,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_X[0],&cSCI_X[1]);
+	    
+    }
+    
+    cSCI_LL2 = new Float_t[2];
+    cSCI_RR2 = new Float_t[2];
+    cSCI_LL3 = new Float_t[2];
+    cSCI_RR3 = new Float_t[2];
+    cSCI_LL4 = new Float_t[2];
+    cSCI_RR4 = new Float_t[2];
+    
+    format = "%f %f";
+
+    ifstream cond_i("Configuration_Files/FRS_Window_Conditions/SCI_LLRR.txt");
+
+    while(/*cond_i.good()*/getline(cond_i,line,'\n')){
+	
+	
+	//getline(cond_i,line,'\n');
+	if(line[0] == '#') continue;	
+	    sscanf(line.c_str(),format,&cSCI_LL2[0],&cSCI_LL2[1]);
+	getline(cond_i,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_RR2[0],&cSCI_RR2[1]);
+	    
+	getline(cond_i,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_LL3[0],&cSCI_LL3[1]);
+	    
+	getline(cond_i,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_RR3[0],&cSCI_RR3[1]);
+	    
+	    
+	getline(cond_i,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_LL4[0],&cSCI_LL4[1]);
+	    
+	getline(cond_i,line,'\n');
+	    sscanf(line.c_str(),format,&cSCI_RR4[0],&cSCI_RR4[1]);
+	    
+    }
+    
+    cSCI_detof = new Float_t*[5];
+    
+    for(int i = 0; i < 5; ++i){
+	
+	cSCI_detof[i] = new Float_t[2];
+	
+    }
+    
+    line_number = 0;
+    
+    format = "%f %f";
+
+     ifstream cond_j("Configuration_Files/FRS_Window_Conditions/SCI_dEToF.txt");
+    
+    while(/*cond_j.good()*/getline(cond_j,line,'\n')){
+	
+	//getline(cond_j,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cSCI_detof[line_number][0],&cSCI_detof[line_number][1]);
+					
+	line_number++;
+    }
+
+    /***ID Condtions***/
+    
+    cID_x2 = new Float_t[2];
+    cID_x4 = new Float_t[2];
+    cID_Z_Z = new Float_t[2];
+    
+    format = "%f %f";
+
+     ifstream cond_k("Configuration_Files/FRS_Window_Conditions/ID_x2.txt");
+
+
+    while(/*cond_k.good()*/getline(cond_k,line,'\n')){
+	
+	//getline(cond_k,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cID_x2[0],&cID_x2[1]);
+	    
+    }
+    
+     ifstream cond_l("Configuration_Files/FRS_Window_Conditions/ID_x4.txt");
+
+    while(/*cond_l.good()*/getline(cond_l,line,'\n')){
+	
+	//getline(cond_l,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cID_x4[0],&cID_x4[1]);
+	    
+    }
+    
+     ifstream cond_m("Configuration_Files/FRS_Window_Conditions/ID_Z_Z.txt");
+
+    while(/*cond_m.good()*/getline(cond_m,line,'\n')){
+	
+	//getline(cond_m,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cID_Z_Z[0],&cID_Z_Z[1]);
+	    
+    }
+    
+    
+    cID_x4AoQ_Z = new Float_t*[5];
+    
+    for(int i = 0; i < 5; ++i){
+	
+	cID_x4AoQ_Z[i] = new Float_t[2];
+	
+    }
+    
+    
+    line_number = 0;
+
+     ifstream cond_n("Configuration_Files/FRS_Window_Conditions/ID_Z_Z.txt");
+
+    while(/*cond_n.good()*/getline(cond_n,line,'\n')){
+	
+	//getline(cond_n,line,'\n');
+	if(line[0] == '#') continue;
+	    sscanf(line.c_str(),format,&cID_x4AoQ_Z[line_number][0],&cID_x4AoQ_Z[line_number][1]);
+	    
+	line_number++;
+
+    }
+    
+    cID_x2AoQ = new Float_t**[6];
+    cID_Z_AoQ = new Float_t**[5];
+    
+    for(int i = 0; i < 6; ++i){
+	
+	cID_x2AoQ[i] = new Float_t*[6];
+	if (i < 5) cID_Z_AoQ[i] = new Float_t*[6];
+	
+	    for(int j = 0; j < 6; ++j){
+		
+		cID_x2AoQ[i][j] = new Float_t[2];
+		if (i < 5) cID_Z_AoQ[i][j] = new Float_t[2];
+		
+	    }
+	
+    }
+    
+    line_number = 0;
+    int selection_number = 0;
+
+     ifstream cond_o("Configuration_Files/FRS_Window_Conditions/ID_x2AoQ.txt");
+
+    while(/*cond_o.good()*/getline(cond_o,line,'\n')){
+	
+	//getline(cond_o,line,'\n');
+	if(line[0] == '#') continue;
+	if(line[0] == '&'){
+	    selection_number++;
+	    line_number = 0;
+	    continue;
+	}
+	
+	    sscanf(line.c_str(),format,&cID_x2AoQ[selection_number][line_number][0],&cID_x2AoQ[selection_number][line_number][1]);
+	    
+	line_number++;
+
+    }
+    
+    
+    line_number = 0;
+    selection_number = 0;
+
+     ifstream cond_p("Configuration_Files/FRS_Window_Conditions/ID_Z_AoQ.txt");
+
+    while(/*cond_p.good()*/getline(cond_p,line,'\n')){
+	
+	//getline(cond_p,line,'\n');
+	if(line[0] == '#') continue;
+	if(line[0] == '&'){
+	    selection_number++;
+	    line_number = 0;
+	    continue;
+	}
+	    sscanf(line.c_str(),format,&cID_Z_AoQ[selection_number][line_number][0],&cID_Z_AoQ[selection_number][line_number][1]);
+	    
+	line_number++;
+
+    }
+    
+    cID_dEToF = new Float_t*[5];
+
+    for(int i = 0; i < 5; ++i){
+	
+	cID_dEToF[i] = new Float_t[2];
+	
+    }
+    line_number = 0;
+    selection_number = 0;
+
+     ifstream cond_q("Configuration_Files/FRS_Window_Conditions/ID_dEToF.txt");
+
+    while(/*cond_q.good()*/getline(cond_q,line,'\n')){
+	
+	//getline(cond_p,line,'\n');
+	if(line[0] == '#') continue;
+
+	    sscanf(line.c_str(),format,&cID_dEToF[line_number][0],&cID_dEToF[line_number][1]);
+	    
+	line_number++;
+
+    }
+    
+    
+    /*for(int i=0;i<8;i++){
+	
+       sprintf(name,"Music1_E(%f)",i);
+       cMusic1_E[i] = MakeWindowCond("MUSIC/MUSIC(1)/E",name, 10, 4086, "hMUSIC1_E");
+
+        sprintf(name,"Music1_T(%d)",i);
+       cMusic1_T[i] = MakeWindowCond("MUSIC/MUSIC(1)/T",name, 10, 4086,"hMUSIC1_T");
+
+       sprintf(name,"Music2_E(%d)",i);
+       cMusic2_E[i] = MakeWindowCond("MUSIC/MUSIC(2)/E",name, 10, 4086, "hMUSIC2_E");
+
+       sprintf(name,"Music2_T(%d)",i);
+       cMusic2_T[i] = MakeWindowCond("MUSIC/MUSIC(2)/T",name, 10, 4086, "hMUSIC2_T");
+     }
+
+   for(int i=0;i<4;i++){
+       
+       sprintf(name,"Music3_E(%d)",i);
+       cMusic3_E[i] = MakeWindowCond("MUSIC/MUSIC(3)/E",name, 10, 4086, "hMUSIC3_E");
+
+       sprintf(name,"Music3_T(%d)",i);
+       cMusic3_T[i] = MakeWindowCond("MUSIC/MUSIC(3)/T",name, 10, 4086, "hMUSIC3_T");
+    }
    
-  TXRSParameter* frs = dynamic_cast<TXRSParameter*> (an->GetParameter("FRSPar"));
-  if (frs==0) {
-    cout << "!!!  Parameter FRSPar not found" << endl;
-  }
-
-  TMWParameter* mw = dynamic_cast<TMWParameter*> (an->GetParameter("MWPar"));
-  if (mw==0) {
-    cout << "!!!  Parameter MWPar not found" << endl;
-  }
-
-  TMUSICParameter* music = dynamic_cast<TMUSICParameter*> (an->GetParameter("MUSICPar"));
-  if (music==0) {
-    cout << "!!!  Parameter MUSICPar not found" << endl;
-  }
-
-  TSCIParameter* sci = dynamic_cast<TSCIParameter*> (an->GetParameter("SCIPar"));
-  if (sci==0) {
-    cout << "!!!  Parameter SCIPar not found" << endl;
-  }
-
-  TIDParameter* id = dynamic_cast<TIDParameter*> (an->GetParameter("IDPar"));
-  if (id==0) {
-    cout << "!!!  Parameter IDPar not found" << endl;
-  }
    
-  TTPCParameter* tpc = dynamic_cast<TTPCParameter*> (an->GetParameter("TPCPar"));
-  if (tpc==0) {
-    cout << "!!!  Parameter TPCPar not found" << endl;
-  }
-
-  TSIParameter* si = dynamic_cast<TSIParameter*> (an->GetParameter("SIPar"));
-  if (si==0) {
-    cout << "!!!  Parameter SIPar not found" << endl;
-  }
-
-  TMRTOFMSParameter* mrtof = dynamic_cast<TMRTOFMSParameter*> (an->GetParameter("MRTOFMSPar"));
-  if (mrtof==0) {
-    cout << "!!!  Parameter MR-TOF-MSPar not found" << endl;
-  }
-  
-  TModParameter* ElecMod = dynamic_cast<TModParameter*>(an->GetParameter("ModPar"));
-   
-  cout << endl << "setup script started" << endl;
-   
-
-  // setup part 
-  an->SetupH2("ID_x4AoQ", 500, 1.3, 2.8, 200, -100, +100, "A/Q", "X4 [mm]");     
-  an->SetupH2("ID_Z_AoQ", 600, 1.3, 2.8,600 , 0, 20, "A/Q", "Z"); 
-  an->SetupH2("ID_Z_AoQ_corr", 500, 1.3, 2.8, 600, 0, 20, "A/Q (a2 corr)", "Z"); 
-  an->SetupH2("ID_x4z", 450, 0., 20.0, 500, -100, 100, "Z", "X4 [mm]"); */
-
-  //      ID_dEToF
-  // Float_t my_cID_Z_AoQ_points[5][2] =
-  // // s411_57 133I
-  // //	{{ 2.5184., 55.8700},
-  // //	{ 2.5184., 57.1700},
-  // //	{ 2.5305., 57.1700},
-  // //	{ 2.5305., 55.7700},
-  // //	{ 2.5184., 55.8700}};
-  // // s411_57 133Te
-  // //	{{ 2.5461., 56.2410},
-  // //	{ 2.5461., 55.3040},
-  // //	{ 2.5612., 55.3040},
-  // //	{ 2.5612., 56.2410},
-  // //	{ 2.5461., 56.2410}};
-  // // s411_ 213Fr
-  //   {{ 2.45205, 86.7875},
-  //    { 2.46124, 86.7458},
-  //    { 2.46202, 88.1625},
-  //    { 2.4496, 88.1417},
-  //    { 2.45205, 86.7875}};
-  // an->SetupPolyCond("cID_Z_AoQ(0)", 5, my_cID_Z_AoQ_points);
+    cMusic3_dec = MakeWindowCond("MUSIC/MUSIC 3","Music3_dec", 10., 4000., "hMUSIC3_dECOR");*/
+    
+    
+    
+    
+    
+}
 
 
-  /*Float_t my_cID_dEToF_points[4][2] = 
-    {{    0.,    0.},
-     {    0., 4000.},
-     {40000., 4000.},
-     {40000.,    0.}}; */
-  //an->SetupPolyCond("cID_dEToF", 4, my_cID_dEToF_points);
-   
+void FRS_Detector_System::read_config_variables(string config_filename){
+    
+    ifstream file(config_filename);
 
-  // /* 20Mg */
-  // Float_t my_20mg_points[6][2]=
-  //   {{1.665,        13.1000},
-  //    {1.705,        12.9500},
-  //    {1.705,        12.2500},
-  //    {1.665,        12.1000},
-  //    {1.624,        12.2500},
-  //    {1.624,        12.9500}};
+    if(file.fail()){
+        cerr << "Could not find File for setup parameters!" << endl;
+        exit(0);
+    }
 
-  //an->SetupPolyCond("cID_Z_AoQ(3)", 6, my_20mg_points);
+    string line;
+
+    for (int i = 0; i < 8; ++i) file.ignore(256,':');
+    
+    file.ignore(256,':');
+    file >> setup_directory_name;//dummy_var;
+
+    file.ignore(256,':');
+    file >> FRS_File_Setup;//dummy_var;   
+    
+        
+};
+
+void FRS_Detector_System::read_setup_variables_from_file(){
+    
+    setup_directory_name = "./Configuration_Files/FRS_Setups/" + setup_directory_name;
+    
+    int n = setup_directory_name.length(); 
+    
+    char char_setup_directory_name[n+1]; 
+    
+    strcpy(char_setup_directory_name, setup_directory_name.c_str()); 
+    
+    if (mkdir(char_setup_directory_name, 0777)!=-1){
+	
+	cout<<endl;
+	cout<<"Directory : '"<<setup_directory_name<<"'    Does not exist"<<endl;
+	cout<<"Variables cannot be read from non-existent file"<<endl;
+	cout<<endl;
+	cout<<"You may need to change the 'FRS_Setup_Name' variable in ./Configuration_Files/Detector_System_Setup_File.txt"<<endl;
+	cout<<endl;
+	exit(0);
+	
+    }
+    
+           
+    string setup_filename = setup_directory_name + "/FRS.txt";
+    ifstream frs_f(setup_filename);
+    
+    setup_filename = setup_directory_name + "/MW.txt";
+    ifstream mw_f(setup_filename);
+    
+    setup_filename = setup_directory_name + "/MUSIC.txt";
+    ifstream music_f(setup_filename);
+    
+    setup_filename = setup_directory_name + "/TPC.txt";
+    ifstream tpc_f(setup_filename);
+    
+    setup_filename = setup_directory_name + "/SCI.txt";
+    ifstream sci_f(setup_filename);
+    
+    setup_filename = setup_directory_name + "/ID.txt";
+    ifstream id_f(setup_filename);
+    
+    setup_filename = setup_directory_name + "/SI.txt";
+    ifstream si_f(setup_filename);
+    
+    setup_filename = setup_directory_name + "/ElecMod.txt";
+    ifstream ElecMod_f(setup_filename);
+    
+    setup_filename = setup_directory_name + "/MRToF.txt";
+    ifstream mrtof_f(setup_filename);
+    
+    /*** FRS Parameters ***/
+    
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_focS2;
+
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_MW21;
+        
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_MW22;
+    
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_SC21;
+    
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_focS4;
+    
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_MUSIC1;
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_MUSIC2;
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_MUSIC3;
+    
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_MUSICa1;
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_MUSICa2;
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_MUSICa3;
+    frs_f.ignore(256,':');
+    frs_f >> frs->dist_MUSICa4;
+    
+    // Magnetic Field Values
+    
+    for(int i = 0; i < 4; ++i){
+	
+	frs_f.ignore(256,':');
+	frs_f >> frs->bfield[i];
+	
+    }
+    
+    // Dispersion
+    frs_f.ignore(256,':');
+    frs_f >> frs->dispersion[0];
+    frs_f.ignore(256,':');
+    frs_f >> frs->dispersion[1];
+    
+    // Magnification
+    frs_f.ignore(256,':');
+    frs_f >> frs->magnification[1];
+        
+    // Rho 0 Values
+    frs_f.ignore(256,':');
+    frs_f >> frs->rho0[0];
+    frs_f.ignore(256,':');
+    frs_f >> frs->rho0[1];
+    
+    // Z Offsets
+    frs_f.ignore(256,':');
+    frs_f >> frs->primary_z;
+    frs_f.ignore(256,':');
+    frs_f >> frs->offset_z;
+    frs_f.ignore(256,':');
+    frs_f >> frs->offset_z2;
+    frs_f.ignore(256,':');
+    frs_f >> frs->offset_z3;
+    
+    // AoQ Corr
+    frs_f.ignore(256,':');
+    frs_f >> frs->a2AoQCorr;
+    frs_f.ignore(256,':');
+    frs_f >> frs->a4AoQCorr;
+    
+    
+    /*** MWPC Parameters ***/
+    
+
+    // MWPC X Factors
+    
+    for(int i = 0; i < 11; ++i){
+	
+	mw_f.ignore(256,':');
+	mw_f >> mw->x_factor[i];
+    
+    }
+    
+    // MWPC X Offsets
+    
+    for(int i = 0; i < 11; ++i){
+	
+	mw_f.ignore(256,':');
+	mw_f >> mw->x_offset[i];
+    
+    }
+    
+    // MWPC Y Factors
+    
+    for(int i = 0; i < 11; ++i){
+	
+	mw_f.ignore(256,':');
+	mw_f >> mw->y_factor[i];
+    
+    }
+    
+    // MWPC Y Offsets
+    
+    for(int i = 0; i < 11; ++i){
+	
+	mw_f.ignore(256,':');
+	mw_f >> mw->y_offset[i];
+    
+    }
+    
+    // MWPC TDC Gains
+    
+    for(int i = 0; i < 13; ++i){
+    
+	for(int j = 0; j < 5; ++j){
+	    
+	    mw_f.ignore(256,':');
+	    mw_f >> mw->gain_tdc[j][i];
+    
+	}
+    }
+    
+    
+    /*** MUSIC Parameters ***/
+
+    // MUSIC41 Offsets
+    
+    for(int i = 0; i < 8; ++i){
+	
+	music_f.ignore(256,':');
+	music_f >> music->e1_off[i];
+	
+    }
+    
+    // MUSIC41 Gains
+    
+    for(int i = 0; i < 8; ++i){
+	
+	music_f.ignore(256,':');
+	music_f >> music->e1_gain[i];
+	
+    }
+    
+    // MUSIC42 Offsets
+    
+    for(int i = 0; i < 8; ++i){
+	
+	music_f.ignore(256,':');
+	music_f >> music->e2_off[i];
+	
+    }
+    
+    // MUSIC42 Gains
+    
+    for(int i = 0; i < 8; ++i){
+	
+	music_f.ignore(256,':');
+	music_f >> music->e2_gain[i];
+	
+    }
+    
+    // MUSIC43 Offsets
+    
+    for(int i = 0; i < 4; ++i){
+	
+	music_f.ignore(256,':');
+	music_f >> music->e3_off[i];
+	
+    }
+    
+    // MUSIC43 Gains
+    
+    for(int i = 0; i < 4; ++i){
+	
+	music_f.ignore(256,':');
+	music_f >> music->e3_gain[i];
+	
+    }
+    
+    // MUSIC Position Correction
+    
+    for(int i = 0; i < 7; ++i){
+	
+	music_f.ignore(256,':');
+	music_f >> music->pos_a1[i];
+	
+    }
 
 
-  // setup FRS parameter
+    /*** TPC Parameters ***/
+    
+    for(int i = 0; i < 7; ++i){
+	
+	// Factors
+	
+	for(int j = 0; j < 2; ++j){
+	    
+	    tpc_f.ignore(256,':');
+	    tpc_f >> tpc->x_factor[i][j];
+    
+	}
+	for(int j = 0; j < 2; ++j){
+	    
+	    tpc_f.ignore(256,':');
+	    tpc_f >> tpc->y_factor[i][j];
+    
+	}
+	
+	// Offsets
+	
+	for(int j = 0; j < 2; ++j){
+	    
+	    tpc_f.ignore(256,':');
+	    tpc_f >> tpc->x_offset[i][j];
+    
+	}
+	for(int j = 0; j < 2; ++j){
+	    
+	    tpc_f.ignore(256,':');
+	    tpc_f >> tpc->y_offset[i][j];
+    
+	}
+    }   
+    
+    /*** SCI Parameters ***/
+        
+    // Index 2 for Sc21
+    
+    for(int i = 0; i < 7; ++i){
+	
+	sci_f.ignore(256,':');
+	sci_f >> sci->x_a[i][2];
+	
+    }
+    
+    // Index 5 for Sc41
+    
+    for(int i = 0; i < 7; ++i){
+	
+	sci_f.ignore(256,':');
+	sci_f >> sci->x_a[i][5];
+	
+    }
+    
+    // Index 6 for Sc42
+    
+    for(int i = 0; i < 7; ++i){
+	
+	sci_f.ignore(256,':');
+	sci_f >> sci->x_a[i][6];
+	
+    }
+    
+    // Index 7 for Sc43
+    
+    for(int i = 0; i < 7; ++i){
+	
+	sci_f.ignore(256,':');
+	sci_f >> sci->x_a[i][7];
+	
+    }
+    // Index 10 for Sc81
+    
+    for(int i = 0; i < 7; ++i){
+	
+	sci_f.ignore(256,':');
+	sci_f >> sci->x_a[i][10];
+	
+    }
+    
+    
+    // Time of Flight Offsets
+    
+    for(int i = 0; i < 11; ++i){
+	
+	sci_f.ignore(256,':');
+	sci_f >> sci->tac_off[i];
+	
+    }
+    
+    // Time of Flight Factors
+    
+    for(int i = 0; i < 11; ++i){
+	
+	sci_f.ignore(256,':');
+	sci_f >> sci->tac_factor[i];
+	
+    }
+    
+    
+    // Time of Flight Factors not for online
+    
+    sci_f.ignore(256,':');
+    sci_f >> sci->tof_bll2;
+    sci_f.ignore(256,':');
+    sci_f >> sci->tof_brr2;
+    sci_f.ignore(256,':');
+    sci_f >> sci->tof_bll3;
+    sci_f.ignore(256,':');
+    sci_f >> sci->tof_brr3;
+    sci_f.ignore(256,':');
+    sci_f >> sci->tof_bll4;
+    sci_f.ignore(256,':');
+    sci_f >> sci->tof_brr4;
+    
+    // Time of Flight Offsets
+    
+    sci_f.ignore(256,':');
+    sci_f >> sci->tof_a2;
+    sci_f.ignore(256,':');
+    sci_f >> sci->tof_a3;
+    sci_f.ignore(256,':');
+    sci_f >> sci->tof_a4;    
+    
+    
+    
+    /*** ID Parameters ***/
+    
+    // ID ToF Paths and Offsets
+    
+    id_f.ignore(256,':');
+    id_f >> id->id_tofoff2; 
+    id_f.ignore(256,':');
+    id_f >> id->id_path2; 
+    id_f.ignore(256,':');
+    id_f >> id->id_tofoff3; 
+    id_f.ignore(256,':');
+    id_f >> id->id_path3; 
+    id_f.ignore(256,':');
+    id_f >> id->id_tofoff4; 
+    id_f.ignore(256,':');
+    id_f >> id->id_path4; 
+    
+    // ID Z and A over Q
+    
+    for(int i = 0; i < 5; ++i){
+	
+	id_f.ignore(256,':');
+	id_f >> id->ID_Z_AoverQ_num[i]; 
+	
+    }
+    
+    for(int i = 0; i < 5; ++i){
+	
+	for(int k = 0; k < 2; ++k){
+	    
+	    for(int j = 0; j < 4; ++j){
+		
+		id_f.ignore(256,':');
+		id_f >> id->ID_Z_AoverQ[i][j][k]; 
+		
+	    }
+	}
+    }
+    
+    // ID A over Q (X2)
+    
+    for(int i = 0; i < 6; ++i){
+	
+	id_f.ignore(256,':');
+	id_f >> id->ID_x2AoverQ_num[i]; 
+	
+    }
+    
+    for(int i = 0; i < 6; ++i){
+	
+	for(int k = 0; k < 2; ++k){
+	    
+	    for(int j = 0; j < 4; ++j){
+		
+		id_f.ignore(256,':');
+		id_f >> id->ID_x2AoverQ[i][j][k]; 
+		
+	    }
+	}
+    }
+    // MUSIC 1 Velocity Correction
+    
+    for(int i = 0; i < 4; ++i){
+    
+	id_f.ignore(256,':');
+	id_f >> id->vel_a[i]; 
 
+    }
+    
+    // MUSIC 2 Velocity Correction
+    
+    for(int i = 0; i < 4; ++i){
+    
+	id_f.ignore(256,':');
+	id_f >> id->vel_a2[i]; 
+    
+    }
+    
+    // MUSIC 3 Velocity Correction
+    
+    for(int i = 0; i < 4; ++i){
+    
+	id_f.ignore(256,':');
+	id_f >> id->vel_a3[i];
+    
+    }
+    
+    // Gate on Z
+    
+    id_f.ignore(256,':');
+    id_f >> id->zgate_low; 
+    id_f.ignore(256,':');
+    id_f >> id->zgate_high; 
+
+    
+    /*** SI Parameters ***/
+
+    // Silicon Parameters
+    
+    si_f.ignore(256,':');
+    si_f >> si->si_factor1; 
+    si_f.ignore(256,':');
+    si_f >> si->si_offset1; 
+    
+    si_f.ignore(256,':');
+    si_f >> si->si_factor2; 
+    si_f.ignore(256,':');
+    si_f >> si->si_offset2; 
+    
+    si_f.ignore(256,':');
+    si_f >> si->si_factor3; 
+    si_f.ignore(256,':');
+    si_f >> si->si_offset3; 
+    
+    si_f.ignore(256,':');
+    si_f >> si->si_factor4; 
+    si_f.ignore(256,':');
+    si_f >> si->si_offset4; 
+    
+    
+    // Silicon DSSD Factors
+    for(int i = 0; i < 32; ++i){
+	
+	si_f.ignore(256,':');
+	si_f >> si->dssd_factor[i]; 
+	
+    }
+    
+    // Silicon DSSD Offsets
+    for(int i = 0; i < 32; ++i){
+	
+	si_f.ignore(256,':');
+	si_f >> si->dssd_offset[i]; 
+	
+    }
+    
+    /*** MRToF Parameters ***/
+    
+    mrtof_f.ignore(256,':');
+    mrtof_f >> mrtof->MRTOFMS_a; 
+    mrtof_f.ignore(256,':');
+    mrtof_f >> mrtof->MRTOFMS_b; 
+    mrtof_f.ignore(256,':');
+    mrtof_f >> mrtof->MRTOFMS_t0; 
+    mrtof_f.ignore(256,':');
+    mrtof_f >> mrtof->MRTOFMS_TXRS; 
+
+    /*** ElecMod Parameters ***/
+    
+    ElecMod->Nb_Modules = 64;
+    ElecMod->Nb_QDC = 3;
+    ElecMod->Nb_ADC = 1;
+    ElecMod->Nb_TDC = 5;
+    ElecMod->Nb_Scaler = 2;
+    ElecMod->Nb_TimeStamp = 2;
+    
+    for(int i = 0;i<64;++i)
+    ElecMod->Nb_Channels.insert(std::pair<int,int>(i,32));
+    
+    
+    // Crate FRS procID 10
+    int IdMod = 0;
+    //std::unordered_map<int,int> CrateFRS;
+    std::map<int,int> CrateFRS;
+    CrateFRS.insert(std::pair<int,int>(1,IdMod++));
+    CrateFRS.insert(std::pair<int,int>(9,IdMod++));
+    CrateFRS.insert(std::pair<int,int>(8,IdMod++));
+    CrateFRS.insert(std::pair<int,int>(11,IdMod++));
+    CrateFRS.insert(std::pair<int,int>(12,IdMod++));
+    
+    //std::unordered_map<int,int> CrateTPC;
+    std::map<int,int> CrateTPC;
+    //CrateTPC.insert(std::pair<int,int>(5,IdMod++));
+    CrateTPC.insert(std::pair<int,int>(8,IdMod++));
+    CrateTPC.insert(std::pair<int,int>(9,IdMod++));
+    CrateTPC.insert(std::pair<int,int>(15,IdMod++));
+    CrateTPC.insert(std::pair<int,int>(3,IdMod++));
+    
+    //std::unordered_map<int,int> CrateUser;
+    std::map<int,int> CrateUser;
+    CrateUser.insert(std::pair<int,int>(0,IdMod++));
+    
+    std::map<int,int> CrateMT;
+    CrateMT.insert(std::pair<int,int>(0,IdMod++));
+    CrateMT.insert(std::pair<int,int>(2,IdMod++));
+    
+    std::map<int,int> CrateSOFIA; //added                                                                                                                                 
+    CrateSOFIA.insert(std::pair<int,int>(0,IdMod++));
+    CrateSOFIA.insert(std::pair<int,int>(1,IdMod++));
+    CrateSOFIA.insert(std::pair<int,int>(2,IdMod++));
+    
+    
+    Map1* temp1 = new Map1("temp1");
+    Map1* temp2 = new Map1("temp2");
+    Map1* temp3 = new Map1("temp3");
+    Map1* temp4 = new Map1("temp4");
+    Map1* temp5 = new Map1("temp5");
+    temp1->map=CrateFRS;
+    temp2->map=CrateTPC;
+    temp3->map=CrateUser;
+    temp4->map=CrateMT;
+    temp5->map=CrateSOFIA;
+    
+    TObjString* key1 = new TObjString("10");
+    TObjString* key2 = new TObjString("20");
+    TObjString* key3 = new TObjString("30");
+    TObjString* key4 = new TObjString("40");
+    TObjString* key5 = new TObjString("50");
+    
+    ElecMod->Maptemp.Add(key1,temp1);
+    ElecMod->Maptemp.Add(key2,temp2);
+    ElecMod->Maptemp.Add(key3,temp3);
+    ElecMod->Maptemp.Add(key4,temp4);
+    ElecMod->Maptemp.Add(key5,temp5);
+    
+    // ElecMod->Maptemp.insert(std::pair<int,map<int,int> >(10,CrateFRS));
+    // ElecMod->MapCrates.insert(std::pair<int,std::unordered_map<int,int> >(20,CrateTPC));
+    // ElecMod->MapCrates.insert(std::pair<int,std::unordered_map<int,int> >(30,CrateUser));
+    
+    //ElecMod->MapCrates.insert(std::pair<int,std::map<int,int> >(10,CrateFRS));
+    //ElecMod->MapCrates.insert(std::pair<int,std::map<int,int> >(20,CrateTPC));
+    //ElecMod->MapCrates.insert(std::pair<int,std::map<int,int> >(30,CrateUser));
+    
+    
+    ElecMod->ModType.push_back("FRS_SC_1");
+    ElecMod->ModType.push_back("FRS_TDC_1");
+    ElecMod->ModType.push_back("FRS_TDC_2");
+    ElecMod->ModType.push_back("FRS_QDC_1");
+    ElecMod->ModType.push_back("FRS_ADC_1");
+    ElecMod->ModType.push_back("TPC_TDC_1");
+    ElecMod->ModType.push_back("TPC_TDC_2");
+    ElecMod->ModType.push_back("TPC_QDC_1");
+    ElecMod->ModType.push_back("TPC_QDC_2");
+    ElecMod->ModType.push_back("USER_MTDC_1");
+    ElecMod->ModType.push_back("MT_SC_1");
+    ElecMod->ModType.push_back("MT_MTDC_1");
+    ElecMod->ModType.push_back("SOFIA_VTX_1");
+    ElecMod->ModType.push_back("SOFIA_MDP_1");
+    ElecMod->ModType.push_back("SOFIA_MADC_1");
+    
+    
+    ElecMod->Scaler32bit=1;
+    //ElecMod->EventFlags.push_back(0x00000000);
+    ElecMod->EventFlags.push_back(0x00000100);
+    ElecMod->EventFlags.push_back(0x00000200);
+    ElecMod->EventFlags.push_back(0x00000300);
+    
+    // ElecMod->ModType.push_back("QDC_11");
+    // ElecMod->ModType.push_back("QDC_12");
+    // ElecMod->ModType.push_back("QDC_13");
+    // ElecMod->ModType.push_back("QDC_14");
+    // ElecMod->ModType.push_back("QDC_15");
+    // ElecMod->ModType.push_back("QDC_16");
+    // ElecMod->ModType.push_back("QDC_17");
+    // ElecMod->ModType.push_back("QDC_18");
+    
+    ElecMod->setMap();
+    
+    ElecMod->Print();
+    
+    cout << "Setup done " << endl;
+    
+
+
+        
+
+
+}
+
+
+void FRS_Detector_System::Setup_Parameters(){
+    
   //======
   //  MW
   //======
@@ -4462,721 +6253,5 @@ void FRS_Detector_System::Setup_Parameters(){
   // ElecMod->ModType.push_back("QDC_16");
   // ElecMod->ModType.push_back("QDC_17");
   // ElecMod->ModType.push_back("QDC_18");
-  
-  ElecMod->setMap();
 
-  ElecMod->Print();
-  
-  cout << "Setup done " << endl;
-
-
-
-
-}
-
-
-
-void FRS_Detector_System::get_Event_data(Raw_Event* RAW){
-	    
-    RAW->set_DATA_MUSIC(de, de_cor);
-    RAW->set_DATA_SCI(sci_l, sci_r, sci_e, sci_tx, sci_x);
-    RAW->set_DATA_SCI_dT(dt_21l_21r, dt_41l_41r, dt_21l_41l, dt_21r_41r, dt_42l_42r, dt_43l_43r,
-			    dt_42l_21l, dt_42r_21r, dt_81l_81r, dt_21l_81l, dt_21r_81r);
-    RAW->set_DATA_SCI_ToF(sci_tofll2, sci_tofll3, sci_tof2, sci_tofrr2, sci_tofrr3, sci_tof3);
-    RAW->set_DATA_ID_2_4(id_x2, id_y2, id_a2, id_b2, id_x4, id_y4, id_a4, id_b4);
-    RAW->set_DATA_ID_Beta_Rho(id_brho, id_rho, id_beta, id_beta3, id_gamma);
-    RAW->set_DATA_ID_Z_AoQ(id_AoQ, id_AoQ_corr, id_z, id_z2, id_z3);
-    RAW->set_DATA_ID_Timestamp(timestamp, ts, ts2);
-	
-}
-
-//---------------------------------------------------------------
-
-void FRS_Detector_System::Process_MBS(int* pdata){
-
-}
-
-int* FRS_Detector_System::get_pdata(){return pdata;}
-
-//---------------------------------------------------------------
-
-Float_t FRS_Detector_System::rand0_5(){
-    
-  return rand()*1./RAND_MAX;// - 0.5; 
-    
-}
-
-//---------------------------------------------------------------
-
-Int_t FRS_Detector_System::getbits(Int_t value, int nword, int start, int length){
-    
-  UInt_t buf = (UInt_t) value;
-  buf = buf >> ((nword-1)*16 + start - 1);
-  buf = buf & ((1 << length) - 1);
-  return buf;
-  
-}
-
-//---------------------------------------------------------------
-
-Int_t FRS_Detector_System::get2bits(Int_t value, int nword, int start, int length){
-    
-  UInt_t buf = (UInt_t) value;
-  buf = buf >> ((nword-1)*32 + start - 1);
-  buf = buf & ((1 << length) - 1);
-  return buf;
-  
-}
-
-//---------------------------------------------------------------
-Bool_t FRS_Detector_System::Check_WinCond(Float_t P, Float_t* V){
-    
-    if(P >= V[0] && P <= V[1]) return true;
-    else return false;
-
-}
-
-//---------------------------------------------------------------
-Bool_t FRS_Detector_System::Check_WinCond_Multi(Float_t P, Float_t** V, int cond_num){
-    
-    if(P >= V[cond_num][0] && P <= V[cond_num][1]) return true;
-    else return false;
-
-}
-
-//---------------------------------------------------------------
-Bool_t FRS_Detector_System::Check_WinCond_Multi_Multi(Float_t P, Float_t*** V, int cond_num, int cond_num_2){
-    
-    if(P >= V[cond_num][cond_num_2][0] && P <= V[cond_num][cond_num_2][1]) return true;
-    else return false;
-
-}
-
-//---------------------------------------------------------------
-
-// cn_PnPoly(): crossing number test for a point in a polygon
-//      Input:   P = a point,
-//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
-//      Return:  0 = outside, 1 = inside
-// This code is patterned after [Franklin, 2000]
-Bool_t FRS_Detector_System::Check_PolyCond(Float_t* P, Float_t** V, int n ){
-    int    cn = 0;    // the  crossing number counter
-
-    // loop through all edges of the polygon
-    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
-       if (((V[i][1] <= P[1]) && (V[i+1][1] > P[1]))     // an upward crossing
-        || ((V[i][1] > P[1]) && (V[i+1][1] <=  P[1]))) { // a downward crossing
-            // compute  the actual edge-ray intersect x-coordinate
-            float vt = (float)(P[1]  - V[i][1]) / (V[i+1][1] - V[i][1]);
-            if (P[0] <  V[i][0] + vt * (V[i+1][0] - V[i][0])) // P.x < intersect
-                 ++cn;   // a valid crossing of y=P.y right of P.x
-        }
-    }
-    
-    if((cn&1) == 0) return false;
-    if((cn&1) == 1) return true;
-    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
-
-}
-
-//---------------------------------------------------------------
-
-// cn_PnPoly(): crossing number test for a point in a polygon
-//      Input:   P = a point,
-//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
-//      Return:  0 = outside, 1 = inside
-// This code is patterned after [Franklin, 2000]
-Bool_t FRS_Detector_System::Check_PolyCond_Multi(Float_t* P, Float_t*** V, int n, int cond_num )
-{
-    int    cn = 0;    // the  crossing number counter
-
-    // loop through all edges of the polygon
-    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
-       if (((V[cond_num][i][1] <= P[1]) && (V[cond_num][i+1][1] > P[1]))     // an upward crossing
-        || ((V[cond_num][i][1] > P[1]) && (V[cond_num][i+1][1] <=  P[1]))) { // a downward crossing
-            // compute  the actual edge-ray intersect x-coordinate
-            float vt = (float)(P[1]  - V[cond_num][i][1]) / (V[cond_num][i+1][1] - V[cond_num][i][1]);
-            if (P[0] <  V[cond_num][i][0] + vt * (V[cond_num][i+1][0] - V[cond_num][i][0])) // P.x < intersect
-                 ++cn;   // a valid crossing of y=P.y right of P.x
-        }
-    }
-    
-    if((cn&1) == 0) return false;
-    if((cn&1) == 1) return true;
-
-    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
-
-}
-//---------------------------------------------------------------
-
-// cn_PnPoly(): crossing number test for a point in a polygon
-//      Input:   P = a point,
-//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
-//      Return:  0 = outside, 1 = inside
-// This code is patterned after [Franklin, 2000]
-Bool_t FRS_Detector_System::Check_PolyCond_X_Y(Float_t X, Float_t Y, Float_t** V, int n ){
-    int    cn = 0;    // the  crossing number counter
-
-    // loop through all edges of the polygon
-    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
-       if (((V[i][1] <= Y) && (V[i+1][1] > Y))     // an upward crossing
-        || ((V[i][1] > Y) && (V[i+1][1] <=  Y))) { // a downward crossing
-            // compute  the actual edge-ray intersect x-coordinate
-            float vt = (float)(Y  - V[i][1]) / (V[i+1][1] - V[i][1]);
-            if (X <  V[i][0] + vt * (V[i+1][0] - V[i][0])) // P.x < intersect
-                 ++cn;   // a valid crossing of y=P.y right of P.x
-        }
-    }
-    
-    if((cn&1) == 0) return false;
-    if((cn&1) == 1) return true;
-    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
-
-}
-
-//---------------------------------------------------------------
-
-// cn_PnPoly(): crossing number test for a point in a polygon
-//      Input:   P = a point,
-//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
-//      Return:  0 = outside, 1 = inside
-// This code is patterned after [Franklin, 2000]
-Bool_t FRS_Detector_System::Check_PolyCond_Multi_X_Y(Float_t X, Float_t Y, Float_t*** V, int n, int cond_num )
-{
-    int    cn = 0;    // the  crossing number counter
-
-    // loop through all edges of the polygon
-    for (int i=0; i<n; i++) {    // edge from V[i]  to V[i+1]
-       if (((V[cond_num][i][1] <= Y) && (V[cond_num][i+1][1] > Y))     // an upward crossing
-        || ((V[cond_num][i][1] > Y) && (V[cond_num][i+1][1] <=  Y))) { // a downward crossing
-            // compute  the actual edge-ray intersect x-coordinate
-            float vt = (float)(Y  - V[cond_num][i][1]) / (V[cond_num][i+1][1] - V[cond_num][i][1]);
-            if (X <  V[cond_num][i][0] + vt * (V[cond_num][i+1][0] - V[cond_num][i][0])) // P.x < intersect
-                 ++cn;   // a valid crossing of y=P.y right of P.x
-        }
-    }
-    
-    if((cn&1) == 0) return false;
-    if((cn&1) == 1) return true;
-
-    //return (cn&1);    // 0 if even (out), and 1 if  odd (in)
-
-}
-
-//---------------------------------------------------------------
-
-void FRS_Detector_System::Setup_Conditions(){
-        
-    string line;
-    int line_number = 0;
-    
-    const char* format = "%f %f %f %f %f %f %f %f %f %f %f %f %f %f";
-
-    ifstream cond_a("Configuration_Files/FRS_Window_Conditions/lim_csum.txt");
-    
-    lim_csum = new Float_t**[4];
-    
-    for(int i = 0; i < 4; ++i){
-	
-	lim_csum[i] = new Float_t*[7];
-	
-	    for(int j = 0; j < 7; ++j){
-		
-		
-		lim_csum[i][j] = new Float_t[2];
-		
-	    }
-    }
-    
-    
-    while(/*cond_a.good()*/getline(cond_a,line,'\n')){
-	
-	//getline(cond_a,line,'\n');
-	if(line[0] == '#') continue;
-	
-
-	    sscanf(line.c_str(),format,&lim_csum[line_number][0][0],&lim_csum[line_number][0][1]
-					,&lim_csum[line_number][1][0],&lim_csum[line_number][1][1]
-					,&lim_csum[line_number][2][0],&lim_csum[line_number][2][1]
-					,&lim_csum[line_number][3][0],&lim_csum[line_number][3][1]
-					,&lim_csum[line_number][4][0],&lim_csum[line_number][4][1]
-					,&lim_csum[line_number][5][0],&lim_csum[line_number][5][1]
-					,&lim_csum[line_number][6][0],&lim_csum[line_number][6][1]);
-					
-	line_number++;
-	
-	
-    }
-    
-   /*lim_csum = {{{300,1800},{350,1800},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
-				 {{300,1800},{300,1800},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
-				 {{300,1800},{300,1840},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}},
-				 {{300,1800},{300,1810},{300,1800},{300,1700},{300,2000},{300,2000},{300,2000}}};
-	*/			 
-				 
-
-    
-    lim_xsum = new Float_t*[13];
-    lim_ysum = new Float_t*[13];
-    
-    for(int i = 0; i < 13; ++i){
-	
-	
-	lim_xsum[i] = new Float_t[2];
-	lim_ysum[i] = new Float_t[2];
-	
-	//lim_xsum[i][0] = 1;
-	//lim_xsum[i][1] = 8000;
-	//lim_ysum[i][0] = 2;
-	//lim_ysum[i][1] = 8000;
-	
-	
-    }
-    
-    line_number = 0;
-    
-    format = "%f %f";
-
-    ifstream cond_b("Configuration_Files/FRS_Window_Conditions/lim_xsum.txt");
-    
-    while(/*cond_b.good()*/getline(cond_b,line,'\n')){
-	
-	//getline(cond_b,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&lim_xsum[line_number][0],&lim_xsum[line_number][1]);
-					
-	line_number++;
-    }
-    
-    line_number = 0;
-    
-    format = "%f %f";
-
-     ifstream cond_c("Configuration_Files/FRS_Window_Conditions/lim_ysum.txt");
-    
-    while(/*cond_c.good()*/getline(cond_c,line,'\n')){
-	
-	//getline(cond_c,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&lim_ysum[line_number][0],&lim_ysum[line_number][1]);
-					
-	line_number++;
-    }
-    
-    /*lim_xsum = {	{1,8000},  // MW11
-				{1,8000},  // MW21
-				{1,8000},  // MW22
-   				{1,8000},  // MW31
-   				{1,8000},  // MW41
-   				{1,8000},  // MW42
-   				{1,8000},  // MW51
-  				{1,8000},  // MW61
-  				{1,8000},  // MW71
-  				{1,8000},  // MW81
-  				{1,8000},  // MW82
-  				{1,8000},  // MWB1
-  				{1,8000}};  // MWB2
-
-    lim_ysum = { {2,8000},  // MW11
-				{2,8000},  // MW21
-  				{2,8000},  // MW22
-  				{2,8000},  // MW31
-  				{2,8000},  // MW41
- 				{2,8000},  // MW42
- 				{2,8000},  // MW51
- 				{2,8000},  // MW61
- 				{2,8000},  // MW71
- 				{2,8000},  // MW81
- 				{2,8000},  // MW82
- 				{2,8000},  // MWB1
- 				{2,8000}};  // MWB2*/
-				
-    
-    
-    /*for(int i=0;i<7;i++){
-	
-	//    cTPC_CSUM[i][0]=MakeWindowCond("TPC/CSUM1",condname,lim_csum1[i][0],
-	//				   lim_csum1[i][1],"CSUM1");
-	char condname[40];
-	
-	sprintf(condname,"TPC/CSUM1%s",tpc_name_ext1[i]);
-	cTPC_CSUM[i][0]=MakeWinCond(condname,lim_csum1[i][0],lim_csum1[i][1],"CSUM1");
-	
-	sprintf(condname,"CSUM2%s",tpc_name_ext1[i]);
-	cTPC_CSUM[i][1]=MakeWindowCond("TPC/CSUM2",condname,lim_csum2[i][0],lim_csum2[i][1],"CSUM2");
-	
-	sprintf(condname,"CSUM3%s",tpc_name_ext1[i]);
-	cTPC_CSUM[i][2]=MakeWindowCond("TPC/CSUM3",condname,lim_csum3[i][0],lim_csum3[i][1],"CSUM3");
-	
-	sprintf(condname,"CSUM4%s",tpc_name_ext1[i]);
-	cTPC_CSUM[i][3]=MakeWindowCond("TPC/CSUM4",condname,lim_csum4[i][0],lim_csum4[i][1],"CSUM4");
-    }
-    
-      for(int i=0;i<13;i++){  // up to MW31
-       //up to MWB2 (09.07.2018)
-
-      char condname[40];
-      sprintf(condname,"XSUM%s",mw_name_ext[i]);
-      cMW_XSUM[i] = MakeWindowCond("MW/XSUM", condname, lim_xsum[i][0], lim_xsum[i][1], MW_XSUM);
-
-      sprintf(condname,"YSUM%s",mw_name_ext[i]);
-      cMW_YSUM[i] = MakeWindowCond("MW/YSUM", condname, lim_ysum[i][0], lim_ysum[i][1], MW_YSUM);
-    }*/
-    
-    /*** MUSIC Conditions ***/
-    
-    cMusic1_E = new Float_t*[8];
-    cMusic1_T = new Float_t*[8];
-    cMusic2_E = new Float_t*[8];
-    cMusic2_T = new Float_t*[8];
-    cMusic3_T = new Float_t*[4];
-    cMusic3_E = new Float_t*[4];
-
-    cMusic3_dec = new Float_t[2];
-    
-    for(int i = 0; i < 8; ++i){
-	
-	
-	cMusic1_E[i] = new Float_t[2];
-	cMusic1_T[i] = new Float_t[2];
-	cMusic2_E[i] = new Float_t[2];
-	cMusic2_T[i] = new Float_t[2];
-
-	if(i < 4){
-	    cMusic3_E[i] = new Float_t[2];
-	    cMusic3_T[i] = new Float_t[2];
-	}
-	
-    }
-    
-    
-    line_number = 0;
-    
-    format = "%f %f %f %f";
-
-     ifstream cond_d("Configuration_Files/FRS_Window_Conditions/MUSIC1.txt");
-    
-    while(/*cond_d.good()*/getline(cond_d,line,'\n')){
-	
-	//getline(cond_d,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&cMusic1_E[line_number][0],&cMusic1_E[line_number][1],&cMusic1_T[line_number][0],&cMusic1_T[line_number][1]);
-					
-	line_number++;
-    }
-
-    line_number = 0;
-    
-    format = "%f %f %f %f";
-
-     ifstream cond_e("Configuration_Files/FRS_Window_Conditions/MUSIC2.txt");
-    
-    while(/*cond_e.good()*/getline(cond_e,line,'\n')){
-	
-	//getline(cond_e,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&cMusic2_E[line_number][0],&cMusic2_E[line_number][1],&cMusic2_T[line_number][0],&cMusic2_T[line_number][1]);
-					
-	line_number++;
-    }
-
-    line_number = 0;
-    
-    format = "%f %f %f %f";
-
-     ifstream cond_f("Configuration_Files/FRS_Window_Conditions/MUSIC3.txt");
-    
-    while(/*cond_f.good()*/getline(cond_f,line,'\n')){
-	
-	//getline(cond_f,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&cMusic3_E[line_number][0],&cMusic3_E[line_number][1],&cMusic3_T[line_number][0],&cMusic3_T[line_number][1]);
-					
-	line_number++;
-    }
-
-    
-    line_number = 0;
-    
-    format = "%f %f";
-
-     ifstream cond_g("Configuration_Files/FRS_Window_Conditions/MUSIC_dEc3.txt");
-    
-    while(/*cond_g.good()*/getline(cond_g,line,'\n')){
-	
-	//getline(cond_g,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&cMusic3_dec[0],&cMusic3_dec[1]);
-    }
-
-    /***SCINTILATOR Condtions***/
-    
-    cSCI_L = new Float_t[2];
-    cSCI_R = new Float_t[2];
-    cSCI_E = new Float_t[2];
-    cSCI_Tx = new Float_t[2];
-    cSCI_X = new Float_t[2];
-    
-    
-    line_number = 0;
-    
-    format = "%f %f";
-
-     ifstream cond_h("Configuration_Files/FRS_Window_Conditions/SCI_Cons.txt");
-    
-    while(/*cond_h.good()*/getline(cond_h,line,'\n')){
-	
-	//getline(cond_h,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&cSCI_L[0],&cSCI_L[1]);
-	    
-	getline(cond_h,line,'\n');
-	    sscanf(line.c_str(),format,&cSCI_R[0],&cSCI_R[1]);
-	    
-	getline(cond_h,line,'\n');
-	    sscanf(line.c_str(),format,&cSCI_E[0],&cSCI_E[1]);
-	    
-	getline(cond_h,line,'\n');
-	    sscanf(line.c_str(),format,&cSCI_Tx[0],&cSCI_Tx[1]);
-	    
-	getline(cond_h,line,'\n');
-	    sscanf(line.c_str(),format,&cSCI_X[0],&cSCI_X[1]);
-	    
-    }
-    
-    cSCI_LL2 = new Float_t[2];
-    cSCI_RR2 = new Float_t[2];
-    cSCI_LL3 = new Float_t[2];
-    cSCI_RR3 = new Float_t[2];
-    cSCI_LL4 = new Float_t[2];
-    cSCI_RR4 = new Float_t[2];
-    
-    format = "%f %f";
-
-    ifstream cond_i("Configuration_Files/FRS_Window_Conditions/SCI_LLRR.txt");
-
-    while(/*cond_i.good()*/getline(cond_i,line,'\n')){
-	
-	
-	//getline(cond_i,line,'\n');
-	if(line[0] == '#') continue;	
-	    sscanf(line.c_str(),format,&cSCI_LL2[0],&cSCI_LL2[1]);
-	getline(cond_i,line,'\n');
-	    sscanf(line.c_str(),format,&cSCI_RR2[0],&cSCI_RR2[1]);
-	    
-	getline(cond_i,line,'\n');
-	    sscanf(line.c_str(),format,&cSCI_LL3[0],&cSCI_LL3[1]);
-	    
-	getline(cond_i,line,'\n');
-	    sscanf(line.c_str(),format,&cSCI_RR3[0],&cSCI_RR3[1]);
-	    
-	    
-	getline(cond_i,line,'\n');
-	    sscanf(line.c_str(),format,&cSCI_LL4[0],&cSCI_LL4[1]);
-	    
-	getline(cond_i,line,'\n');
-	    sscanf(line.c_str(),format,&cSCI_RR4[0],&cSCI_RR4[1]);
-	    
-    }
-    
-    cSCI_detof = new Float_t*[5];
-    
-    for(int i = 0; i < 5; ++i){
-	
-	cSCI_detof[i] = new Float_t[2];
-	
-    }
-    
-    line_number = 0;
-    
-    format = "%f %f";
-
-     ifstream cond_j("Configuration_Files/FRS_Window_Conditions/SCI_dEToF.txt");
-    
-    while(/*cond_j.good()*/getline(cond_j,line,'\n')){
-	
-	//getline(cond_j,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&cSCI_detof[line_number][0],&cSCI_detof[line_number][1]);
-					
-	line_number++;
-    }
-
-    /***ID Condtions***/
-    
-    cID_x2 = new Float_t[2];
-    cID_x4 = new Float_t[2];
-    cID_Z_Z = new Float_t[2];
-    
-    format = "%f %f";
-
-     ifstream cond_k("Configuration_Files/FRS_Window_Conditions/ID_x2.txt");
-
-
-    while(/*cond_k.good()*/getline(cond_k,line,'\n')){
-	
-	//getline(cond_k,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&cID_x2[0],&cID_x2[1]);
-	    
-    }
-    
-     ifstream cond_l("Configuration_Files/FRS_Window_Conditions/ID_x4.txt");
-
-    while(/*cond_l.good()*/getline(cond_l,line,'\n')){
-	
-	//getline(cond_l,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&cID_x4[0],&cID_x4[1]);
-	    
-    }
-    
-     ifstream cond_m("Configuration_Files/FRS_Window_Conditions/ID_Z_Z.txt");
-
-    while(/*cond_m.good()*/getline(cond_m,line,'\n')){
-	
-	//getline(cond_m,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&cID_Z_Z[0],&cID_Z_Z[1]);
-	    
-    }
-    
-    
-    cID_x4AoQ_Z = new Float_t*[5];
-    
-    for(int i = 0; i < 5; ++i){
-	
-	cID_x4AoQ_Z[i] = new Float_t[2];
-	
-    }
-    
-    
-    line_number = 0;
-
-     ifstream cond_n("Configuration_Files/FRS_Window_Conditions/ID_Z_Z.txt");
-
-    while(/*cond_n.good()*/getline(cond_n,line,'\n')){
-	
-	//getline(cond_n,line,'\n');
-	if(line[0] == '#') continue;
-	    sscanf(line.c_str(),format,&cID_x4AoQ_Z[line_number][0],&cID_x4AoQ_Z[line_number][1]);
-	    
-	line_number++;
-
-    }
-    
-    cID_x2AoQ = new Float_t**[6];
-    cID_Z_AoQ = new Float_t**[5];
-    
-    for(int i = 0; i < 6; ++i){
-	
-	cID_x2AoQ[i] = new Float_t*[6];
-	if (i < 5) cID_Z_AoQ[i] = new Float_t*[6];
-	
-	    for(int j = 0; j < 6; ++j){
-		
-		cID_x2AoQ[i][j] = new Float_t[2];
-		if (i < 5) cID_Z_AoQ[i][j] = new Float_t[2];
-		
-	    }
-	
-    }
-    
-    line_number = 0;
-    int selection_number = 0;
-
-     ifstream cond_o("Configuration_Files/FRS_Window_Conditions/ID_x2AoQ.txt");
-
-    while(/*cond_o.good()*/getline(cond_o,line,'\n')){
-	
-	//getline(cond_o,line,'\n');
-	if(line[0] == '#') continue;
-	if(line[0] == '&'){
-	    selection_number++;
-	    line_number = 0;
-	    continue;
-	}
-	
-	    sscanf(line.c_str(),format,&cID_x2AoQ[selection_number][line_number][0],&cID_x2AoQ[selection_number][line_number][1]);
-	    
-	line_number++;
-
-    }
-    
-    
-    line_number = 0;
-    selection_number = 0;
-
-     ifstream cond_p("Configuration_Files/FRS_Window_Conditions/ID_Z_AoQ.txt");
-
-    while(/*cond_p.good()*/getline(cond_p,line,'\n')){
-	
-	//getline(cond_p,line,'\n');
-	if(line[0] == '#') continue;
-	if(line[0] == '&'){
-	    selection_number++;
-	    line_number = 0;
-	    continue;
-	}
-	    sscanf(line.c_str(),format,&cID_Z_AoQ[selection_number][line_number][0],&cID_Z_AoQ[selection_number][line_number][1]);
-	    
-	line_number++;
-
-    }
-    
-    cID_dEToF = new Float_t*[5];
-
-    for(int i = 0; i < 5; ++i){
-	
-	cID_dEToF[i] = new Float_t[2];
-	
-    }
-    line_number = 0;
-    selection_number = 0;
-
-     ifstream cond_q("Configuration_Files/FRS_Window_Conditions/ID_dEToF.txt");
-
-    while(/*cond_q.good()*/getline(cond_q,line,'\n')){
-	
-	//getline(cond_p,line,'\n');
-	if(line[0] == '#') continue;
-
-	    sscanf(line.c_str(),format,&cID_dEToF[line_number][0],&cID_dEToF[line_number][1]);
-	    
-	line_number++;
-
-    }
-    
-    
-    /*for(int i=0;i<8;i++){
-	
-       sprintf(name,"Music1_E(%f)",i);
-       cMusic1_E[i] = MakeWindowCond("MUSIC/MUSIC(1)/E",name, 10, 4086, "hMUSIC1_E");
-
-        sprintf(name,"Music1_T(%d)",i);
-       cMusic1_T[i] = MakeWindowCond("MUSIC/MUSIC(1)/T",name, 10, 4086,"hMUSIC1_T");
-
-       sprintf(name,"Music2_E(%d)",i);
-       cMusic2_E[i] = MakeWindowCond("MUSIC/MUSIC(2)/E",name, 10, 4086, "hMUSIC2_E");
-
-       sprintf(name,"Music2_T(%d)",i);
-       cMusic2_T[i] = MakeWindowCond("MUSIC/MUSIC(2)/T",name, 10, 4086, "hMUSIC2_T");
-     }
-
-   for(int i=0;i<4;i++){
-       
-       sprintf(name,"Music3_E(%d)",i);
-       cMusic3_E[i] = MakeWindowCond("MUSIC/MUSIC(3)/E",name, 10, 4086, "hMUSIC3_E");
-
-       sprintf(name,"Music3_T(%d)",i);
-       cMusic3_T[i] = MakeWindowCond("MUSIC/MUSIC(3)/T",name, 10, 4086, "hMUSIC3_T");
-    }
-   
-   
-    cMusic3_dec = MakeWindowCond("MUSIC/MUSIC 3","Music3_dec", 10., 4000., "hMUSIC3_dECOR");*/
-    
-    
-    
-    
-    
 }

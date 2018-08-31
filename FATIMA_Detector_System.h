@@ -27,6 +27,8 @@ private:
     int he_iter;
 	int max_am_dets;
 	int FAT_evt;
+	
+	int unknown_header_counter;
 
 	int* pdata;
 	

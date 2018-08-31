@@ -36,6 +36,7 @@ private:
 
     int* pdata;
 
+    int unknown;
     int increase;
     int add;
     int aa;

@@ -132,6 +132,7 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 	int dets_fired = 0;
 	for (int i=0; i<QDC_FIRED; i++) {
 		this->FAT_QDC_id[i] = det_ids_QDC[i];
+		if (det_ids_QDC[i] == 35) cout<<"I am in QDC"<<endl;
 		this->FAT_QLong[i]  = Ql[i];
 		this->FAT_QLong_Raw[i]  = Ql_Raw[i];
 		this->FAT_QShort_Raw[i] = Qs_Raw[i];
@@ -140,6 +141,8 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 		for (int j=0; j<TDC_FIRED; j++) {
 			if (det_ids_QDC[i] == det_ids_TDC[j]) {
 				this->FAT_id[dets_fired] = det_ids_QDC[i];
+				if (det_ids_TDC[j] == 35) cout<<"I am in TDC"<<endl;
+
 				this->FAT_E[dets_fired] = Ql[i];
 				this->FAT_ratio[dets_fired] = (double) Qs_Raw[i]/Ql_Raw[i];
 				this->FAT_t[dets_fired] = TDC_ns[j];
@@ -227,10 +230,11 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 
 //---------------------------------------------------------------
 
-void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine,UInt** ch_ed,double* Coarse_Trigger,double* Fine_Trigger){
-
+void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine,UInt** ch_ed,double* Coarse_Trigger,double* Fine_Trigger,int amount_hit_tamex){
+	
+	this->amount_hit_tamex = amount_hit_tamex;
 	//reset lead and trail hits
-	for(int i = 0;i < 4;++i){
+	for(int i = 0;i < amount_hit_tamex;++i){
 		for(int j = 0;j < 17;++j){
 			leading_hits_ch[i][j] = 0;
 			trailing_hits_ch[i][j] = 0;
@@ -238,7 +242,7 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 	}
 
 	//loop over all 4 tamex modules
-	for(int i = 0;i < 4;++i){
+	for(int i = 0;i < amount_hit_tamex;++i){
 		iterator[i] = it[i];
 		trigger_coarse[i] = Coarse_Trigger[i];
 		trigger_fine[i] = Fine_Trigger[i];
@@ -398,6 +402,10 @@ ULong64_t Raw_Event::get_FAT_QDC_t_Coarse(int i){return FAT_QDC_t_coarse[i];}
 //---------------------------------------------------------------
 
 //PLASTIC
+
+//---------------------------------------------------------------
+
+int Raw_Event::get_PLASTIC_tamex_hits(){return amount_hit_tamex;}
 
 //---------------------------------------------------------------
 

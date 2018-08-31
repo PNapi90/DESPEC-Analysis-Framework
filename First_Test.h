@@ -133,6 +133,7 @@ using namespace std;
 			TH1* FAT_QDCdtsum;
 			TH1* FAT_TDCdtsum_ref_gated;		//gates are hard coded
 			TH1* FAT_QDCdtsum_ref_gated;   //for now...
+			TH1* FAT_Angular_Diff_ref_gated; // Histogram of Gated Angular Differences
 			//-statistics
 			TH1* FAT_hits;		     //number of hits per detector id
 			TH1* FAT_hits_QDC;
@@ -163,19 +164,25 @@ using namespace std;
 			TH1* all2;
 			
 			TH1* WR_F;
-			TH1*** Coarse;
-			TH1** DIFF_ARR;
+			
+			
+			//Plastic histograms
 			TH1*** tamex_Mult_Ch_lead;
 			TH1*** tamex_Mult_Ch_trail;
+			TH2** tamex_mult_mat_lead;
+			TH2** tamex_mult_mat_trail;
+			TH1*** Trail_LEAD;
+			TH1**** LEAD_LEAD;
+			TH1*** Coarse;
+			TH1** DIFF_ARR;
+			
 			
 			TH1* FAT_TDC_Diff; // ****NEWLY ADDED****
 			
 
-			TH2** tamex_mult_mat_lead;
-			TH2** tamex_mult_mat_trail;
+			
 
-			TH1*** Trail_LEAD;
-			TH1**** LEAD_LEAD;
+			
 			//for the SIS modules
 
 			
@@ -198,6 +205,7 @@ using namespace std;
 			const int FAT_MAX_DET = 36;
 
 			int FAT_REF_DET;
+			int GAL_REF_DET;
 
 			float E_gate1,E_gate2;
 
@@ -224,6 +232,8 @@ using namespace std;
 			bool FAT_dist_corr_used; // Read from General Setup File
 			int FAT_exclusion_dist; // Read from General Setup File
 			int FAT_num_TDC_modules; // Read from General Setup File
+			bool same_ring_exclusion; // Read from General Setup File
+			bool output_position_matrix; // Read from General Setup File
 			int file_pwd, file_end;
 			std::string gain_match_filename;
 			int data_file_number = 0;
@@ -253,17 +263,36 @@ using namespace std;
 			void load_PrcID_File();
 			void get_interest_arrays();
 			
+			void Make_FRS_Histos();
+			void Fill_FRS_Histos();
+			
+			void Make_Plastic_Histos();
+			void Fill_Plastic_Histos();
+			
+			void Make_FATIMA_Histos();
+			void Fill_FATIMA_Histos();
+			
+			void Make_GALILEO_Histos();
+			void Fill_GALILEO_Histos();
+			
+			
+			bool Check_Cal_Plastic();
+			
+			bool PLASTIC_CALIBRATION;
 			
 			double** FAT_positions;
+			double** FAT_angle_diffs;
 			bool** FAT_neighbour_check;
 			
 			void FAT_det_pos_setup();
 			double distance_between_detectors(double, double, double, double, double, double);
+			double angle_between_detectors(double, double, double);
 
 
 			int count;
 			int called[2];
 			int iterator;
+			int Cout_counter;
 
 			ULong64_t WR_tmp[2];
 

@@ -43,6 +43,8 @@ private:
 	int tmp_stopping_layer;
 	bool x_check, y_check;
 	
+	int tmp_FEE64ID;      //FEE64 ID
+
 	int** FEE_allocation;
 
 	bool* check_FEE64_timestamp;
@@ -73,13 +75,19 @@ private:
 	double** ADCLowEnergyGain;
 	double** ADCHighEnergyGain;
 	
+	int** ADCItemCounts;
+	ULong64_t** ADCLastTimestamp;
+	
+	int itemADC;
+	int itemFEE;
+	ULong64_t itemTimestamp;
+	
 	void load_polarity_file();
 	void load_offsets_file();
 	void load_config_file();
 	void load_channel_order();
 
-	void get_decay_coordinate();
-	void get_implantation_coordinate();
+	void get_position_data(ADCDataItem&);
 	
 	void Pause_Timestamp(AIDA_Time_First*);
 	void Resume_Timestamp(AIDA_Time_First*);
@@ -87,6 +95,9 @@ private:
 	void Set_AIDA_Implantation(AIDA_ADC_1*);
 	void Unpack_AIDA_Decay_DATA(AIDA_ADC_1*);
 	void Check_AIDA_Disc_DATA();
+	
+	void CorrectMultiplexer(ADCDataItem&);
+
 
 public:
 

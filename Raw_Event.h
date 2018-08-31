@@ -114,6 +114,7 @@ private:
 	
 
 	//PLASTIC
+	int amount_hit_tamex;
 	int iterator[4];
 	double trigger_coarse[100];
 	double trigger_fine[100];
@@ -172,7 +173,7 @@ public:
 						 ULong64_t*,double*,
 						 ULong64_t*,double*,
 						 int*,int*);
-	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*);
+	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*,int);
 	void set_DATA_GALILEO(int,ULong64_t*,int*,int*,ULong64_t*,double*,int*);
 
 	// ####################################################
@@ -270,6 +271,7 @@ ULong64_t get_FAT_QDC_t_Coarse(int i);
 	int get_PLASTIC_physical_trail_hits(int,int);
 	double get_PLASTIC_coarse_lead(int,int);
 	double get_PLASTIC_TOT(int,int);
+	int get_PLASTIC_tamex_hits();
 
 	//temporary GALILEO getters
 	int get_GALILEO_am_Fired();

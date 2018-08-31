@@ -136,10 +136,10 @@ Bool_t TSCNCalProc::BuildEvent(TGo4EventElement* dest)
 
   //Calibrated histograms
 
-  double sum=0.;
+  // unused // double sum=0.;
 
 
-  double dat;
+  // unused // double dat;
   for(Int_t j=0;j<SCN_NUM_CHAN;j++)// Maping data to DetID(E,t)
     {
 

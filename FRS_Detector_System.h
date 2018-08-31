@@ -34,7 +34,8 @@
 
 #include "Detector_System.cxx"
 
-
+#include <sys/stat.h>
+#include <sys/types.h>
 
 class FRS_Detector_System : public Detector_System{
 
@@ -724,11 +725,19 @@ private:
 	Float_t       mrtof_si_e5;
 	
     
+	//char* char_setup_directory_name;
+
+	string setup_directory_name; //Read from  Setup File
+
+	bool FRS_File_Setup; // Read from Setup File
+	
+    void read_config_variables(string config_filename);
     
-    
-    
-    
+    void read_setup_variables_from_file(); // Reads parameters from Setup Files
+
     void Setup_Parameters();
+    
+    void Write_Setup_Parameters();
 
     Int_t getbits(Int_t, int, int, int);
 

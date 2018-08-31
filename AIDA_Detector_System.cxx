@@ -47,6 +47,21 @@ AIDA_Detector_System::AIDA_Detector_System(){
 	    
 	    
     }
+    
+    ADCItemCounts = new int*[24];
+    ADCLastTimestamp = new ULong64_t*[24];
+    
+    //initialise the ADC item counter to 0
+    for(int i = 0; i < 24; i++){
+	
+	ADCItemCounts[i] = new int[4];
+	ADCLastTimestamp[i] = new ULong64_t[4];
+	
+	for(int j = 0; j < 4; j++){
+		ADCItemCounts[i][j] = 0;
+		ADCLastTimestamp[i][j] = 0;
+	}
+    }
 
     
     /*unsigned int feeChannelOrder[num_channels] = {62, 63, 59, 60, 61, 56, 57, 58, 52, 53, 54, 55, 49, 50, 51, 45,
@@ -56,7 +71,8 @@ AIDA_Detector_System::AIDA_Detector_System(){
 			  			  
     load_config_file();
     load_channel_order();
-
+    load_polarity_file();
+    load_offsets_file();
 }
 
 //---------------------------------------------------------------
@@ -102,6 +118,9 @@ void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
 	AIDA_ADC_1* ADC_head  = (AIDA_ADC_1*) pdata;
 	AIDA_1st_Disc* AIDA_disc  = (AIDA_1st_Disc*) pdata;
 	
+	tmp_FEE64ID   = (*pdata >> 22) & 0x003F;  			//tmp_FEE64
+
+	
     	if(t0_head->check == 2 && t0_head->infocode == 2) Pause_Timestamp(t0_head); // Pause Timestamp
     	else if(t0_head->check == 2 && t0_head->infocode == 3) Resume_Timestamp(t0_head); // Resume Timestamp
     	else if(t0_head->check == 2 && t0_head->infocode == 4){  // Shouldn't Happen
@@ -122,8 +141,8 @@ void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
 	    exit(0);
 	
 	}
-	else if(ADC_head->check == 3 && ADC_head->ADC_range == 1) Set_AIDA_Implantation(ADC_head);
-	else if(ADC_head->check == 3 && ADC_head->ADC_range == 0) Unpack_AIDA_Decay_DATA(ADC_head); // Set_AIDA_DECAY/NOISE(ADC_head);
+	else if(ADC_head->check == 3 && ADC_head->ADC_range == 1 && check_FEE64_timestamp[tmp_FEE64ID]) Set_AIDA_Implantation(ADC_head);
+	else if(ADC_head->check == 3 && ADC_head->ADC_range == 0 && check_FEE64_timestamp[tmp_FEE64ID]) Unpack_AIDA_Decay_DATA(ADC_head); // Set_AIDA_DECAY/NOISE(ADC_head);
 	else if(AIDA_disc->check == 8 && AIDA_disc->second_check == 6) pdata++; //Check_AIDA_Disc_DATA();
 
 	else{ cout<<"Unidentified Thing:   AIDA Check = "<<t0_head->check<<"  INFO CODE = "<<t0_head->infocode<<"  FEE64???  "<<t0_head->FEE64_num<<endl;
@@ -143,9 +162,9 @@ void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
 
 void AIDA_Detector_System::Pause_Timestamp(AIDA_Time_First* t0_head){
     
-    int FEE64_Module_No = t0_head->FEE64_num;
+    //int FEE64_Module_No = t0_head->FEE64_num;
     
-    check_FEE64_timestamp[FEE64_Module_No] = false;
+    check_FEE64_timestamp[tmp_FEE64ID] = false;
     
     
 }
@@ -154,9 +173,9 @@ void AIDA_Detector_System::Pause_Timestamp(AIDA_Time_First* t0_head){
 
 void AIDA_Detector_System::Resume_Timestamp(AIDA_Time_First* t0_head){
     
-    int FEE64_Module_No = t0_head->FEE64_num;
+    //int FEE64_Module_No = t0_head->FEE64_num;
     
-    check_FEE64_timestamp[FEE64_Module_No] = true;
+    check_FEE64_timestamp[tmp_FEE64ID] = true;
     
 }
 
@@ -209,11 +228,12 @@ void AIDA_Detector_System::Set_AIDA_Implantation(AIDA_ADC_1* ADC_head){
     
     implantItem.Set_Implant_Data(pdata, AIDA_t0_base);
 
-    get_implantation_coordinate();
+    get_position_data(implantItem);
     
-    implantItem.Set_CalEnergy(((((double)implantItem.GetADCData()-adcZero)*(double)FEE_polarity_map[implantItem.GetFEE64ID()-1])
-			- channel_offsets_map[implantItem.GetFEE64ID()-1][implantItem.GetChannelID()])*ADCLowEnergyGain[implantItem.GetFEE64ID()-1][implantItem.GetChannelID()]);
+    implantItem.SetCalEnergy(((((double)implantItem.GetADCData()-adcZero)*(double)FEE_polarity_map[implantItem.GetFEE64ID()-1])
+				    *ADCHighEnergyGain[implantItem.GetFEE64ID()-1][implantItem.GetChannelID()]));
     
+    CorrectMultiplexer(implantItem);
 
     pdata++;
     
@@ -228,13 +248,12 @@ void AIDA_Detector_System::Unpack_AIDA_Decay_DATA(AIDA_ADC_1* ADC_head){
     
     decayItem.Set_Decay_Data(pdata, AIDA_t0_base);
       
-    get_decay_coordinate();
-    
-    
-    decayItem.Set_CalEnergy(((((double)decayItem.GetADCData()-adcZero)*(double)FEE_polarity_map[decayItem.GetFEE64ID()-1])
+    get_position_data(decayItem);
+        
+    decayItem.SetCalEnergy(((((double)decayItem.GetADCData()-adcZero)*(double)FEE_polarity_map[decayItem.GetFEE64ID()-1])
 			- channel_offsets_map[decayItem.GetFEE64ID()-1][decayItem.GetChannelID()])*ADCLowEnergyGain[decayItem.GetFEE64ID()-1][decayItem.GetChannelID()]);
     
-    
+    CorrectMultiplexer(decayItem);
     
     pdata++;
     
@@ -260,6 +279,31 @@ void AIDA_Detector_System::Check_AIDA_Disc_DATA(){
 
 //---------------------------------------------------------------
 
+void AIDA_Detector_System::CorrectMultiplexer(ADCDataItem & adcItem){
+
+	//Check the FEE and channel of the DSSD and determine how many events from that ADC have been recoreded.
+	//Correct the timestamp for the multiplexing
+	itemADC       = ((adcItem.GetChannelID()) / 16);
+	itemFEE	      = adcItem.GetFEE64ID()-1;
+	itemTimestamp = adcItem.GetTimestamp();
+	
+	if((itemTimestamp-ADCLastTimestamp[itemFEE][itemADC] > 250 ) && ADCLastTimestamp[itemFEE][itemADC] != 0){
+		//If two seperate ADC events within same window reset the adc counter
+		ADCItemCounts[itemFEE][itemADC] = 0;
+	}
+	
+	ADCLastTimestamp[itemFEE][itemADC] = itemTimestamp;
+	//normalItems++;
+	//timestampCorrection = (200 * adcItemCounts[itemFEE][itemADC]);
+
+	adcItem.SetTimestamp((itemTimestamp-(200 * ADCItemCounts[itemFEE][itemADC])));
+ 	ADCItemCounts[itemFEE][itemADC]++;
+	
+ 	return;
+
+}
+
+
 void AIDA_Detector_System::get_Event_data(Raw_Event* RAW){}
 
 //---------------------------------------------------------------
@@ -276,11 +320,13 @@ void AIDA_Detector_System::load_polarity_file(){
     }
 
     string line;
-    int FEE_num,	Polarity;
+    int FEE_num;
+    int Polarity;
     while(file.good()){
         getline(file,line,'\n');
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format, &FEE_num, &Polarity);
+		
 	FEE_polarity_map[FEE_num-1] = Polarity;
 	
     }
@@ -370,12 +416,22 @@ void AIDA_Detector_System::load_channel_order(){
 
 //---------------------------------------------------------------
 
-void AIDA_Detector_System::get_decay_coordinate(){
+void AIDA_Detector_System::get_position_data(ADCDataItem & adcItem){
     
     int FEE_ID = decayItem.GetFEE64ID();
     int Channel_ID = decayItem.GetChannelID();
+    
+    
+    decayItem.SetLayer(FEE_allocation[FEE_ID - 1][0]);
 
-    if(FEE_allocation[FEE_ID - 1][1] == 0){
+    decayItem.SetFront_Back(FEE_allocation[FEE_ID - 1][1]);
+    
+    if(FEE_allocation[FEE_ID - 1][2] == 1) decayItem.SetRealChannelID(feeChannelOrder[Channel_ID]);
+    if(FEE_allocation[FEE_ID - 1][2] == 2) decayItem.SetRealChannelID((127 - feeChannelOrder[Channel_ID]));
+
+    return;
+
+    /*if(FEE_allocation[FEE_ID - 1][1] == 0){
 	
 	//x_number++; // Set X to -1
     
@@ -390,7 +446,7 @@ void AIDA_Detector_System::get_decay_coordinate(){
 
 	}
 	
-	decayItem.Set_X(tmp_x);
+	decayItem.SetChannelID(tmp_x);
 	
     }
     if(FEE_allocation[FEE_ID - 1][1] == 1){
@@ -415,13 +471,13 @@ void AIDA_Detector_System::get_decay_coordinate(){
     
     tmp_z = FEE_allocation[FEE_ID - 1][0];
     
-    decayItem.Set_Layer(tmp_z);
+    decayItem.Set_Layer(tmp_z);*/
 
 }
 
 //---------------------------------------------------------------
 
-void AIDA_Detector_System::get_implantation_coordinate(){
+/*void AIDA_Detector_System::get_implantation_coordinate(){
     
     int FEE_ID = implantItem.GetFEE64ID();
     int Channel_ID = implantItem.GetChannelID();
@@ -468,7 +524,7 @@ void AIDA_Detector_System::get_implantation_coordinate(){
     
     implantItem.Set_Layer(tmp_z);
 
-}
+}*/
 
 //---------------------------------------------------------------
 

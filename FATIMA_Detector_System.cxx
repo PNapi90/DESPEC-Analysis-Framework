@@ -15,7 +15,7 @@ using namespace std;
 FATIMA_Detector_System::FATIMA_Detector_System(){
 
     FAT_evt = 0;
-	
+    unknown_header_counter = 0;
     //set amount of QDCs and TDCs
     max_am_dets = 60;
 
@@ -66,7 +66,7 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
     FATIMA_E_CALIB = new FATIMA_Energy_Calibration();
 
     load_board_channel_file();
-    read_config_variables("Configuration_Files/Detector_Setup_File.txt");
+    read_config_variables("Configuration_Files/Detector_System_Setup_File.txt");
     he_iter = 0;
 
     Det_Hist = new TH1D*[32];
@@ -240,7 +240,7 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
         //QDC channel filled 
         else if(QDChead->check_a == 10){
 	    
-			double length = QDChead->length;
+	    // double length = QDChead->length;
 	    	    
             QDC_DATA = true;
             Check_QDC_DATA(QDChead);
@@ -278,6 +278,21 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 	else{
 	
 	    cout<<"Unknown header word: "<<TDChead->type<<endl;
+	    
+	    unknown_header_counter++;
+	    
+	    if(unknown_header_counter > 10){
+		
+		cout<<endl;
+		cout<<"ERROR: Too many unknown header words in FATIMA unpacker"<<endl;
+		cout<<"Something is probably wrong with the setup configuration"<<endl;
+		cout<<"Most likely White Rabbit is/isn't enabled"<<endl;
+		
+		exit(0);
+		
+		
+	    }
+	    
 
 	}
 	
@@ -397,7 +412,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 			active_Channel = Fired_QDC_Channels[i][1];
     
 			active_det = det_ID_QDC[active_board][active_Channel];
-	    
+				    
 			//cout<<"Channel Number = "<<active_Channel<<" Board ID = "<<active_board<<endl;
 			//cout<<"Channel Number = "<<active_det<<endl;
 	    
@@ -459,7 +474,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
     int active_det = 0;
     no_data = true;
     
-    int TDC_loop = 0;
+    // unused // int TDC_loop = 0;
     
     int loop_counter = 0;
     while(!trail){
@@ -595,9 +610,8 @@ void FATIMA_Detector_System::read_config_variables(string config_filename){
 
     string line;
 
-    file.ignore(256,':');
-    file.ignore(256,':');
-    file.ignore(256,':');
+    for (int i = 0; i < 5; ++i) file.ignore(256,':');
+    
     file.ignore(256,':');
     file >> gain_match_used;//dummy_var;
 
