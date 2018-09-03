@@ -32,6 +32,8 @@ private:
     std::thread threading(bool,int);
     inline void non_threading(bool,int);
 
+    void check_Thread_Use();
+
 public:
     AIDA_Processor(int);
     ~AIDA_Processor();

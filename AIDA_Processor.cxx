@@ -87,7 +87,7 @@ thread AIDA_Processor::threading(bool type,int thr_it){
     if(type){
         double* Etmp = Stream->get_Energy(xy_b,thr_it);
         int* x_tmp = Stream->get_coordinates(xy_b,thr_it);
-        ULong64_t T_tmp = Stream->get_Time(xy_b,thr_it);
+        ULong64_t* T_tmp = Stream->get_Time(xy_b,thr_it);
         int hits_tmp = Stream->get_amount_of_hits(xy_b,thr_it);
 
         return thread([=] {TX[thr_it]->Process(xy_b,x_tmp,T_tmp,Etmp,hits_tmp,thr_it);});

@@ -47,7 +47,7 @@ private:
     std::thread threading(bool,int);
 
 public:
-    TX_Matrix(int);
+    TX_Matrix(int,int);
     ~TX_Matrix();
     
     void Process(int*,ULong64_t*,double*,int,int);
