@@ -9,7 +9,7 @@ class T_Matrix_Row{
     const int bad_val = -11223344;
 
     int* Relevant_for_i;
-    double ROW[max_len];
+    double* ROW;
     
     int len_of_row,len_of_relevant;
 

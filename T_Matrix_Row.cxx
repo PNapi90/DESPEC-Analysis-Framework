@@ -7,6 +7,7 @@ using namespace std;
 T_Matrix_Row::T_Matrix_Row(){
     len_of_row = 0;
     len_of_relevant = 0;
+    ROW = new double[max_len];
     Relevant_for_i = new int[max_len];
     for(int i = 0;i < max_len;++i){
         Relevant_for_i[i] = -1;
@@ -19,6 +20,7 @@ T_Matrix_Row::T_Matrix_Row(){
 
 T_Matrix_Row::~T_Matrix_Row(){
     delete[] Relevant_for_i;
+    delete[] ROW;
 }
 
 //---------------------------------------------------------------

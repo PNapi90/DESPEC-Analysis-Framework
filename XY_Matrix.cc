@@ -29,18 +29,18 @@ XY_Matrix::~XY_Matrix(){
 
 //---------------------------------------------------------------
 
-void XY_Matrix::set_DATA(X_Cluster** Cluster_X,Y_Cluster** Cluster_Y,int* lens){
+void XY_Matrix::Process(TX_Matrix* Cluster_X,TX_Matrix* Cluster_Y){
     this->Cluster_X = Cluster_X;
     this->Cluster_Y = Cluster_Y;
-    len_X = lens[0];
-    len_Y = lens[1];
+    len_X = Cluster_X->get_len();
+    len_Y = Cluster_Y->get_len();
     
-    data_points_per_thr_x = lens[0]/am_threads;
+    data_points_per_thr_x = len_X/am_threads;
     double amount_of_data_points_d = (double) data_points_per_thr_x;
     double remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr_x;
     data_points_per_thr_last_x = ((int) remaining*am_threads) + data_points_per_thr_x;
 
-    data_points_per_thr_y = lens[1]/am_threads;
+    data_points_per_thr_y = len_Y/am_threads;
     amount_of_data_points_d = (double) data_points_per_thr_y;
     remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr_y;
     data_points_per_thr_last_y = ((int) remaining*am_threads) + data_points_per_thr_y;

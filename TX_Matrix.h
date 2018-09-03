@@ -7,7 +7,7 @@
 #include <thread>
 
 #include "T_Matrix_Row.h"
-#include "Data_Class_Obj.h"
+//#include "Data_Class_Obj.h"
 
 typedef unsigned long long ULong64_t;
 

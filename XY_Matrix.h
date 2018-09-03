@@ -8,8 +8,7 @@
 #include <fstream>
 #include <string>
 
-#include "X_Cluster.h"
-#include "Y_Cluster.h"
+#include "TX_Matrix.h"
 #include "Raw_Event.h"
 
 typedef unsigned long long ULong64_t;
@@ -26,8 +25,8 @@ private:
     int amount_of_deleted_events;
     int amount_of_events;
 
-    X_Cluster** Cluster_X;
-    Y_Cluster** Cluster_Y;
+    TX_Matrix* Cluster_X;
+    TX_Matrix* Cluster_Y;
 
     std::mutex MUTEX;
 
@@ -42,7 +41,7 @@ public:
     XY_Matrix(int);
     ~XY_Matrix();
     
-    void set_DATA(X_Cluster**,Y_Cluster**,int*);
+    void Process(TX_Matrix*,TX_Matrix*);
     void get_DATA(Raw_Event*);
 };
 
