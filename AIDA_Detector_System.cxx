@@ -9,7 +9,7 @@ using namespace std;
 
 AIDA_Detector_System::AIDA_Detector_System(){
 
-    Processor = new AIDA_Processor();
+    Processor = new AIDA_Processor(3);
     AIDA_Store = new AIDA_Decay_Event_Store();
         
     check_FEE64_timestamp = new Bool_t[128];

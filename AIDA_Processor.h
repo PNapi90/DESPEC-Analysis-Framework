@@ -23,6 +23,7 @@ private:
     bool USE_THREADS;
 
     int amount_z_strips,amount_thr,am_sub_threads;
+    int am_threads;
 
     AIDA_Data_Streamer* Stream;
 

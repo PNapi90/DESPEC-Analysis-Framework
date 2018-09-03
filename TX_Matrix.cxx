@@ -6,25 +6,34 @@ using namespace std;
 
 TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
     //load_thread_file();
+    save_iter = 0;
     amount_of_data_points = 0;
     this->am_threads = am_threads;
+    cluster_counter = new int[am_threads];
 
     x_or_y = (strip_iterator % 2 == 1);
     z_strip_number = strip_iterator/((int) 2);
 
-    T_Rows = new TX_Matrix_Row*[max_len];
+    T_Rows = new T_Matrix_Row*[max_len];
     skip_arr = new bool[max_len];
     relevant_for_x = new int*[max_len];
     len_line_X = new int[max_len];
-
+    
+    Time_sent = new ULong64_t[max_len];
     Time_Arr_Save = new ULong64_t[max_len];
     Energy_Arr_Save = new double[max_len];
     X_Arr_Save = new int[max_len];
 
+    Cluster_IDs = new int*[max_len];
+   
     for(int i = 0;i < max_len;++i){
         len_line_X[i] = 0;
         skip_arr[i] = false;
-        T_Rows[i] = new TX_Matrix_Row();
+        T_Rows[i] = new T_Matrix_Row();
+        Time_sent[i] = 0;
+        Cluster_IDs[i] = new int[2];
+        for(int j = 0;j < 2;++j) Cluster_IDs[i][j] = 0;
+        
         relevant_for_x[i] = new int[max_len];
         for(int j = 0;j < max_len;++j) relevant_for_x[i][j] = -1;
 
@@ -35,6 +44,7 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
 
     Thr_Time_Array = new ULong64_t*[am_threads];
     for(int i = 0;i < am_threads;++i){
+        cluster_counter[i] = 0;
         Thr_Time_Array[i] = new ULong64_t[max_len];
         for(int j = 0;j < max_len;++j) Thr_Time_Array[i][j] = 0;
     }
@@ -52,7 +62,11 @@ TX_Matrix::~TX_Matrix(){
         delete T_Rows[i];
         delete[] Thr_Time_Array[i];
     }
-    for(int i = 0;i < max_len;++i) delete[] relevant_for_x[i];
+    for(int i = 0;i < max_len;++i){
+        delete[] relevant_for_x[i];
+        delete[] Cluster_IDs[i];
+    }
+    delete[] Cluster_IDs;
     delete[] relevant_for_x;
     delete[] Thr_Time_Array;
     delete[] T_Rows;
@@ -62,11 +76,15 @@ TX_Matrix::~TX_Matrix(){
     delete[] Time_Arr_Save;
     delete[] Energy_Arr_Save;
     delete[] X_Arr_Save;
+    delete[] cluster_counter;
+    delete[] Time_sent;
 }
 
 //---------------------------------------------------------------
 
 void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int len,int thr_it){
+
+    iterator_mutex = 0;
 
     //set latest measured time for time comparison
     Time_Last = Time_Arr[len-1];
@@ -85,9 +103,6 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     double am_threads_d = (double) am_threads;
     double remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr;
     data_points_per_thr_last = ((int) remaining*am_threads) + data_points_per_thr;
-
-    int t_counter = 0;
-    int tmp_len = 0;
 
     //sub threads for each xyz plane (standard = 1)
     thread t[am_threads];
@@ -124,6 +139,9 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     //check if coincident events are neighbors (using threads)
     for(int i = 0;i < am_threads;++i) t[i] = threading(true,i);
     for(int i = 0;i < am_threads;++i) t[i].join();
+    
+    //set times
+    set_Time();
 
     //reset data to prevent memory leaks
     this->X_Arr = nullptr;
@@ -195,7 +213,8 @@ void TX_Matrix::Thread_X(int thr_num){
     int c_counter = -1;
     bool active_cluster = false;
     int cluster_of_interest = 0;
-
+    int cluster_of_interest_len = 0;
+    
     //loop over all events in thread
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         //skip if event not of interest (see Process(...))
@@ -235,9 +254,17 @@ void TX_Matrix::Thread_X(int thr_num){
         
         //save clusters -- those clusters are directly used as output events of AIDA as 
         //possible beta decay events
-        Cluster_IDs[cluster_counter[thr_num]+thr_offset][0] = tmp_cluster[c_counter][0];
-        Cluster_IDs[cluster_counter[thr_num]+thr_offset][1] = tmp_cluster[c_counter][1];
+        
+        //===========================================================
+        MUTEX.lock();
+
+        Cluster_IDs[iterator_mutex][0] = tmp_cluster[c_counter][0];
+        Cluster_IDs[iterator_mutex][1] = tmp_cluster[c_counter][1];
         cluster_counter[thr_num]++;
+        iterator_mutex++;
+
+        MUTEX.unlock();
+        //===========================================================
 
         sort_ptr = nullptr;
     }
@@ -248,6 +275,24 @@ void TX_Matrix::Thread_X(int thr_num){
 thread TX_Matrix::threading(bool i,int j){
     if(i) return thread([=] {Thread_T(j);});
     else return thread([=] {Thread_X(j);});
+}
+
+//---------------------------------------------------------------
+
+void TX_Matrix::set_Time(){
+    for(int i = 0;i < iterator_mutex;++i) Time_sent[i] = Time_Arr[Cluster_IDs[i][0]];
+}
+
+//---------------------------------------------------------------
+
+ULong64_t* TX_Matrix::get_Time(){
+    return Time_sent;
+}
+
+//---------------------------------------------------------------
+
+int TX_Matrix::get_len(){
+    return iterator_mutex;
 }
 
 //---------------------------------------------------------------

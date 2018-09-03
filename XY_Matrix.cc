@@ -35,6 +35,10 @@ void XY_Matrix::Process(TX_Matrix* Cluster_X,TX_Matrix* Cluster_Y){
     len_X = Cluster_X->get_len();
     len_Y = Cluster_Y->get_len();
     
+    Cluster_X_Time = this->Cluster_X->get_Time();
+    Cluster_Y_Time = this->Cluster_Y->get_Time();
+    
+    
     data_points_per_thr_x = len_X/am_threads;
     double amount_of_data_points_d = (double) data_points_per_thr_x;
     double remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr_x;
@@ -53,6 +57,9 @@ void XY_Matrix::Process(TX_Matrix* Cluster_X,TX_Matrix* Cluster_Y){
 
     this->Cluster_X = nullptr;
     this->Cluster_Y = nullptr;
+    
+    this->Cluster_X_Time = nullptr;
+    this->Cluster_Y_Time = nullptr;
 } 
 
 //---------------------------------------------------------------

@@ -18,6 +18,8 @@ private:
     const int z_strip_amount = 3;
 
     int conversion_array[2][100];
+    
+    int* array_iterator;
 
     int* row_counter;
 
@@ -27,8 +29,9 @@ private:
     double** Energy;
 
     void load_conversion_array();
+    inline int get_Coord(int,bool);
     inline void reset_iterators();
-    inline void check_array_position();
+    inline void check_array_position(int,int);
 
 
 public:
@@ -43,6 +46,7 @@ public:
 
     int get_amount_of_hits(bool,int);
     
+    void Store_and_Purge(bool,int*,ULong64_t*,double*,int,int);
 };
 
 #endif

@@ -29,7 +29,7 @@ void T_Matrix_Row::set_Row(ULong64_t* row,ULong64_t Time_i,int pos,int len_of_ro
     this->len_of_row = len_of_row;
 
     len_of_relevant = 0;
-
+    double delta = 0;
     for(int i = pos+1;i < len_of_row;++i){
         delta = (double) (row[i] - Time_i);
         ROW[i] = (abs(delta) < t_max) ? delta : bad_val;

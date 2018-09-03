@@ -22,10 +22,10 @@ AIDA_Data_Streamer::AIDA_Data_Streamer(){
             x_coord[i][j] = 0;
         }
     }
-
+    array_iterator = new int[z_strip_amount*2];
     row_counter = new int[z_strip_amount];
     for(int i = 0;i < z_strip_amount;++i) row_counter[i] = 0;
-
+    for(int i = 0;i < z_strip_amount*2;++i) array_iterator[i] = 0;
     //set conversion array values to -1 for not used AIDA z strips
     for(int i = 0;i < 2;++i) for(int j = 0;j < 100;++j) conversion_array[i][j] = -1;
 
@@ -46,6 +46,7 @@ AIDA_Data_Streamer::~AIDA_Data_Streamer(){
     delete[] x_or_y;
     delete[] Energy;
     delete[] x_coord;
+    delete[] array_iterator;
     delete[] row_counter;
 }
 
@@ -148,14 +149,14 @@ int AIDA_Data_Streamer::get_amount_of_hits(bool xy,int z_strip){
 
 //---------------------------------------------------------------
 
-void AIDA_Data_Streamer::Store_and_Purge(bool* x_or_y,int* x_coord,ULong64_t* Time,double* Energy,int z_strip,int amount){
+void AIDA_Data_Streamer::Store_and_Purge(bool x_or_y,int* x_coord,ULong64_t* Time,double* Energy,int z_strip,int amount){
     int array_position = 0;
     reset_iterators();
     for(int i = 0;i < amount;++i){
         //get xyz position from conversion array
-        array_position = conversion_array[x_or_y[i]][z_strip];
+        array_position = conversion_array[x_or_y][z_strip];
         //check if array position unknown
-        check_array_position(array_position,z_strip]);
+        check_array_position(array_position,z_strip);
         
         //set values
         this->x_coord[array_position][array_iterator[array_position]] = x_coord[i];
