@@ -8,6 +8,9 @@ using namespace std;
 //---------------------------------------------------------------
 
 AIDA_Detector_System::AIDA_Detector_System(){
+
+    Processor = new AIDA_Processor();
+    AIDA_Store = new AIDA_Decay_Event_Store();
         
     check_FEE64_timestamp = new Bool_t[128];
     
@@ -81,6 +84,9 @@ AIDA_Detector_System::~AIDA_Detector_System(){
     
     delete[] check_FEE64_timestamp;
     delete[] FEE_allocation;
+
+    delete Processor;
+    delete AIDA_Store;
 
 }
 
@@ -256,6 +262,9 @@ void AIDA_Detector_System::Unpack_AIDA_Decay_DATA(AIDA_ADC_1* ADC_head){
     CorrectMultiplexer(decayItem);
     
     pdata++;
+
+    //Store "Decay" Event in AIDA Decay Event Store
+    //AIDA_Store->Store_Decay_Event(&decayItem); 
     
     //decayItem.Print_Event();
 
@@ -304,7 +313,19 @@ void AIDA_Detector_System::CorrectMultiplexer(ADCDataItem & adcItem){
 }
 
 
-void AIDA_Detector_System::get_Event_data(Raw_Event* RAW){}
+void AIDA_Detector_System::get_Event_data(Raw_Event* RAW){
+    //Run AIDA Decay Event Builder
+    //Processor->PROCESSING(AIDA_Store);
+
+    //get Data using RAW for Implantation Evts
+    //...
+
+    //get Data using RAW for Decay Events
+    //Processor->get_DATA(RAW);
+
+    //Reset Store
+    //AIDA_Store->Reset();
+}
 
 //---------------------------------------------------------------
 

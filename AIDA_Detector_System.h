@@ -15,6 +15,9 @@
 #include "AIDA_Headers.h"
 #include "AIDA_Data_Types.h"
 
+#include "AIDA_Decay_Event_Store.h"
+#include "AIDA_Processor.h"
+
 #include "Detector_System.cxx"
 
 typedef unsigned long long ULong64_t;
@@ -97,6 +100,11 @@ private:
 	void Check_AIDA_Disc_DATA();
 	
 	void CorrectMultiplexer(ADCDataItem&);
+
+	//Decay Event Building
+	AIDA_Processor* Processor;
+	AIDA_Decay_Event_Store* AIDA_Store;
+
 
 
 public:
