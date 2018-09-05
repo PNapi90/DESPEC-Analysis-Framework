@@ -172,9 +172,12 @@ using namespace std;
 			TH2** tamex_mult_mat_lead;
 			TH2** tamex_mult_mat_trail;
 			TH1*** Trail_LEAD;
+			TH1**** TRAIL_TRAIL;
 			TH1**** LEAD_LEAD;
 			TH1*** Coarse;
 			TH1** DIFF_ARR;
+			TH1**** TOT;
+			TH1*** LEAD_LEAD_Total;
 			
 			
 			TH1* FAT_TDC_Diff; // ****NEWLY ADDED****

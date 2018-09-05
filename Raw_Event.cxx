@@ -252,16 +252,16 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 		for(int j = 0;j < iterator[i];++j){
 			ch_ID[i][j] = ch_ed[i][j];
 			if(ch_ID[i][j] % 2 == 1){
-				coarse_T_edge_lead[i][j] = (double) Edge_Coarse[i][j]*5;
-				fine_T_edge_lead[i][j] = (double) Edge_fine[i][j];
+				coarse_T_edge_lead[i][j] = (double) Edge_Coarse[i][j]*5.0;
+				fine_T_edge_lead[i][j] = (double) Edge_fine[i][j]*5.0;
 				
 				phys_channel[i][j] = (ch_ID[i][j]+1)/2;
 				leading_hits[i]++;
 				leading_hits_ch[i][phys_channel[i][j]]++;
 			}
 			else{
-				coarse_T_edge_trail[i][j] = (double)  Edge_Coarse[i][j]*5;
-				fine_T_edge_trail[i][j] =(double)  Edge_fine[i][j];
+				coarse_T_edge_trail[i][j] = (double)  Edge_Coarse[i][j]*5.0;
+				fine_T_edge_trail[i][j] =(double)  Edge_fine[i][j]*5.0;
 				
 				trailing_hits[i]++;
 				phys_channel[i][j] = (ch_ID[i][j])/2;

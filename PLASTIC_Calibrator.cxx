@@ -9,7 +9,7 @@ PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
 	this->ONLINE = ONLINE;
 
 
-	nbins = 4000;
+	nbins = 100000;
 	min_val = 0;
 	max_val = 500;
 
@@ -174,7 +174,7 @@ double PLASTIC_Calibrator::get_Calibration_val(double value,int tamex_id_tmp,int
 			break;
 		}
 	}
-	return return_val/1000.; // Converts to ns
+	return return_val;
 }
 
 //---------------------------------------------------------------
@@ -261,8 +261,12 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 				//normalize cdf to 1 and calculate fine[i] = cdf[i]/sum*5000*picoseconds
 				//write everything into calibration file (name of file = filename)
 				full_sum = sum_arr[nbins-1];
+				
+				double default_value = 0.0;
+				
 				for(int k = 0;k < nbins;++k){
-					val = (k < max_bin) ? (sum_arr[k]/full_sum*5000) : 0;
+					if(val > 0) default_value = 1.0;
+					val = (k < max_bin) ? (sum_arr[k]/full_sum) : default_value;
 					cal_file << bins_x[k] << "\t\t" << val << endl;
 				}
 				

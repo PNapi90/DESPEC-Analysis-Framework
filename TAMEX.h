@@ -58,8 +58,8 @@ struct TAMEX_DATA
     unsigned long coarse_T  : 11;
     unsigned int leading_E  : 1;
     unsigned long fine_T    : 10;
-    unsigned int ch_ID      : 6;
-    unsigned int TDC        : 4;
+    unsigned int ch_ID      : 7;
+    unsigned int TDC        : 3;
 
 };
 

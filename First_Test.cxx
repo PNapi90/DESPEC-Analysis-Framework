@@ -973,7 +973,10 @@ void TSCNUnpackProc::Make_Plastic_Histos(){
     tamex_mult_mat_lead = new TH2*[100];
     tamex_mult_mat_trail = new TH2*[100];
     
+    TOT = new TH1***[100];
+    TRAIL_TRAIL = new TH1***[100];
     LEAD_LEAD = new TH1***[100];
+    LEAD_LEAD_Total = new TH1**[100];
     
     for(int i = 0;i < 100;++i){
 
@@ -985,14 +988,25 @@ void TSCNUnpackProc::Make_Plastic_Histos(){
 
         tamex_Mult_Ch_lead[i] = new TH1*[100];
         tamex_Mult_Ch_trail[i] = new TH1*[100];
+        TOT[i] = new TH1**[100];
+        TRAIL_TRAIL[i] = new TH1**[100];
         LEAD_LEAD[i] = new TH1**[100];
+        LEAD_LEAD_Total[i] = new TH1*[100];
 
         for(int j = 0;j < 100;++j){
             tamex_Mult_Ch_lead[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,j),Form("tamex_lead_ch_%d_%d",i,j),100,0,100);
             tamex_Mult_Ch_trail[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,j),Form("tamex_trail_ch_%d_%d",i,j),100,0,100);
+            TOT[i][j] = new TH1*[100];
+            TRAIL_TRAIL[i][j] = new TH1*[100];
             LEAD_LEAD[i][j] = new TH1*[100];
-            for(int k = 0;k < 100;++k) LEAD_LEAD[i][j][k] = NULL;
-        }
+	    LEAD_LEAD_Total[i][j] = NULL;
+            for(int k = 0;k < 100;++k){
+		
+		 TOT[i][j][k] = NULL;
+		 TRAIL_TRAIL[i][j][k] = NULL;
+		 LEAD_LEAD[i][j][k]   = NULL;
+	    }
+	}
     }
 
 
@@ -1038,7 +1052,9 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 	int pl_n_hits = 0;
     	
 	pl_n_hits = RAW->get_PLASTIC_tamex_hits();
-	double tmp_fill_val = 0;
+	double tmp_fill_val   = 0;
+	double tmp_fill_val_1 = 0;
+	double tmp_fill_val_2 = 0;
 	for(int i = 0; i < pl_n_hits; ++i){
 	    sum_l = 0;
 	    sum_t = 0;
@@ -1059,7 +1075,7 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 	
 	
 		    if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("trail_minus_lead/trail_minus_lead_board%d_ch%d",i,phys_ch),
-								Form("trail_minus_lead_board%d_ch%d",i,phys_ch),500,0,500);
+								Form("trail_minus_lead_board%d_ch%d",i,phys_ch),1000,-500,500);
 	
 		    if(j % 2 == 0){
 			    tmp_fill_val = (double) (RAW->get_PLASTIC_trail_T(i,j+1)-RAW->get_PLASTIC_lead_T(i,j));
@@ -1070,13 +1086,49 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 				    phys_ch_tmp = RAW->get_PLASTIC_physical_channel(i,k);
 			
 				    if(k % 2 == 0 && k != j){
-		    
+					
+					
+					    if(!LEAD_LEAD_Total[i][phys_ch]){
+						    LEAD_LEAD_Total[i][phys_ch] = MakeTH1('D',Form("lead_minus_lead_all_chans/lead_minus_lead_board_%d_from_ch%d_to_everything",i,phys_ch),
+														Form("lead_minus_lead_board%d_from_ch%d_to_everything",i,phys_ch),10000, -500., 500.);
+					    }
+					    
+					    tmp_fill_val_1 = (double)(RAW->get_PLASTIC_lead_T(i,j));
+					    tmp_fill_val_2 = (double)(RAW->get_PLASTIC_lead_T(i,k));
+					    tmp_fill_val = (double)(tmp_fill_val_1 - tmp_fill_val_2);
+
+					    //tmp_fill_val = (double)(RAW->get_PLASTIC_lead_T(i,j) - RAW->get_PLASTIC_lead_T(i,k));
+					    LEAD_LEAD_Total[i][phys_ch]->Fill(tmp_fill_val);
+
 					    if(!LEAD_LEAD[i][phys_ch][phys_ch_tmp]){
 						    LEAD_LEAD[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("lead_minus_lead/lead_minus_lead_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),
-														Form("lead_minus_lead_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),500,-1000,1000);
+														Form("lead_minus_lead_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),10000, -500., 500.);
 					    }
-					    tmp_fill_val = (double)(RAW->get_PLASTIC_lead_T(i,j) - RAW->get_PLASTIC_lead_T(i,k));
+					    tmp_fill_val_1 = (double)(RAW->get_PLASTIC_lead_T(i,j));
+					    tmp_fill_val_2 = (double)(RAW->get_PLASTIC_lead_T(i,k));
+					    tmp_fill_val = (double)(tmp_fill_val_1 - tmp_fill_val_2);
+					    //tmp_fill_val = (double)(RAW->get_PLASTIC_lead_T(i,j) - RAW->get_PLASTIC_lead_T(i,k));
 					    LEAD_LEAD[i][phys_ch][phys_ch_tmp]->Fill(tmp_fill_val);
+
+					    if(!TRAIL_TRAIL[i][phys_ch][phys_ch_tmp]){
+						    TRAIL_TRAIL[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("trail_minus_trail/trail_minus_trail_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),
+														Form("trail_minus_trail_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),10000, -500., 500.);
+					    }
+					    
+					    tmp_fill_val_1 = (double)(RAW->get_PLASTIC_trail_T(i,j));
+					    tmp_fill_val_2 = (double)(RAW->get_PLASTIC_trail_T(i,k));
+					    tmp_fill_val = (double)(tmp_fill_val_1 - tmp_fill_val_2);
+					    //tmp_fill_val = (double)(RAW->get_PLASTIC_trail_T(i,j) - RAW->get_PLASTIC_trail_T(i,k));
+					    TRAIL_TRAIL[i][phys_ch][phys_ch_tmp]->Fill(tmp_fill_val);
+					    
+					    tmp_fill_val = (double)(RAW->get_PLASTIC_TOT(i, j));
+					    if(!TOT[i][phys_ch][phys_ch_tmp]){
+						    TOT[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("TOT/TOT_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),
+														Form("TOT_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),10000, -500., 500.);
+					    }
+					    TOT[i][phys_ch][phys_ch_tmp]->Fill(tmp_fill_val);
+
+					    
 				    }
 			    }
 		    }
@@ -1121,7 +1173,6 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 	    }
 	}
 }
-
 
 void TSCNUnpackProc::Make_FATIMA_Histos(){
     
