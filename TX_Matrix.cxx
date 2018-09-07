@@ -36,7 +36,7 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
 
         len_line_X[i] = 0;
         skip_arr[i] = false;
-        process_mem_usage(i);
+        //process_mem_usage(i);
         try{
             T_Rows[i] = new T_Matrix_Row();
         }
