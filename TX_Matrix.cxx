@@ -118,7 +118,7 @@ void TX_Matrix::process_mem_usage(int iter){
     vm_usage = vsize / 1024.0;
     resident_set = rss * page_size_kb;
     cout << "MEMORY USED @ iteration " << iter << " -> ";
-    cout << "VM: " << vm << "; RSS: " << rss << endl;
+    cout << "VM: " << vm_usage << "; RSS: " << resident_set << endl;
 }
 
 //---------------------------------------------------------------
