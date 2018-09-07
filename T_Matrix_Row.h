@@ -11,7 +11,7 @@ class T_Matrix_Row{
 
     const double t_max = 10000;
     
-    const int max_len = 10000;
+    const int max_len = 5000;
     const int bad_val = -11223344;
 
     int* Relevant_for_i;

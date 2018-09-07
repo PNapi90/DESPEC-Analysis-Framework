@@ -14,7 +14,7 @@ class AIDA_Data_Streamer{
 
 private:
 
-    const int max_len = 1000000;
+    const int max_len = 10000;
     const int z_strip_amount = 3;
 
     int conversion_array[2][100];

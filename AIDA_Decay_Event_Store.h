@@ -11,7 +11,7 @@ typedef unsigned long long ULong64_t;
 class AIDA_Decay_Event_Store{
 private:
 
-    const int max_len = 1000000;
+    const int max_len = 10000;
 
     ULong64_t* Time;
     
