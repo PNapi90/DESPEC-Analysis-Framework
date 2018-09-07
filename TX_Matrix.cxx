@@ -5,6 +5,9 @@ using namespace std;
 //---------------------------------------------------------------
 
 TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
+
+    cout << "Initialize TX_Matrix " << strip_iterator << endl;
+
     //load_thread_file();
     save_iter = 0;
     amount_of_data_points = 0;
