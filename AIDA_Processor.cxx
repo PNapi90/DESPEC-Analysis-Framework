@@ -26,6 +26,7 @@ AIDA_Processor::AIDA_Processor(int amount_z_strips){
     cout << "Creating XY objects" << endl;
 
     XY = new XY_Matrix*[amount_z_strips];
+    cout << "Container created" << endl;
     for(int i = 0;i < amount_z_strips;++i) XY[i] = new XY_Matrix(am_sub_threads);
     cout << "DONE" << endl;
 }
