@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <mutex>
 #include <cstdlib>
+#include <unistd.h>
+
 
 
 #include "T_Matrix_Row.h"
@@ -63,6 +65,8 @@ private:
     void Thread_T(int);
     void Save_Matrix_Row(int);
     
+    void process_mem_usage(int);
+
     inline bool keep_Event(int);
     
     std::thread threading(bool,int);

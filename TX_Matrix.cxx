@@ -32,6 +32,7 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
     for(int i = 0;i < max_len;++i){
         len_line_X[i] = 0;
         skip_arr[i] = false;
+        process_mem_usage(i);
         try{
             T_Rows[i] = new T_Matrix_Row();
         }
@@ -94,6 +95,30 @@ TX_Matrix::~TX_Matrix(){
     delete[] X_Arr_Save;
     delete[] cluster_counter;
     delete[] Time_sent;
+}
+
+//---------------------------------------------------------------
+
+void TX_Matrix::process_mem_usage(int iter){
+    double vm_usage     = 0.0;
+    double resident_set = 0.0;
+
+    // the two fields we want
+    unsigned long vsize;
+    long rss;
+    {
+        std::string ignore;
+        std::ifstream ifs("/proc/self/stat", std::ios_base::in);
+        ifs >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore
+                >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore
+                >> ignore >> ignore >> vsize >> rss;
+    }
+
+    long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
+    vm_usage = vsize / 1024.0;
+    resident_set = rss * page_size_kb;
+    cout << "MEMORY USED @ iteration " << iter << " -> ";
+    cout << "VM: " << vm << "; RSS: " << rss << endl;
 }
 
 //---------------------------------------------------------------
