@@ -29,12 +29,23 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
     for(int i = 0;i < max_len;++i){
         len_line_X[i] = 0;
         skip_arr[i] = false;
-        T_Rows[i] = new T_Matrix_Row();
+        try{
+            T_Rows[i] = new T_Matrix_Row();
+        }
+        catch(const std::bad_alloc&){
+            cerr << "Problem occured in T_Rows" << endl;
+            exit(0);
+        }
         Time_sent[i] = 0;
         Cluster_IDs[i] = new int[2];
         for(int j = 0;j < 2;++j) Cluster_IDs[i][j] = 0;
-        
-        relevant_for_x[i] = new int[max_len];
+        try{
+            relevant_for_x[i] = new int[max_len];
+        }
+        catch(const std::bad_alloc&){
+            cerr << "Problem occured in relevant_for_x" << endl;
+            exit(0);
+        }
         for(int j = 0;j < max_len;++j) relevant_for_x[i][j] = -1;
 
         Time_Arr_Save[i] = 0;
