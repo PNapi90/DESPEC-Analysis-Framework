@@ -115,7 +115,7 @@ void TX_Matrix::process_mem_usage(int iter){
     }
 
     long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
-    vm_usage = vsize / 1024.0;
+    vm_usage = vsize / (1024.0*1024.0);
     resident_set = rss * page_size_kb;
     cout << "MEMORY USED @ iteration " << iter << " -> ";
     cout << "VM: " << vm_usage << "; RSS: " << resident_set << endl;
