@@ -1,6 +1,8 @@
 #ifndef T_MATRIX_ROW_H
 #define T_MATRIX_ROW_H
 
+#include <iostream>
+#include <cstdlib>
 #include <cmath>
 
 typedef unsigned long long ULong64_t;
