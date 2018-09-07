@@ -18,6 +18,8 @@ XY_Matrix::XY_Matrix(int am_threads){
 
     Cluster_X = nullptr;
     Cluster_Y = nullptr;
+
+    cout << "XY created " << endl;
 }
 
 //---------------------------------------------------------------
