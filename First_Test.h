@@ -235,6 +235,7 @@ using namespace std;
 			bool FAT_dist_corr_used; // Read from General Setup File
 			int FAT_exclusion_dist; // Read from General Setup File
 			int FAT_num_TDC_modules; // Read from General Setup File
+			bool FAT_nearest_neighbour_exclusion; // Read from General Setup File
 			bool same_ring_exclusion; // Read from General Setup File
 			bool output_position_matrix; // Read from General Setup File
 			int file_pwd, file_end;

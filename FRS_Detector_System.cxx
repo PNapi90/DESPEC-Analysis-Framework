@@ -732,7 +732,7 @@ FRS_Detector_System::FRS_Detector_System(){
     
 	ElecMod->setMap();
 
-	ElecMod->Print();
+	//ElecMod->Print();
   
 	cout << "Setup done " << endl;
 
@@ -5304,7 +5304,7 @@ void FRS_Detector_System::read_setup_variables_from_file(){
     
     ElecMod->setMap();
     
-    ElecMod->Print();
+    //ElecMod->Print();
     
     cout << "Setup done " << endl;
     

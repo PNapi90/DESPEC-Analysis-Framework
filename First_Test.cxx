@@ -284,6 +284,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		if(WHITE_RABBIT_USED){
 			sub_evt_length = sub_evt_length - 5;
 			WR_tmp[iterator] = WR->get_White_Rabbit(pdata);
+						
 			pdata += WR->get_increase();
 						
 		}
@@ -296,6 +297,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		    
 		    Detector_Systems[PrcID_Conv]->Process_AIDA(psubevt);
 		    
+		    cout<<"WR TIME = "<<WR_tmp[iterator]<<endl;
+
 		}
 		
 		
@@ -471,6 +474,9 @@ void TSCNUnpackProc::read_setup_parameters(){
 
     file.ignore(256,':');
     file >> FAT_exclusion_dist;//dummy_var;
+    
+    file.ignore(256,':');
+    file >> FAT_nearest_neighbour_exclusion;//dummy_var;
 
     file.ignore(256,':');
     file >> same_ring_exclusion;//dummy_var;
@@ -690,22 +696,66 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 		FAT_positions[pos_num][1] = theta;
 		FAT_positions[pos_num][2] = phi;
 
+    }
+    
+    if(FAT_nearest_neighbour_exclusion){
+	
+	for(int i = 0; i < 36; ++i){
+    
+	    if(i%12 == 11) FAT_neighbour_check[i][(i-11)] = false;
+	    else FAT_neighbour_check[i][(i+1)] = false;
+	    if(i%12 == 0) FAT_neighbour_check[i][i+11] = false;
+	    else FAT_neighbour_check[i][(i-1)] = false;
+    
+		    
+	    if(!same_ring_exclusion && i > 11 && i < 24){
+		    
+		if(i == 12){
+		     FAT_neighbour_check[i][35] = false;
+		     FAT_neighbour_check[35][i] = false;
+		}
+		else{
+		     FAT_neighbour_check[i][(i+11)] = false;
+		     FAT_neighbour_check[(i+11)][i] = false;
+		}
+		FAT_neighbour_check[i][(i+12)] = false;
+		FAT_neighbour_check[(i+12)][i] = false;
+		
+		if(i == 12){
+		     FAT_neighbour_check[i][11] = false;
+		     FAT_neighbour_check[11][i] = false;
+		}
+		else{
+		     FAT_neighbour_check[(i-13)][i] = false;
+		}
+		FAT_neighbour_check[i][(i-12)] = false;
+		FAT_neighbour_check[(i-12)][i] = false;
+		    
+	    }
 	}
+    }
+    
+    ofstream output_position_matrix_file;
+    output_position_matrix_file.open ("Configuration_Files/FATIMA_Exclusion_Matrix.txt");
+    cout<<endl;
+    cout << "A Matrix of excluded detector pairings can be found in ./Configuration_Files/FATIMA_Exclusion_Matrix.txt"<<endl;
+    cout<<endl;
     
     
-    if (output_position_matrix) cout<<"        "<<"0 "<<"1 "<<"2 "<<"3 "<<"4 "<<"5 "<<"6 "<<"7 "<<"8 "
+    
+    if (output_position_matrix) output_position_matrix_file <<"        "<<"0 "<<"1 "<<"2 "<<"3 "<<"4 "<<"5 "<<"6 "<<"7 "<<"8 "
 		    <<"9 "<<"10 "<<"11 "<<"12 "<<"13 "<<"14 "<<"15 "<<"16 "<<"17 "
 		    <<"18 "<<"19 "<<"20 "<<"21 "<<"22 "<<"23 "<<"24 "<<"25 "<<"26 "
 		    <<"27 "<<"28 "<<"29 "<<"30 "<<"31 "<<"32 "<<"33 "<<"34 "<<"35 "<<endl;
     
     for(int i = 0; i < 36; ++i){
 	
-	if (i >= 10 && output_position_matrix) cout<<"Det "<<i<<": ";
-	if (i < 10  && output_position_matrix) cout<<"Det "<<i<<" : ";
-
+	if (i >= 10 && output_position_matrix) output_position_matrix_file <<"Det "<<i<<": ";
+	if (i < 10  && output_position_matrix) output_position_matrix_file <<"Det "<<i<<" : ";
+	
 	for (int k = 0; k < 36; ++k){
 	    
-	    if(k > 9 && output_position_matrix) cout<<" ";
+	    if(k > 9 && output_position_matrix) output_position_matrix_file<<" ";
 	    
 	    double dist = distance_between_detectors( FAT_positions[i][0],  FAT_positions[i][1],  FAT_positions[i][2],
 						      FAT_positions[k][0],  FAT_positions[k][1],  FAT_positions[k][2]);
@@ -713,24 +763,29 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 	    double angle = angle_between_detectors(FAT_positions[i][0], FAT_positions[k][0], dist);
 
 	    FAT_angle_diffs[i][k] = angle;
-		    
+	        
 	    if((dist < FAT_exclusion_dist && (((i < 12 && k < 12) || 
 					    (i < 24 && i > 11 && k < 24 && k > 11) || 
 					    (i > 23 && k > 23)) || !same_ring_exclusion )) || i == k ){
 		
 		
 		 FAT_neighbour_check[i][k] = false;
-		 
-		 if (output_position_matrix) cout<<"X ";
-	    
+		    
 	    }
-	    else if(output_position_matrix) cout<<"0 ";
+	    
+	    
+	    if (output_position_matrix && !FAT_neighbour_check[i][k]) output_position_matrix_file<<"X ";
+
+	    else if(output_position_matrix && FAT_neighbour_check[i][k]) output_position_matrix_file<<"0 ";
 	    
 	}
 	
-	if (output_position_matrix) cout<<endl;
+	if (output_position_matrix) output_position_matrix_file<<endl;
 	
     }
+    
+    output_position_matrix_file.close();
+
     
     
     
