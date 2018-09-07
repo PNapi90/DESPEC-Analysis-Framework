@@ -33,6 +33,7 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
             T_Rows[i] = new T_Matrix_Row();
         }
         catch(const std::bad_alloc&){
+            cerr << "std::bad_alloc occured!" << endl;
             cerr << "Problem occured in T_Rows" << endl;
             exit(0);
         }
@@ -43,6 +44,7 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
             relevant_for_x[i] = new int[max_len];
         }
         catch(const std::bad_alloc&){
+            cerr << "std::bad_alloc occured!" << endl;
             cerr << "Problem occured in relevant_for_x" << endl;
             exit(0);
         }
@@ -97,6 +99,8 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
 
     iterator_mutex = 0;
 
+
+
     //set latest measured time for time comparison
     Time_Last = Time_Arr[len-1];
 
@@ -124,6 +128,8 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
 
     int* deleteable_rows = nullptr;
 
+    int rel_counter = 0;
+
     for(int i = 0;i < amount_of_data_points;++i){
         //skip data points that already exist in events before
         if(skip_arr[i]) continue;
@@ -131,6 +137,8 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         //create coincidence matrix without 0 values
         len_line_X[i] = T_Rows[i]->get_Relevant_amount();
         deleteable_rows = T_Rows[i]->get_Relevant_Evts();
+
+        if(len_line_X[i] > 0) relevant_for_x[i] = new int[len_line_X[i]];
         
         //loop over coincident events of line i
         for(int j = 0;j < len_line_X[i];++j){
@@ -142,6 +150,8 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         //if event i has no coincidence and time difference to
         //latest AIDA event is short enough, event is saved
         if(keep_Event(i)) Save_Matrix_Row(i);
+        
+        deleteable_rows = nullptr;
     }
 
     //positions on respective plane (x/y coordinate)
@@ -159,6 +169,10 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     this->Time_Arr = nullptr;
     this->Energy_Arr = nullptr;
 
+    for(int i = 0;i < amount_of_data_points;++i){
+        skip_arr[i] = false;
+        if(relevant_for_x[i]) delete[] relevant_for_x[i];
+    }
     deleteable_rows = nullptr;
 }
 
@@ -230,7 +244,10 @@ void TX_Matrix::Thread_X(int thr_num){
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         //skip if event not of interest (see Process(...))
         if(skip_arr[i]) continue;
-
+        if(!relevant_for_x[i]){
+            cerr << "Seems to be still happening" << endl;
+            exit(0);
+        }
         //save (tmp) coordinates in xy_for_sort
         for(int j = 0;j < len_line_X[i];++j){
             xy_for_sort[j][0] = X_Arr[relevant_for_x[i][j]];
