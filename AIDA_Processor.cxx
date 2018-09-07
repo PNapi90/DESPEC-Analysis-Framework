@@ -17,12 +17,17 @@ AIDA_Processor::AIDA_Processor(int amount_z_strips){
 
     Stream = new AIDA_Data_Streamer();
 
+    cout << "Creating TX objects" << endl;
+
     TX = new TX_Matrix*[amount_z_strips*2];
     for(int i = 0;i < amount_z_strips*2;++i) TX[i] = new TX_Matrix(i,am_sub_threads);
 
+    cout << "DONE" << endl;
+    cout << "Creating XY objects" << endl;
+
     XY = new XY_Matrix*[amount_z_strips];
     for(int i = 0;i < amount_z_strips;++i) XY[i] = new XY_Matrix(am_sub_threads);
-
+    cout << "DONE" << endl;
 }
 
 //---------------------------------------------------------------
