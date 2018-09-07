@@ -19,7 +19,7 @@ typedef unsigned long long ULong64_t;
 class TX_Matrix{
 
 private:
-    const int max_len = 1000000;
+    const int max_len = 50000;
     const double Time_tolerance = 1000;
 
     int amount_of_data_points,am_threads;

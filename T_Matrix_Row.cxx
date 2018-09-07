@@ -7,8 +7,18 @@ using namespace std;
 T_Matrix_Row::T_Matrix_Row(){
     len_of_row = 0;
     len_of_relevant = 0;
-    ROW = new double[max_len];
-    Relevant_for_i = new int[max_len];
+    try ROW = new double[max_len];
+    catch(const std::bad_alloc&){
+        cerr << "std::bad_alloc occured!" << endl;
+        cerr << "Problem occured in ROW" << endl;
+        exit(0);
+    }
+    try Relevant_for_i = new int[max_len];
+    catch(const std::bad_alloc&){
+        cerr << "std::bad_alloc occured!" << endl;
+        cerr << "Problem occured in Relevant_for_i" << endl;
+        exit(0);
+    }
     for(int i = 0;i < max_len;++i){
         Relevant_for_i[i] = -1;
         ROW[i] = bad_val;
