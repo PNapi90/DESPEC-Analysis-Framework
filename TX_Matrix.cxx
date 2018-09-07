@@ -353,14 +353,17 @@ thread TX_Matrix::threading(bool i,int j){
 void TX_Matrix::set_Time_and_Energy(){
     int tmp_diff = 0;
     double tmp_sum = 0;
+    int tmp_pos = 0;
     for(int i = 0;i < iterator_mutex;++i){
         Time_sent[i] = Time_Arr[Cluster_IDs[i][0]];
         
         tmp_sum = 0;
         tmp_diff = Cluster_IDs[i][1] - Cluster_IDs[i][0];
+        tmp_pos = Cluster_IDs[i][0];
         for(int j = 0;j < tmp_diff;++j){
-            Energies_sent[i][j] = Energies_Arr[Cluster_IDs[i][0]][j];
+            Energies_sent[i][j] = Energy_Arr[tmp_pos];
             tmp_sum += Energies_sent[i][j];
+            tmp_pos++;
         }
         Energy_sent[i] = tmp_sum;
     }
