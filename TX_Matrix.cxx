@@ -205,7 +205,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     for(int i = 0;i < am_threads;++i) t[i].join();
     
     //set times
-    set_Time();
+    set_Time_and_Energy();
 
     //reset data to prevent memory leaks
     this->X_Arr = nullptr;
