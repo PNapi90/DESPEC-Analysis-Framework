@@ -62,7 +62,7 @@ private:
 
     bool* skip_arr;
     
-    void set_Time();
+    void set_Time_and_Energy();
     void reset_Saved();
     void Thread_X(int);
     void Thread_T(int);
