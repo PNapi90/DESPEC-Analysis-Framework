@@ -93,6 +93,7 @@ void XY_Matrix::Thread_XY(int thr_num){
     for(int i = 0;i < data_points_per_thr_x_tmp;++i) used_X[i] = false;
     for(int i = 0;i < data_points_per_thr_y_tmp;++i) used_Y[i] = false;
     
+    int XY_counter = 0;
 
     //loop over x strips and y strips
     for(int x_counter = start_x;x_counter < data_points_per_thr_x_tmp + start_x;++x_counter){
@@ -109,7 +110,7 @@ void XY_Matrix::Thread_XY(int thr_num){
             if(in_time && in_Energy){
                 Form_XY(pos_tmp,x_counter,y_counter);
                 XY_counter = get_XY_Counter();
-                XY_Clusters[XY_counter] = new XY_Cluster(Cluster_X[x_counter],Cluster_Y[y_counter]);
+                //XY_Clusters[XY_counter] = new XY_Cluster(Cluster_X[x_counter],Cluster_Y[y_counter]);
                 //pair found -> continue with next cluster
                 used_X[x_counter] = true;
                 used_Y[y_counter] = true;

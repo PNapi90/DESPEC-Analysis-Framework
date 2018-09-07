@@ -17,6 +17,9 @@ typedef unsigned long long ULong64_t;
 class XY_Matrix{
 private:
 
+    const double max_T = 1000.;
+    const double max_E = 1000.;
+
     int local_z;
     int data_points_per_thr_x,data_points_per_thr_last_x;
     int data_points_per_thr_y,data_points_per_thr_last_y;
@@ -30,6 +33,12 @@ private:
 
     TX_Matrix* Cluster_X;
     TX_Matrix* Cluster_Y;
+
+    ULong64_t* Cluster_X_Time;
+    ULong64_t* Cluster_Y_Time;
+
+    double* Cluster_X_Energy;
+    double* Cluster_Y_Energy;
 
     std::mutex MUTEX;
 
