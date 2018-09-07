@@ -17,6 +17,9 @@ XY_Matrix::XY_Matrix(int am_threads){
     amount_of_deleted_events = 0;
     amount_of_events = 0;
 
+    deleted_events = new int[max_len];
+
+
     Cluster_X = nullptr;
     Cluster_Y = nullptr;
 
@@ -28,6 +31,8 @@ XY_Matrix::XY_Matrix(int am_threads){
 XY_Matrix::~XY_Matrix(){
     Cluster_X = nullptr;
     Cluster_Y = nullptr;
+
+    delete[] deleted_events;
 }
 
 //---------------------------------------------------------------
@@ -203,9 +208,19 @@ inline void XY_Matrix::Form_XY(double* pos,int x_counter,int y_counter){
     double mu_x = 0;
     double mu_y = 0;
 
+    int pos_tmp = Cluster_X_len[x_counter][0];
+
     //Form center of energies for x and y
-    for(int i = 0;i < x_len;++i) mu_x += Cluster_X_Energies[x_counter][i]*Cluster_X_Pos[x_counter][i];
-    for(int i = 0;i < y_len;++i) mu_y += Cluster_Y_Energies[y_counter][i]*Cluster_Y_Pos[y_counter][i];
+    for(int i = 0;i < x_len;++i){
+        mu_x += Cluster_X_Energies[x_counter][i]*pos_tmp;
+        pos_tmp++;
+    }
+
+    pos_tmp = Cluster_Y_len[y_counter][0];
+    for(int i = 0;i < y_len;++i){
+        mu_y += Cluster_Y_Energies[y_counter][i]*pos_tmp;
+        pos_tmp++;
+    }
 
     mu_x /= Cluster_X_Energy[x_counter];
     mu_y /= Cluster_Y_Energy[y_counter];

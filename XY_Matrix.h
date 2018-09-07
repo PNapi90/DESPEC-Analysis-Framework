@@ -19,6 +19,7 @@ private:
 
     const double max_T = 1000.;
     const double max_E = 1000.;
+    const int max_len = 1000;
 
     int local_z;
     int data_points_per_thr_x,data_points_per_thr_last_x;
@@ -55,6 +56,7 @@ private:
     void Thread_XY(int);
     void get_Arrays();
     void NULL_Arrays();
+    void get_amount_points_per_thr();
     inline void Form_XY(double*,int,int);
 
 public:
