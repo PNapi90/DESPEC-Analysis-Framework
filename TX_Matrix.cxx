@@ -23,6 +23,9 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
     len_line_X = new int[max_len];
     
     Time_sent = new ULong64_t[max_len];
+    Energy_sent = new double[max_len];
+    Energies_sent = new double*[max_len];
+
     Time_Arr_Save = new ULong64_t[max_len];
     Energy_Arr_Save = new double[max_len];
     X_Arr_Save = new int[max_len];
@@ -30,6 +33,7 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
     Cluster_IDs = new int*[max_len];
    
     for(int i = 0;i < max_len;++i){
+
         len_line_X[i] = 0;
         skip_arr[i] = false;
         process_mem_usage(i);
@@ -42,6 +46,11 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
             exit(0);
         }
         Time_sent[i] = 0;
+        Energy_sent[i] = 0;
+        Energies_sent[i] = new double[128];
+
+        for(int j = 0;j < 128;++j) Energies_sent[i][j] = 0;
+
         Cluster_IDs[i] = new int[2];
         for(int j = 0;j < 2;++j) Cluster_IDs[i][j] = 0;
         //try{
@@ -83,7 +92,10 @@ TX_Matrix::~TX_Matrix(){
     for(int i = 0;i < max_len;++i){
         delete[] relevant_for_x[i];
         delete[] Cluster_IDs[i];
+        delete[] Energies_sent[i];
     }
+    delete[] Energies_sent;
+    delete[] Energy_sent;
     delete[] Cluster_IDs;
     delete[] relevant_for_x;
     delete[] Thr_Time_Array;
@@ -338,8 +350,20 @@ thread TX_Matrix::threading(bool i,int j){
 
 //---------------------------------------------------------------
 
-void TX_Matrix::set_Time(){
-    for(int i = 0;i < iterator_mutex;++i) Time_sent[i] = Time_Arr[Cluster_IDs[i][0]];
+void TX_Matrix::set_Time_and_Energy(){
+    int tmp_diff = 0;
+    double tmp_sum = 0;
+    for(int i = 0;i < iterator_mutex;++i){
+        Time_sent[i] = Time_Arr[Cluster_IDs[i][0]];
+        
+        tmp_sum = 0;
+        tmp_diff = Cluster_IDs[i][1] - Cluster_IDs[i][0];
+        for(int j = 0;j < tmp_diff;++j){
+            Energies_sent[i][j] = Energies_Arr[Cluster_IDs[i][0]][j];
+            tmp_sum += Energies_sent[i][j];
+        }
+        Energy_sent[i] = tmp_sum;
+    }
 }
 
 //---------------------------------------------------------------
@@ -358,6 +382,18 @@ int TX_Matrix::get_len(){
 
 int** TX_Matrix::get_len_array(){
     return Cluster_IDs;
+}
+
+//---------------------------------------------------------------
+
+double* TX_Matrix::get_Energy(){
+    return Energy_sent;
+}
+
+//---------------------------------------------------------------
+
+double** TX_Matrix::get_Energies(){
+    return Energies_sent;
 }
 
 //---------------------------------------------------------------

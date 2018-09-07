@@ -43,6 +43,9 @@ private:
     double* Cluster_X_Energy;
     double* Cluster_Y_Energy;
 
+    double** Cluster_X_Energies;
+    double** Cluster_Y_Energies;
+
     std::mutex MUTEX;
 
     std::thread threading(int);
@@ -50,6 +53,8 @@ private:
     inline int get_XY_Counter();
     
     void Thread_XY(int);
+    void get_Arrays();
+    void NULL_Arrays();
     inline void Form_XY(double*,int,int);
 
 public:

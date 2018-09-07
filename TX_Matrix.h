@@ -38,9 +38,12 @@ private:
     double am_threads_d,amount_of_data_points_d;
 
     ULong64_t* Time_Arr;
-    ULong64_t* Time_sent;
     double* Energy_Arr;
     int* X_Arr;
+
+    ULong64_t* Time_sent;
+    double* Energy_sent;
+    double** Energies_sent;
     
     int** Cluster_IDs;
 
@@ -81,6 +84,8 @@ public:
     int get_len();
     ULong64_t* get_Time();
     int** get_len_array();
+    double* get_Energy();
+    double** get_Energies();
 };
 
 #endif
