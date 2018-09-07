@@ -37,10 +37,12 @@ void XY_Matrix::Process(TX_Matrix* Cluster_X,TX_Matrix* Cluster_Y){
     this->Cluster_Y = Cluster_Y;
     len_X = Cluster_X->get_len();
     len_Y = Cluster_Y->get_len();
+
+    Cluster_X_len = Cluster_X->get_len_array();
+    Cluster_Y_len = Cluster_Y->get_len_array();
     
-    Cluster_X_Time = this->Cluster_X->get_Time();
-    Cluster_Y_Time = this->Cluster_Y->get_Time();
-    
+    Cluster_X_Time = Cluster_X->get_Time();
+    Cluster_Y_Time = Cluster_Y->get_Time();
     
     data_points_per_thr_x = len_X/am_threads;
     double amount_of_data_points_d = (double) data_points_per_thr_x;
@@ -61,8 +63,11 @@ void XY_Matrix::Process(TX_Matrix* Cluster_X,TX_Matrix* Cluster_Y){
     this->Cluster_X = nullptr;
     this->Cluster_Y = nullptr;
     
-    this->Cluster_X_Time = nullptr;
-    this->Cluster_Y_Time = nullptr;
+    Cluster_X_Time = nullptr;
+    Cluster_Y_Time = nullptr;
+
+    Cluster_X_len = nullptr;
+    Cluster_Y_len = nullptr;
 } 
 
 //---------------------------------------------------------------
@@ -153,8 +158,8 @@ thread XY_Matrix::threading(int j){
 
 inline void XY_Matrix::Form_XY(double* pos,int x_counter,int y_counter){
     //set amount of relevant x and y strips for cluster
-    int x_len = Cluster_X_len[x_counter];
-    int y_len = Cluster_Y_len[y_counter];
+    int x_len = Cluster_X_len[x_counter][1] - Cluster_X_len[x_counter][0];
+    int y_len = Cluster_Y_len[y_counter][1] - Cluster_Y_len[y_counter][0];
     double mu_x = 0;
     double mu_y = 0;
 

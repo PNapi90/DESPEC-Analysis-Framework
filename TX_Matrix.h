@@ -80,6 +80,7 @@ public:
     
     int get_len();
     ULong64_t* get_Time();
+    int** get_len_array();
 };
 
 #endif

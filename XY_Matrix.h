@@ -37,6 +37,9 @@ private:
     ULong64_t* Cluster_X_Time;
     ULong64_t* Cluster_Y_Time;
 
+    int** Cluster_X_len;
+    int** Cluster_Y_len;
+
     double* Cluster_X_Energy;
     double* Cluster_Y_Energy;
 
