@@ -436,12 +436,12 @@ void AIDA_Detector_System::load_channel_order(){
 
 //---------------------------------------------------------------
 
-void AIDA_Detector_System::get_position_data(ADCDataItem & adcItem){
+void AIDA_Detector_System::get_position_data(ADCDataItem &adcItem){
     
     int FEE_ID = decayItem.GetFEE64ID();
     int Channel_ID = decayItem.GetChannelID();
     cout << FEE_allocation << " " << FEE_allocation[FEE_ID-1] << endl;
-    cout << "FEE " << FEE_ID << " " << &decayItem <<" ";
+    cout << "FEE " << FEE_ID << " " << &decayItem <<" "<<&adcItem;
     cout << FEE_allocation[FEE_ID - 1][0] << endl;
     decayItem.SetLayer(FEE_allocation[FEE_ID - 1][0]);
     
