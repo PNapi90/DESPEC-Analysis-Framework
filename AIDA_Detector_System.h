@@ -26,11 +26,11 @@ class AIDA_Detector_System : public Detector_System{
 
 private:
 
-	int num_FEE64s = 24;		//Not just the number in use but the highest number ID that is used
-	int num_DSSSDs = 6;		//Total number of DSSD you are implanting in
-	int num_channels = 64;		//Will remain fixed. Number of channels per FEE
-	int masterFEE64 = 6;
-	double adcZero = 32768; 	//2**15
+	const int num_FEE64s = 24;		//Not just the number in use but the highest number ID that is used
+	const int num_DSSSDs = 6;		//Total number of DSSD you are implanting in
+	const int num_channels = 64;		//Will remain fixed. Number of channels per FEE
+	const int masterFEE64 = 6;
+	const double adcZero = 32768; 	//2**15
 	
 	
 	Int_t* pdata;
