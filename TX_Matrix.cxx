@@ -176,6 +176,8 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         if(skip_arr[i]) continue;
         
         //create coincidence matrix without 0 values
+
+        //HERE
         len_line_X[i] = T_Rows[i]->get_Relevant_amount();
         deleteable_rows = T_Rows[i]->get_Relevant_Evts();
 
