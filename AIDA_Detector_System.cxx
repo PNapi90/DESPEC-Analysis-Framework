@@ -316,6 +316,7 @@ void AIDA_Detector_System::CorrectMultiplexer(ADCDataItem & adcItem){
 
 
 void AIDA_Detector_System::get_Event_data(Raw_Event* RAW){
+
     //Run AIDA Decay Event Builder
     //Processor->PROCESSING(AIDA_Store);
 
@@ -326,7 +327,7 @@ void AIDA_Detector_System::get_Event_data(Raw_Event* RAW){
     //Processor->get_DATA(RAW);
 
     //Reset Store
-    //AIDA_Store->Reset();
+    AIDA_Store->Reset();
 }
 
 //---------------------------------------------------------------

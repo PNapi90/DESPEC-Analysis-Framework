@@ -319,8 +319,6 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		//send subevent to respective unpacker
 		Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
 		
-		
-		
 		//get mbs stream data from unpacker (pointer copy solution)
 		pdata = Detector_Systems[PrcID_Conv]->get_pdata();
 		
