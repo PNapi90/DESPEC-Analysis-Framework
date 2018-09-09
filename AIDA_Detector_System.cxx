@@ -18,7 +18,10 @@ AIDA_Detector_System::AIDA_Detector_System(){
 
     tmp_AIDA_t0_0_15  = 0;              
     tmp_AIDA_t0_36_63 = 0;              
-    tmp_AIDA_t0_16_35 = 0; 
+    tmp_AIDA_t0_16_35 = 0;
+
+    decayItem = ADCDataItem();
+    implantItem = ADCDataItem();
         
     check_FEE64_timestamp = new Bool_t[128];
     
