@@ -49,6 +49,7 @@ void AIDA_Decay_Event_Store::Store_Decay_Event(ADCDataItem* Decay_Item){
     x_coord[amount] = Decay_Item->GetRealChannelID();
     Time[amount] = Decay_Item->GetTimestamp();
 
+    cout << "AMOUNT " << amount << endl;
     Decay_Item->Print_Event();
 
     amount++;
