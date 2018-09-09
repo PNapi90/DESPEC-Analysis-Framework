@@ -392,7 +392,7 @@ void AIDA_Detector_System::load_config_file(){
         cerr << "Could not find AIDA Config File!" << endl;
         exit(0);
     }
-
+    cout << "Setting AIDA Config..." << endl;
     string line;
     int FEE_num,	DSSSD_num,	Front_Back,	Left_Right;
     while(file.good()){
@@ -400,9 +400,11 @@ void AIDA_Detector_System::load_config_file(){
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format,&FEE_num,&DSSSD_num,
 					&Front_Back,&Left_Right);
-	FEE_allocation[FEE_num-1][0] = DSSSD_num;
-	FEE_allocation[FEE_num-1][1] = Front_Back;
-	FEE_allocation[FEE_num-1][2] = Left_Right;
+        FEE_allocation[FEE_num-1][0] = DSSSD_num;
+        FEE_allocation[FEE_num-1][1] = Front_Back;
+        FEE_allocation[FEE_num-1][2] = Left_Right;
+        for(int i = 0;i < 3;++i) cout << FEE_allocation[FEE_num-1][i] << " ";
+        cout << "-> " << FEE_num-1 << endl;
 	
     }
 }
