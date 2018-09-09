@@ -101,10 +101,9 @@ void ADCDataItem::SetFront_Back(int x_y){
 
 }
 void ADCDataItem::SetLayer(int layer){
-    
-	layer_number = layer;
-
+    layer_number = layer;
 }
+
 int ADCDataItem::GetFront_Back(){
 
 	return front_back;

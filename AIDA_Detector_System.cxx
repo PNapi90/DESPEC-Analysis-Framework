@@ -24,12 +24,12 @@ AIDA_Detector_System::AIDA_Detector_System(){
     channel_offsets_map = new double*[num_channels];
 
     for(int i = 0; i < num_FEE64s; ++i){
-	    FEE_allocation[i] = new int[3];
-	    FEE_polarity_map[i] = 0;
-	    channel_offsets_map[i] = new double[num_channels];
-	    
-	    for(int j = 0; j < 3; ++j)			FEE_allocation[i][j] = -1;
-	    for(int k = 0; k < num_channels; ++k)	channel_offsets_map[i][k] = -1;    
+        FEE_allocation[i] = new int[3];
+        FEE_polarity_map[i] = 0;
+        channel_offsets_map[i] = new double[num_channels];
+        
+        for(int j = 0; j < 3; ++j) FEE_allocation[i][j] = -1;
+        for(int k = 0; k < num_channels; ++k) channel_offsets_map[i][k] = -1;    
     }
     
     ADCLowEnergyGain = new double*[num_FEE64s];
@@ -430,9 +430,8 @@ void AIDA_Detector_System::load_channel_order(){
         getline(file,line,'\n');
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format,&ChannelID);
-	feeChannelOrder[line_number] = ChannelID;
-	line_number++;
-	
+        feeChannelOrder[line_number] = ChannelID;
+        line_number++;
     }
 }
 
@@ -444,9 +443,9 @@ void AIDA_Detector_System::get_position_data(ADCDataItem & adcItem){
     int FEE_ID = decayItem.GetFEE64ID();
     int Channel_ID = decayItem.GetChannelID();
     
-    cout << "FEE " << FEE_ID << endl;
+    cout << "FEE " << FEE_ID << " " << &decayItem << endl;
     decayItem.SetLayer(FEE_allocation[FEE_ID - 1][0]);
-
+    
     decayItem.SetFront_Back(FEE_allocation[FEE_ID - 1][1]);
     
     if(FEE_allocation[FEE_ID - 1][2] == 1) decayItem.SetRealChannelID(feeChannelOrder[Channel_ID]);
