@@ -250,6 +250,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 	//bool WHITE_RABBIT_USED = true;
 	
+	Int_t PrcID_Conv = 0;
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -263,7 +264,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		//cout<<"Proc   ID is : "<<PrcID<<endl;
 
-		Int_t PrcID_Conv = get_Conversion(PrcID);
+		PrcID_Conv = get_Conversion(PrcID);
 		
 		Int_t sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
 		if(Cout_counter < 20 && false){
