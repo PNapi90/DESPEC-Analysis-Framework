@@ -142,8 +142,6 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
 
     iterator_mutex = 0;
 
-
-
     //set latest measured time for time comparison
     Time_Last = Time_Arr[len-1];
 
@@ -154,6 +152,11 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     
     //array of WR times
     this->Time_Arr = Time_Arr;
+
+    cout << "---- DATA ----" << endl;
+    for(int i = 0;i < len;++i) cout << X_Arr[i] << " " << Energy_Arr[i] << " " << Time_Arr[i] << endl;
+    cout << "---- END -----" << endl;
+    
 
     //data point splitting for threading
     data_points_per_thr = amount_of_data_points/am_threads;
