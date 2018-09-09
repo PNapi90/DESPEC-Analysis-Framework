@@ -442,7 +442,7 @@ void AIDA_Detector_System::get_position_data(ADCDataItem & adcItem){
     int FEE_ID = decayItem.GetFEE64ID();
     int Channel_ID = decayItem.GetChannelID();
     
-    
+    cout << "FEE " << FEE_ID << endl;
     decayItem.SetLayer(FEE_allocation[FEE_ID - 1][0]);
 
     decayItem.SetFront_Back(FEE_allocation[FEE_ID - 1][1]);
