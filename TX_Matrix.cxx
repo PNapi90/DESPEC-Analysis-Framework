@@ -153,11 +153,6 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     //array of WR times
     this->Time_Arr = Time_Arr;
 
-    cout << "---- DATA ----" << endl;
-    for(int i = 0;i < len;++i) cout << X_Arr[i] << " " << Energy_Arr[i] << " " << Time_Arr[i] << endl;
-    cout << "---- END -----" << endl;
-    
-
     //data point splitting for threading
     data_points_per_thr = amount_of_data_points/am_threads;
     amount_of_data_points_d = (double) amount_of_data_points;
@@ -199,6 +194,14 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         
         deleteable_rows = nullptr;
     }
+    cout << "-----REL-----" << endl;
+    for(int i = 0;i < amount_of_data_points;++i){
+        if(relevant_for_x[i]){
+            for(int j = 0;j < len_line_X[i];++j) cout << relevant_for_x[i][j] << " ";
+            cout << endl;
+        }
+    }
+    cout << "done" << endl;
 
     //positions on respective plane (x/y coordinate)
     this->X_Arr = X_Arr;
