@@ -324,7 +324,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		
 		//get data from subevent
-		Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
+		if(PrcID_Conv != 1) Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
 		
 
 		//if(PrcID_Conv == 3) Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
@@ -366,7 +366,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 	}
 
-	
+	if(PrcID_Conv == 1) Detector_Systems[1]->get_Event_data(RAW);
 
 	//===========================================================
 	//	the White rabbit time difference of coincident events
