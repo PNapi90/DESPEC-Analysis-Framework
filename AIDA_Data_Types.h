@@ -42,6 +42,8 @@ class ADCDataItem{
 		void SetFront_Back(int);
 		void SetLayer(int layer);
 		void SetCalEnergy(double);
+
+		double get_calibrated_energy();
 		int GetFront_Back();
 		int GetLayer();
 		void Print_Event();

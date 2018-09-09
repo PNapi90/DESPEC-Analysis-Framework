@@ -63,6 +63,12 @@ void ADCDataItem::SetTimestamp(ULong64_t newTimestamp){
 	timestamp = newTimestamp;
 }
 
+
+double ADCDataItem::get_calibrated_energy(){
+	return calibrated_energy;
+}
+
+
 ULong64_t ADCDataItem::GetTimestamp(){
 	return timestamp;
 }

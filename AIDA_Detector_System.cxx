@@ -220,8 +220,8 @@ void AIDA_Detector_System::Set_AIDA_Timestamp(){
     
     pdata++;*/
     
-    cout<<"AIDA Timestamp = "<<AIDA_t0<<endl;
-    cout<<"AIDA Timestamp Base = "<<AIDA_t0_base<<endl;
+    //cout<<"AIDA Timestamp = "<<AIDA_t0<<endl;
+    //cout<<"AIDA Timestamp Base = "<<AIDA_t0_base<<endl;
 
 
 }
@@ -248,7 +248,7 @@ void AIDA_Detector_System::Set_AIDA_Implantation(AIDA_ADC_1* ADC_head){
 
 void AIDA_Detector_System::Unpack_AIDA_Decay_DATA(AIDA_ADC_1* ADC_head){
     
-    //cout<<"AIDA Decay!!!"<<endl;
+    cout<<"AIDA Decay!!!"<<endl;
     
     //AIDA_ADC_2* ADC_head_2  = (AIDA_ADC_2*) pdata;
     
@@ -264,7 +264,7 @@ void AIDA_Detector_System::Unpack_AIDA_Decay_DATA(AIDA_ADC_1* ADC_head){
     pdata++;
 
     //Store "Decay" Event in AIDA Decay Event Store
-    //AIDA_Store->Store_Decay_Event(&decayItem); 
+    AIDA_Store->Store_Decay_Event(&decayItem); 
     
     //decayItem.Print_Event();
 
