@@ -42,7 +42,7 @@ AIDA_Decay_Event_Store::~AIDA_Decay_Event_Store(){
 
 //---------------------------------------------------------------
 
-void AIDA_Decay_Event_Store::Store_Decay_Evt(ADCDataItem* Decay_Item){
+void AIDA_Decay_Event_Store::Store_Decay_Event(ADCDataItem* Decay_Item){
     Energy[amount] = Decay_Item->get_calibrated_energy();
     z_strip[amount] = Decay_Item->GetLayer();
     x_or_y[amount] = (Decay_Item->GetFront_Back() == 1);

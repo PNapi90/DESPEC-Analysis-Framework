@@ -28,7 +28,7 @@ public:
     AIDA_Decay_Event_Store();
     ~AIDA_Decay_Event_Store();
     
-    void Store_Decay_Evt(ADCDataItem*);
+    void Store_Decay_Event(ADCDataItem*);
     void Reset();
 
     //getters
