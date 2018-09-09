@@ -350,9 +350,7 @@ void AIDA_Detector_System::load_polarity_file(){
         getline(file,line,'\n');
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format, &FEE_num, &Polarity);
-		
-	FEE_polarity_map[FEE_num-1] = Polarity;
-	
+        FEE_polarity_map[FEE_num-1] = Polarity;
     }
 }
 
@@ -394,9 +392,12 @@ void AIDA_Detector_System::load_config_file(){
         cerr << "Could not find AIDA Config File!" << endl;
         exit(0);
     }
-    cout << "Setting AIDA Config..." << endl;
+
     string line;
-    int FEE_num,	DSSSD_num,	Front_Back,	Left_Right;
+    int FEE_num = 0;
+    int DSSSD_num = 0;
+    int Front_Back = 0;
+    int Left_Right = 0;
     while(file.good()){
         getline(file,line,'\n');
         if(line[0] == '#') continue;
@@ -404,10 +405,6 @@ void AIDA_Detector_System::load_config_file(){
         FEE_allocation[FEE_num-1][0] = DSSSD_num;
         FEE_allocation[FEE_num-1][1] = Front_Back;
         FEE_allocation[FEE_num-1][2] = Left_Right;
-
-        for(int i = 0;i < 3;++i) cout << FEE_allocation[FEE_num-1][i] << " ";
-        cout << "-> " << FEE_num-1 << endl;
-	
     }
 }
 
@@ -444,9 +441,7 @@ void AIDA_Detector_System::get_position_data(ADCDataItem &adcItem){
     
     int FEE_ID = decayItem.GetFEE64ID();
     int Channel_ID = decayItem.GetChannelID();
-    cout << FEE_allocation << " " << FEE_allocation[FEE_ID-1] << endl;
-    cout << "FEE " << FEE_ID << " " << &decayItem <<" "<<&adcItem;
-    cout << FEE_allocation[FEE_ID - 1][0] << endl;
+    
     decayItem.SetLayer(FEE_allocation[FEE_ID - 1][0]);
     
     decayItem.SetFront_Back(FEE_allocation[FEE_ID - 1][1]);
