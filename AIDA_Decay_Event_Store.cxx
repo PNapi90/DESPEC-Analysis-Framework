@@ -55,7 +55,6 @@ void AIDA_Decay_Event_Store::Store_Decay_Event(ADCDataItem* Decay_Item){
 //---------------------------------------------------------------
 
 void AIDA_Decay_Event_Store::Reset(){
-    cout << "RESET AIDA_Decay_Event_Store after " << amount << " events" << endl;
     for(int i = 0;i < amount;++i){
         Energy[i] = 0;
         z_strip[i] = 0;

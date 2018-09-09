@@ -250,7 +250,7 @@ void AIDA_Detector_System::Set_AIDA_Implantation(AIDA_ADC_1* ADC_head){
 
 void AIDA_Detector_System::Unpack_AIDA_Decay_DATA(AIDA_ADC_1* ADC_head){
     
-    cout<<"AIDA Decay!!!"<<endl;
+    //cout<<"AIDA Decay!!!"<<endl;
     
     //AIDA_ADC_2* ADC_head_2  = (AIDA_ADC_2*) pdata;
     
@@ -369,8 +369,9 @@ void AIDA_Detector_System::load_offsets_file(){
     }
 
     string line;
-    int FEE_num,	Channel_num;
-    double  Offset;
+    int FEE_num = 0;
+    int Channel_num = 0;
+    double Offset = 0.;
     while(file.good()){
         getline(file,line,'\n');
         if(line[0] == '#') continue;
