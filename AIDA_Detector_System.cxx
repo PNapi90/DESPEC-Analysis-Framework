@@ -374,8 +374,7 @@ void AIDA_Detector_System::load_offsets_file(){
         getline(file,line,'\n');
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format, &FEE_num, &Channel_num, &Offset);
-	channel_offsets_map[FEE_num-1][Channel_num] = Offset;
-	
+        channel_offsets_map[FEE_num-1][Channel_num] = Offset;
     }
 }
 
@@ -398,11 +397,11 @@ void AIDA_Detector_System::load_config_file(){
     while(file.good()){
         getline(file,line,'\n');
         if(line[0] == '#') continue;
-        sscanf(line.c_str(),format,&FEE_num,&DSSSD_num,
-					&Front_Back,&Left_Right);
+        sscanf(line.c_str(),format,&FEE_num,&DSSSD_num,&Front_Back,&Left_Right);
         FEE_allocation[FEE_num-1][0] = DSSSD_num;
         FEE_allocation[FEE_num-1][1] = Front_Back;
         FEE_allocation[FEE_num-1][2] = Left_Right;
+
         for(int i = 0;i < 3;++i) cout << FEE_allocation[FEE_num-1][i] << " ";
         cout << "-> " << FEE_num-1 << endl;
 	
@@ -443,7 +442,7 @@ void AIDA_Detector_System::get_position_data(ADCDataItem & adcItem){
     int FEE_ID = decayItem.GetFEE64ID();
     int Channel_ID = decayItem.GetChannelID();
     
-    cout << "FEE " << FEE_ID << " " << &decayItem << endl;
+    cout << "FEE " << FEE_ID << " " << &decayItem <<" " << FEE_allocation[FEE_ID - 1][0] << endl;
     decayItem.SetLayer(FEE_allocation[FEE_ID - 1][0]);
     
     decayItem.SetFront_Back(FEE_allocation[FEE_ID - 1][1]);
