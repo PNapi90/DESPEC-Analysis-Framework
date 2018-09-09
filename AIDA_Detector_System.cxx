@@ -11,13 +11,24 @@ AIDA_Detector_System::AIDA_Detector_System(){
 
     Processor = new AIDA_Processor(3);
     AIDA_Store = new AIDA_Decay_Event_Store();
+
+    itemADC       = 0;
+    itemFEE       = 0;
+    itemTimestamp = 0;
+
+    tmp_AIDA_t0_0_15  = 0;              
+    tmp_AIDA_t0_36_63 = 0;              
+    tmp_AIDA_t0_16_35 = 0; 
         
     check_FEE64_timestamp = new Bool_t[128];
     
-    for(int i = 0; i < 128; i++) check_FEE64_timestamp[i] = true;
+    for(int i = 0; i < 128;++i) check_FEE64_timestamp[i] = true;
     
     feeChannelOrder = new int[num_channels];
-    for(int i = 0; i < num_channels; i++) check_FEE64_timestamp[i] = -1;
+    for(int i = 0; i < num_channels; i++){
+        check_FEE64_timestamp[i] = -1;
+        feeChannelOrder[i] = -1;
+    }
 
     FEE_allocation = new int*[num_FEE64s];
     FEE_polarity_map = new int[num_FEE64s];
@@ -45,10 +56,6 @@ AIDA_Detector_System::AIDA_Detector_System(){
 		ADCHighEnergyGain[i][j] = 0.7; 	//MeV/ch
 		
 	    }
-
-	    
-	    
-	    
     }
     
     ADCItemCounts = new int*[24];
@@ -56,14 +63,13 @@ AIDA_Detector_System::AIDA_Detector_System(){
     
     //initialise the ADC item counter to 0
     for(int i = 0; i < 24; i++){
-	
-	ADCItemCounts[i] = new int[4];
-	ADCLastTimestamp[i] = new ULong64_t[4];
-	
-	for(int j = 0; j < 4; j++){
-		ADCItemCounts[i][j] = 0;
-		ADCLastTimestamp[i][j] = 0;
-	}
+        ADCItemCounts[i] = new int[4];
+        ADCLastTimestamp[i] = new ULong64_t[4];
+
+        for(int j = 0; j < 4; j++){
+            ADCItemCounts[i][j] = 0;
+            ADCLastTimestamp[i][j] = 0;
+        }
     }
 
     
@@ -96,7 +102,7 @@ AIDA_Detector_System::~AIDA_Detector_System(){
 void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
     
     
-    pdata=psubevt->GetDataField();
+    pdata = psubevt->GetDataField();
     
     
     pdata_start = pdata;
@@ -105,7 +111,7 @@ void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
     
     //cout<<"Length = "<<sub_evt_length<<endl;
     
-    pdata+=5;
+    pdata += 5;
     
     //cout<<dec<<"pdata_start = "<<pdata_start<<endl;
     //cout<<dec<<"pdata = "<<pdata<<endl;
@@ -120,43 +126,36 @@ void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
 
 	//cout<<"Number into the cycle  "<<(pdata - pdata_start)<<endl;
     
-	AIDA_Time_First* t0_head  = (AIDA_Time_First*) pdata;
-	AIDA_ADC_1* ADC_head  = (AIDA_ADC_1*) pdata;
-	AIDA_1st_Disc* AIDA_disc  = (AIDA_1st_Disc*) pdata;
-	
-	tmp_FEE64ID   = (*pdata >> 22) & 0x003F;  			//tmp_FEE64
+        AIDA_Time_First* t0_head  = (AIDA_Time_First*) pdata;
+        AIDA_ADC_1* ADC_head  = (AIDA_ADC_1*) pdata;
+        AIDA_1st_Disc* AIDA_disc  = (AIDA_1st_Disc*) pdata;
 
-	
-    	if(t0_head->check == 2 && t0_head->infocode == 2) Pause_Timestamp(t0_head); // Pause Timestamp
-    	else if(t0_head->check == 2 && t0_head->infocode == 3) Resume_Timestamp(t0_head); // Resume Timestamp
-    	else if(t0_head->check == 2 && t0_head->infocode == 4){  // Shouldn't Happen
+        tmp_FEE64ID   = (*pdata >> 22) & 0x003F;  			//tmp_FEE64
 
-	    cout<<"Error: AIDA WR Timestamp 2nd Part Should not happen here!"<<endl;
-	    cout<<"AIDA WR Timestamp was split across Subevents!"<<endl;
+        if(t0_head->check == 2 && t0_head->infocode == 2) Pause_Timestamp(t0_head); // Pause Timestamp
+        else if(t0_head->check == 2 && t0_head->infocode == 3) Resume_Timestamp(t0_head); // Resume Timestamp
+        else if(t0_head->check == 2 && t0_head->infocode == 4){  // Shouldn't Happen
+            cout<<"Error: AIDA WR Timestamp 2nd Part Should not happen here!"<<endl;
+            cout<<"AIDA WR Timestamp was split across Subevents!"<<endl;
+            pdata++;
+            //exit(0);
+        }
+        else if(t0_head->check == 2 && t0_head->infocode == 5) Set_AIDA_Timestamp(); // White Rabbit Timestamp marker
+        //else if(t0_head->check == 2 && t0_head->infocode == 6) Set_AIDA_Timestamp(t0_head); // AIDA Disc Data
+        else if(t0_head->check == 2 && t0_head->infocode == 8){
 
-	    pdata++;
+            cout<<"Error: AIDA Correlation Scaler, not unpackable yet"<<endl; // AIDA Correlation Scaler
+            exit(0);
+        }
+        else if(ADC_head->check == 3 && ADC_head->ADC_range == 1 && check_FEE64_timestamp[tmp_FEE64ID]) Set_AIDA_Implantation(ADC_head);
+        else if(ADC_head->check == 3 && ADC_head->ADC_range == 0 && check_FEE64_timestamp[tmp_FEE64ID]) Unpack_AIDA_Decay_DATA(ADC_head); // Set_AIDA_DECAY/NOISE(ADC_head);
+        else if(AIDA_disc->check == 8 && AIDA_disc->second_check == 6) pdata++; //Check_AIDA_Disc_DATA();
 
-	    //exit(0);
-	     
-	}
-	else if(t0_head->check == 2 && t0_head->infocode == 5) Set_AIDA_Timestamp(); // White Rabbit Timestamp marker
-	//else if(t0_head->check == 2 && t0_head->infocode == 6) Set_AIDA_Timestamp(t0_head); // AIDA Disc Data
-	else if(t0_head->check == 2 && t0_head->infocode == 8){
-	    
-	    cout<<"Error: AIDA Correlation Scaler, not unpackable yet"<<endl; // AIDA Correlation Scaler
-	    exit(0);
-	
-	}
-	else if(ADC_head->check == 3 && ADC_head->ADC_range == 1 && check_FEE64_timestamp[tmp_FEE64ID]) Set_AIDA_Implantation(ADC_head);
-	else if(ADC_head->check == 3 && ADC_head->ADC_range == 0 && check_FEE64_timestamp[tmp_FEE64ID]) Unpack_AIDA_Decay_DATA(ADC_head); // Set_AIDA_DECAY/NOISE(ADC_head);
-	else if(AIDA_disc->check == 8 && AIDA_disc->second_check == 6) pdata++; //Check_AIDA_Disc_DATA();
-
-	else{ cout<<"Unidentified Thing:   AIDA Check = "<<t0_head->check<<"  INFO CODE = "<<t0_head->infocode<<"  FEE64???  "<<t0_head->FEE64_num<<endl;
-	    cout << hex << *(pdata) <<endl;
-	}
-	
-	pdata++;
-
+        else{
+            cout<<"Unidentified Thing:   AIDA Check = "<<t0_head->check<<"  INFO CODE = "<<t0_head->infocode<<"  FEE64???  "<<t0_head->FEE64_num<<endl;
+            cout << hex << *(pdata) <<endl;
+        }
+        pdata++;
     }
     
     
@@ -424,7 +423,7 @@ void AIDA_Detector_System::load_channel_order(){
     int line_number = 0;
 
     string line;
-    int ChannelID;
+    int ChannelID = 0;
     while(file.good()){
         getline(file,line,'\n');
         if(line[0] == '#') continue;

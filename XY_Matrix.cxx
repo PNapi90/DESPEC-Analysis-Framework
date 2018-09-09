@@ -18,10 +18,9 @@ XY_Matrix::XY_Matrix(int am_threads){
     amount_of_events = 0;
 
     deleted_events = new int[max_len];
+    for(int i = 0;i < max_len;++i) deleted_events[i] = -1;
 
-
-    Cluster_X = nullptr;
-    Cluster_Y = nullptr;
+    NULL_Arrays();
 
     cout << "XY created " << endl;
 }
