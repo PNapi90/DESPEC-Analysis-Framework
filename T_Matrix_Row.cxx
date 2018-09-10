@@ -40,6 +40,7 @@ void T_Matrix_Row::set_Row(ULong64_t* row,ULong64_t Time_i,int pos,int len_of_ro
     for(int i = pos+1;i < len_of_row;++i){
         delta = (double) (row[i] - Time_i);
         ROW = (abs(delta) < t_max);
+        cout << i << " " << delta << " " << row[i] << " " << Time_i << endl;
         if(ROW){
             Relevant_for_i[len_of_relevant] = i;
             len_of_relevant++;

@@ -264,6 +264,7 @@ void TX_Matrix::reset_Saved(){
 void TX_Matrix::Thread_T(int thr_num){
     int data_points_per_thr_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
     int row_start = thr_num*data_points_per_thr_tmp;
+    cout << "Thread_T " << row_start << " -> " << data_points_per_thr+row_start << endl;
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         T_Rows[i]->set_Row(Time_Arr,Time_Arr[i],i,amount_of_data_points); 
     }
