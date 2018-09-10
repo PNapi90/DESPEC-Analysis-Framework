@@ -159,17 +159,22 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     double am_threads_d = (double) am_threads;
     double remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr;
     data_points_per_thr_last = ((int) remaining*am_threads) + data_points_per_thr;
-
+    
+    cout << "THREADS" << endl;
+    cout << data_points_per_thr << " " << remaining << " " << data_points_per_thr_last << endl;
+    
     //sub threads for each xyz plane (standard = 1)
     thread t[am_threads];
 
     //check time differences between all events using threads
-    for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
+    cout << "Starting threads with " << am_threads << endl; 
+    for(int i = 0;i < am_threads;++i) t[i] = threading(true,i);
     for(int i = 0;i < am_threads;++i) t[i].join();
 
     int* deleteable_rows = nullptr;
 
     int rel_counter = 0;
+    int max_len = 0;
 
     for(int i = 0;i < amount_of_data_points;++i){
         //skip data points that already exist in events before
@@ -182,6 +187,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         deleteable_rows = T_Rows[i]->get_Relevant_Evts();
 
         if(len_line_X[i] > 0) relevant_for_x[i] = new int[len_line_X[i]];
+        max_len = (len_line_X[i] > max_len) ? len_line_X[i] : max_len;
         
         //loop over coincident events of line i
         for(int j = 0;j < len_line_X[i];++j){
@@ -199,7 +205,13 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     cout << "-----REL-----" << endl;
     for(int i = 0;i < amount_of_data_points;++i){
         if(relevant_for_x[i]){
-            for(int j = 0;j < len_line_X[i];++j) cout << relevant_for_x[i][j] << " ";
+            if(X_Arr[i] > 9) cout << X_Arr[i] << " | ";
+            else cout << 0 << X_Arr[i] << " | ";
+            for(int j = 0;j < max_len;++j){
+                if(j < len_line_X[i]) cout << setw(3) << X_Arr[relevant_for_x[i][j]];
+                else cout << setw(3) << 0;
+                cout.flush();
+            }
             cout << endl;
         }
     }
@@ -209,7 +221,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     this->X_Arr = X_Arr;
 
     //check if coincident events are neighbors (using threads)
-    for(int i = 0;i < am_threads;++i) t[i] = threading(true,i);
+    for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
     for(int i = 0;i < am_threads;++i) t[i].join();
     
     //set times
@@ -278,7 +290,9 @@ void TX_Matrix::Thread_X(int thr_num){
     
     //temporary sort array for position sorting
     int xy_for_sort[1000][2];
-
+    
+    bool check_bool = (thr_num == am_threads - 1);
+    cout << check_bool << " " << thr_num << " " << am_threads << endl;
     int data_points_per_thr_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
     int row_start = thr_num*data_points_per_thr_tmp;
     auto sort_ptr = (pair<int,int>*) xy_for_sort;
@@ -292,10 +306,13 @@ void TX_Matrix::Thread_X(int thr_num){
     int cluster_of_interest = 0;
     int cluster_of_interest_len = 0;
     
+    cout << "SKIP ARRAY " << row_start << " " <<data_points_per_thr_tmp  << endl;
+    for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i) cout << i << " " << skip_arr[i] <<" " << X_Arr[i]<< endl;
+    
     //loop over all events in thread
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         //skip if event not of interest (see Process(...))
-        if(skip_arr[i]) continue;
+        if(skip_arr[i] || !relevant_for_x[i]) continue;
         if(!relevant_for_x[i]){
             cerr << "Seems to be still happening" << endl;
             exit(0);

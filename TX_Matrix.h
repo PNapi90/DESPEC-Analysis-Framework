@@ -9,6 +9,7 @@
 #include <mutex>
 #include <cstdlib>
 #include <unistd.h>
+#include <iomanip>
 
 
 
@@ -21,7 +22,7 @@ typedef unsigned long long ULong64_t;
 class TX_Matrix{
 
 private:
-    const int max_len = 5000;
+    const int max_len = 7000;
     const double Time_tolerance = 1000;
 
     int amount_of_data_points,am_threads;
