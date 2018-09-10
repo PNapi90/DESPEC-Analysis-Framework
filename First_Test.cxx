@@ -23,7 +23,6 @@
 #include <fstream>
 #include <vector>
 
-
 #include "TSCNUnpackEvent.h"
 
 #include "Detector_System.cxx"
@@ -702,35 +701,43 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 	
 	for(int i = 0; i < 36; ++i){
     
-	    if(i%12 == 11) FAT_neighbour_check[i][(i-11)] = false;
-	    else FAT_neighbour_check[i][(i+1)] = false;
-	    if(i%12 == 0) FAT_neighbour_check[i][i+11] = false;
-	    else FAT_neighbour_check[i][(i-1)] = false;
+	    if(i%12 == 11) FAT_neighbour_check[i][(i-11)] = false; // Same Ring Rignt
+	    else FAT_neighbour_check[i][(i+1)] = false; // Same Ring Right
+	    if(i%12 == 0) FAT_neighbour_check[i][i+11] = false; // Same Ring Left
+	    else FAT_neighbour_check[i][(i-1)] = false; // Same Ring Left
     
-		    
-	    if(!same_ring_exclusion && i > 11 && i < 24){
-		    
-		if(i == 12){
-		     FAT_neighbour_check[i][35] = false;
-		     FAT_neighbour_check[35][i] = false;
-		}
-		else{
-		     FAT_neighbour_check[i][(i+11)] = false;
-		     FAT_neighbour_check[(i+11)][i] = false;
-		}
-		FAT_neighbour_check[i][(i+12)] = false;
-		FAT_neighbour_check[(i+12)][i] = false;
+	    if(!same_ring_exclusion){
 		
-		if(i == 12){
-		     FAT_neighbour_check[i][11] = false;
-		     FAT_neighbour_check[11][i] = false;
-		}
-		else{
-		     FAT_neighbour_check[(i-13)][i] = false;
-		}
-		FAT_neighbour_check[i][(i-12)] = false;
-		FAT_neighbour_check[(i-12)][i] = false;
+		if(i < 12){
 		    
+		    FAT_neighbour_check[i][(i+12)] = false; // Middle Ring Left
+
+		    if(i == 12) FAT_neighbour_check[i][(i+1)] = false; // Middle Ring Left for 11
+		    
+		    else FAT_neighbour_check[i][(i+13)] = false; // Middle Ring Right 
+		}
+		if(i > 11 && i < 24){
+		   		    
+		    FAT_neighbour_check[i][(i+12)] = false; // Upper Outer Ring
+		    FAT_neighbour_check[i][(i-12)] = false; // Lower Outer Ring
+
+		    if(i == 12){
+			 FAT_neighbour_check[i][(i+23)] = false; // Upper Outer Ring
+			 FAT_neighbour_check[i][(i-1)] = false; // Lower Outer Ring
+		    }
+		    else{
+			FAT_neighbour_check[i][(i+11)] = false; // Upper Outer Ring
+			FAT_neighbour_check[i][(i-13)] = false; // Lower Outer Ring
+		    } 		
+		}
+		if(i > 23){
+		    
+		    FAT_neighbour_check[i][(i-12)] = false; // Middle Ring Left
+
+		    if(i == 35) FAT_neighbour_check[i][(i-23)] = false; // Middle Ring Left for 35
+		    
+		    else FAT_neighbour_check[i][(i-11)] = false; // Middle Ring Right 
+		}
 	    }
 	}
     }
