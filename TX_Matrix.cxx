@@ -329,6 +329,7 @@ void TX_Matrix::Thread_X(int thr_num){
         }
 
         //...[0] sorting value, ...[1] position in array
+        cout << "next " << i+1 << " " << row_start << " " << data_points_per_thr_tmp+row_start << endl;
         xy_for_sort[len_line_X[i]][0] = X_Arr[i];
         xy_for_sort[len_line_X[i]][1] = i;
         
