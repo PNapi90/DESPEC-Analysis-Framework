@@ -214,16 +214,10 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     this->Time_Arr = nullptr;
     this->Energy_Arr = nullptr;
 
-    cout << "nullptr set" << endl;
 
     for(int i = 0;i < amount_of_data_points;++i){
-        //cout << "\r";
-        cout << "Row " << i << " " << skip_arr[i] << " " << relevant_for_x[i] <<" " << len_line_X[i]<< " deleted" << endl;
-        //cout.flush();
-        //cout.flush();
         skip_arr[i] = false;
         if(relevant_for_x[i]) delete[] relevant_for_x[i];
-        
     }
     cout << endl;
     cout << "Event done!" << endl;
@@ -339,17 +333,13 @@ void TX_Matrix::Thread_X(int thr_num){
         }
 
         //...[0] sorting value, ...[1] position in array
-        cout << "-------------------" << endl;
-        cout << "before " << i+1 << " " << row_start << " " << data_points_per_thr_tmp+row_start << endl;
         xy_for_sort[len_line_X[i]][0] = X_Arr[i];
         xy_for_sort[len_line_X[i]][1] = i;
         for(int k = 0;k < len_line_X[i]+1;++k) cout << xy_for_sort[k][0] << " " << xy_for_sort[k][1] << endl;
         //sort values by increasing position value
         sort(xy_for_sort.begin(),xy_for_sort.begin()+len_line_X[i]+1,
              [this](const vector<int>& p1, const vector<int>& p2) {return sortFunc(p1, p2);});
-        cout << "Sort array" << endl;
-        for(int k = 0;k < len_line_X[i]+1;++k) cout << xy_for_sort[k][0] << " " << xy_for_sort[k][1] << endl;
-
+        
         //check if points are neighbors (and how long a list of neighbors is)
         for(int j = 0;j <= len_line_X[i];++j){
 
@@ -359,7 +349,6 @@ void TX_Matrix::Thread_X(int thr_num){
                 
             if(delta_c == 1) tmp_cluster[c_counter][1]++;
             else{
-                cout << "counter: " << c_counter << endl;
                 c_counter++;
                 tmp_cluster[c_counter][0] = xy_for_sort[j][0];
                 tmp_cluster[c_counter][1] = xy_for_sort[j][0];
@@ -371,7 +360,6 @@ void TX_Matrix::Thread_X(int thr_num){
         
         //save clusters -- those clusters are directly used as output events of AIDA as 
         //possible beta decay events
-        cout << "next " << i+1 << " " << row_start << " " << data_points_per_thr_tmp+row_start << endl;
         //===========================================================
         MUTEX.lock();
 
@@ -382,8 +370,9 @@ void TX_Matrix::Thread_X(int thr_num){
 
         MUTEX.unlock();
         //===========================================================
+        
         c_counter = 0;
-        cout << "next " << i+1 << " " << row_start << " " << data_points_per_thr_tmp+row_start << endl;
+        
     }
     cout << "THREAD_X done" << endl;
 }
@@ -398,7 +387,6 @@ thread TX_Matrix::threading(bool i,int j){
 //---------------------------------------------------------------
 
 void TX_Matrix::set_Time_and_Energy(){
-    cout << "Setting E and T" << endl;
     int tmp_diff = 0;
     double tmp_sum = 0;
     int tmp_pos = 0;
@@ -408,16 +396,13 @@ void TX_Matrix::set_Time_and_Energy(){
         tmp_sum = 0;
         tmp_diff = Cluster_IDs[i][1] - Cluster_IDs[i][0];
         tmp_pos = Cluster_IDs[i][0];
-        cout << "For " << i << " ";
         for(int j = 0;j < tmp_diff;++j){
             Energies_sent[i][j] = Energy_Arr[tmp_pos];
             tmp_sum += Energies_sent[i][j];
             tmp_pos++;
         }
         Energy_sent[i] = tmp_sum;
-        cout << Energy_sent[i] << " " << Time_sent[i] << endl;
     }
-    cout << "DONE" << endl;
 }
 
 //---------------------------------------------------------------
