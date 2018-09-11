@@ -155,6 +155,9 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     //array of WR times
     this->Time_Arr = Time_Arr;
 
+    //positions on respective plane (x/y coordinate)
+    this->X_Arr = X_Arr;
+
     //data point splitting for threading
     data_points_per_thr = amount_of_data_points/am_threads;
     amount_of_data_points_d = (double) amount_of_data_points;
@@ -204,9 +207,6 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         deleteable_rows = nullptr;
     }
     print_COINC_MAT();
-
-    //positions on respective plane (x/y coordinate)
-    this->X_Arr = X_Arr;
 
     //check if coincident events are neighbors (using threads)
     for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
