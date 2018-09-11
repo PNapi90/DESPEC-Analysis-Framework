@@ -229,7 +229,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
 
 //---------------------------------------------------------------
 
-void TX_Matrix::(){
+void TX_Matrix::print_COINC_MAT(){
     cout << "-----MATRIX-----" << endl;
     for(int i = 0;i < amount_of_data_points;++i){
         if(relevant_for_x[i]){
