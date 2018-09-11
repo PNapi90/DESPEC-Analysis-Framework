@@ -118,20 +118,26 @@ thread AIDA_Processor::threading(bool type,int thr_it){
 inline void AIDA_Processor::non_threading(bool type,int iterator){
     bool xy_b = (iterator % 2 == 1);
     if(type){
-        double* Etmp = Stream->get_Energy(xy_b,iterator);
-        int* x_tmp = Stream->get_Coordinate(xy_b,iterator);
-        ULong64_t* T_tmp = Stream->get_Time(xy_b,iterator);
         int hits_tmp = Stream->get_amount_of_hits(xy_b,iterator);
-
-        cout << "NON THREAD! " << hits_tmp << endl;
         if(hits_tmp == 0){
             empty_bunch[iterator] = true;
             return;
         }
+        double* Etmp = Stream->get_Energy(xy_b,iterator);
+        int* x_tmp = Stream->get_Coordinate(xy_b,iterator);
+        ULong64_t* T_tmp = Stream->get_Time(xy_b,iterator);
+
+        cout << "NON THREAD! " << hits_tmp << endl;
+        
 
         TX[iterator]->Process(x_tmp,T_tmp,Etmp,hits_tmp,iterator);
     }
-    else XY[(iterator/((int) 2))]->Process(TX[iterator],TX[iterator + 1]);
+    else{
+        int hits_tmp1 = Stream->get_amount_of_hits(false,iterator);
+        int hits_tmp2 = Stream->get_amount_of_hits(true,iterator+1);
+        if(hits_tmp1 == 0 || hits_tmp2 == 0) return;
+        XY[(iterator/((int) 2))]->Process(TX[iterator],TX[iterator + 1]);
+    }
 }
 
 //---------------------------------------------------------------
