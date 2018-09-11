@@ -369,7 +369,7 @@ void TX_Matrix::Thread_X(int thr_num){
 
         MUTEX.unlock();
         //===========================================================
-        cout << "next" << endl;
+        cout << "next " << i+1 << " " << row_start << " " << data_points_per_thr_tmp+row_start << endl;
         sort_ptr = nullptr;
     }
 }
