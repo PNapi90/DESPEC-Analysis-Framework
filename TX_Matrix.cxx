@@ -221,7 +221,6 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         skip_arr[i] = false;
         if(relevant_for_x[i]) delete[] relevant_for_x[i];
     }
-    deleteable_rows = nullptr;
 }
 
 //---------------------------------------------------------------
@@ -412,6 +411,7 @@ void TX_Matrix::set_Time_and_Energy(){
         Energy_sent[i] = tmp_sum;
         cout << Energy_sent[i] << " " << Time_sent[i] << endl;
     }
+    cout << "DONE" << endl;
 }
 
 //---------------------------------------------------------------
