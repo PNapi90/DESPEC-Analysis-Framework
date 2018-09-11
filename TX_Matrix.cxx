@@ -49,6 +49,8 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
         Energy_sent[i] = 0;
         Energies_sent[i] = new double[128];
 
+        relevant_for_x[i] = nullptr;
+
         for(int j = 0;j < 128;++j) Energies_sent[i][j] = 0;
 
         Cluster_IDs[i] = new int[2];
@@ -211,11 +213,12 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     cout << "nullptr set" << endl;
 
     for(int i = 0;i < amount_of_data_points;++i){
+        cout << "\r";
+        cout << "Row " << i << " " << skip_arr[i] << " " << relevant_for_x[i] << " deleted\t\t\t\t";
+        cout.flush();
         skip_arr[i] = false;
         if(relevant_for_x[i]) delete[] relevant_for_x[i];
-        cout << "\r";
-        cout << "Row " << i << " deleted\t\t\t\t";
-        cout.flush();
+        
     }
     cout << endl;
     cout << "Event done!" << endl;
