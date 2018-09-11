@@ -53,15 +53,6 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
 
         Cluster_IDs[i] = new int[2];
         for(int j = 0;j < 2;++j) Cluster_IDs[i][j] = 0;
-        //try{
-        //    relevant_for_x[i] = new int[max_len];
-        //}
-        //catch(const std::bad_alloc&){
-        //    cerr << "std::bad_alloc occured!" << endl;
-        //    cerr << "Problem occured in relevant_for_x" << endl;
-        //    exit(0);
-        //}
-        //for(int j = 0;j < max_len;++j) relevant_for_x[i][j] = -1;
 
         Time_Arr_Save[i] = 0;
         Energy_Arr_Save[i] = 0;
@@ -217,10 +208,16 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     this->Time_Arr = nullptr;
     this->Energy_Arr = nullptr;
 
+    cout << "nullptr set" << endl;
+
     for(int i = 0;i < amount_of_data_points;++i){
         skip_arr[i] = false;
         if(relevant_for_x[i]) delete[] relevant_for_x[i];
+        cout << "\r";
+        cout << "Row " << i << " deleted\t\t\t\t";
+        cout.flush();
     }
+    cout << endl;
     cout << "Event done!" << endl;
 }
 
