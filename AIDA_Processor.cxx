@@ -118,6 +118,7 @@ thread AIDA_Processor::threading(bool type,int thr_it){
 inline void AIDA_Processor::non_threading(bool type,int iterator){
     bool xy_b = (iterator % 2 == 1);
     if(type){
+        cout << "TX_DATA" << endl;
         int hits_tmp = Stream->get_amount_of_hits(xy_b,iterator);
         if(hits_tmp == 0){
             empty_bunch[iterator] = true;
