@@ -114,6 +114,8 @@ inline void AIDA_Processor::non_threading(bool type,int iterator){
         ULong64_t* T_tmp = Stream->get_Time(xy_b,iterator);
         int hits_tmp = Stream->get_amount_of_hits(xy_b,iterator);
 
+        cout << "NON THREAD! " << hits_tmp << endl;
+
         TX[iterator]->Process(x_tmp,T_tmp,Etmp,hits_tmp,iterator);
     }
     else XY[(iterator/((int) 2))]->Process(TX[iterator],TX[iterator + 1]);
