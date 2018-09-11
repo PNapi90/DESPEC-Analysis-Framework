@@ -206,7 +206,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         
         deleteable_rows = nullptr;
     }
-    print_COINC_MAT();
+    print_COINC_MAT(max_len);
 
     //check if coincident events are neighbors (using threads)
     for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
@@ -229,7 +229,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
 
 //---------------------------------------------------------------
 
-void TX_Matrix::print_COINC_MAT(){
+void TX_Matrix::print_COINC_MAT(int max_len){
     cout << "-----MATRIX-----" << endl;
     for(int i = 0;i < amount_of_data_points;++i){
         if(relevant_for_x[i]){
@@ -318,10 +318,10 @@ void TX_Matrix::Thread_X(int thr_num){
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         //skip if event not of interest (see Process(...))
         if(skip_arr[i]) continue;
-        if(!relevant_for_x[i]){
-            cerr << "Seems to be still happening" << endl;
-            exit(0);
-        }
+        //if(!relevant_for_x[i]){
+        //    cerr << "Seems to be still happening" << endl;
+        //    exit(0);
+        //}
         //save (tmp) coordinates in xy_for_sort
         for(int j = 0;j < len_line_X[i];++j){
             xy_for_sort[j][0] = X_Arr[relevant_for_x[i][j]];
