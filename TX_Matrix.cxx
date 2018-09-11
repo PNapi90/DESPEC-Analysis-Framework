@@ -380,6 +380,7 @@ void TX_Matrix::Thread_X(int thr_num){
         c_counter = 0;
         cout << "next " << i+1 << " " << row_start << " " << data_points_per_thr_tmp+row_start << endl;
     }
+    cout << "THREAD_X done" << endl;
 }
 
 //---------------------------------------------------------------
