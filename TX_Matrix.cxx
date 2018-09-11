@@ -179,7 +179,6 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     int* deleteable_rows = nullptr;
 
     int rel_counter = 0;
-    int max_len = 0;
 
     for(int i = 0;i < amount_of_data_points;++i){
         //skip data points that already exist in events before
@@ -190,9 +189,6 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         deleteable_rows = T_Rows[i]->get_Relevant_Evts();
 
         if(len_line_X[i] > 0) relevant_for_x[i] = new int[len_line_X[i]];
-        else skip_arr[i] = true;
-
-        max_len = (len_line_X[i] > max_len) ? len_line_X[i] : max_len;
         
         //loop over coincident events of line i
         for(int j = 0;j < len_line_X[i];++j){
@@ -207,7 +203,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         
         deleteable_rows = nullptr;
     }
-    //print_COINC_MAT(max_len);
+    //print_COINC_MAT();
 
     //check if coincident events are neighbors (using threads)
     for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
@@ -230,16 +226,15 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
 
 //---------------------------------------------------------------
 
-void TX_Matrix::print_COINC_MAT(int max_len){
+void TX_Matrix::print_COINC_MAT(){
     cout << "-----MATRIX-----" << endl;
     for(int i = 0;i < amount_of_data_points;++i){
         if(relevant_for_x[i]){
             if(X_Arr[i] > 99) cout << X_Arr[i] << " | ";
             else if(X_Arr[i] > 9) cout << "0" << X_Arr[i] << " | ";
             else cout << "00" << X_Arr[i] << " | ";
-            for(int j = 0;j < max_len;++j){
-                if(j < len_line_X[i]) cout << setw(4) << X_Arr[relevant_for_x[i][j]];
-                //else cout << setw(4) << -1;
+            for(int j = 0;j < len_line_X[i];++j){
+                cout << setw(4) << X_Arr[relevant_for_x[i][j]];
                 cout.flush();
             }
             cout << endl;
@@ -254,6 +249,8 @@ inline bool TX_Matrix::keep_Event(int i){
     bool empty = (len_line_X[i] == 0);
     bool late_enough = (Time_Last - Time_Arr[i] < Time_tolerance);
 
+    if(empty && !late_enough) skip_arr[i] = true;
+
     return (empty && late_enough);
 }
 
@@ -263,6 +260,8 @@ void TX_Matrix::Save_Matrix_Row(int i){
     Time_Arr_Save[save_iter] = Time_Arr[i];
     X_Arr_Save[save_iter] = X_Arr[i];
     Energy_Arr_Save[save_iter] = Energy_Arr[i];
+
+    skip_arr[i] = true;
     
     save_iter++;
 }
