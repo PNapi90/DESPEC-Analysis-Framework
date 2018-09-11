@@ -354,7 +354,7 @@ void TX_Matrix::Thread_X(int thr_num){
                 
             if(delta_c == 1) tmp_cluster[c_counter][1]++;
             else{
-                cout << "counter: " << counter << endl;
+                cout << "counter: " << c_counter << endl;
                 c_counter++;
                 tmp_cluster[c_counter][0] = xy_for_sort[j][0];
                 tmp_cluster[c_counter][1] = xy_for_sort[j][0];
