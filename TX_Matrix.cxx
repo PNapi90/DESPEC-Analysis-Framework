@@ -182,6 +182,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         deleteable_rows = T_Rows[i]->get_Relevant_Evts();
 
         if(len_line_X[i] > 0) relevant_for_x[i] = new int[len_line_X[i]];
+        else relevant_for_x[i] = nullptr;
         
         //loop over coincident events of line i
         for(int j = 0;j < len_line_X[i];++j){
