@@ -393,6 +393,7 @@ thread TX_Matrix::threading(bool i,int j){
 //---------------------------------------------------------------
 
 void TX_Matrix::set_Time_and_Energy(){
+    cout << "Setting E and T" << endl;
     int tmp_diff = 0;
     double tmp_sum = 0;
     int tmp_pos = 0;
@@ -402,12 +403,14 @@ void TX_Matrix::set_Time_and_Energy(){
         tmp_sum = 0;
         tmp_diff = Cluster_IDs[i][1] - Cluster_IDs[i][0];
         tmp_pos = Cluster_IDs[i][0];
+        cout << "For " << i << " ";
         for(int j = 0;j < tmp_diff;++j){
             Energies_sent[i][j] = Energy_Arr[tmp_pos];
             tmp_sum += Energies_sent[i][j];
             tmp_pos++;
         }
         Energy_sent[i] = tmp_sum;
+        cout << Energy_sent[i] << " " << Time_sent[i] << endl;
     }
 }
 
