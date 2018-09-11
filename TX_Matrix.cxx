@@ -340,10 +340,10 @@ void TX_Matrix::Thread_X(int thr_num){
         xy_for_sort[len_line_X[i]][1] = i;
         for(int k = 0;k < len_line_X[i]+1;++k) cout << xy_for_sort[k][0] << " " << xy_for_sort[k][1] << endl;
         //sort values by increasing position value
-        sort(xy_for_sort.begin(),xy_for_sort.begin()+len_line_X[i]+1,
-             [this](const vector<int>& p1, const vector<int>& p2) {return sortFunc(p1, p2);});
+        //sort(xy_for_sort.begin(),xy_for_sort.begin()+len_line_X[i]+1,
+        //     [this](const vector<int>& p1, const vector<int>& p2) {return sortFunc(p1, p2);});
         cout << "Sort array" << endl;
-        for(int k = 0;k < len_line_X[i]+1;++k) cout << xy_for_sort[k][0] << " " << xy_for_sort[k][1] << endl;
+        for(int k = 0;k < len_line_X[i]+1;++k) cout << xy_for_sort[k][0] << " " << xy_for_sort[k][1] << X_Arr << endl;
 
         //check if points are neighbors (and how long a list of neighbors is)
         for(int j = 0;j <= len_line_X[i];++j){
