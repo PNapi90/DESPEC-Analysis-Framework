@@ -142,6 +142,8 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
 
     iterator_mutex = 0;
 
+    cout << "LEN of Process evt " << len << endl;
+
     //set latest measured time for time comparison
     Time_Last = Time_Arr[len-1];
 
