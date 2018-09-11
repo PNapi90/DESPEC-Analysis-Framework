@@ -338,9 +338,9 @@ void TX_Matrix::Thread_X(int thr_num){
         cout << "before " << i+1 << " " << row_start << " " << data_points_per_thr_tmp+row_start << endl;
         xy_for_sort[len_line_X[i]][0] = X_Arr[i];
         xy_for_sort[len_line_X[i]][1] = i;
-        
+        for(int k = 0;k < len_line_X[i]+1;++k) cout << xy_for_sort[k][0] << " " << xy_for_sort[k][1] << endl;
         //sort values by increasing position value
-        sort(xy_for_sort.begin(),xy_for_sort.begin() + len_line_X[i] + 1,
+        sort(xy_for_sort.begin(),xy_for_sort.begin()+len_line_X[i]+1,
              [this](const vector<int>& p1, const vector<int>& p2) {return sortFunc(p1, p2);});
         cout << "Sort array" << endl;
         for(int k = 0;k < len_line_X[i]+1;++k) cout << xy_for_sort[k][0] << " " << xy_for_sort[k][1] << endl;
