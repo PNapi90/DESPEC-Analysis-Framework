@@ -34,8 +34,6 @@ private:
 
     bool x_or_y;
 
-
-
     double am_threads_d,amount_of_data_points_d;
 
     ULong64_t* Time_Arr;
@@ -68,7 +66,8 @@ private:
     void Thread_X(int);
     void Thread_T(int);
     void Save_Matrix_Row(int);
-    
+    void print_COINC_MAT();
+
     void process_mem_usage(int);
 
     inline bool keep_Event(int);

@@ -203,20 +203,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         
         deleteable_rows = nullptr;
     }
-    cout << "-----REL-----" << endl;
-    for(int i = 0;i < amount_of_data_points;++i){
-        if(relevant_for_x[i]){
-            if(X_Arr[i] > 9) cout << X_Arr[i] << " | ";
-            else cout << 0 << X_Arr[i] << " | ";
-            for(int j = 0;j < max_len;++j){
-                if(j < len_line_X[i]) cout << setw(3) << X_Arr[relevant_for_x[i][j]];
-                else cout << setw(3) << 0;
-                cout.flush();
-            }
-            cout << endl;
-        }
-    }
-    cout << "done" << endl;
+    print_COINC_MAT();
 
     //positions on respective plane (x/y coordinate)
     this->X_Arr = X_Arr;
@@ -238,6 +225,26 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         if(relevant_for_x[i]) delete[] relevant_for_x[i];
     }
     deleteable_rows = nullptr;
+}
+
+//---------------------------------------------------------------
+
+void TX_Matrix::(){
+    cout << "-----MATRIX-----" << endl;
+    for(int i = 0;i < amount_of_data_points;++i){
+        if(relevant_for_x[i]){
+            if(X_Arr[i] > 99) cout << X_Arr[i] << " | ";
+            else if(X_Arr[i] > 9) cout << "0" << X_Arr[i] << " | ";
+            else cout << "00" << X_Arr[i] << " | ";
+            for(int j = 0;j < max_len;++j){
+                if(j < len_line_X[i]) cout << setw(4) << X_Arr[relevant_for_x[i][j]];
+                else cout << setw(4) << -1;
+                cout.flush();
+            }
+            cout << endl;
+        }
+    }
+    cout << "----------------" << endl;
 }
 
 //---------------------------------------------------------------
