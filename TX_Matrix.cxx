@@ -308,13 +308,10 @@ void TX_Matrix::Thread_X(int thr_num){
     int cluster_of_interest = 0;
     int cluster_of_interest_len = 0;
     
-    cout << "SKIP ARRAY " << row_start << " " <<data_points_per_thr_tmp  << endl;
-    for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i) cout << i << " " << skip_arr[i] <<" " << X_Arr[i]<< endl;
-    
     //loop over all events in thread
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         //skip if event not of interest (see Process(...))
-        if(skip_arr[i] || !relevant_for_x[i]) continue;
+        if(skip_arr[i]) continue;
         if(!relevant_for_x[i]){
             cerr << "Seems to be still happening" << endl;
             exit(0);
