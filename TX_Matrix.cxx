@@ -238,7 +238,7 @@ void TX_Matrix::print_COINC_MAT(){
             else cout << "00" << X_Arr[i] << " | ";
             for(int j = 0;j < max_len;++j){
                 if(j < len_line_X[i]) cout << setw(4) << X_Arr[relevant_for_x[i][j]];
-                else cout << setw(4) << -1;
+                //else cout << setw(4) << -1;
                 cout.flush();
             }
             cout << endl;
