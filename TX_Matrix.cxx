@@ -90,7 +90,7 @@ TX_Matrix::~TX_Matrix(){
         delete[] Thr_Time_Array[i];
     }
     for(int i = 0;i < max_len;++i){
-        delete[] relevant_for_x[i];
+        if(relevant_for_x[i]) delete[] relevant_for_x[i];
         delete[] Cluster_IDs[i];
         delete[] Energies_sent[i];
     }
