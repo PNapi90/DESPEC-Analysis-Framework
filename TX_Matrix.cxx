@@ -135,8 +135,6 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
 
     iterator_mutex = 0;
 
-    cout << "LEN of Process evt " << len << endl;
-
     //set latest measured time for time comparison
     Time_Last = Time_Arr[len-1];
 
@@ -158,14 +156,11 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     double remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr;
     data_points_per_thr_last = ((int) remaining*am_threads) + data_points_per_thr;
     
-    cout << "THREADS" << endl;
-    cout << data_points_per_thr << " " << remaining << " " << data_points_per_thr_last << endl;
-    
     //sub threads for each xyz plane (standard = 1)
     thread t[am_threads];
 
     //check time differences between all events using threads
-    cout << "Starting threads with " << am_threads << endl; 
+    
     for(int i = 0;i < am_threads;++i) t[i] = threading(true,i);
     for(int i = 0;i < am_threads;++i) t[i].join();
 
@@ -219,8 +214,6 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         skip_arr[i] = false;
         if(relevant_for_x[i]) delete[] relevant_for_x[i];
     }
-    cout << endl;
-    cout << "Event done!" << endl;
 }
 
 //---------------------------------------------------------------
@@ -283,7 +276,6 @@ void TX_Matrix::reset_Saved(){
 void TX_Matrix::Thread_T(int thr_num){
     int data_points_per_thr_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
     int row_start = thr_num*data_points_per_thr_tmp;
-    cout << "Thread_T " << row_start << " -> " << data_points_per_thr+row_start << endl;
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         T_Rows[i]->set_Row(Time_Arr,Time_Arr[i],i,amount_of_data_points); 
     }
@@ -305,7 +297,7 @@ void TX_Matrix::Thread_X(int thr_num){
     vector<vector<int> > xy_for_sort(2000,vector<int>(2,10000));
     
     bool check_bool = (thr_num == am_threads - 1);
-    cout << check_bool << " " << thr_num << " " << am_threads << endl;
+    
     int data_points_per_thr_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
     int row_start = thr_num*data_points_per_thr_tmp;
 

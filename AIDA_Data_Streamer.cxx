@@ -69,8 +69,6 @@ void AIDA_Data_Streamer::set_DATA(AIDA_Decay_Event_Store* Store){
     int* z_strip_tmp = Store->get_z_strip();
     int amount_tmp = Store->get_amount_of_events();
 
-    cout << "Setting data in Streamer " << amount_tmp << endl;
-
     int array_position = 0;
     for(int i = 0;i < amount_tmp;++i){
         //get xyz position from conversion array

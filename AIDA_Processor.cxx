@@ -80,8 +80,6 @@ void AIDA_Processor::PROCESSING(AIDA_Decay_Event_Store* Store){
     else{
         //Cluster x/y strips by time, energy and position
         for(int i = 0;i < amount_z_strips*2;++i) non_threading(TX_CALC,i);
-
-        cout << "Switching to XY" << endl;
             
         //Cluster X and Y of each z plane to possible beta clusters
         for(int i = 0;i < amount_z_strips;++i) if(!empty_bunch[i]) non_threading(XY_CALC,i);
@@ -118,7 +116,6 @@ thread AIDA_Processor::threading(bool type,int thr_it){
 inline void AIDA_Processor::non_threading(bool type,int iterator){
     bool xy_b = (iterator % 2 == 1);
     if(type){
-        cout << "TX_DATA" << endl;
         int hits_tmp = Stream->get_amount_of_hits(xy_b,iterator);
         if(hits_tmp == 0){
             empty_bunch[iterator] = true;
@@ -127,9 +124,6 @@ inline void AIDA_Processor::non_threading(bool type,int iterator){
         double* Etmp = Stream->get_Energy(xy_b,iterator);
         int* x_tmp = Stream->get_Coordinate(xy_b,iterator);
         ULong64_t* T_tmp = Stream->get_Time(xy_b,iterator);
-
-        cout << "NON THREAD! " << hits_tmp << endl;
-        
 
         TX[iterator]->Process(x_tmp,T_tmp,Etmp,hits_tmp,iterator);
     }
