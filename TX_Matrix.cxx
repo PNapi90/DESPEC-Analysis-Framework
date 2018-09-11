@@ -221,6 +221,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         skip_arr[i] = false;
         if(relevant_for_x[i]) delete[] relevant_for_x[i];
     }
+    cout << "Event done!" << endl;
 }
 
 //---------------------------------------------------------------

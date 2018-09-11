@@ -80,6 +80,8 @@ void AIDA_Processor::PROCESSING(AIDA_Decay_Event_Store* Store){
     else{
         //Cluster x/y strips by time, energy and position
         for(int i = 0;i < amount_z_strips*2;++i) non_threading(TX_CALC,i);
+
+        cout << "Switching to XY" << endl;
             
         //Cluster X and Y of each z plane to possible beta clusters
         for(int i = 0;i < amount_z_strips;++i) if(!empty_bunch[i]) non_threading(XY_CALC,i);
