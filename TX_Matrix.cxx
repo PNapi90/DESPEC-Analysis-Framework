@@ -309,7 +309,7 @@ void TX_Matrix::Thread_X(int thr_num){
     cluster_counter[thr_num] = 0;
     
     //temporary sort array for position sorting
-    vector<vector<int> > xy_for_sort(1000,vector<int>(2,10000));
+    vector<vector<int> > xy_for_sort(2000,vector<int>(2,10000));
     
     bool check_bool = (thr_num == am_threads - 1);
     cout << check_bool << " " << thr_num << " " << am_threads << endl;
