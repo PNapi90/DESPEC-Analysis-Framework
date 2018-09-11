@@ -70,6 +70,7 @@ private:
 
     void process_mem_usage(int);
 
+    bool sortFunc(const std::vector<int>&,const std::vector<int>&);
     inline bool keep_Event(int);
     
     std::thread threading(bool,int);
