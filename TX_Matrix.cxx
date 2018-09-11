@@ -180,7 +180,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
 
     for(int i = 0;i < amount_of_data_points;++i){
         //skip data points that already exist in events before
-        if(skip_arr[i]) continue;
+        //if(skip_arr[i]) continue;
         
         //create coincidence matrix without 0 values
         len_line_X[i] = T_Rows[i]->get_Relevant_amount();
