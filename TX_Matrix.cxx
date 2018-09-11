@@ -336,6 +336,8 @@ void TX_Matrix::Thread_X(int thr_num){
         //sort values by increasing position value
         sort_ptr = (pair<int,int>*) xy_for_sort;
         sort(sort_ptr,sort_ptr + len_line_X[i] + 1);
+        cout << "Sort array" << endl;
+        for(int k = 0;k < len_line_X[i]+1;++k) cout << xy_for_sort[k][0] << " " << xy_for_sort[k][1] << endl;
 
         //check if points are neighbors (and how long a list of neighbors is)
         for(int j = 0;j <= len_line_X[i];++j){
