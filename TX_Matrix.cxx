@@ -358,7 +358,7 @@ void TX_Matrix::Thread_X(int thr_num){
         
         //save clusters -- those clusters are directly used as output events of AIDA as 
         //possible beta decay events
-        
+        cout << "next " << i+1 << " " << row_start << " " << data_points_per_thr_tmp+row_start << endl;
         //===========================================================
         MUTEX.lock();
 
