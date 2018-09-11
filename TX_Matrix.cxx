@@ -320,10 +320,10 @@ void TX_Matrix::Thread_X(int thr_num){
         //skip if event not of interest (see Process(...))
         cout << "SKIP " << i << " " << skip_arr[i] << " " << relevant_for_x[i] << " " << X_Arr[i] << endl;
         if(skip_arr[i]) continue;
-        //if(!relevant_for_x[i]){
-        //    cerr << "Seems to be still happening" << endl;
-        //    exit(0);
-        //}
+        if(!relevant_for_x[i]){
+            cerr << "Skip array pointer exception in TX_Matrix" << endl;
+            exit(0);
+        }
         //save (tmp) coordinates in xy_for_sort
         for(int j = 0;j < len_line_X[i];++j){
             xy_for_sort[j][0] = X_Arr[relevant_for_x[i][j]];
