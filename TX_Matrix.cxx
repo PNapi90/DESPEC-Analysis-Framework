@@ -190,6 +190,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         deleteable_rows = T_Rows[i]->get_Relevant_Evts();
 
         if(len_line_X[i] > 0) relevant_for_x[i] = new int[len_line_X[i]];
+        else skip_arr[i] = true;
 
         max_len = (len_line_X[i] > max_len) ? len_line_X[i] : max_len;
         
@@ -206,7 +207,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         
         deleteable_rows = nullptr;
     }
-    print_COINC_MAT(max_len);
+    //print_COINC_MAT(max_len);
 
     //check if coincident events are neighbors (using threads)
     for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
@@ -317,7 +318,7 @@ void TX_Matrix::Thread_X(int thr_num){
     //loop over all events in thread
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         //skip if event not of interest (see Process(...))
-        cout << "SKIP " << i << " " << skip_arr[i] << " " << relevant_for_x[i] << endl;
+        cout << "SKIP " << i << " " << skip_arr[i] << " " << relevant_for_x[i] << " " << X_Arr[i] << endl;
         if(skip_arr[i]) continue;
         //if(!relevant_for_x[i]){
         //    cerr << "Seems to be still happening" << endl;
