@@ -317,7 +317,6 @@ void TX_Matrix::Thread_X(int thr_num){
     //loop over all events in thread
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         //skip if event not of interest (see Process(...))
-        cout << "SKIP " << i << " " << skip_arr[i] << " " << relevant_for_x[i] << " " << X_Arr[i] << endl;
         if(skip_arr[i]) continue;
         if(!relevant_for_x[i]){
             cerr << "Skip array pointer exception in TX_Matrix" << endl;
@@ -370,7 +369,7 @@ void TX_Matrix::Thread_X(int thr_num){
 
         MUTEX.unlock();
         //===========================================================
-
+        cout << "next" << endl;
         sort_ptr = nullptr;
     }
 }
