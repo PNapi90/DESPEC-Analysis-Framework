@@ -22,6 +22,8 @@ private:
 
     bool USE_THREADS;
 
+    bool* empty_bunch;
+
     int amount_z_strips,amount_thr,am_sub_threads;
     int am_threads;
 

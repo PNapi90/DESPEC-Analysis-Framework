@@ -15,6 +15,9 @@ AIDA_Processor::AIDA_Processor(int amount_z_strips){
     if(USE_THREADS) amount_thr = amount_z_strips*2;
     else amount_thr = 1;
 
+    empty_bunch = new bool[amount_z_strips*2];
+    for(int i = 0;i < amount_z_strips*2;++i) empty_bunch[i] = false;
+
     Stream = new AIDA_Data_Streamer();
 
     cout << "Creating TX objects" << endl;
@@ -41,6 +44,7 @@ AIDA_Processor::~AIDA_Processor(){
     }
     delete[] XY;
     delete[] TX;
+    delete[] empty_bunch;
 }
 
 //---------------------------------------------------------------
@@ -48,6 +52,9 @@ AIDA_Processor::~AIDA_Processor(){
 void AIDA_Processor::PROCESSING(AIDA_Decay_Event_Store* Store){
     //seperate data into xyz of AIDA
     Stream->set_DATA(Store);
+
+    //reset empty data
+    for(int i = 0;i < amount_z_strips*2;++i) empty_bunch[i] = false;
 
     //Threading active ?
     if(USE_THREADS){
@@ -75,7 +82,7 @@ void AIDA_Processor::PROCESSING(AIDA_Decay_Event_Store* Store){
         for(int i = 0;i < amount_z_strips*2;++i) non_threading(TX_CALC,i);
             
         //Cluster X and Y of each z plane to possible beta clusters
-        for(int i = 0;i < amount_z_strips;++i) non_threading(XY_CALC,i);
+        for(int i = 0;i < amount_z_strips;++i) if(!empty_bunch[i]) non_threading(XY_CALC,i);
     }
     //Save events that are still relevant and had no time coincidence
     for(int i = 0;i < amount_z_strips*2;++i) TX[i]->set_Saved_To_Streamer(Stream);
@@ -115,6 +122,10 @@ inline void AIDA_Processor::non_threading(bool type,int iterator){
         int hits_tmp = Stream->get_amount_of_hits(xy_b,iterator);
 
         cout << "NON THREAD! " << hits_tmp << endl;
+        if(hits_tmp == 0){
+            empty_bunch[iterator] = true;
+            return;
+        }
 
         TX[iterator]->Process(x_tmp,T_tmp,Etmp,hits_tmp,iterator);
     }
