@@ -292,18 +292,23 @@ void TX_Matrix::Thread_T(int thr_num){
 
 //---------------------------------------------------------------
 
+bool TX_Matrix::sortFunc(const vector<int>& p1,const vector<int>& p2){
+    return p1[0] < p2[0];
+}
+
+//---------------------------------------------------------------
+
 void TX_Matrix::Thread_X(int thr_num){
     //counter of formed clusters set to 0
     cluster_counter[thr_num] = 0;
     
     //temporary sort array for position sorting
-    int xy_for_sort[1000][2];
+    vector<vector<int> > xy_for_sort(1000,vector<int>(2,0));
     
     bool check_bool = (thr_num == am_threads - 1);
     cout << check_bool << " " << thr_num << " " << am_threads << endl;
     int data_points_per_thr_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
     int row_start = thr_num*data_points_per_thr_tmp;
-    auto sort_ptr = (pair<int,int>*) xy_for_sort;
 
     //temporary cluster for sorting
     int tmp_cluster[10][2] = {0};
@@ -335,8 +340,7 @@ void TX_Matrix::Thread_X(int thr_num){
         xy_for_sort[len_line_X[i]][1] = i;
         
         //sort values by increasing position value
-        sort_ptr = (pair<int,int>*) xy_for_sort;
-        sort(sort_ptr,sort_ptr + len_line_X[i] + 1);
+        sort(xy_for_sort.begin(),xy_for_sort.begin() + len_line_X[i] + 1,sortFunc);
         cout << "Sort array" << endl;
         for(int k = 0;k < len_line_X[i]+1;++k) cout << xy_for_sort[k][0] << " " << xy_for_sort[k][1] << endl;
 
