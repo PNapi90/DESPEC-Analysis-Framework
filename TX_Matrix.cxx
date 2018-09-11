@@ -219,6 +219,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     for(int i = 0;i < amount_of_data_points;++i){
         cout << "\r";
         cout << "Row " << i << " " << skip_arr[i] << " " << relevant_for_x[i] <<" " << len_line_X[i]<< " ";
+        cout.flush();
         cout << relevant_for_x[i][0]  << " deleted\t\t\t\t";
         cout.flush();
         skip_arr[i] = false;
