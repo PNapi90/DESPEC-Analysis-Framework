@@ -38,6 +38,7 @@ AIDA_Decay_Event_Store::~AIDA_Decay_Event_Store(){
     Time = nullptr;
 
     amount = 0;
+    cout << "Deleted Store" << endl;
 }
 
 //---------------------------------------------------------------

@@ -212,6 +212,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	    cout <<"\t\t\t\t";
 	    cout.flush();
 	}
+
 	
 	if(cals_done) return kTRUE; //BAD!!!!
 	//if(count > 500000) return kTRUE;
@@ -255,6 +256,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
 		subevent_iter++;
+		if(count >= 200000) continue;
 
 		Int_t* pdata=psubevt->GetDataField();
 

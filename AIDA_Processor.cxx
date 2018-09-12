@@ -38,12 +38,15 @@ AIDA_Processor::AIDA_Processor(int amount_z_strips){
 
 AIDA_Processor::~AIDA_Processor(){
     delete Stream;
+    cout << "Deleted Stream" << endl;
     for(int i = 0;i < amount_z_strips*2;++i){
         if(i < amount_z_strips) delete XY[i];
         delete TX[i];
     }
     delete[] XY;
+    cout << "Deleted XY" << endl;
     delete[] TX;
+    cout << "Deleted TX" << endl;
     delete[] empty_bunch;
 }
 
