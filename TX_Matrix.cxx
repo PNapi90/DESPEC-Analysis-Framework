@@ -4,10 +4,10 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
+TX_Matrix::TX_Matrix(int strip_iterator,int am_threads,int* lens_sent){
 
     cout << "Initialize TX_Matrix " << strip_iterator << endl;
-
+    max_len = lens_sent[3];
     //load_thread_file();
     save_iter = 0;
     amount_of_data_points = 0;
@@ -36,15 +36,19 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads){
 
         len_line_X[i] = 0;
         skip_arr[i] = false;
-        //process_mem_usage(i);
+        
+        //try -- catch statement since T_Rows consumes most 
+        //part of needed memory
+        //----------------------------------------------------
         try{
-            T_Rows[i] = new T_Matrix_Row();
+            T_Rows[i] = new T_Matrix_Row(max_len,lens_sent[2]);
         }
         catch(const std::bad_alloc&){
-            cerr << "std::bad_alloc occured!" << endl;
-            cerr << "Problem occured in T_Rows" << endl;
+            process_mem_usage(i,lens_sent[2]);
             exit(0);
         }
+        //----------------------------------------------------
+        
         Time_sent[i] = 0;
         Energy_sent[i] = 0;
         Energies_sent[i] = new double[128];
@@ -105,7 +109,7 @@ TX_Matrix::~TX_Matrix(){
 
 //---------------------------------------------------------------
 
-void TX_Matrix::process_mem_usage(int iter){
+void TX_Matrix::process_mem_usage(int iter,int len_2){
     double vm_usage     = 0.0;
     double resident_set = 0.0;
 
@@ -123,10 +127,21 @@ void TX_Matrix::process_mem_usage(int iter){
     long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
     vm_usage = vsize / (1024.0*1024.0);
     resident_set = rss * page_size_kb;
-    cout << "\r";
-    cout << "MEMORY USED @ iteration " << iter << " -> ";
-    cout << "VM: " << vm_usage << "; RSS: " << resident_set << "\t\t\t";
-    cout.flush();
+    cerr << "==================================================================" << endl;
+    cerr << "MEMORY USED @ iteration " << iter << " -> ";
+    cerr << "VM: " << vm_usage << " MB" << endl;
+    cerr << "std::bad_alloc occured!" << endl;
+    cerr << "Problem occured in T_Rows" << endl;
+    cerr << "max_len is set to " << max_len;
+    double needed_mem = (max_len*len_2)/pow(2.,18.)*6.;
+    cerr << " -> " << needed_mem << " MB of RAM needed for T-Matrix" << endl;
+    cerr << "----------------------------------------------------------------" << endl;
+    cerr << "***HINT***" << endl;
+    cerr << "If VM is 8 GB, check maximum allowed virtual memory via ulimit -a" << endl;
+    cerr << "Decrease max_len (if possible) or ask System Admin @ GSI for more" << endl;
+    cerr << "possible memory per user" << endl;
+    cerr << "==================================================================" << endl;
+    
 }
 
 //---------------------------------------------------------------
@@ -212,7 +227,10 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
 
     for(int i = 0;i < amount_of_data_points;++i){
         skip_arr[i] = false;
-        if(relevant_for_x[i]) delete[] relevant_for_x[i];
+        if(relevant_for_x[i]){
+            delete[] relevant_for_x[i];
+            relevant_for_x[i] = nullptr;
+        }
     }
 }
 

@@ -19,7 +19,8 @@ private:
 
     const double max_T = 1000.;
     const double max_E = 1000.;
-    const int max_len = 1000;
+    
+    int max_len;
 
     int local_z;
     int data_points_per_thr_x,data_points_per_thr_last_x;
@@ -62,7 +63,7 @@ private:
     inline void Form_XY(double*,int,int);
 
 public:
-    XY_Matrix(int);
+    XY_Matrix(int,int);
     ~XY_Matrix();
     
     void Process(TX_Matrix*,TX_Matrix*);

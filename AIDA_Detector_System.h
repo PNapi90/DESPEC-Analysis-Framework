@@ -104,6 +104,8 @@ private:
 	//Decay Event Building
 	AIDA_Processor* Processor;
 	AIDA_Decay_Event_Store* AIDA_Store;
+	
+	void load_max_len_file(int*);
 
 
 

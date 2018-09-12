@@ -14,7 +14,8 @@ class AIDA_Data_Streamer{
 
 private:
 
-    const int max_len = 10000;
+    int max_len;
+    
     const int z_strip_amount = 3;
 
     int conversion_array[2][100];
@@ -35,7 +36,7 @@ private:
 
 
 public:
-    AIDA_Data_Streamer();
+    AIDA_Data_Streamer(int);
     ~AIDA_Data_Streamer();
 
     double* get_Energy(bool,int);

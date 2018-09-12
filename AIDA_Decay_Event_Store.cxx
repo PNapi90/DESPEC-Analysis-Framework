@@ -4,8 +4,9 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-AIDA_Decay_Event_Store::AIDA_Decay_Event_Store(){
+AIDA_Decay_Event_Store::AIDA_Decay_Event_Store(int max_len){
     amount = 0;
+    this->max_len = max_len;
     
     Energy = new double[max_len];
     z_strip = new int[max_len];
@@ -38,7 +39,6 @@ AIDA_Decay_Event_Store::~AIDA_Decay_Event_Store(){
     Time = nullptr;
 
     amount = 0;
-    cout << "Deleted Store" << endl;
 }
 
 //---------------------------------------------------------------

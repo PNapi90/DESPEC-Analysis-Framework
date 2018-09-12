@@ -11,7 +11,7 @@ typedef unsigned long long ULong64_t;
 class AIDA_Decay_Event_Store{
 private:
 
-    const int max_len = 10000;
+    int max_len;
 
     ULong64_t* Time;
     
@@ -25,7 +25,7 @@ private:
 
 
 public:
-    AIDA_Decay_Event_Store();
+    AIDA_Decay_Event_Store(int);
     ~AIDA_Decay_Event_Store();
     
     void Store_Decay_Event(ADCDataItem*);

@@ -22,7 +22,8 @@ typedef unsigned long long ULong64_t;
 class TX_Matrix{
 
 private:
-    const int max_len = 7000;
+    int max_len;
+    
     const double Time_tolerance = 1000;
 
     int amount_of_data_points,am_threads;
@@ -68,7 +69,7 @@ private:
     void Save_Matrix_Row(int);
     void print_COINC_MAT();
 
-    void process_mem_usage(int);
+    void process_mem_usage(int,int);
 
     bool sortFunc(const std::vector<int>&,const std::vector<int>&);
     inline bool keep_Event(int);
@@ -76,7 +77,7 @@ private:
     std::thread threading(bool,int);
 
 public:
-    TX_Matrix(int,int);
+    TX_Matrix(int,int,int*);
     ~TX_Matrix();
     
     void Process(int*,ULong64_t*,double*,int,int);

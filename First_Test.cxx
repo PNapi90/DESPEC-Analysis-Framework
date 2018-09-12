@@ -256,7 +256,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
 		subevent_iter++;
-		if(count >= 200000) continue;
+		if(count >= 100000) continue;
 
 		Int_t* pdata=psubevt->GetDataField();
 

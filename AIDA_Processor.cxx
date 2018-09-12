@@ -4,9 +4,14 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-AIDA_Processor::AIDA_Processor(int amount_z_strips){
+AIDA_Processor::AIDA_Processor(int amount_z_strips,int* lens_sent){
     this->amount_z_strips = amount_z_strips;
     
+    max_len_Streamer = lens_sent[0];
+    max_len_T_Matrix_Row = lens_sent[2];
+    max_len_TX_Matrix = lens_sent[3];
+    max_len_XY_Matrix = lens_sent[4];
+        
     USE_THREADS = false;
     am_sub_threads = 1;
 
@@ -18,19 +23,19 @@ AIDA_Processor::AIDA_Processor(int amount_z_strips){
     empty_bunch = new bool[amount_z_strips*2];
     for(int i = 0;i < amount_z_strips*2;++i) empty_bunch[i] = false;
 
-    Stream = new AIDA_Data_Streamer();
+    Stream = new AIDA_Data_Streamer(max_len_Streamer);
 
     cout << "Creating TX objects" << endl;
 
     TX = new TX_Matrix*[amount_z_strips*2];
-    for(int i = 0;i < amount_z_strips*2;++i) TX[i] = new TX_Matrix(i,am_sub_threads);
+    for(int i = 0;i < amount_z_strips*2;++i) TX[i] = new TX_Matrix(i,am_sub_threads,lens_sent);
 
     cout << "DONE" << endl;
     cout << "Creating XY objects" << endl;
 
     XY = new XY_Matrix*[amount_z_strips];
     cout << "Container created" << endl;
-    for(int i = 0;i < amount_z_strips;++i) XY[i] = new XY_Matrix(am_sub_threads);
+    for(int i = 0;i < amount_z_strips;++i) XY[i] = new XY_Matrix(am_sub_threads,max_len_XY_Matrix);
     cout << "DONE" << endl;
 }
 
@@ -38,15 +43,12 @@ AIDA_Processor::AIDA_Processor(int amount_z_strips){
 
 AIDA_Processor::~AIDA_Processor(){
     delete Stream;
-    cout << "Deleted Stream" << endl;
     for(int i = 0;i < amount_z_strips*2;++i){
-        if(i < amount_z_strips) delete XY[i];
+        if(i < amount_z_strips) delete XY[i]; 
         delete TX[i];
     }
     delete[] XY;
-    cout << "Deleted XY" << endl;
     delete[] TX;
-    cout << "Deleted TX" << endl;
     delete[] empty_bunch;
 }
 

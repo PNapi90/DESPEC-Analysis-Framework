@@ -21,6 +21,9 @@ private:
     const bool XY_CALC = false;
 
     bool USE_THREADS;
+    
+    int max_len_Streamer,max_len_T_Matrix_Row;
+    int max_len_TX_Matrix,max_len_XY_Matrix;
 
     bool* empty_bunch;
 
@@ -38,7 +41,7 @@ private:
     void check_Thread_Use();
 
 public:
-    AIDA_Processor(int);
+    AIDA_Processor(int,int*);
     ~AIDA_Processor();
     
     void PROCESSING(AIDA_Decay_Event_Store*);

@@ -1,0 +1,15 @@
+#File for Matrix dimensions of the AIDA Event Builder
+#The dimensions have to be set carefully since the program will
+#crash when an excessive amount of RAM is allocated
+#
+#There are 5 different max_lens for different arrays
+#Data_Streamer and Decay_Event_Store can remain untouched
+#T_Matrix_Row and TX_Matrix need the highest amount of memory
+#
+#--------------------------------------------------------------
+#
+Data_Streamer           10000
+Decay_Event_Store       10000
+T_Matrix_Row            7000
+TX_Matrix               7000
+XY_Matrix               1000

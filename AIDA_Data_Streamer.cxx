@@ -4,7 +4,8 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-AIDA_Data_Streamer::AIDA_Data_Streamer(){
+AIDA_Data_Streamer::AIDA_Data_Streamer(int max_len){
+    this->max_len = max_len;
     Time = new ULong64_t*[z_strip_amount*2];
     x_or_y = new bool*[z_strip_amount*2];
     Energy = new double*[z_strip_amount*2];

@@ -8,10 +8,16 @@ using namespace std;
 //---------------------------------------------------------------
 
 AIDA_Detector_System::AIDA_Detector_System(){
-
-    Processor = new AIDA_Processor(3);
-    AIDA_Store = new AIDA_Decay_Event_Store();
-
+    
+    int* lens_sent = new int[5];
+    load_max_len_file(lens_sent);
+    
+    Processor = new AIDA_Processor(3,lens_sent);
+    AIDA_Store = new AIDA_Decay_Event_Store(lens_sent[1]);
+    
+    delete[] lens_sent;
+    lens_sent = nullptr;
+    
     itemADC       = 0;
     itemFEE       = 0;
     itemTimestamp = 0;
@@ -553,3 +559,30 @@ int* AIDA_Detector_System::get_pdata(){return pdata;}
 
 //---------------------------------------------------------------
 
+void AIDA_Detector_System::load_max_len_file(int* len_sent){
+    ifstream data("Configuration_Files/MAX_LENS_FILE.txt");
+    int len = 0;
+    char s[1000];
+    string line;
+    string names[5] = {"Data_Streamer","Decay_Event_Store","T_Matrix_Row","TX_Matrix","XY_Matrix"};
+    for(int i = 0;i < 5;++i) len_sent[i] = 0;
+    
+    const char* format = "%s %d";
+    if(data.fail()){
+        cerr << "Could not find MAX_LENS_FILE.txt" << endl;
+        exit(0);
+    }
+    while(data.good()){
+        getline(data,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format,s,&len);
+        for(int i = 0;i < 5;++i){
+            if(string(s) == names[i]){
+                len_sent[i] = len;
+                break;
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------
