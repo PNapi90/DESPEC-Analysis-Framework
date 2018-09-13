@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
+#include <math.h>
 
 #include <TFile.h>
 #include <TH1.h>
@@ -51,7 +52,9 @@ private:
 	//These are used for mapping mod,chn to detector
 	int** det_ID_QDC;
 	int** det_ID_TDC;
-	int** FAT_positions;
+	double** FAT_positions;
+	
+	double* source_position_correction;
 
 	bool exiter;
 	bool no_data;
@@ -69,7 +72,8 @@ private:
 
 	void load_board_channel_file();
 	void load_det_angles();
-	
+	void load_pos_correction();
+
 	void reset_fired_channels();
 	void Check_QDC_DATA(QDC_Header*);
 	void Check_TDC_DATA();
@@ -78,6 +82,9 @@ private:
 	void Calibrate_TDC(int);
 	
 	void read_config_variables(std::string);
+	
+	
+	double distance_between_detectors(double, double, double, double, double, double);
 
 
 	//This could be used to activate deactivate individual
