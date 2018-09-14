@@ -3,7 +3,7 @@
 #---------------------------- 
 # GENERAL_CONFIGURATION
 # ---------------------------- 
-White_Rabbit_Enabled: 0
+White_Rabbit_Enabled: 1
 #
 # ---------------------------- 
 # FATIMA_CONFIGURATION

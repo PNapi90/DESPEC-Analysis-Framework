@@ -183,8 +183,11 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
                 if(pileup_flags[tmp_Ch_ID] == 1) this->pdata += 3;
             
                 else{
-		    
+		    		    
                     current_det = GALILEO_map[std::make_pair(board_id, tmp_Ch_ID)];
+		    
+		    //cout<<"Board ID = "<<board_id<<" Ch ID = "<<tmp_Ch_ID<<" Current Det = "<<current_det<<endl;
+
 		    
 		    if(current_det != -1){
 			
