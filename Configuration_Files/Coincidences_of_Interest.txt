@@ -8,6 +8,7 @@
 #Define coincidences between the different systems (lines with # at the beginning will be ignored)
 #(FRS = 0,AIDA = 1,PLASTIC = 2,FATIMA = 3,GALILEO = 4,FINGER = 5) 
 #
-2   3
+3 4
+#2   3
 #0   2   3
 #0   1   2   3   4   5

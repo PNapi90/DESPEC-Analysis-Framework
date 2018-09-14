@@ -291,6 +291,8 @@ using namespace std;
 			void Make_GALILEO_Histos();
 			void Fill_GALILEO_Histos();
 			
+			void FILL_HISTOGRAMS(int);
+			
 			
 			bool Check_Cal_Plastic();
 			

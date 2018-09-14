@@ -264,20 +264,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		PrcID_Conv = get_Conversion(PrcID);
 		
 		sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
-
-
-		if(PrcID_Conv == 0){
-			
-		    Detector_Systems[PrcID_Conv]->Process_FRS(psubevt);
-		    
-		    Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
-		    		    
-		    Fill_FRS_Histos();
-		    
-		    continue;
-		    
-		}
-			    
+   
 		    
 		if(WHITE_RABBIT_USED){
 			sub_evt_length = sub_evt_length - 5;
@@ -287,25 +274,15 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		}
 		called[iterator] = PrcID_Conv;
 		
-
-		//cout << WR_tmp[iterator] << " " << iterator << endl;
-
-		if(PrcID_Conv == 1 && sub_evt_length != 0){
-		    
-		    Detector_Systems[PrcID_Conv]->Process_AIDA(psubevt);
-		    
-		    cout<<"WR TIME = "<<WR_tmp[iterator]<<endl;
-
-		}
 		
 		//if necessary, directly print MBS for wanted Detector_System
-		if(PrcID_Conv == FRS) print_MBS(pdata,lwords);
-		
+		if(PrcID_Conv == FATIMA || PrcID_Conv == GALILEO) print_MBS(pdata,lwords);
 		
 		//=================================================================
 		//UNPACKING
 		//send subevent to respective unpacker
-		Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
+		if(PrcID_Conv <= 1) Detector_Systems[PrcID_Conv]->Process_PSubevt(psubevt);
+		else Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
 		
 		//get mbs stream data from unpacker (pointer copy solution)
 		pdata = Detector_Systems[PrcID_Conv]->get_pdata();
@@ -319,26 +296,21 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		//=================================================================
 		//Event Building
-		if(!SKIP_EVT_BUILDING && PrcID_Conv != 1) EvtBuilder[0]->set_Event(RAW);
+		if(!SKIP_EVT_BUILDING && PrcID_Conv != AIDA) EvtBuilder[0]->set_Event(RAW);
 		//=================================================================
 
 		if(cals_done) break;
 
-
 		//=================================================================
-		//HISTOGRAM FILLING
-		if(PrcID_Conv == 2 && !PLASTIC_CALIBRATION) Fill_Plastic_Histos();
-		//FATIMA CASE
-		if(PrcID_Conv == 3) Fill_FATIMA_Histos();
-		// GALILEO CASE //
-		if(PrcID_Conv == 4) Fill_GALILEO_Histos();
+		//HISTOGRAM FILLING (only singles)
+		FILL_HISTOGRAMS(PrcID_Conv);
 		//=================================================================
 
 		iterator++;
 		
 	}
 
-	if(PrcID_Conv == 1){
+	if(PrcID_Conv == AIDA){
 		Detector_Systems[1]->get_Event_data(RAW);
 		if(!SKIP_EVT_BUILDING) EvtBuilder[0]->set_Event(RAW);
 	}
@@ -350,6 +322,35 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 	return isValid;
 	
+}
+
+void TSCNUnpackProc::FILL_HISTOGRAMS(int PrcID_Conv){
+	switch(PrcID_Conv){
+	
+		case 0:
+			Fill_FRS_Histos();
+			break;
+		case 1:
+			//not yet implemented
+			break;
+		case 2:
+			if(!PLASTIC_CALIBRATION) Fill_Plastic_Histos();
+			break;
+		case 3:
+			Fill_FATIMA_Histos();
+			break;
+		case 4:
+			Fill_GALILEO_Histos();
+			break;
+		case 5:
+			//not yet implemented
+			break;
+		default:
+			cerr << "PrcID_Conv " << PrcID_Conv << " not known" << endl;
+			exit(0);
+	}
+
+
 }
 
 

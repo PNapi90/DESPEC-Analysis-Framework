@@ -15,9 +15,10 @@
 
 #include "Detector_System.cxx"
 
+typedef unsigned long long ULong64_t;
 
 class GALILEO_Detector_System : public Detector_System{
-typedef unsigned long long ULong64_t;
+
 
 private:
 	int max_am_dets;
@@ -66,9 +67,7 @@ public:
 	~GALILEO_Detector_System();
 	
 	//void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*){};
-	void Process_FRS(TGo4MbsSubEvent* psubevt){};
-
-	void Process_AIDA(TGo4MbsSubEvent* psubevt){};
+	void Process_PSubevt(TGo4MbsSubEvent*){};
 
 	void Process_MBS(int*);
 	void get_Event_data(Raw_Event*);
