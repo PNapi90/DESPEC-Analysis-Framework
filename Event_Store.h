@@ -13,7 +13,7 @@
 //#include "AIDA_Event.h"
 #include "PLASTIC_Event.h"
 #include "FATIMA_Event.h"
-//#include "GALILEO_Event.h"
+#include "GALILEO_Event.h"
 //#include "FINGER_Event.h"
 
 

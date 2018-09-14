@@ -47,8 +47,8 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
 
     Verbose_Write = true;
     if(Verbose_Write){
-        T_DIFF = new TH1D("FAT_PL_WR","FAT_PL_WR",1000,0,1000);
-        T_DIFF_Fine = new TH1D("FAT_PL_WR","FAT_PL_WR",2000,0,2000);
+        T_DIFF = new TH1D("FAT_GAL_WR","FAT_GAL_WR",1000,0,1000);
+        T_DIFF_Fine = new TH1D("FAT_GAL_WR","FAT_GAL_WR",2000,0,2000);
         TFILE = new TFile("Root_Trees/Verbose_root.root","RECREATE");
         TFILE->Add(T_DIFF);
         TFILE->Add(T_DIFF_Fine);
@@ -304,7 +304,7 @@ void Event_Store::create_Event(int type,Raw_Event* RAW){
             Event[3][val] = new FATIMA_Event(sys_interest[3],iter[3],RAW);
             break;
         case 4:
-            //Event[4][event_counter[4]] = new GALILEO_Event(sys_interest[4],iter[4],RAW);
+            Event[4][val] = new GALILEO_Event(sys_interest[4],iter[4],RAW);
             break;
         case 5:
             //Event[5][event_counter[5]] = new FINGER_Event(sys_interest[5],iter[5],RAW);
