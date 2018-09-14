@@ -6,6 +6,7 @@ using namespace std;
 
 White_Rabbit::White_Rabbit(){
     load_config_file();
+    pdata = nullptr;
     increase = 5;
 }
 
@@ -68,6 +69,8 @@ void White_Rabbit::set_triggered_detector(int WR_d){
 
 void White_Rabbit::process_White_Rabbit(int* pdata){
 
+    this->pdata = pdata;
+
     //check for White Rabbit header in pdata
     
     // unused // WR_Header *wrh = (WR_Header*) pdata;
@@ -79,7 +82,7 @@ void White_Rabbit::process_White_Rabbit(int* pdata){
     //calculate White Rabbit Time stamp
     double white_rabbit[4] = {0,0,0,0};
     for(int i = 0;i < 4;++i){
-        pdata += 1;
+        this->pdata++;
 
         WR_Data* wrd = (WR_Data*) pdata;
         white_rabbit[i] = wrd->timestamp;
@@ -105,6 +108,6 @@ int White_Rabbit::get_Detector_id(){return detector_id;}
 
 //---------------------------------------------------------------
 
-int White_Rabbit::get_increase(){return increase;}
+int* White_Rabbit::get_pdata(){return pdata;}
 
 //---------------------------------------------------------------

@@ -932,7 +932,7 @@ FRS_Detector_System::~FRS_Detector_System(){
 
 //---------------------------------------------------------------
 
-void FRS_Detector_System::Process_FRS(TGo4MbsSubEvent* psubevt){
+void FRS_Detector_System::Process_PSubevt(TGo4MbsSubEvent* psubevt){
     
     //Setup_Parameters();
     FRS_Unpack(psubevt);

@@ -104,15 +104,15 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	get_interest_arrays();
 	
-	
+	//Skip event building if plastic calibration is enabled
+	SKIP_EVT_BUILDING = SKIP_EVT_BUILDING || PLASTIC_CALIBRATION;
 
-	/*
+	
 	if(!SKIP_EVT_BUILDING){
 		EvtBuilder = new EventBuilder*[1];
 		EvtBuilder[0] = new Time_EventBuilder(amount_interest,length_interest,interest_array);
-		//EvtBuilder[1] = new Space_EventBuilder();
 	}
-	*/
+	
 	//Raw_Event object to handle data
 	RAW = new Raw_Event();
 
@@ -214,7 +214,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 	
 	if(cals_done) return kTRUE; //BAD!!!!
-	//if(count > 500000) return kTRUE;
+	
 	Bool_t isValid=kFALSE; // validity of output event //
   
 	TGo4MbsEvent* inp_evt = (TGo4MbsEvent* ) GetInputEvent(); // from this //
@@ -244,35 +244,28 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	
 
 	int subevent_iter = 0;
-
-	// unused // bool used[5];
-	// unused // for(int i = 0;i < 5;++i) used[i] = false;
-	
-	//bool WHITE_RABBIT_USED = true;
 	
 	Int_t PrcID_Conv = 0;
+
+	Int_t* pdata = nullptr;
+	Int_t lwords = 0;
+	Int_t PrcID = 0;
+	Int_t sub_evt_length = 0;
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
 		subevent_iter++;
 		if(count >= 100000) continue;
 
-		Int_t* pdata=psubevt->GetDataField();
-
-		Int_t lwords = psubevt->GetIntLen();
-	
-		Int_t PrcID=psubevt->GetProcid();
+		pdata = psubevt->GetDataField();
+		lwords = psubevt->GetIntLen();
+		PrcID = psubevt->GetProcid();
 		
-		//cout<<"Proc   ID is : "<<PrcID<<endl;
-
 		PrcID_Conv = get_Conversion(PrcID);
 		
-		Int_t sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
-		if(Cout_counter < 20 && false){
-			cout<<"Proc_ID is : "<<PrcID;//<<endl;
-			cout << " -> Conv " << PrcID_Conv << endl;
-			Cout_counter++;
-		}	
+		sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
+
+
 		if(PrcID_Conv == 0){
 			
 		    Detector_Systems[PrcID_Conv]->Process_FRS(psubevt);
@@ -290,8 +283,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			sub_evt_length = sub_evt_length - 5;
 			WR_tmp[iterator] = WR->get_White_Rabbit(pdata);
 						
-			pdata += WR->get_increase();
-						
+			pdata = WR->get_pdata();
 		}
 		called[iterator] = PrcID_Conv;
 		
@@ -306,127 +298,56 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 		}
 		
+		//if necessary, directly print MBS for wanted Detector_System
+		if(PrcID_Conv == FRS) print_MBS(pdata,lwords);
 		
-
-		//continue;
-
-		if(PrcID_Conv == 1 && false){
-			cout << "---------------------\n";
-			for(int i = 0;i < lwords;++i){
-				cout << hex << *(pdata + i) << " ";
-				if(i % 5 == 0 && i > 0) cout << endl;
-			}
-			cout << "\n---------------------\n";
-		}
 		
-
-
+		//=================================================================
+		//UNPACKING
 		//send subevent to respective unpacker
 		Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
 		
 		//get mbs stream data from unpacker (pointer copy solution)
 		pdata = Detector_Systems[PrcID_Conv]->get_pdata();
 		
-		
 		//get data from subevent
 		if(PrcID_Conv != 1) Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
-		
 
-		//if(PrcID_Conv == 3) Detector_Systems[PrcID_Conv]->get_Event_data(data_stream[PrcID_Conv]);
+		//=================================================================
 
 		cals_done = Detector_Systems[PrcID_Conv]->calibration_done();
 		
-		
-		//cout<<"Proc ID Conversion = "<<PrcID_Conv<<endl;
-		//cout<<"Plastic Calibration = "<<PLASTIC_CALIBRATION<<endl;
-		//cout<<"cals_done = "<<cals_done<<endl;
-		
-		/*	
-		if(!SKIP_EVT_BUILDING){
-			EvtBuilder[0]->set_Event(RAW);
-			//EvtBuilder[1]->set_Event(RAW);
-		}
-		*/
-		
+		//=================================================================
+		//Event Building
+		if(!SKIP_EVT_BUILDING && PrcID_Conv != 1) EvtBuilder[0]->set_Event(RAW);
+		//=================================================================
+
 		if(cals_done) break;
-		//continue;
-		//temporary
-		// unused //used[PrcID_Conv] = true;
-		
-		
-		//PLASTIC CASE
-		
-		//cout<<"Proc ID Conversion = "<<PrcID_Conv<<endl;
-		//cout<<"Plastic Calibration = "<<PLASTIC_CALIBRATION<<endl;
-		
+
+
+		//=================================================================
+		//HISTOGRAM FILLING
 		if(PrcID_Conv == 2 && !PLASTIC_CALIBRATION) Fill_Plastic_Histos();
-		
 		//FATIMA CASE
 		if(PrcID_Conv == 3) Fill_FATIMA_Histos();
-		
 		// GALILEO CASE //
 		if(PrcID_Conv == 4) Fill_GALILEO_Histos();
-		
+		//=================================================================
+
 		iterator++;
 		
 	}
 
-	if(PrcID_Conv == 1) Detector_Systems[1]->get_Event_data(RAW);
-
-	//===========================================================
-	//	the White rabbit time difference of coincident events
-	//	in FATIMA and PLASTIC is roughly (222 +- 8) ns
-	//===========================================================
-
-	//rudimentary event builder
-	if(iterator == 2){
-		if(called[0] != called[1]){
-			//White rabbit histograms
-			if((WR_tmp[1] - WR_tmp[0])/1000.  <= 10){
-				if(called[0] == 3) WR_HIST->Fill( ((double)(WR_tmp[1] - WR_tmp[0]))/1000. );
-				else WR_HIST->Fill( ((double)(WR_tmp[0] - WR_tmp[1]))/1000. );
-			}
-
-			if(called[0] == 3) WR_HIST2->Fill( ((double)(WR_tmp[1] - WR_tmp[0]))/1000. );
-			else WR_HIST2->Fill( ((double)(WR_tmp[0] - WR_tmp[1]))/1000.);
-
-			//========================================================
-			//	"EVENTBUILDER" IS HERE!!!
-			//========================================================
-
-			//"coincident" events -> reset iterator
-			if(abs((WR_tmp[1] - WR_tmp[0]) - 222 ) <= 8){
-				//do all things related to coincidence analysis here
-
-
-				iterator = 0;
-			}
-			else{
-				//WR_tmp[0] = WR_tmp[1];
-				//called[0] = called[1];
-				iterator = 0;
-			}
-		}
-		else if(called[0] == 3){
-			WR_F->Fill(((double)(WR_tmp[1] - WR_tmp[0]))/1000.);
-		}
-		if(called[0] == called[1]){
-			//sets second fired system to first (for time differences)
-
-			//========================================================
-			//change of variables (e.g. x[0] = x[1] also needed!)
-			//========================================================
-			//WR_tmp[0] = WR_tmp[1];
-			//called[0] = called[1];
-			iterator = 0;
-		}
-				
+	if(PrcID_Conv == 1){
+		Detector_Systems[1]->get_Event_data(RAW);
+		if(!SKIP_EVT_BUILDING) EvtBuilder[0]->set_Event(RAW);
 	}
-	if(iterator > 2) iterator = 0;
 
 
 	out_evt->SetValid(isValid);
 	
+	pdata = nullptr;
+
 	return isValid;
 	
 }
@@ -1569,4 +1490,14 @@ bool TSCNUnpackProc::Check_Cal_Plastic(){
     
     return CALIBRATE;
 	
+}
+
+
+void TSCNUnpackProc::print_MBS(int* pdata,int lwords){
+	cout << "---------------------\n";
+	for(int i = 0;i < lwords;++i){
+		cout << hex << *(pdata + i) << " ";
+		if(i % 5 == 0 && i > 0) cout << endl;
+	}
+	cout << "\n---------------------\n";
 }

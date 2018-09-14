@@ -108,7 +108,7 @@ AIDA_Detector_System::~AIDA_Detector_System(){
 
 //---------------------------------------------------------------
 
-void AIDA_Detector_System::Process_AIDA(TGo4MbsSubEvent* psubevt){
+void AIDA_Detector_System::Process_PSubevt(TGo4MbsSubEvent* psubevt){
     
     
     pdata = psubevt->GetDataField();

@@ -108,9 +108,7 @@ public:
 	
 	
 	//void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*){};
-	void Process_FRS(TGo4MbsSubEvent* psubevt){};
-
-	void Process_AIDA(TGo4MbsSubEvent* psubevt){};
+	void Process_PSubevt(TGo4MbsSubEvent* psubevt){};
 
 
 

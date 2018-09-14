@@ -210,6 +210,13 @@ using namespace std;
 			const int FATIMA_reference_det = 0;
 			const int FAT_MAX_DET = 36;
 
+			const int FRS = 0;
+			const int AIDA = 1;
+			const int PLASTIC = 2;
+			const int FATIMA = 3;
+			const int GALILEO = 4;
+			const int FINGER = 5;
+
 			int FAT_REF_DET;
 			int GAL_REF_DET;
 
@@ -297,6 +304,7 @@ using namespace std;
 			double distance_between_detectors(double, double, double, double, double, double);
 			double angle_between_detectors(double, double, double);
 
+			void print_MBS(int*,int);
 
 			int count;
 			int called[2];

@@ -19,6 +19,8 @@ private:
     int increase;
     int DETECTORS[5];
 
+    int* pdata;
+
     int detector_id;
     ULong64_t WR_Time;
 
@@ -40,7 +42,7 @@ public:
     ULong64_t get_White_Rabbit(int*);
     int get_Detector_id();
 
-    int get_increase();
+    int* get_pdata();
 
     
 };
