@@ -12,13 +12,16 @@ class FATIMA_Event : public Events{
 private:
 
     int FAT_FIRED;
-
+    int am_fired;
+    double energy_tot;
     inline void set_DATA(Raw_Event*);
 
 
 public:
     FATIMA_Event(int*,int,Raw_Event*);
     ~FATIMA_Event();
+    
+    double get_energy();
 };
 
 #endif

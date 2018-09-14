@@ -19,6 +19,8 @@ private:
 public:
     PLASTIC_Event(int*,int,Raw_Event*);
     ~PLASTIC_Event();
+    
+    double get_energy(){return 0;};
 };
 
 #endif

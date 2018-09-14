@@ -142,6 +142,11 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 TSCNUnpackProc::~TSCNUnpackProc()
 {
+	if(!SKIP_EVT_BUILDING){
+		cout << "Deleting Event Builder" << endl;
+		delete EvtBuilder[0];
+		delete[] EvtBuilder;
+    }
     string DET_NAME[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
 	//Detector_Systems[3]->write();
 	cout << "------------------" << endl;
@@ -287,8 +292,11 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		//get mbs stream data from unpacker (pointer copy solution)
 		pdata = Detector_Systems[PrcID_Conv]->get_pdata();
 		
-		//get data from subevent
-		if(PrcID_Conv != 1) Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
+		//get data from subevent and set WR to RAW
+		if(PrcID_Conv != 1){
+			Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
+			RAW->set_WR(WR_tmp[iterator]);
+		}
 
 		//=================================================================
 

@@ -30,6 +30,8 @@ public:
     int get_Match_ID(int);
 
     int** get_Match_ID_address();
+    
+    virtual double get_energy() = 0;
 };
 
 #endif

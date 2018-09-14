@@ -18,6 +18,7 @@
 
 
 #include <TH1.h>
+#include <TH2.h>
 #include <TFile.h>
 
 
@@ -36,6 +37,9 @@ private:
 
     int** Fill_at;
     int* Fill_am;
+    
+    int iter_tmp;
+    double E_save[2];
 
 	Events*** Event;
 	ULong64_t** Event_WR;
@@ -61,6 +65,8 @@ private:
     //-------------------
     TH1D* T_DIFF;
     TH1D* T_DIFF_Fine;
+    TH2D* Emat;
+    TH1D *Efat,*Egal;
     TFile* TFILE;
     bool Verbose_Write;
     //-------------------
@@ -79,6 +85,7 @@ public:
 	void set_Match_ID_address(int,int*,int*);
     void show_all_addresses(int,int);
     void show_positions(int);
+    void Write_Energies(int,int);
 
     int get_Match_ID(int,int,int);
     int Time_Comparison(int,ULong64_t);

@@ -95,7 +95,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 
     //PrcID check
     if(tmp_type > 5 || tmp_type < 0){
-        cerr << "Unknown PrcID in Time_EventBuilder. Raw_Event sent wrong ID" << endl;
+        cerr << "Unknown PrcID in Time_EventBuilder. Raw_Event sent wrong ID: " << tmp_type << endl;
         exit(0);
     }
 
@@ -104,7 +104,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
         WR_old = WR;
         first_event = false;
     }
-
+    
     //save event in respective store
     Event_Storage->store(RAW);
 
@@ -140,7 +140,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
             //check Match objects for each relevance array row
             for(int j = 0;j < amount_interest;++j){
                 if(relevance_array[i][j]){
-                    //get Match id of coincident event
+                    //get Match id of coincident event 
                     match_ID[j] = Event_Storage->get_Match_ID(i,hits[i],j);
 
                     //pointer on MatchID (allows for dynamic change of Match address)
@@ -156,6 +156,10 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                     if(Matches[j][match_ID[j]]->Full()){
                         //write and delete data
                         Matches[j][match_ID[j]]->Write();
+                        match_hits = Matches[j][match_ID[j]]->get_amount_Hits();
+                        filled_types = Matches[j][match_ID[j]]->get_filled_types();
+                        hit_addresses = Matches[j][match_ID[j]]->get_Address_Array();
+                        for(int o = 0;o < match_hits;++o) if(filled_types[o] != -1) Event_Storage->Write_Energies(filled_types[o],*hit_addresses[filled_types[o]]);
 
                         //get delete permission for Event_Store data
                         get_DELETE_Permission(j,match_ID[j]);

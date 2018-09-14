@@ -106,7 +106,7 @@ void White_Rabbit::process_White_Rabbit(int* pdata){
     for(int i = 0;i < 4;++i){
         this->pdata++;
 
-        WR_Data* wrd = (WR_Data*) pdata;
+        WR_Data* wrd = (WR_Data*) this->pdata;
         white_rabbit[i] = wrd->timestamp;
     }
 

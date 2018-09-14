@@ -47,17 +47,31 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
 
     Verbose_Write = true;
     if(Verbose_Write){
-        T_DIFF = new TH1D("FAT_GAL_WR","FAT_GAL_WR",1000,0,1000);
-        T_DIFF_Fine = new TH1D("FAT_GAL_WR","FAT_GAL_WR",2000,0,2000);
+        T_DIFF = new TH1D("FAT_GAL_WR","FAT_GAL_WR",100,0,1000);
+        T_DIFF_Fine = new TH1D("FAT_GAL_WR_f","FAT_GAL_WR_f",100,0,1000);
         TFILE = new TFile("Root_Trees/Verbose_root.root","RECREATE");
+        
+        Efat = new TH1D("fat","fat",500,0,4000);
+        Egal = new TH1D("gal","gal",80001,0,800000);
+        
         TFILE->Add(T_DIFF);
         TFILE->Add(T_DIFF_Fine);
+        //TFILE->Add(Emat);
+        TFILE->Add(Efat);
+        TFILE->Add(Egal);
     }
+    iter_tmp = 0;
 }
 
 //---------------------------------------------------------------
 
 Event_Store::~Event_Store(){
+    
+    if(Verbose_Write){
+        TFILE->Write();
+        TFILE->Close();
+        cout << "WR diff Histograms written" << endl;
+    }
 
     //set to nullptr since they will be deleted in Time_EvtBuilder
     length_interest = nullptr;
@@ -83,11 +97,6 @@ Event_Store::~Event_Store(){
     delete[] sys_interest;
     delete[] Address_arr;
     delete[] Max_Fill;
-
-    if(Verbose_Write){
-        TFILE->Write();
-        TFILE->Close();
-    }
 } 
 
 //---------------------------------------------------------------
@@ -186,8 +195,8 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
 
     //search through event data for smallest time difference
     for(int i = 0;i < event_counter[type];++i){
-        delta = (double) abs(WR - Event_WR[type][i]);
-
+        delta = (WR > Event_WR[type][i]) ? (double)(WR - Event_WR[type][i]) : (double)(Event_WR[type][i] - WR);
+        delta = abs(delta);
         if(in_time_windows(delta)){
             return_value = i;
             if(Verbose_Write){
@@ -203,9 +212,9 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
 //---------------------------------------------------------------
 
 inline bool Event_Store::in_time_windows(double delta){
-    double offset = 0;
-    double width = 1000;
-    return (abs(delta - offset)/1000. < width);
+    double offset = 200;
+    double width = 500;
+    return (abs(delta - offset) < width);
 }
 
 //---------------------------------------------------------------
@@ -313,7 +322,7 @@ void Event_Store::create_Event(int type,Raw_Event* RAW){
             cerr << "Default error in Event_Store switch!" << endl;
             exit(0);
     }
-        
+    
     ev_pos = val;
 
     Event_WR[type][val] = RAW->get_WR();
@@ -352,3 +361,9 @@ int Event_Store::get_Match_ID(int type,int pos,int j){
 }
 
 //---------------------------------------------------------------
+
+void Event_Store::Write_Energies(int type,int evt_addr){
+    double EEE = Event[type][evt_addr]->get_energy();
+    if(type == 3 && EEE > 0) Efat->Fill(EEE);
+    if(type == 4 && EEE > 0) Egal->Fill(EEE);    
+}
