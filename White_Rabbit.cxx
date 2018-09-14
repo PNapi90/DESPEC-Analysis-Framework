@@ -5,6 +5,8 @@ using namespace std;
 //---------------------------------------------------------------
 
 White_Rabbit::White_Rabbit(){
+
+    for(int i = 0;i < 6;++i) ID[i] = -1;
     load_config_file();
     pdata = nullptr;
     increase = 5;
@@ -24,12 +26,10 @@ White_Rabbit::~White_Rabbit(){}
 //---------------------------------------------------------------
 
 void White_Rabbit::load_config_file(){
-    return;
 
-    const char* format = "%d %d %d %d %d";
+    const char* format = "%s %x";
 
-
-    ifstream config_file("Configuration_Files/White_Rabbit_Map.dat");
+    ifstream config_file("Configuration_Files/White_Rabbit_Map.txt");
     if(config_file.fail()){
         cerr << "Could not find White_rabbit map!" << endl;
         exit(0);
@@ -37,11 +37,19 @@ void White_Rabbit::load_config_file(){
 
     //load file (and skip header)
     string line;
+    char s[100];
+    int id = 0;
+    
     while(config_file.good()){
         getline(config_file,line,'\n');
         if(line[0] == '#') continue;
-        sscanf(line.c_str(),format,&DETECTORS[0],&DETECTORS[1]
-                           ,&DETECTORS[2],&DETECTORS[3],&DETECTORS[4]);
+        sscanf(line.c_str(),format,s,&id);
+        for(int i = 0;i < 6;++i){
+            if(string(s) == names[i]){
+                ID[i] = id;
+                break;
+            }
+        }
     }
 }
 
@@ -73,8 +81,22 @@ void White_Rabbit::process_White_Rabbit(int* pdata){
 
     //check for White Rabbit header in pdata
     
-    // unused // WR_Header *wrh = (WR_Header*) pdata;
-    // unused // int WR_d = wrh->check_wr;
+    WR_Header *wrh = (WR_Header*) pdata;
+    int WR_d = wrh->check_wr;
+    
+    bool found = false;
+    
+    for(int i = 0;i < 6;++i){
+        found = WR_d == ID[i];
+        if(found) break;
+    }
+    
+    if(!found){
+        cerr << hex << "White Rabbit Header 0x" << WR_d << " not known" << endl;
+        cerr << "List of known headers:" << endl;
+        for(int i = 0;i < 6;++i) cerr << hex << names[i] << " 0x" << ID[i] << endl;
+        exit(0);
+    }
     
     //set_triggered_detector(WR_d);
     
@@ -97,8 +119,9 @@ void White_Rabbit::process_White_Rabbit(int* pdata){
 //---------------------------------------------------------------
 
 ULong64_t White_Rabbit::get_White_Rabbit(int* pdata){
+    this->pdata = pdata;
     process_White_Rabbit(pdata);
-    pdata += 1;
+    this->pdata += 1;
     return WR_Time;
 }
 

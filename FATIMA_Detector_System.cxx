@@ -310,31 +310,23 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 	     
 	    if (num_TDC_modules == 0){
 		
-		TDC_Called = true;
+			TDC_Called = true;
 		 
-		this->pdata++;
+			this->pdata++;
 		 
 	    }
 	}
 	else{
-	
-	    cout<<"Unknown header word: "<<TDChead->type<<endl;
+	    cout << "Unknown header word: " << TDChead->type << endl;
 	    
 	    unknown_header_counter++;
-	    
 	    if(unknown_header_counter > 10){
-		
-		cout<<endl;
-		cout<<"ERROR: Too many unknown header words in FATIMA unpacker"<<endl;
-		cout<<"Something is probably wrong with the setup configuration"<<endl;
-		cout<<"Most likely White Rabbit is/isn't enabled"<<endl;
-		
-		exit(0);
-		
-		
+             cout << endl;
+             cout << "ERROR: Too many unknown header words in FATIMA unpacker" << endl;
+             cout << "Something is probably wrong with the setup configuration" << endl;
+             cout << "Most likely White Rabbit is/isn't enabled" << endl;
+             exit(0);
 	    }
-	    
-
 	}
 	
         this->pdata++;
@@ -345,8 +337,6 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 
     this->pdata--;
     this->pdata--;
-    
-    
 
     //Check_TDC_DATA(); 
     //if(exiter) exit(0);
@@ -531,21 +521,15 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
 	        
          // Global Header Condition //
         if( check == 8 ){
-	    
-	    
             TDC_Glob_Header* gh = (TDC_Glob_Header*) pdata;
             tdc_board_ID = gh->geo;
-	    
         }
         // TDC Header Condition //
         else if( check == 1 ) {}
         // TDC Measurement Condition //
         else if( check == 0 ){
-	    
-	    
             TDC_Measurement* m = (TDC_Measurement*) pdata;
             TDC_ch = m->channel;
-	    
 
             //if (!wired_TDC(tdc_board_ID,TDC_ch) && QDC_DATA) continue;
             if(!wired_TDC(tdc_board_ID,TDC_ch)){
@@ -565,25 +549,22 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                 //    }
                 //    he_iter++;
                 //}
-
                 TDC_Time_raw[fired_TDC_amount] = (ULong64_t) (m->measurement);
 		
-		if (dist_corr_used) TDC_Time_raw[fired_TDC_amount] += source_position_correction[active_det];
+                if (dist_corr_used) TDC_Time_raw[fired_TDC_amount] += source_position_correction[active_det];
 
                 // TDC_Time_raw[fired_TDC_amount] = 25e-3*TDC_Time_raw[fired_TDC_amount];
                 Calibrate_TDC(fired_TDC_amount);
-		
-		if(dist_corr_used) TDC_Time_ns[fired_TDC_amount] += source_position_correction[active_det];
 
-		fired_TDC_amount++;
-		
+                if(dist_corr_used) TDC_Time_ns[fired_TDC_amount] += source_position_correction[active_det];
+
+                fired_TDC_amount++;
                 no_data = false;
-
             }
         }
         // TDC Trailer Condition // 
         else if ( check == 16 ) trail = true;
-	
+
         if(loop_counter > 100){
             cerr << "FATIMA TDC loop not reaching trailer! pdata iteration problem possible" << endl;
             cerr << "Exiting Program!" << endl;

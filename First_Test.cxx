@@ -276,7 +276,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		
 		//if necessary, directly print MBS for wanted Detector_System
-		if(PrcID_Conv == FATIMA || PrcID_Conv == GALILEO) print_MBS(pdata,lwords);
+		if(PrcID_Conv == FATIMA && false) print_MBS(pdata,lwords);
 		
 		//=================================================================
 		//UNPACKING
