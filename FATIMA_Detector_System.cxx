@@ -56,10 +56,14 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
         }
 
     }
-    FAT_positions = new int*[36];
+    FAT_positions = new double*[36];
+    source_position_correction = new double[36];
     for(int i = 0; i < 36; i++){
-	FAT_positions[i] = new int[3];
+	FAT_positions[i] = new double[3];
+	source_position_correction[i] = -1;
+
 	for (int j = 0; j < 3; j++) FAT_positions[i][j] = -1;
+    
     }
 
     FATIMA_T_CALIB = new FATIMA_Time_Calibration();
@@ -68,6 +72,8 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
     load_board_channel_file();
     read_config_variables("Configuration_Files/Detector_System_Setup_File.txt");
     he_iter = 0;
+    
+    load_pos_correction();
 
     Det_Hist = new TH1D*[32];
     char name[1000];
@@ -166,14 +172,49 @@ void FATIMA_Detector_System::load_det_angles(){
         getline(file,line,'\n');
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format, &pos_num, &r, &theta, &phi);
-	
+		
 		FAT_positions[pos_num][0] = r;
 		FAT_positions[pos_num][1] = theta;
 		FAT_positions[pos_num][2] = phi;
     }
 }
 
+//---------------------------------------------------------------
 
+void FATIMA_Detector_System::load_pos_correction(){
+
+    const char* format = "%lf %lf %lf";
+
+    ifstream file("Configuration_Files/FATIMA_Source_Position.txt");
+
+    if(file.fail()){
+        cerr << "Could not find FATIMA Source Position File!" << endl;
+        exit(0);
+    }
+
+    string line;
+    int pos_num;
+    double r, theta, phi;
+    
+
+    while(file.good()){
+        getline(file,line,'\n');
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),format, &r, &theta, &phi);
+	
+	
+    }
+	
+    for(int i = 0; i < 36; ++i){
+	
+	source_position_correction[i] = distance_between_detectors(r, theta, phi, FAT_positions[i][0], FAT_positions[i][1], FAT_positions[i][2]);
+
+	double average_distance = distance_between_detectors(0.0, 0.0, 0.0, FAT_positions[i][0], FAT_positions[i][1], FAT_positions[i][2]);
+
+	source_position_correction[i] = (average_distance - source_position_correction[i])/300.0;
+	
+    }
+}
 //---------------------------------------------------------------
 
 void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
@@ -425,7 +466,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 	    
 			QDC_Time* t = (QDC_Time*) pdata;
 			QDC_Time_Coarse[fired_QDC_amount] = t->trigger_tag;
-	    
+			if(dist_corr_used) QDC_Time_Coarse[fired_QDC_amount] += source_position_correction[active_det];
 	    
 			pdata++; // Moves to Extras
 	   
@@ -436,6 +477,10 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 			fine_time = (((t->trigger_tag) + (tmp_ext_trig << 32)));
 			//possibly this should be -= have to verify...
 			fine_time += ((double)(e->fine_time)/1024.);
+			
+			if(dist_corr_used) fine_time += source_position_correction[active_det];
+
+			
 	    
 			QDC_Time_Fine[fired_QDC_amount] = fine_time;
 	    
@@ -522,9 +567,16 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                 //}
 
                 TDC_Time_raw[fired_TDC_amount] = (ULong64_t) (m->measurement);
+		
+		if (dist_corr_used) TDC_Time_raw[fired_TDC_amount] += source_position_correction[active_det];
+
                 // TDC_Time_raw[fired_TDC_amount] = 25e-3*TDC_Time_raw[fired_TDC_amount];
                 Calibrate_TDC(fired_TDC_amount);
-				fired_TDC_amount++;
+		
+		if(dist_corr_used) TDC_Time_ns[fired_TDC_amount] += source_position_correction[active_det];
+
+		fired_TDC_amount++;
+		
                 no_data = false;
 
             }
@@ -609,11 +661,12 @@ void FATIMA_Detector_System::read_config_variables(string config_filename){
     }
 
     string line;
-
-    for (int i = 0; i < 5; ++i) file.ignore(256,':');
     
     file.ignore(256,':');
+    file.ignore(256,':');
     file >> gain_match_used;//dummy_var;
+
+    for (int i = 0; i < 4; ++i) file.ignore(256,':');
 
     file.ignore(256,':');
     file >> dist_corr_used;//dummy_var;   
@@ -624,3 +677,20 @@ void FATIMA_Detector_System::read_config_variables(string config_filename){
 };
 
 //---------------------------------------------------------------
+
+double FATIMA_Detector_System::distance_between_detectors(double _r, double _theta, double _phi, double r_, double theta_, double phi_){
+
+    _theta = _theta * M_PI/180.0; 
+    theta_ = theta_ * M_PI/180.0; 
+
+    _phi = _phi * M_PI/180.0; 
+    phi_ = phi_ * M_PI/180.0; 
+
+    double dist = sqrt(_r*_r + r_*r_ - 2.0*_r*r_*(sin(_theta)*sin(theta_)*cos(_phi - phi_) + cos(_theta)*cos(theta_)));
+    
+    return dist;
+
+
+}
+//---------------------------------------------------------------
+

@@ -1,0 +1,5 @@
+# Position of the source in spherical polar coordinates (r, theta, phi)
+# r = 0 is the centre of FATIMA in mm
+#
+# r(mm)	theta	phi
+  0.0	0.0	0.0

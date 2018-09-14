@@ -1,10 +1,10 @@
-#include "PLASTIC_Calibrator.h"
+#include "FINGER_Calibrator.h"
 
 using namespace std;
 
 //---------------------------------------------------------------
 
-PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
+FINGER_Calibrator::FINGER_Calibrator(bool ONLINE){
 
 	this->ONLINE = ONLINE;
 
@@ -47,7 +47,7 @@ PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
 
 //---------------------------------------------------------------
 
-PLASTIC_Calibrator::~PLASTIC_Calibrator(){
+FINGER_Calibrator::~FINGER_Calibrator(){
 	if(ONLINE){
 		for(int i = 0;i < 100;++i){
 			for(int j = 0;j < 100;++j) delete Fine_Hist[i][j];
@@ -71,15 +71,15 @@ PLASTIC_Calibrator::~PLASTIC_Calibrator(){
 
 //---------------------------------------------------------------
 
-void PLASTIC_Calibrator::load_Calibration_Files(){
+void FINGER_Calibrator::load_Calibration_Files(){
 	
 	//load calibration map for used ids
-	ifstream map_file("Configuration_Files/Calibration_PLASTIC/MAP.dat");
+	ifstream map_file("Configuration_Files/Calibration_FINGER/MAP.dat");
 
 	string line;
 	
 	if(map_file.fail()){
-		cerr << "Could not find PLASTIC Calibration file MAP" << endl;
+		cerr << "Could not find FINGER Calibration file MAP" << endl;
 		exit(0);
 	}
 	
@@ -133,11 +133,11 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 
 		//Cal_arr[tamex_id][ch_id] = new double[nbins];
 
-		sprintf(filename,"Configuration_Files/Calibration_PLASTIC/Calib_%d_%d.dat",tamex_id,ch_id);
+		sprintf(filename,"Configuration_Files/Calibration_FINGER/Calib_%d_%d.dat",tamex_id,ch_id);
 		file.open(filename);
 
 		if(file.fail()){
-			cerr << "Could not find PLASTIC Calibration file " << tamex_id << " " << ch_id << endl;
+			cerr << "Could not find FINGER Calibration file " << tamex_id << " " << ch_id << endl;
 			exit(0);
 		}
 		while(file.good()){
@@ -159,7 +159,7 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 
 //---------------------------------------------------------------
 
-double PLASTIC_Calibrator::get_Calibration_val(double value,int tamex_id_tmp,int ch_id_tmp){
+double FINGER_Calibrator::get_Calibration_val(double value,int tamex_id_tmp,int ch_id_tmp){
 	double return_val = 0;
 	double value_t = (double) value;
 	double tmp,tmp2;
@@ -170,16 +170,17 @@ double PLASTIC_Calibrator::get_Calibration_val(double value,int tamex_id_tmp,int
 		tmp2 = Cal_arr[tamex_id_tmp][ch_id_tmp][i+1];
 		//cout << "calib "<<tmp << " " << tmp2 << " " << value << " " << bins_x_arr[i]<<endl;
 		if(value >= bins_x_arr[i] && value < bins_x_arr[i+1]){
-			return_val = (tmp2 - tmp)/(bins_x_arr[i+1] - bins_x_arr[i])*(value_t - bins_x_arr[i]) + tmp;
+		    
+			return_val = (tmp2 - tmp)/(bins_x_arr[i+1] - bins_x_arr[i])*(value_t - bins_x_arr[i]) + tmp;			
 			break;
 		}
 	}
-	return return_val;
+	return return_val; //1000.; // Converts to ns
 }
 
 //---------------------------------------------------------------
 
-void PLASTIC_Calibrator::get_data(double** fine_T,UInt** ch_id,int tamex_iter,int* iterator){
+void FINGER_Calibrator::get_data(double** fine_T,UInt** ch_id,int tamex_iter,int* iterator){
 	//write into corresponding root histograms
 	
 	for(int i = 0;i < tamex_iter;++i){
@@ -192,24 +193,24 @@ void PLASTIC_Calibrator::get_data(double** fine_T,UInt** ch_id,int tamex_iter,in
 
 //---------------------------------------------------------------
 
-void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
+void FINGER_Calibrator::ONLINE_CALIBRATION(){
 
 	//Root file to check histograms
-	//TFile* ROOT_FILE = new TFile("Root_Trees/PLASTIC_TREE.root","RECREATE");
+	//TFile* ROOT_FILE = new TFile("Root_Trees/FINGER_TREE.root","RECREATE");
 
 	//output file stream
 	ofstream cal_file;
 
 	//MAP of used TamexIds with Channels 
-	ofstream map_file("Configuration_Files/Calibration_PLASTIC/MAP.dat");
-	map_file << "#PLASTIC Calibration map" << endl;
+	ofstream map_file("Configuration_Files/Calibration_FINGER/MAP.dat");
+	map_file << "#FINGER Calibration map" << endl;
 	map_file << "#Map of used Tamex ids and their channels (if stated, used = True)" << endl;
 	map_file << "#" << endl;
 	map_file << "#tamex ids (0 or 1)	vs Channel Num." << endl;
 	map_file << "#" << endl;
 
 
-	cout << "ONLINE CALIBRATION FOR PLASTIC INITIALIZED" << endl;
+	cout << "ONLINE CALIBRATION FOR FINGER INITIALIZED" << endl;
 	
 	
 	char filename[1000];
@@ -236,7 +237,7 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 				//ROOT_FILE->Add(Fine_Hist[i][j]);
 				//ROOT_FILE->Add(Fine_Hist[i][j]->GetCumulative());
 
-				sprintf(filename,"Configuration_Files/Calibration_PLASTIC/Calib_%d_%d.dat",i,j);
+				sprintf(filename,"Configuration_Files/Calibration_FINGER/Calib_%d_%d.dat",i,j);
 				cal_file.open(filename);
 
 				if(cal_file.fail()){
@@ -262,11 +263,12 @@ void PLASTIC_Calibrator::ONLINE_CALIBRATION(){
 				//write everything into calibration file (name of file = filename)
 				full_sum = sum_arr[nbins-1];
 				
-				double default_value = 0.0;
+				double default_value = 0;
 				
 				for(int k = 0;k < nbins;++k){
-					if(val > 0) default_value = 1.0;
-					val = (k < max_bin) ? (sum_arr[k]/full_sum) : default_value;
+					if(val > 0) default_value = 1;
+					val = (k < max_bin) ? ((double)(sum_arr[k]/full_sum)/*5000.0*/) : default_value;//0;
+					
 					cal_file << bins_x[k] << "\t\t" << val << endl;
 				}
 				

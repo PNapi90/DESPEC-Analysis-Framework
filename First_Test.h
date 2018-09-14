@@ -175,9 +175,12 @@ using namespace std;
 			TH2** tamex_mult_mat_lead;
 			TH2** tamex_mult_mat_trail;
 			TH1*** Trail_LEAD;
+			TH1**** TRAIL_TRAIL;
 			TH1**** LEAD_LEAD;
 			TH1*** Coarse;
 			TH1** DIFF_ARR;
+			TH1**** TOT;
+			TH1*** LEAD_LEAD_Total;
 			
 			
 			TH1* FAT_TDC_Diff; // ****NEWLY ADDED****
@@ -235,6 +238,7 @@ using namespace std;
 			bool FAT_dist_corr_used; // Read from General Setup File
 			int FAT_exclusion_dist; // Read from General Setup File
 			int FAT_num_TDC_modules; // Read from General Setup File
+			bool FAT_nearest_neighbour_exclusion; // Read from General Setup File
 			bool same_ring_exclusion; // Read from General Setup File
 			bool output_position_matrix; // Read from General Setup File
 			int file_pwd, file_end;

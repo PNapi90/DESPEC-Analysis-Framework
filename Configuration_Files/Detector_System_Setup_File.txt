@@ -5,19 +5,19 @@
 # ---------------------------- 
 White_Rabbit_Enabled: 1
 #
-FATIMA_Gain_Match_Enabled: 0
-#
-Min_Distance_Nearest_Neighbour_Exclusion(mm): 0
-#
-Only_Exclude_Detectors_In_Same_Ring: 1
-#
-Output_Matrix_Of_Exluded_Detector_Pairings: 0
-#
 # ---------------------------- 
 # FATIMA_CONFIGURATION
 # ---------------------------- 
 #
 FATIMA_Gain_Match_Enabled: 0
+#
+Min_Distance_Exclusion(mm): 0
+#
+Nearest_Neighbour_Exclusion: 1
+#
+Only_Exclude_Detectors_In_Same_Ring: 0
+#
+Output_Matrix_Of_Exluded_Detector_Pairings: 1
 #
 FATIMA_Distance_Correction: 0
 #

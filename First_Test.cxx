@@ -23,7 +23,6 @@
 #include <fstream>
 #include <vector>
 
-
 #include "TSCNUnpackEvent.h"
 
 #include "Detector_System.cxx"
@@ -290,6 +289,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		if(WHITE_RABBIT_USED){
 			sub_evt_length = sub_evt_length - 5;
 			WR_tmp[iterator] = WR->get_White_Rabbit(pdata);
+						
 			pdata += WR->get_increase();
 						
 		}
@@ -302,6 +302,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		    
 		    Detector_Systems[PrcID_Conv]->Process_AIDA(psubevt);
 		    
+		    cout<<"WR TIME = "<<WR_tmp[iterator]<<endl;
+
 		}
 		
 		
@@ -475,6 +477,9 @@ void TSCNUnpackProc::read_setup_parameters(){
 
     file.ignore(256,':');
     file >> FAT_exclusion_dist;//dummy_var;
+    
+    file.ignore(256,':');
+    file >> FAT_nearest_neighbour_exclusion;//dummy_var;
 
     file.ignore(256,':');
     file >> same_ring_exclusion;//dummy_var;
@@ -705,22 +710,74 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 		FAT_positions[pos_num][1] = theta;
 		FAT_positions[pos_num][2] = phi;
 
+    }
+    
+    if(FAT_nearest_neighbour_exclusion){
+	
+	for(int i = 0; i < 36; ++i){
+    
+	    if(i%12 == 11) FAT_neighbour_check[i][(i-11)] = false; // Same Ring Rignt
+	    else FAT_neighbour_check[i][(i+1)] = false; // Same Ring Right
+	    if(i%12 == 0) FAT_neighbour_check[i][i+11] = false; // Same Ring Left
+	    else FAT_neighbour_check[i][(i-1)] = false; // Same Ring Left
+    
+	    if(!same_ring_exclusion){
+		
+		if(i < 12){
+		    
+		    FAT_neighbour_check[i][(i+12)] = false; // Middle Ring Left
+
+		    if(i == 12) FAT_neighbour_check[i][(i+1)] = false; // Middle Ring Left for 11
+		    
+		    else FAT_neighbour_check[i][(i+13)] = false; // Middle Ring Right 
+		}
+		if(i > 11 && i < 24){
+		   		    
+		    FAT_neighbour_check[i][(i+12)] = false; // Upper Outer Ring
+		    FAT_neighbour_check[i][(i-12)] = false; // Lower Outer Ring
+
+		    if(i == 12){
+			 FAT_neighbour_check[i][(i+23)] = false; // Upper Outer Ring
+			 FAT_neighbour_check[i][(i-1)] = false; // Lower Outer Ring
+		    }
+		    else{
+			FAT_neighbour_check[i][(i+11)] = false; // Upper Outer Ring
+			FAT_neighbour_check[i][(i-13)] = false; // Lower Outer Ring
+		    } 		
+		}
+		if(i > 23){
+		    
+		    FAT_neighbour_check[i][(i-12)] = false; // Middle Ring Left
+
+		    if(i == 35) FAT_neighbour_check[i][(i-23)] = false; // Middle Ring Left for 35
+		    
+		    else FAT_neighbour_check[i][(i-11)] = false; // Middle Ring Right 
+		}
+	    }
 	}
+    }
+    
+    ofstream output_position_matrix_file;
+    output_position_matrix_file.open ("Configuration_Files/FATIMA_Exclusion_Matrix.txt");
+    cout<<endl;
+    cout << "A Matrix of excluded detector pairings can be found in ./Configuration_Files/FATIMA_Exclusion_Matrix.txt"<<endl;
+    cout<<endl;
     
     
-    if (output_position_matrix) cout<<"        "<<"0 "<<"1 "<<"2 "<<"3 "<<"4 "<<"5 "<<"6 "<<"7 "<<"8 "
+    
+    if (output_position_matrix) output_position_matrix_file <<"        "<<"0 "<<"1 "<<"2 "<<"3 "<<"4 "<<"5 "<<"6 "<<"7 "<<"8 "
 		    <<"9 "<<"10 "<<"11 "<<"12 "<<"13 "<<"14 "<<"15 "<<"16 "<<"17 "
 		    <<"18 "<<"19 "<<"20 "<<"21 "<<"22 "<<"23 "<<"24 "<<"25 "<<"26 "
 		    <<"27 "<<"28 "<<"29 "<<"30 "<<"31 "<<"32 "<<"33 "<<"34 "<<"35 "<<endl;
     
     for(int i = 0; i < 36; ++i){
 	
-	if (i >= 10 && output_position_matrix) cout<<"Det "<<i<<": ";
-	if (i < 10  && output_position_matrix) cout<<"Det "<<i<<" : ";
-
+	if (i >= 10 && output_position_matrix) output_position_matrix_file <<"Det "<<i<<": ";
+	if (i < 10  && output_position_matrix) output_position_matrix_file <<"Det "<<i<<" : ";
+	
 	for (int k = 0; k < 36; ++k){
 	    
-	    if(k > 9 && output_position_matrix) cout<<" ";
+	    if(k > 9 && output_position_matrix) output_position_matrix_file<<" ";
 	    
 	    double dist = distance_between_detectors( FAT_positions[i][0],  FAT_positions[i][1],  FAT_positions[i][2],
 						      FAT_positions[k][0],  FAT_positions[k][1],  FAT_positions[k][2]);
@@ -728,24 +785,29 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
 	    double angle = angle_between_detectors(FAT_positions[i][0], FAT_positions[k][0], dist);
 
 	    FAT_angle_diffs[i][k] = angle;
-		    
+	        
 	    if((dist < FAT_exclusion_dist && (((i < 12 && k < 12) || 
 					    (i < 24 && i > 11 && k < 24 && k > 11) || 
 					    (i > 23 && k > 23)) || !same_ring_exclusion )) || i == k ){
 		
 		
 		 FAT_neighbour_check[i][k] = false;
-		 
-		 if (output_position_matrix) cout<<"X ";
-	    
+		    
 	    }
-	    else if(output_position_matrix) cout<<"0 ";
+	    
+	    
+	    if (output_position_matrix && !FAT_neighbour_check[i][k]) output_position_matrix_file<<"X ";
+
+	    else if(output_position_matrix && FAT_neighbour_check[i][k]) output_position_matrix_file<<"0 ";
 	    
 	}
 	
-	if (output_position_matrix) cout<<endl;
+	if (output_position_matrix) output_position_matrix_file<<endl;
 	
     }
+    
+    output_position_matrix_file.close();
+
     
     
     
@@ -988,7 +1050,10 @@ void TSCNUnpackProc::Make_Plastic_Histos(){
     tamex_mult_mat_lead = new TH2*[100];
     tamex_mult_mat_trail = new TH2*[100];
     
+    TOT = new TH1***[100];
+    TRAIL_TRAIL = new TH1***[100];
     LEAD_LEAD = new TH1***[100];
+    LEAD_LEAD_Total = new TH1**[100];
     
     for(int i = 0;i < 100;++i){
 
@@ -1000,14 +1065,25 @@ void TSCNUnpackProc::Make_Plastic_Histos(){
 
         tamex_Mult_Ch_lead[i] = new TH1*[100];
         tamex_Mult_Ch_trail[i] = new TH1*[100];
+        TOT[i] = new TH1**[100];
+        TRAIL_TRAIL[i] = new TH1**[100];
         LEAD_LEAD[i] = new TH1**[100];
+        LEAD_LEAD_Total[i] = new TH1*[100];
 
         for(int j = 0;j < 100;++j){
             tamex_Mult_Ch_lead[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_lead_ch_%d_%d",i,j),Form("tamex_lead_ch_%d_%d",i,j),100,0,100);
             tamex_Mult_Ch_trail[i][j] = NULL;//MakeTH1('D',Form("tamex_channels_hists/tamex_trail_ch_%d_%d",i,j),Form("tamex_trail_ch_%d_%d",i,j),100,0,100);
+            TOT[i][j] = new TH1*[100];
+            TRAIL_TRAIL[i][j] = new TH1*[100];
             LEAD_LEAD[i][j] = new TH1*[100];
-            for(int k = 0;k < 100;++k) LEAD_LEAD[i][j][k] = NULL;
-        }
+	    LEAD_LEAD_Total[i][j] = NULL;
+            for(int k = 0;k < 100;++k){
+		
+		 TOT[i][j][k] = NULL;
+		 TRAIL_TRAIL[i][j][k] = NULL;
+		 LEAD_LEAD[i][j][k]   = NULL;
+	    }
+	}
     }
 
 
@@ -1053,7 +1129,9 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 	int pl_n_hits = 0;
     	
 	pl_n_hits = RAW->get_PLASTIC_tamex_hits();
-	double tmp_fill_val = 0;
+	double tmp_fill_val   = 0;
+	double tmp_fill_val_1 = 0;
+	double tmp_fill_val_2 = 0;
 	for(int i = 0; i < pl_n_hits; ++i){
 	    sum_l = 0;
 	    sum_t = 0;
@@ -1074,7 +1152,7 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 	
 	
 		    if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("trail_minus_lead/trail_minus_lead_board%d_ch%d",i,phys_ch),
-								Form("trail_minus_lead_board%d_ch%d",i,phys_ch),500,0,500);
+								Form("trail_minus_lead_board%d_ch%d",i,phys_ch),1000,-500,500);
 	
 		    if(j % 2 == 0){
 			    tmp_fill_val = (double) (RAW->get_PLASTIC_trail_T(i,j+1)-RAW->get_PLASTIC_lead_T(i,j));
@@ -1085,13 +1163,49 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 				    phys_ch_tmp = RAW->get_PLASTIC_physical_channel(i,k);
 			
 				    if(k % 2 == 0 && k != j){
-		    
+					
+					
+					    if(!LEAD_LEAD_Total[i][phys_ch]){
+						    LEAD_LEAD_Total[i][phys_ch] = MakeTH1('D',Form("lead_minus_lead_all_chans/lead_minus_lead_board_%d_from_ch%d_to_everything",i,phys_ch),
+														Form("lead_minus_lead_board%d_from_ch%d_to_everything",i,phys_ch),10000, -500., 500.);
+					    }
+					    
+					    tmp_fill_val_1 = (double)(RAW->get_PLASTIC_lead_T(i,j));
+					    tmp_fill_val_2 = (double)(RAW->get_PLASTIC_lead_T(i,k));
+					    tmp_fill_val = (double)(tmp_fill_val_1 - tmp_fill_val_2);
+
+					    //tmp_fill_val = (double)(RAW->get_PLASTIC_lead_T(i,j) - RAW->get_PLASTIC_lead_T(i,k));
+					    LEAD_LEAD_Total[i][phys_ch]->Fill(tmp_fill_val);
+
 					    if(!LEAD_LEAD[i][phys_ch][phys_ch_tmp]){
 						    LEAD_LEAD[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("lead_minus_lead/lead_minus_lead_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),
-														Form("lead_minus_lead_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),500,-1000,1000);
+														Form("lead_minus_lead_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),10000, -500., 500.);
 					    }
-					    tmp_fill_val = (double)(RAW->get_PLASTIC_lead_T(i,j) - RAW->get_PLASTIC_lead_T(i,k));
+					    tmp_fill_val_1 = (double)(RAW->get_PLASTIC_lead_T(i,j));
+					    tmp_fill_val_2 = (double)(RAW->get_PLASTIC_lead_T(i,k));
+					    tmp_fill_val = (double)(tmp_fill_val_1 - tmp_fill_val_2);
+					    //tmp_fill_val = (double)(RAW->get_PLASTIC_lead_T(i,j) - RAW->get_PLASTIC_lead_T(i,k));
 					    LEAD_LEAD[i][phys_ch][phys_ch_tmp]->Fill(tmp_fill_val);
+
+					    if(!TRAIL_TRAIL[i][phys_ch][phys_ch_tmp]){
+						    TRAIL_TRAIL[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("trail_minus_trail/trail_minus_trail_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),
+														Form("trail_minus_trail_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),10000, -500., 500.);
+					    }
+					    
+					    tmp_fill_val_1 = (double)(RAW->get_PLASTIC_trail_T(i,j));
+					    tmp_fill_val_2 = (double)(RAW->get_PLASTIC_trail_T(i,k));
+					    tmp_fill_val = (double)(tmp_fill_val_1 - tmp_fill_val_2);
+					    //tmp_fill_val = (double)(RAW->get_PLASTIC_trail_T(i,j) - RAW->get_PLASTIC_trail_T(i,k));
+					    TRAIL_TRAIL[i][phys_ch][phys_ch_tmp]->Fill(tmp_fill_val);
+					    
+					    tmp_fill_val = (double)(RAW->get_PLASTIC_TOT(i, j));
+					    if(!TOT[i][phys_ch][phys_ch_tmp]){
+						    TOT[i][phys_ch][phys_ch_tmp] = MakeTH1('D',Form("TOT/TOT_board_%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),
+														Form("TOT_board%d_from_ch%d_to_%d",i,phys_ch,phys_ch_tmp),10000, -500., 500.);
+					    }
+					    TOT[i][phys_ch][phys_ch_tmp]->Fill(tmp_fill_val);
+
+					    
 				    }
 			    }
 		    }
@@ -1136,7 +1250,6 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 	    }
 	}
 }
-
 
 void TSCNUnpackProc::Make_FATIMA_Histos(){
     
@@ -1200,6 +1313,27 @@ void TSCNUnpackProc::Make_FATIMA_Histos(){
 	    FAT_TDCdt_ref_gated[det] = nullptr;
 	    FAT_E_TDCdt_ref_gated[det] = nullptr;
 	    
+	    /*FAT_E[det] = MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", det),
+					Form("LaBr%02d energy", det),4001,0,4000);
+	    FAT_Eraw[det] = MakeTH1('D', Form("FATIMA/Energy/E_Raw_LaBr%02d", det),
+						Form("LaBr%02d energy (raw)", det),2000,0,40000);
+	    FAT_E_ratio[det] = MakeTH2('D', Form("FATIMA/Energy/EvsRatio_LaBr%02d", det),
+						    Form("LaBr%02d energy vs QShort/QLong", det),4001,0,4000, 200,0,1);
+	    FAT_gg_ref[det] = MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
+								Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, det),2000,0,2000, 2000,0,2000);
+	    FAT_TDCdt_ref[det] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
+								    Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, det),3201,-40,40);
+	    FAT_QDCdt_ref[det] = MakeTH1('D', Form("FATIMA/Timing/QDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
+								    Form("QDC dt LaBr%02d LaBr%02d", FAT_REF_DET, det),3201,-40,40);
+	    FAT_TDC_QDC_dt[det] = MakeTH2('D', Form("FATIMA/Timing/TDCdt_QDCdt_LaBr%02d", det),
+									Form("TDCdt vs QDCdt LaBr%02d", det),3201,-40,40, 3201,-40,40);
+	    FAT_TDCdt_ref_gated[det] = MakeTH1('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_LaBr%02d", FAT_REF_DET, det),
+											Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (on %4.2f keV)", FAT_REF_DET, E_gate1, det, E_gate2),3201,-40,40);
+											
+	    FAT_E_TDCdt_ref_gated[det] = MakeTH2('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_E_LaBr%02d", FAT_REF_DET, det),
+											Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",FAT_REF_DET, E_gate1, det), 2001, 0, 2000, 3201,-40,40);
+	    */
+	    
     }
 
 }
@@ -1224,8 +1358,17 @@ void TSCNUnpackProc::Fill_FATIMA_Histos(){
 						Form("LaBr%02d energy (raw)", deti),2000,0,40000);
     
 	FAT_Eraw[deti]->Fill(En_i);
+	FAT_hits_QDC->Fill(deti);
+
+    }
+    for (int i=0; i<RAW->get_FAT_TDCs_fired(); i++){ /** Loops over only channels in the QDC **/
+
+	deti = RAW->get_FAT_TDC_id(i);
+    
+	FAT_hits_TDC->Fill(deti);
 	
     }
+    
     
     int dets_fired = RAW->get_FAT_det_fired();
     
@@ -1234,10 +1377,8 @@ void TSCNUnpackProc::Fill_FATIMA_Histos(){
 	deti 	    = RAW->get_FAT_id(i);
 	En_i 	    = RAW->get_FAT_E(i);
 	FAT_ratio_i = RAW->get_FAT_ratio(i);
-    
-	FAT_hits->Fill(deti);
-	FAT_Esum->Fill(En_i);
-	
+
+
 	if(!FAT_E[deti]) FAT_E[deti] = MakeTH1('D', Form("FATIMA/Energy/E_LaBr%02d", deti),
 					Form("LaBr%02d energy", deti),4001,0,4000);
 	
@@ -1245,6 +1386,8 @@ void TSCNUnpackProc::Fill_FATIMA_Histos(){
 						    Form("LaBr%02d energy vs QShort/QLong", deti),4001,0,4000, 200,0,1);
 	
 	FAT_ratio_i = RAW->get_FAT_ratio(i);
+	
+	
 	
 	FAT_hits->Fill(deti);
 	FAT_Esum->Fill(En_i);
@@ -1254,11 +1397,12 @@ void TSCNUnpackProc::Fill_FATIMA_Histos(){
 	for (int j=0; j<dets_fired; j++) { /** Loops over only channels in both QDC and TDC **/
 
 	    detj = RAW->get_FAT_id(j);
+	       
+	    if (deti < detj) { /** Avoids the same detector pairing being counted twice **/
 	    
-	    if (FAT_neighbour_check[deti][detj]){ /** Excludes nearest neighbour **/
 	    
-		if (deti < detj) { /** Avoids the same detector pairing being counted twice **/
-		
+		if (FAT_neighbour_check[deti][detj]){ /** Excludes nearest neighbour **/
+	    		
 		    En_j = RAW->get_FAT_E(j);
 		    
 		    dt1 = RAW->get_FAT_t(i) - RAW->get_FAT_t(j);
@@ -1281,46 +1425,46 @@ void TSCNUnpackProc::Fill_FATIMA_Histos(){
 
 			}
 		    }	    
-		}
    
-		if (deti == FAT_REF_DET) { /** Only occurs for the Reference Detector **/
-    
-		    if(!FAT_gg_ref[detj]) FAT_gg_ref[detj] =  MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
-								Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, detj),2000,0,2000, 2000,0,2000);
-		    
-		    if(!FAT_TDCdt_ref[detj]) FAT_TDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
-								    Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);	
-		    
-		    if(!FAT_QDCdt_ref[detj]) FAT_QDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/QDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
-								    Form("QDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);
-		    
-		    if(!FAT_TDC_QDC_dt[detj]) FAT_TDC_QDC_dt[detj] =  MakeTH2('D', Form("FATIMA/Timing/TDCdt_QDCdt_LaBr%02d", detj),
-									Form("TDCdt vs QDCdt LaBr%02d", detj),3201,-40,40, 3201,-40,40);
-		    
-		    FAT_gg_ref[detj]->Fill(En_i, En_j);
-		    FAT_TDCdt_ref[detj]->Fill(dt1);
-		    FAT_QDCdt_ref[detj]->Fill(dt2);
-		    FAT_TDC_QDC_dt[detj]->Fill(dt1, dt2);
-
-    
-    
-		    if (RAW->get_FAT_E(i) > FATgate1_low && RAW->get_FAT_E(i) < FATgate1_high) { /** Only if the energies are withing the energy gate **/
-		    
-			if(!FAT_E_TDCdt_ref_gated[detj]) FAT_E_TDCdt_ref_gated[detj] = MakeTH2('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_E_LaBr%02d", FAT_REF_DET, detj),
-											Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",FAT_REF_DET, E_gate1, detj), 2001, 0, 2000, 3201,-40,40);
-		    
-			FAT_E_TDCdt_ref_gated[detj]->Fill(En_j, dt1);
-    
-    
-			if (RAW->get_FAT_E(j) > FATgate2_low && RAW->get_FAT_E(j) < FATgate2_high) { /** Only if the energies of the secodn detector are withing the energy gate **/
+		    if (deti == FAT_REF_DET) { /** Only occurs for the Reference Detector **/
+	
+			if(!FAT_gg_ref[detj]) FAT_gg_ref[detj] =  MakeTH2('D', Form("FATIMA/Energy/gg_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+								    Form("Gamma-Gamma coincidences LaBr%02d-LaBr%02d", FAT_REF_DET, detj),2000,0,2000, 2000,0,2000);
 			
-			    if(!FAT_TDCdt_ref_gated[detj]) FAT_TDCdt_ref_gated[detj] = MakeTH1('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
-											Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (on %4.2f keV)", FAT_REF_DET, E_gate1, detj, E_gate2),3201,-40,40);
-			    FAT_TDCdt_ref_gated[detj]->Fill(dt1);
+			if(!FAT_TDCdt_ref[detj]) FAT_TDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/TDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+									Form("TDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);	
+			
+			if(!FAT_QDCdt_ref[detj]) FAT_QDCdt_ref[detj] = MakeTH1('D', Form("FATIMA/Timing/QDCdt_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+									Form("QDC dt LaBr%02d LaBr%02d", FAT_REF_DET, detj),3201,-40,40);
+			
+			if(!FAT_TDC_QDC_dt[detj]) FAT_TDC_QDC_dt[detj] =  MakeTH2('D', Form("FATIMA/Timing/TDCdt_QDCdt_LaBr%02d", detj),
+									    Form("TDCdt vs QDCdt LaBr%02d", detj),3201,-40,40, 3201,-40,40);
+			
+			FAT_gg_ref[detj]->Fill(En_i, En_j);
+			FAT_TDCdt_ref[detj]->Fill(dt1);
+			FAT_QDCdt_ref[detj]->Fill(dt2);
+			FAT_TDC_QDC_dt[detj]->Fill(dt1, dt2);
+    
+	
+	
+			if (RAW->get_FAT_E(i) > FATgate1_low && RAW->get_FAT_E(i) < FATgate1_high) { /** Only if the energies are withing the energy gate **/
+			
+			    if(!FAT_E_TDCdt_ref_gated[detj]) FAT_E_TDCdt_ref_gated[detj] = MakeTH2('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_E_LaBr%02d", FAT_REF_DET, detj),
+											    Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (E)",FAT_REF_DET, E_gate1, detj), 2001, 0, 2000, 3201,-40,40);
+			
+			    FAT_E_TDCdt_ref_gated[detj]->Fill(En_j, dt1);
+	
+	
+			    if (RAW->get_FAT_E(j) > FATgate2_low && RAW->get_FAT_E(j) < FATgate2_high) { /** Only if the energies of the secodn detector are withing the energy gate **/
 			    
-			    printf("hit gates\n");
-       
-    									
+				if(!FAT_TDCdt_ref_gated[detj]) FAT_TDCdt_ref_gated[detj] = MakeTH1('D', Form("FATIMA/Timing/Gated/TDCdt_gated_LaBr%02d_LaBr%02d", FAT_REF_DET, detj),
+											    Form("TDC dt LaBr%02d (on %4.2f keV) - LaBr%02d (on %4.2f keV)", FAT_REF_DET, E_gate1, detj, E_gate2),3201,-40,40);
+				FAT_TDCdt_ref_gated[detj]->Fill(dt1);
+				
+				printf("hit gates\n");
+	   
+									    
+			    }
 			}
 		    }
 		}
