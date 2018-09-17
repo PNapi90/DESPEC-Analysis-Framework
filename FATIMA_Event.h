@@ -19,7 +19,7 @@ private:
 
 public:
     FATIMA_Event(int*,int,Raw_Event*);
-    ~FATIMA_Event();
+    virtual ~FATIMA_Event();
     
     double get_energy();
 };

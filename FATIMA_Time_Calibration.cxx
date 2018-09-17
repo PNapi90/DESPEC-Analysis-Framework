@@ -7,6 +7,10 @@ using namespace std;
 //----------------------------------------------------------
 
 FATIMA_Time_Calibration::FATIMA_Time_Calibration(){
+    for(int i = 0;i < 100;++i){
+        calib_coeffs_QDC[i] = 0;
+        calib_coeffs[i] = 0;
+    }
     load_Calibration_File();
 }
 
@@ -31,7 +35,7 @@ void FATIMA_Time_Calibration::load_Calibration_File(){
 
     double tmp_coeffs;
 
-    int det_id;
+    int det_id = 0;
 
     while(calib_file.good()){
         getline(calib_file,line,'\n');
@@ -50,11 +54,10 @@ void FATIMA_Time_Calibration::load_Calibration_File(){
         exit(0);
     }
 
-    while(calib_file.good()){
-        getline(calib_file,line,'\n');
+    while(getline(calib_file,line,'\n')){
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format,&det_id,&tmp_coeffs);
-
+		cout << "id " << det_id << " " << tmp_coeffs << endl;
         calib_coeffs_QDC[det_id] = tmp_coeffs;
     }
 }

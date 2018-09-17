@@ -9,8 +9,8 @@ class FATIMA_Time_Calibration{
 
 private:
 
-    double calib_coeffs[36];
-    double calib_coeffs_QDC[36];
+    double calib_coeffs[100];
+    double calib_coeffs_QDC[100];
 
     void load_Calibration_File();
 

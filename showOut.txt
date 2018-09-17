@@ -1,7 +1,7 @@
 GO4-*> Reading library: libGo4UserAnalysis  
 GO4-*> Find user analysis class TSCNAnalysis  
 GO4-*> !!! Find constructor with prototype TSCNAnalysis::TSCNAnalysis(int, char**)  
-GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffdb2a09570)  
+GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffe56be12f0)  
 GO4-*> Welcome to Go4 Analysis Framework Release v5.3.0 (build 50300) !  
 **** TSCNAnalysis: Create Go4Analysis
 GO4-*> Analysis: Added analysis step Unpack  
@@ -26,7 +26,6 @@ AIDA
 PLASTIC
 FATIMA
 GALILEO
-FINGER
 =====================================================
 set MUSIC parameters
  setMap :5
@@ -52,7 +51,6 @@ Initialize TX_Matrix 5
 
 DONE
 Creating XY objects
-Container created
 Creating XY with 1 sub_threads
 XY created 
 Creating XY with 1 sub_threads
@@ -60,6 +58,44 @@ XY created
 Creating XY with 1 sub_threads
 XY created 
 DONE
+id 0 0
+id 1 0
+id 2 0
+id 3 0
+id 4 0
+id 5 0
+id 6 0
+id 7 0
+id 8 0
+id 9 0
+id 10 0
+id 11 0
+id 12 0
+id 13 0
+id 14 0
+id 15 0
+id 16 0
+id 17 0
+id 18 0
+id 19 0
+id 20 0
+id 21 0
+id 22 0
+id 23 0
+id 24 0
+id 25 0
+id 26 0
+id 27 0
+id 28 0
+id 29 0
+id 30 0
+id 31 0
+id 32 0
+id 33 0
+id 34 0
+id 35 0
+id 36 0
+id 36 0
 #
 #FEBEX time calibration
 #
@@ -225,14 +261,20 @@ GO4-*> Go4 EventEndException  appeared in 2692649 cycle.
 **** TSCNAnalysis: Delete
 GO4-*> Opening AutoSave file Go4AnalysisASF.root with RECREATE mode  
 GO4-*> AutoSave file Go4AnalysisASF.root was closed.  
+------------------
 Deleting Event Builder
-Deleting Time_EventBuilder...
 WR diff Histograms written
-*** Event_Store: from 1200000 possible objects 120 were used ***
-Deleted Event_Storage
+*** Event_Store: from 1200000 possible objects 118 were used ***
 Time_EventBuilder deleted!
 ------------------
 Detector_System FRS deleted
-In AIDA dtor
-Deleted local arrays
-In Dtor processor
+Detector_System AIDA deleted
+Detector_System PLASTIC deleted
+Detector_System FATIMA deleted
+Detector_System GALILEO deleted
+------------------
+**** TSCNUnpackProc: Delete
+**** TSCNCalProc: Delete
+**** TSCNAnlProc: Delete
+GO4-*> Main: analysis batch done  
+GO4-*> Main: THE END  

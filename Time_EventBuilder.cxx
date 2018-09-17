@@ -41,10 +41,7 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
 
 Time_EventBuilder::~Time_EventBuilder(){
 
-    cout << "Deleting Time_EventBuilder..." << endl;
     delete Event_Storage;
-    cout << "Deleted Event_Storage" << endl;
-
     for(int i = 0;i < amount_interest;++i){
         delete[] interest_array[i];
         delete[] relevance_array[i];

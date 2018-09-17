@@ -19,7 +19,7 @@ protected:
 
 public:
     Events(int*,int);
-    ~Events();
+    virtual ~Events();
 
     void set_Match_ID_address(int*);
     void set_Match_ID_address_NULL_ALL();

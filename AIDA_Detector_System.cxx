@@ -97,21 +97,21 @@ AIDA_Detector_System::AIDA_Detector_System(){
 
 AIDA_Detector_System::~AIDA_Detector_System(){
     
-    cout << "In AIDA dtor" << endl;
+
     delete[] check_FEE64_timestamp;
     delete[] FEE_allocation;
-    cout << "Deleted local arrays" << endl;
+
     delete Processor;
-    cout << "Deleted processor" << endl;
+
     delete AIDA_Store;
-    cout << "Deleted Store" << endl;
+
 
 }
 
 
 //---------------------------------------------------------------
 
-void AIDA_Detector_System::Process_PSubevt(TGo4MbsSubEvent* psubevt){
+void AIDA_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
     
     
     pdata = psubevt->GetDataField();

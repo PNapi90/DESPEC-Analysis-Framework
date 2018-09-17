@@ -15,6 +15,9 @@ PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
 
 	//only for ONLINE CALIBRATION
 	if(this->ONLINE){
+		Cal_arr = nullptr;
+		bins_x_arr = nullptr;
+		
 		fired = new bool*[100];
 		for(int i = 0;i < 100;++i){
 			fired[i] = new bool[100];
@@ -33,14 +36,18 @@ PLASTIC_Calibrator::PLASTIC_Calibrator(bool ONLINE){
 		}
 	}
 	else{
+		wired_tamex_ch = nullptr;
 		bins_x_arr = new double[nbins];
 		Cal_arr = new double**[100];
 		for(int i = 0;i < 100;++i){
 			Cal_arr[i] = new double*[100];
-			for(int j = 0;j < 100;++j) Cal_arr[i][j] = new double[nbins];
+			for(int j = 0;j < 100;++j){
+				Cal_arr[i][j] = new double[nbins];
+				for(int k = 0;k < nbins;++k) Cal_arr[i][j][k] = 0;
+			}
 		}
-		fired = NULL;
-		Fine_Hist = NULL;
+		fired = nullptr;
+		Fine_Hist = nullptr;
 		load_Calibration_Files();
 	}
 }
@@ -85,9 +92,10 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 	
 	const char* format_MAP = "%d %d";
 
-	int tamex_id,ch_id;
+	int tamex_id = 0;
+	int ch_id = 0;
 
-	int used_ids[100][100];
+	int used_ids[100][100] = {0};
 	iter = 0;
 
 	wired_tamex_ch = new bool*[100];
@@ -116,8 +124,6 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 	int b_iter = 0;
 	double bin,val;
 
-	//Cal_arr = new double**[10];
-
 	const char* format = "%lf %lf";
 
 	bool first = true;
@@ -126,12 +132,8 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 
 		tamex_id = used_ids[i][0];
 		ch_id = used_ids[i][1];
-		//cout << tamex_id << " " << ch_id << endl;
-		//Cal_arr[tamex_id] = new double*[100];
 
 		b_iter = 0;
-
-		//Cal_arr[tamex_id][ch_id] = new double[nbins];
 
 		sprintf(filename,"Configuration_Files/Calibration_PLASTIC/Calib_%d_%d.dat",tamex_id,ch_id);
 		file.open(filename);

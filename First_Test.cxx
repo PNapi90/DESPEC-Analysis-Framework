@@ -70,7 +70,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	get_WR_Config();
 
 	//create White Rabbit obj
-	WR = WR_used ? new White_Rabbit() : NULL;
+	WR = new White_Rabbit();
 
 	WR_HIST = MakeTH1('D',"WR","WR",2001,-1,40);
 	WR_HIST2 = MakeTH1('D',"WR2","WR2",2001,-10,4000);
@@ -83,13 +83,13 @@ TGo4EventProcessor(name) // Histograms defined here //
 
 	// all non used systems intialized as NULL 
 	//-> calling uninitialized system will cause an error !
-	Detector_Systems[0] = !Used_Systems[0] ? NULL : new FRS_Detector_System();
-	Detector_Systems[1] = !Used_Systems[1] ? NULL : new AIDA_Detector_System();
-	Detector_Systems[2] = !Used_Systems[2] ? NULL : new PLASTIC_Detector_System();
-	Detector_Systems[3] = !Used_Systems[3] ? NULL : new FATIMA_Detector_System();
-	Detector_Systems[4] = !Used_Systems[4] ? NULL : new GALILEO_Detector_System();
+	Detector_Systems[0] = !Used_Systems[0] ? nullptr : new FRS_Detector_System();
+	Detector_Systems[1] = !Used_Systems[1] ? nullptr : new AIDA_Detector_System();
+	Detector_Systems[2] = !Used_Systems[2] ? nullptr : new PLASTIC_Detector_System();
+	Detector_Systems[3] = !Used_Systems[3] ? nullptr : new FATIMA_Detector_System();
+	Detector_Systems[4] = !Used_Systems[4] ? nullptr : new GALILEO_Detector_System();
 
-	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) Detector_Systems[i] = NULL;
+	for(int i = 0;i < 6;++i) if(!Used_Systems[i]) Detector_Systems[i] = nullptr;
 	
 	PLASTIC_CALIBRATION = Used_Systems[2] ? Check_Cal_Plastic() : false;
 	
@@ -143,8 +143,10 @@ TGo4EventProcessor(name) // Histograms defined here //
 TSCNUnpackProc::~TSCNUnpackProc()
 {
 	if(!SKIP_EVT_BUILDING){
+		cout << "------------------" << endl;
 		cout << "Deleting Event Builder" << endl;
 		delete EvtBuilder[0];
+		EvtBuilder[0] = nullptr;
 		delete[] EvtBuilder;
     }
     string DET_NAME[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
@@ -153,6 +155,7 @@ TSCNUnpackProc::~TSCNUnpackProc()
 	for(int i = 0;i < 6;++i){
 		if(Detector_Systems[i]){
 			delete Detector_Systems[i];
+			Detector_Systems[i] = nullptr;
 			cout<<"Detector_System " << DET_NAME[i] << " deleted" << endl;
 		}
 	}
@@ -161,8 +164,10 @@ TSCNUnpackProc::~TSCNUnpackProc()
 	delete[] interest_array;
 	delete[] length_interest;
 	delete[] Detector_Systems;
+
 	
 	delete RAW;
+	delete WR;
 	cout << "**** TSCNUnpackProc: Delete" << endl;
 }
 
@@ -257,6 +262,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	Int_t PrcID = 0;
 	Int_t sub_evt_length = 0;
 	
+	WR_tmp = 0;
+	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
 		subevent_iter++;
@@ -267,17 +274,14 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		PrcID = psubevt->GetProcid();
 		
 		PrcID_Conv = get_Conversion(PrcID);
-		//cout << "PrcID  " << PrcID << " " << PrcID_Conv << endl;
 		sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
    
 		    
 		if(WHITE_RABBIT_USED){
 			sub_evt_length = sub_evt_length - 5;
-			WR_tmp[iterator] = WR->get_White_Rabbit(pdata);
-						
+			WR_tmp = WR->get_White_Rabbit(pdata);
 			pdata = WR->get_pdata();
 		}
-		called[iterator] = PrcID_Conv;
 		
 		
 		//if necessary, directly print MBS for wanted Detector_System
@@ -286,16 +290,16 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		//=================================================================
 		//UNPACKING
 		//send subevent to respective unpacker
-		if(PrcID_Conv <= 1) Detector_Systems[PrcID_Conv]->Process_PSubevt(psubevt);
+		if(PrcID_Conv <= 1) Detector_Systems[PrcID_Conv]->Process_MBS(psubevt);
 		else Detector_Systems[PrcID_Conv]->Process_MBS(pdata);
 		
 		//get mbs stream data from unpacker (pointer copy solution)
 		pdata = Detector_Systems[PrcID_Conv]->get_pdata();
 		
-		//get data from subevent and set WR to RAW
-		if(PrcID_Conv != 1){
+		//get data from subevent and sent WR to RAW
+		if(PrcID_Conv != AIDA){
 			Detector_Systems[PrcID_Conv]->get_Event_data(RAW);
-			RAW->set_WR(WR_tmp[iterator]);
+			RAW->set_WR(WR_tmp);
 		}
 
 		//=================================================================
@@ -314,8 +318,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		FILL_HISTOGRAMS(PrcID_Conv);
 		//=================================================================
 
-		iterator++;
-		
+		pdata = nullptr;
 	}
 
 	if(PrcID_Conv == AIDA){
@@ -333,8 +336,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 }
 
 void TSCNUnpackProc::FILL_HISTOGRAMS(int PrcID_Conv){
+
 	switch(PrcID_Conv){
-	
 		case 0:
 			Fill_FRS_Histos();
 			break;
@@ -357,8 +360,6 @@ void TSCNUnpackProc::FILL_HISTOGRAMS(int PrcID_Conv){
 			cerr << "PrcID_Conv " << PrcID_Conv << " not known" << endl;
 			exit(0);
 	}
-
-
 }
 
 
@@ -460,6 +461,8 @@ Int_t TSCNUnpackProc::get_Conversion(Int_t PrcID){
 }
 
 void TSCNUnpackProc::get_used_Systems(){
+	for(int i = 0;i < 10;++i) Used_Systems[i] = false;
+	
 	ifstream data("Configuration_Files/Used_Systems.txt");
 	if(data.fail()){
 		cerr << "Could not find Used_Systems config file!" << endl;

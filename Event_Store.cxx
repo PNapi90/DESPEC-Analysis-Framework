@@ -51,16 +51,18 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
         T_DIFF_Fine = new TH1D("FAT_GAL_WR_f","FAT_GAL_WR_f",100,0,1000);
         TFILE = new TFile("Root_Trees/Verbose_root.root","RECREATE");
         
-        Efat = new TH1D("fat","fat",500,0,4000);
+        Emat = new TH2D("mat","FAT-GAL Gamma-Gamma",500,0,800000,250,0,4000);
+        Efat = new TH1D("fat","fat",1000,0,4000);
         Egal = new TH1D("gal","gal",80001,0,800000);
         
         TFILE->Add(T_DIFF);
         TFILE->Add(T_DIFF_Fine);
-        //TFILE->Add(Emat);
+        TFILE->Add(Emat);
         TFILE->Add(Efat);
         TFILE->Add(Egal);
     }
     iter_tmp = 0;
+    internal_iter = 0;
 }
 
 //---------------------------------------------------------------
@@ -153,30 +155,7 @@ void Event_Store::purge(int type,int i){
         }
 
         else event_counter[type]--;
-        
-        /*if(false){
 
-            //shift last event in list to free memory slot
-            //nullify pointer of last event
-            if(i < event_counter[type]-1){
-                Event[type][i] = Event[type][event_counter[type]-1];
-                Event_WR[type][i] = Event_WR[type][event_counter[type]-1];
-                Event_position[type][i] = Event_position[type][event_counter[type]-1];
-                Address_arr[type][i] = Address_arr[type][event_counter[type]-1];
-            }
-        
-            Event[type][event_counter[type]-1] = nullptr;
-            Event_WR[type][event_counter[type]-1] = 0;
-            Event_position[type][event_counter[type]-1] = nullptr;
-        
-            delete Address_arr[type][event_counter[type]-1];
-            Address_arr[type][event_counter[type]-1] = nullptr;
-
-            event_counter[type]--;
-
-            for(int k = 0;k < event_counter[type];++k) cout << Address_arr[type][k] << " " << *Address_arr[type][k] << endl;
-            cout << "---------" << endl;
-        }*/
     }
     else{
         cerr << "Event " << i << " of type " << type << " already nullptr -> undefined behavior!" << endl;
@@ -364,6 +343,17 @@ int Event_Store::get_Match_ID(int type,int pos,int j){
 
 void Event_Store::Write_Energies(int type,int evt_addr){
     double EEE = Event[type][evt_addr]->get_energy();
-    if(type == 3 && EEE > 0) Efat->Fill(EEE);
-    if(type == 4 && EEE > 0) Egal->Fill(EEE);    
+    if(type == 3 && EEE > 0){
+		fat_e = EEE;
+		Efat->Fill(EEE);
+	}
+    if(type == 4 && EEE > 0){
+		e_gali = EEE;
+		Egal->Fill(EEE);
+	}
+    internal_iter++;
+    if(internal_iter == 2){
+		if(fat_e > 50) Emat->Fill(e_gali,fat_e);
+		internal_iter = 0;
+	}    
 }

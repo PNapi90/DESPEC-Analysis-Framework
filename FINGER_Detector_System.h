@@ -91,7 +91,7 @@ public:
     ~FINGER_Detector_System();
 
     //void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*){};
-    void Process_PSubevt(TGo4MbsSubEvent* psubevt){};
+    void Process_MBS(TGo4MbsSubEvent* psubevt){};
 
     //functions from abstract class Detector_System
     void Process_MBS(int*);

@@ -38,8 +38,9 @@ private:
     int** Fill_at;
     int* Fill_am;
     
-    int iter_tmp;
+    int iter_tmp,internal_iter;
     double E_save[2];
+    double e_gali,fat_e;
 
 	Events*** Event;
 	ULong64_t** Event_WR;

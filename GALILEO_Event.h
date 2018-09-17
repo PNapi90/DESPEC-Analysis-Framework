@@ -19,7 +19,7 @@ private:
 
 public:
     GALILEO_Event(int*,int,Raw_Event*);
-    ~GALILEO_Event();
+    virtual ~GALILEO_Event();
     
     double get_energy();
 };

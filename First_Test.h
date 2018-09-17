@@ -313,7 +313,7 @@ using namespace std;
 			int iterator;
 			int Cout_counter;
 
-			ULong64_t WR_tmp[2];
+			ULong64_t WR_tmp;
 
 			ClassDef(TSCNUnpackProc,1)
 	};

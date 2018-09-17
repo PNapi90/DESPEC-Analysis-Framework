@@ -34,7 +34,7 @@ AIDA_Processor::AIDA_Processor(int amount_z_strips,int* lens_sent){
     cout << "Creating XY objects" << endl;
 
     XY = new XY_Matrix*[amount_z_strips];
-    cout << "Container created" << endl;
+
     for(int i = 0;i < amount_z_strips;++i) XY[i] = new XY_Matrix(am_sub_threads,max_len_XY_Matrix);
     cout << "DONE" << endl;
 }
@@ -42,9 +42,8 @@ AIDA_Processor::AIDA_Processor(int amount_z_strips,int* lens_sent){
 //---------------------------------------------------------------
 
 AIDA_Processor::~AIDA_Processor(){
-	cout << "In Dtor processor" << endl;
+
     delete Stream;
-    cout << "deleted stream" << endl;
     for(int i = 0;i < amount_z_strips*2;++i){
         if(i < amount_z_strips) delete XY[i]; 
         delete TX[i];
