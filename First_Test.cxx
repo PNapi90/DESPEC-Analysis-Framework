@@ -150,7 +150,7 @@ TSCNUnpackProc::~TSCNUnpackProc()
     string DET_NAME[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
 	//Detector_Systems[3]->write();
 	cout << "------------------" << endl;
-	for(int i = 0;i < 5;++i){
+	for(int i = 0;i < 6;++i){
 		if(Detector_Systems[i]){
 			delete Detector_Systems[i];
 			cout<<"Detector_System " << DET_NAME[i] << " deleted" << endl;
@@ -260,14 +260,14 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
 		subevent_iter++;
-		if(count >= 100000) continue;
+		if(count >= 1000) continue;
 
 		pdata = psubevt->GetDataField();
 		lwords = psubevt->GetIntLen();
 		PrcID = psubevt->GetProcid();
 		
 		PrcID_Conv = get_Conversion(PrcID);
-		
+		//cout << "PrcID  " << PrcID << " " << PrcID_Conv << endl;
 		sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
    
 		    

@@ -38,10 +38,10 @@ AIDA_Data_Streamer::AIDA_Data_Streamer(int max_len){
 
 AIDA_Data_Streamer::~AIDA_Data_Streamer(){
     for(int i = 0;i < z_strip_amount*2;++i){
-        delete[] Time[i];
-        delete[] x_or_y[i];
-        delete[] Energy[i];
-        delete[] x_coord[i];
+        if(Time[i]) delete[] Time[i];
+        if(x_or_y[i]) delete[] x_or_y[i];
+        if(Energy[i]) delete[] Energy[i];
+        if(x_coord[i]) delete[] x_coord[i];
     }
     delete[] Time;
     delete[] x_or_y;
@@ -49,6 +49,8 @@ AIDA_Data_Streamer::~AIDA_Data_Streamer(){
     delete[] x_coord;
     delete[] array_iterator;
     delete[] row_counter;
+    
+    cout << "Deleted Streamer" << endl;
 }
 
 //---------------------------------------------------------------

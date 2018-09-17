@@ -1,7 +1,7 @@
 GO4-*> Reading library: libGo4UserAnalysis  
 GO4-*> Find user analysis class TSCNAnalysis  
 GO4-*> !!! Find constructor with prototype TSCNAnalysis::TSCNAnalysis(int, char**)  
-GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffe6f57feb0)  
+GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffdb2a09570)  
 GO4-*> Welcome to Go4 Analysis Framework Release v5.3.0 (build 50300) !  
 **** TSCNAnalysis: Create Go4Analysis
 GO4-*> Analysis: Added analysis step Unpack  
@@ -228,8 +228,11 @@ GO4-*> AutoSave file Go4AnalysisASF.root was closed.
 Deleting Event Builder
 Deleting Time_EventBuilder...
 WR diff Histograms written
-*** Event_Store: from 1200000 possible objects 150 were used ***
+*** Event_Store: from 1200000 possible objects 120 were used ***
 Deleted Event_Storage
 Time_EventBuilder deleted!
 ------------------
 Detector_System FRS deleted
+In AIDA dtor
+Deleted local arrays
+In Dtor processor
