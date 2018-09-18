@@ -1,7 +1,7 @@
 GO4-*> Reading library: libGo4UserAnalysis  
 GO4-*> Find user analysis class TSCNAnalysis  
 GO4-*> !!! Find constructor with prototype TSCNAnalysis::TSCNAnalysis(int, char**)  
-GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffe56be12f0)  
+GO4-*> Process: new TSCNAnalysis(1, (char**)0xffefff8e0)  
 GO4-*> Welcome to Go4 Analysis Framework Release v5.3.0 (build 50300) !  
 **** TSCNAnalysis: Create Go4Analysis
 GO4-*> Analysis: Added analysis step Unpack  
@@ -36,144 +36,6 @@ Setup done
 Using a total number of 1 thread
 -------------------------------------
 
-Creating TX objects
-Initialize TX_Matrix 0
-
-Initialize TX_Matrix 1
-
-Initialize TX_Matrix 2
-
-Initialize TX_Matrix 3
-
-Initialize TX_Matrix 4
-
-Initialize TX_Matrix 5
-
-DONE
-Creating XY objects
-Creating XY with 1 sub_threads
-XY created 
-Creating XY with 1 sub_threads
-XY created 
-Creating XY with 1 sub_threads
-XY created 
-DONE
-id 0 0
-id 1 0
-id 2 0
-id 3 0
-id 4 0
-id 5 0
-id 6 0
-id 7 0
-id 8 0
-id 9 0
-id 10 0
-id 11 0
-id 12 0
-id 13 0
-id 14 0
-id 15 0
-id 16 0
-id 17 0
-id 18 0
-id 19 0
-id 20 0
-id 21 0
-id 22 0
-id 23 0
-id 24 0
-id 25 0
-id 26 0
-id 27 0
-id 28 0
-id 29 0
-id 30 0
-id 31 0
-id 32 0
-id 33 0
-id 34 0
-id 35 0
-id 36 0
-id 36 0
-#
-#FEBEX time calibration
-#
-#id SUM calibration value Channel Calibration Value
-0	0.0	0.0
-0 0 0
-1	0.0 	0.0
-1 0 0
-2	0.0 	0.0
-2 0 0
-3	0.0 	0.0
-3 0 0
-4 	0.0 	0.0
-4 0 0
-5 	0.0 	0.0
-5 0 0
-6 	0.0 	0.0
-6 0 0
-7 	0.0 	0.0
-7 0 0
-8 	0.0 	0.0
-8 0 0
-9 	0.0 	0.0
-9 0 0
-10 	0.0 	0.0
-10 0 0
-11 	0.0 	0.0
-11 0 0
-12 	0.0 	0.0
-12 0 0
-13 	0.0 	0.0
-13 0 0
-14 	0.0 	0.0
-14 0 0
-15 	0.0 	0.0
-15 0 0
-16 	0.0 	0.0
-16 0 0
-17 	0.0 	0.0
-17 0 0
-18 	0.0 	0.0
-18 0 0
-19 	0.0 	0.0
-19 0 0
-20 	0.0 	0.0
-20 0 0
-21 	0.0 	0.0
-21 0 0
-22 	0.0 	0.0
-22 0 0
-23 	0.0 	0.0
-23 0 0
-24 	0.0 	0.0
-24 0 0
-25 	0.0 	0.0
-25 0 0
-26 	0.0 	0.0
-26 0 0
-27 	0.0 	0.0
-27 0 0
-28 	0.0 	0.0
-28 0 0
-29 	0.0 	0.0
-29 0 0
-30 	0.0 	0.0
-30 0 0
-31 	0.0 	0.0
-31 0 0
-32 	0.0 	0.0
-32 0 0
-33 	0.0 	0.0
-33 0 0
-34 	0.0 	0.0
-34 0 0
-35 	0.0 	0.0
-35 0 0
-#36 	0.0 	0.0
-CREATING PLASTIC HISTOGRAMS
 
 =====================================================
 Coincidences of interest are: 
@@ -182,16 +44,19 @@ Coincidences of interest are:
 =====================================================
 
 
-////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 Setup Parameters List: 
 White Rabbit: Enabled
 FATIMA Gain Matching: Disabled
 'Nearest Neighbour Exclusion': Disabled (Distance set to 0)
-////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 
 
-A Matrix of excluded detector pairings can be found in ./Configuration_Files/FATIMA_Exclusion_Matrix.txt
+============================================================
+A Matrix of excluded detector pairings can be found in
+'Configuration_Files/FATIMA_Exclusion_Matrix.txt'
+============================================================
 
 GO4-*> UnpackFactory: Create output event UnpackEvent  
 GO4-*> Event UnpackEvent has source UnpackProc class: TSCNUnpackProc  
@@ -260,21 +125,3 @@ RunID:
 GO4-*> Go4 EventEndException  appeared in 2692649 cycle.  
 **** TSCNAnalysis: Delete
 GO4-*> Opening AutoSave file Go4AnalysisASF.root with RECREATE mode  
-GO4-*> AutoSave file Go4AnalysisASF.root was closed.  
-------------------
-Deleting Event Builder
-WR diff Histograms written
-*** Event_Store: from 1200000 possible objects 118 were used ***
-Time_EventBuilder deleted!
-------------------
-Detector_System FRS deleted
-Detector_System AIDA deleted
-Detector_System PLASTIC deleted
-Detector_System FATIMA deleted
-Detector_System GALILEO deleted
-------------------
-**** TSCNUnpackProc: Delete
-**** TSCNCalProc: Delete
-**** TSCNAnlProc: Delete
-GO4-*> Main: analysis batch done  
-GO4-*> Main: THE END  
