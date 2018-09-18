@@ -13,5 +13,5 @@
 #
 # If threading is enabled, the total number of used threads hence is N*2*SUB
 #
-PRIMARY     0
-SUB         1
+PRIMARY     1
+SUB         2

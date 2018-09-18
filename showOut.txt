@@ -1,20 +1,18 @@
 GO4-*> Reading library: libGo4UserAnalysis  
 GO4-*> Find user analysis class TSCNAnalysis  
 GO4-*> !!! Find constructor with prototype TSCNAnalysis::TSCNAnalysis(int, char**)  
-GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffe56be12f0)  
+GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffff58648a0)  
 GO4-*> Welcome to Go4 Analysis Framework Release v5.3.0 (build 50300) !  
 **** TSCNAnalysis: Create Go4Analysis
 GO4-*> Analysis: Added analysis step Unpack  
 GO4-*> Analysis: Added analysis step Calibration  
 GO4-*> Analysis: Added analysis step Analysis  
 GO4-*> Main: starting analysis in batch mode ...    
-GO4-*> Opening AutoSave file Go4AnalysisASF.root with READ mode  
-GO4-*> Analysis LoadObjects: Loading from autosave file Go4AnalysisASF.root   
-GO4-*> Updated parameter SCNParameter from parameter SCNParameter  
-GO4-*> AutoSave file Go4AnalysisASF.root was closed.  
-GO4-*> TGo4MbsFile: Open file ../fatima_ge_wr2.lmd  
+GO4-!> Fail to open AutoSave file Go4AnalysisASF.root  
+GO4-*> Analysis LoadObjects: Failed to load from file Go4AnalysisASF.root  
+GO4-*> TGo4MbsFile: Open file ../aida_test_dat.lmd  
 GO4-*> UnpackFactory: Create input event for MBS  
-GO4-*> Event MbsEvent101 has source ../fatima_ge_wr2.lmd class: TGo4MbsFile  
+GO4-*> Event MbsEvent101 has source ../aida_test_dat.lmd class: TGo4MbsFile  
 GO4-*> UnpackFactory: Create event processor UnpackProc  
 **** TSCNUnpackProc: Create
 
@@ -32,8 +30,8 @@ set MUSIC parameters
 Setup done 
 
 -------------------------------------
-**AIDA THREADING DISABLED**
-Using a total number of 1 thread
+**AIDA THREADING ENABLED**
+Using a total number of 12 threads
 -------------------------------------
 
 Creating TX objects
@@ -51,11 +49,11 @@ Initialize TX_Matrix 5
 
 DONE
 Creating XY objects
-Creating XY with 1 sub_threads
+Creating XY with 2 sub_threads
 XY created 
-Creating XY with 1 sub_threads
+Creating XY with 2 sub_threads
 XY created 
-Creating XY with 1 sub_threads
+Creating XY with 2 sub_threads
 XY created 
 DONE
 id 0 0
@@ -221,7 +219,7 @@ Autosave enabled: 		1
 ----------------------------------------------  
  ++++ Analysis Step Unpack ++++	 
   Eventsource: TGo4MbsFile 
-    Name: 	../fatima_ge_wr2.lmd 
+    Name: 	../aida_test_dat.lmd 
     Timeout: 	1 s
     Startevent: 	0	 Stopevent: 	0 
     Event interval: 	0
@@ -243,38 +241,13 @@ Tagfile: GO4-NOLMDTAG
 
 **************************************
 GO4-*> Analysis loop is starting...  
-GO4-*> Start file: ../fatima_ge_wr2.lmd tagfile:none first:0 last:0 delta:0  
+GO4-*> Start file: ../aida_test_dat.lmd tagfile:none first:0 last:0 delta:0  
 
-
-First event #: 211654
-Event 100000 Reached!!!    Data File Number : 0				Event 200000 Reached!!!    Data File Number : 0				Event 300000 Reached!!!    Data File Number : 0				Event 400000 Reached!!!    Data File Number : 0				Event 500000 Reached!!!    Data File Number : 0				Event 600000 Reached!!!    Data File Number : 0				Event 700000 Reached!!!    Data File Number : 0				Event 800000 Reached!!!    Data File Number : 0				Event 900000 Reached!!!    Data File Number : 0				Event 1000000 Reached!!!    Data File Number : 0				Event 1100000 Reached!!!    Data File Number : 0				Event 1200000 Reached!!!    Data File Number : 0				Event 1300000 Reached!!!    Data File Number : 0				Event 1400000 Reached!!!    Data File Number : 0				Event 1500000 Reached!!!    Data File Number : 0				Event 1600000 Reached!!!    Data File Number : 0				Event 1700000 Reached!!!    Data File Number : 0				Event 1800000 Reached!!!    Data File Number : 0				Event 1900000 Reached!!!    Data File Number : 0				Event 2000000 Reached!!!    Data File Number : 0				Event 2100000 Reached!!!    Data File Number : 0				Event 2200000 Reached!!!    Data File Number : 0				Event 2300000 Reached!!!    Data File Number : 0				Event 2400000 Reached!!!    Data File Number : 0				Event 2500000 Reached!!!    Data File Number : 0				Event 2600000 Reached!!!    Data File Number : 0				GO4-*> End of event source TGo4MbsFile: name:../fatima_ge_wr2.lmd msg:-I-f_evt: no more event file:../fatima_ge_wr2.lmd  
-**** TSCNAnalysis: PostLoop
-Last event: 0 Total events: 2692649
-
-Input file was: fatima_ge_wr2.lmd
-Tapelabel:	DISK
-UserName:	rising
-RunID:	
-	Explanation: 
-	Comments: 
-GO4-*> Go4 EventEndException  appeared in 2692649 cycle.  
-**** TSCNAnalysis: Delete
-GO4-*> Opening AutoSave file Go4AnalysisASF.root with RECREATE mode  
-GO4-*> AutoSave file Go4AnalysisASF.root was closed.  
-------------------
-Deleting Event Builder
-WR diff Histograms written
-*** Event_Store: from 1200000 possible objects 118 were used ***
-Time_EventBuilder deleted!
-------------------
-Detector_System FRS deleted
-Detector_System AIDA deleted
-Detector_System PLASTIC deleted
-Detector_System FATIMA deleted
-Detector_System GALILEO deleted
-------------------
-**** TSCNUnpackProc: Delete
-**** TSCNCalProc: Delete
-**** TSCNAnlProc: Delete
-GO4-*> Main: analysis batch done  
-GO4-*> Main: THE END  
+Process now
+Starting threads 6
+Starting thr 0!
+Starting thr 1!
+Starting thr 2!
+Starting thr 3!
+Starting thr 4!
+Starting thr 5!

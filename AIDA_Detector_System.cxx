@@ -327,6 +327,7 @@ void AIDA_Detector_System::CorrectMultiplexer(ADCDataItem & adcItem){
 void AIDA_Detector_System::get_Event_data(Raw_Event* RAW){
 
     //Run AIDA Decay Event Builder
+    cout << "Process now" << endl;
     Processor->PROCESSING(AIDA_Store);
 
     //get Data using RAW for Implantation Evts

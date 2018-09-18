@@ -10,6 +10,6 @@
 #
 Data_Streamer           10000
 Decay_Event_Store       10000
-T_Matrix_Row            1000
-TX_Matrix               1000
+T_Matrix_Row            7000
+TX_Matrix               7000
 XY_Matrix               1000

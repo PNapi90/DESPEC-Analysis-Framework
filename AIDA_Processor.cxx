@@ -67,7 +67,7 @@ void AIDA_Processor::PROCESSING(AIDA_Decay_Event_Store* Store){
 
         //create threads for parallel calculations
         thread t[amount_thr];
-        
+        cout << "Starting threads " << amount_thr << endl;
         //Cluster x/y strips by time, energy and position
         for(int i = 0;i < amount_thr;++i) t[i] = threading(TX_CALC,i);
         for(int i = 0;i < amount_thr;++i) t[i].join();
@@ -110,7 +110,7 @@ thread AIDA_Processor::threading(bool type,int thr_it){
         int* x_tmp = Stream->get_Coordinate(xy_b,thr_it);
         ULong64_t* T_tmp = Stream->get_Time(xy_b,thr_it);
         int hits_tmp = Stream->get_amount_of_hits(xy_b,thr_it);
-
+		cout << "Starting thr " << thr_it << "!" << endl;
         return thread([=] {TX[thr_it]->Process(x_tmp,T_tmp,Etmp,hits_tmp,thr_it);});
     }
     else return thread([=] {XY[(thr_it/((int) 2))]->Process(TX[thr_it],TX[thr_it + 1]);});
