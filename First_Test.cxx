@@ -420,7 +420,7 @@ void TSCNUnpackProc::read_setup_parameters(){
 
     cout<<endl;
     cout<<endl;
-    cout<<"////////////////////////////////////"<<endl;
+    cout<<"////////////////////////////////////////////////////////////////////////"<<endl;
     cout<<"Setup Parameters List: "<<endl;
     if(WHITE_RABBIT_USED) cout<<"White Rabbit: Enabled"<<endl;
     else if(!WHITE_RABBIT_USED) cout<<"White Rabbit: Disabled"<<endl;
@@ -428,7 +428,7 @@ void TSCNUnpackProc::read_setup_parameters(){
     else if(!FAT_gain_match_used) cout<<"FATIMA Gain Matching: Disabled"<<endl;
     if(FAT_exclusion_dist > 0) cout<<"FATIMA Detectors Excluded if Linear Difference Exceeds "<<FAT_exclusion_dist<<" mm"<<endl;
     else if(FAT_exclusion_dist == 0) cout<<"'Nearest Neighbour Exclusion': Disabled (Distance set to 0)"<<endl;
-    cout<<"////////////////////////////////////"<<endl;
+    cout<<"////////////////////////////////////////////////////////////////////////"<<endl;
     cout<<endl;
     cout<<endl;
     /*while(file.good()){
@@ -451,13 +451,13 @@ void TSCNUnpackProc::read_setup_parameters(){
 
 Int_t TSCNUnpackProc::get_Conversion(Int_t PrcID){
 
-	for(int i = 0;i < 6;++i){
-	    for(int j = 0;j < 5;++j){
-	     if(PrcID == PrcID_Array[i][j]) return i;
-	    }
-	}
-	cerr << "ProcID " << PrcID << " not known!" << endl;
-	exit(0);
+    for(int i = 0;i < 6;++i){
+        for(int j = 0;j < 5;++j){
+            if(PrcID == PrcID_Array[i][j]) return i;
+        }
+    }
+    cerr << "ProcID " << PrcID << " not known!" << endl;
+    exit(0);
 }
 
 void TSCNUnpackProc::get_used_Systems(){
@@ -693,7 +693,10 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
     ofstream output_position_matrix_file;
     output_position_matrix_file.open ("Configuration_Files/FATIMA_Exclusion_Matrix.txt");
     cout<<endl;
-    cout << "A Matrix of excluded detector pairings can be found in ./Configuration_Files/FATIMA_Exclusion_Matrix.txt"<<endl;
+    cout << "============================================================" << endl;
+    cout << "A Matrix of excluded detector pairings can be found in";
+    cout << "'Configuration_Files/FATIMA_Exclusion_Matrix.txt'"<<endl;
+    cout << "============================================================" << endl;
     cout<<endl;
     
     
@@ -969,8 +972,6 @@ void TSCNUnpackProc::Fill_FRS_Histos(){
 }
 
 void TSCNUnpackProc::Make_Plastic_Histos(){
-    
-    cout << "CREATING PLASTIC HISTOGRAMS" << endl;
     
     C_t = MakeTH1('D',"pl","pl",1001,0,1000);
     

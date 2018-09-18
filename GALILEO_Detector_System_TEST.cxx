@@ -75,9 +75,8 @@ void GALILEO_Detector_System::load_board_channel_file(){
         getline(file,line,'\n');
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format,&detector_number,&board_id,&channel_num,&dummy);
-	
-	if (dummy == 1) GALILEO_map[std::make_pair(board_id,channel_num)] = detector_number;
-	if (dummy == 0) GALILEO_map[std::make_pair(board_id,channel_num)] = -1;
+        if(dummy == 1) GALILEO_map[std::make_pair(board_id,channel_num)] = detector_number;
+        if(dummy == 0) GALILEO_map[std::make_pair(board_id,channel_num)] = -1;
     }
 }
 

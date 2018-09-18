@@ -6,8 +6,6 @@ using namespace std;
 
 XY_Matrix::XY_Matrix(int am_threads,int max_len){
     
-    cout << "Creating XY with " << am_threads << " sub_threads" << endl;
-
     len_X = 0;
     len_Y = 0;
     this->am_threads = am_threads;
@@ -23,7 +21,6 @@ XY_Matrix::XY_Matrix(int am_threads,int max_len){
 
     NULL_Arrays();
 
-    cout << "XY created " << endl;
 }
 
 //---------------------------------------------------------------
