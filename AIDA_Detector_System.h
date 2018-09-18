@@ -15,8 +15,8 @@
 #include "AIDA_Headers.h"
 #include "AIDA_Data_Types.h"
 
-#include "AIDA_Decay_Event_Store.h"
-#include "AIDA_Processor.h"
+//#include "AIDA_Decay_Event_Store.h"
+//#include "AIDA_Processor.h"
 
 #include "Detector_System.cxx"
 
@@ -102,10 +102,10 @@ private:
 	void CorrectMultiplexer(ADCDataItem&);
 
 	//Decay Event Building
-	AIDA_Processor* Processor;
-	AIDA_Decay_Event_Store* AIDA_Store;
+	//AIDA_Processor* Processor;
+	//AIDA_Decay_Event_Store* AIDA_Store;
 	
-	void load_max_len_file(int*);
+	//void load_max_len_file(int*);
 
 
 

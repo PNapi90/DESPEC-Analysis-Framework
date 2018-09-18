@@ -10,10 +10,10 @@ using namespace std;
 AIDA_Detector_System::AIDA_Detector_System(){
     
     int* lens_sent = new int[5];
-    load_max_len_file(lens_sent);
+    //load_max_len_file(lens_sent);
     
-    Processor = new AIDA_Processor(3,lens_sent);
-    AIDA_Store = new AIDA_Decay_Event_Store(lens_sent[1]);
+    //Processor = new AIDA_Processor(3,lens_sent);
+    //AIDA_Store = new AIDA_Decay_Event_Store(lens_sent[1]);
     
     delete[] lens_sent;
     lens_sent = nullptr;
@@ -101,9 +101,9 @@ AIDA_Detector_System::~AIDA_Detector_System(){
     delete[] check_FEE64_timestamp;
     delete[] FEE_allocation;
 
-    delete Processor;
+    //delete Processor;
 
-    delete AIDA_Store;
+    //delete AIDA_Store;
 
 
 }
@@ -275,7 +275,7 @@ void AIDA_Detector_System::Unpack_AIDA_Decay_DATA(AIDA_ADC_1* ADC_head){
     pdata++;
 
     //Store "Decay" Event in AIDA Decay Event Store
-    AIDA_Store->Store_Decay_Event(&decayItem); 
+    //AIDA_Store->Store_Decay_Event(&decayItem); 
     
     //decayItem.Print_Event();
 
@@ -327,7 +327,7 @@ void AIDA_Detector_System::CorrectMultiplexer(ADCDataItem & adcItem){
 void AIDA_Detector_System::get_Event_data(Raw_Event* RAW){
 
     //Run AIDA Decay Event Builder
-    Processor->PROCESSING(AIDA_Store);
+    //Processor->PROCESSING(AIDA_Store);
 
     //get Data using RAW for Implantation Evts
     //...
@@ -336,7 +336,7 @@ void AIDA_Detector_System::get_Event_data(Raw_Event* RAW){
     //Processor->get_DATA(RAW);
 
     //Reset Store
-    AIDA_Store->Reset();
+    //AIDA_Store->Reset();
 }
 
 //---------------------------------------------------------------
@@ -562,7 +562,7 @@ int* AIDA_Detector_System::get_pdata(){return pdata;}
 
 //---------------------------------------------------------------
 
-void AIDA_Detector_System::load_max_len_file(int* len_sent){
+/*void AIDA_Detector_System::load_max_len_file(int* len_sent){
     ifstream data("Configuration_Files/MAX_LENS_FILE.txt");
     int len = 0;
     char s[1000];
@@ -586,6 +586,6 @@ void AIDA_Detector_System::load_max_len_file(int* len_sent){
             }
         }
     }
-}
+}*/
 
 //---------------------------------------------------------------
