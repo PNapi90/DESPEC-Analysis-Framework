@@ -291,11 +291,11 @@ void Raw_Event::set_DATA_GALILEO(int GAL_FIRED,ULong64_t* sum_time,int* pileup,i
 	for(int i = 0;i < GAL_FIRED;++i){
 	    
 	    GALILEO_Det_Nums[i] = FEBEX_det_ids[i];
-	    GALILEO_sum_time[i] = sum_time[i];
-	    GALILEO_pileup[i] = pileup[i];
-	    GALILEO_hit_pattern[i] = hit_pattern[i];
-	    GALILEO_chan_time[i] = chan_time[i];
-	    GALILEO_chan_energy[i] = chan_en[i];
+	    GALILEO_sum_time[i] = sum_time[FEBEX_det_ids[i]];
+	    GALILEO_pileup[i] = pileup[FEBEX_det_ids[i]];
+	    GALILEO_hit_pattern[i] = hit_pattern[FEBEX_det_ids[i]];
+	    GALILEO_chan_time[i] = chan_time[FEBEX_det_ids[i]];
+	    GALILEO_chan_energy[i] = chan_en[FEBEX_det_ids[i]];
 
 	}
 
