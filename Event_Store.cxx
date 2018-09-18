@@ -71,7 +71,7 @@ Event_Store::~Event_Store(){
     
     if(Verbose_Write){
         TFILE->Write();
-        TFILE->Close();
+        //TFILE->Close();
         cout << "WR diff Histograms written" << endl;
     }
 
