@@ -6,7 +6,6 @@ using namespace std;
 
 TX_Matrix::TX_Matrix(int strip_iterator,int am_threads,int* lens_sent){
 
-    cout << "Initialize TX_Matrix " << strip_iterator << endl;
     max_len = lens_sent[3];
     //load_thread_file();
     save_iter = 0;

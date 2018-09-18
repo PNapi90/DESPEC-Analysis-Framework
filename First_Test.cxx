@@ -694,7 +694,7 @@ void TSCNUnpackProc::FAT_det_pos_setup(){
     output_position_matrix_file.open ("Configuration_Files/FATIMA_Exclusion_Matrix.txt");
     cout<<endl;
     cout << "============================================================" << endl;
-    cout << "A Matrix of excluded detector pairings can be found in";
+    cout << "A Matrix of excluded detector pairings can be found in" << endl;
     cout << "'Configuration_Files/FATIMA_Exclusion_Matrix.txt'"<<endl;
     cout << "============================================================" << endl;
     cout<<endl;
