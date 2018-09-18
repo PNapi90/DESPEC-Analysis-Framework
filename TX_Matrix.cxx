@@ -63,7 +63,6 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads,int* lens_sent){
         Energy_Arr_Save[i] = 0;
         X_Arr_Save[i] = 0;
     }
-    cout << endl;
 
     Thr_Time_Array = new ULong64_t*[am_threads];
     for(int i = 0;i < am_threads;++i){
