@@ -1449,7 +1449,7 @@ void TSCNUnpackProc::Fill_GALILEO_Histos(){
 	
 	if(tmpGAL[deti] > 0){
 	    if(!GAL_Chan_E[deti]) GAL_Chan_E[deti] = MakeTH1('D',Form("GALILEO/GALILEO_Energy_Spectra/GALILEO_E%2d",deti),
-						    Form("GALILEO Channel Energy Channel %2d",deti),80001,0,800000);
+						    Form("GALILEO Channel Energy Channel %2d",deti),4001,0,800000);
 	
 	    GAL_Chan_E[deti]->Fill(tmpGAL[deti]);
 	}

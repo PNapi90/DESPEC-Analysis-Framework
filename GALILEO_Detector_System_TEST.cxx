@@ -190,7 +190,7 @@ void GALILEO_Detector_System::Process_MBS(int* pdata){
 		    
 		    if(current_det != -1){
 			
-			det_ids[i] = current_det;
+			det_ids[fired_FEBEX_amount] = current_det;
 			Sum_Time[current_det] = tmp_Sum_Time;
 			this->pdata++; // Moves to rest of channel timestamp //
 	    
