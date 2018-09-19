@@ -125,7 +125,8 @@ struct FEBEX_TS
 struct FEBEX_En
 {
 
-	unsigned int chan_en		: 32;
+	unsigned int empty		: 5;
+	unsigned int chan_en		: 27;
   
 };
 
