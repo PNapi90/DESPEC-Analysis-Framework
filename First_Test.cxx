@@ -1443,8 +1443,8 @@ void TSCNUnpackProc::Fill_GALILEO_Histos(){
 	
 	deti = RAW->get_GALILEO_det_id(i);
 				
-	tmpGAL[deti] = RAW->get_GALILEO_Chan_E(i);
-	time_1 = RAW->get_GALILEO_Chan_T(i);
+	tmpGAL[deti] = RAW->get_GALILEO_Chan_E(deti);
+	time_1 = RAW->get_GALILEO_Chan_T(deti);
 
 	
 	if(tmpGAL[deti] > 0){
