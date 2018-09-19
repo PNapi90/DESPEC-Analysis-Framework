@@ -59,6 +59,7 @@ clean-bin::
 
 clean:: clean-bin
 	@$(CleanLib) $(EXAMP2STEP_LIBNAME) $(EXAMP2STEP_DIR)
-	@rm -f Go4AnalysisASF.root
+
+##@rm -f Go4AnalysisASF.root
 
 include $(GO4SYS)/Makefile.rules
