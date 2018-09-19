@@ -281,6 +281,7 @@ ULong64_t get_FAT_QDC_t_Coarse(int i);
 
 	//temporary GALILEO getters
 	int get_GALILEO_am_Fired();
+	int get_GALILEO_det_id(int);
 	ULong64_t get_GALILEO_Sum_T(int);
 	int get_GALILEO_Pileup(int);
 	int get_GALILEO_Hit_Pattern(int);

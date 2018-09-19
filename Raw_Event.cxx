@@ -496,6 +496,10 @@ int Raw_Event::get_GALILEO_am_Fired(){return GAL_FIRED;}
 
 //---------------------------------------------------------------
 
+int Raw_Event::get_GALILEO_det_id(int i){return GALILEO_Det_Nums[i];}
+
+//---------------------------------------------------------------
+
 ULong64_t Raw_Event::get_GALILEO_Sum_T(int i){return GALILEO_sum_time[i];}
 
 //---------------------------------------------------------------
