@@ -1447,9 +1447,9 @@ void TSCNUnpackProc::Fill_GALILEO_Histos(){
 	time_1 = RAW->get_GALILEO_Chan_T(i);
 
 	
-	if(tmpGAL[i] > 0){
-	    if(!GAL_Chan_E[deti]) GAL_Chan_E[deti] = MakeTH1('D',Form("GALILEO/GALILEO_Energy_Spectra/GALILEO_E%2d",i),
-						    Form("GALILEO Channel Energy Channel %2d",i),80001,0,800000);
+	if(tmpGAL[deti] > 0){
+	    if(!GAL_Chan_E[deti]) GAL_Chan_E[deti] = MakeTH1('D',Form("GALILEO/GALILEO_Energy_Spectra/GALILEO_E%2d",deti),
+						    Form("GALILEO Channel Energy Channel %2d",deti),80001,0,800000);
 	
 	    GAL_Chan_E[deti]->Fill(tmpGAL[deti]);
 	}
@@ -1471,11 +1471,11 @@ void TSCNUnpackProc::Fill_GALILEO_Histos(){
 		GAL_chan_time_diff = time_1 - time_2;
 		
 
-		if(!GAL_Chan_Time_Diff[detj]) GAL_Chan_Time_Diff[detj] = MakeTH1('D',Form("GALILEO/GALILEO_Chan_Time_DIff%2d",j),
-								    Form("GALILEO Channel Time Difference for %2d",j),201,-1000,1000);
+		if(!GAL_Chan_Time_Diff[detj]) GAL_Chan_Time_Diff[detj] = MakeTH1('D',Form("GALILEO/GALILEO_Chan_Time_DIff%2d",detj),
+								    Form("GALILEO Channel Time Difference for %2d",detj),201,-1000,1000);
 
-		if(!GAL_Time_Diff_vs_Energy[detj]) GAL_Time_Diff_vs_Energy[detj] = MakeTH2('D',Form("GALILEO/GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",j),
-										Form("GALILEO Time Difference Vs Channel Energy Channel %2d",j),201,-1000,1000,10001,0,800000);
+		if(!GAL_Time_Diff_vs_Energy[detj]) GAL_Time_Diff_vs_Energy[detj] = MakeTH2('D',Form("GALILEO/GALILEO_dT_vs_Energy_Spectra/GALILEO_dT_vs_E%2d",detj),
+										Form("GALILEO Time Difference Vs Channel Energy Channel %2d",detj),201,-1000,1000,10001,0,800000);
 		
 		
 		GAL_Chan_Time_Diff[detj]->Fill(GAL_chan_time_diff);
