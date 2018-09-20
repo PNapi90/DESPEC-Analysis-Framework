@@ -287,15 +287,25 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 
 void Raw_Event::set_DATA_GALILEO(int GAL_FIRED,ULong64_t* sum_time,int* pileup,int* hit_pattern,ULong64_t* chan_time,double* chan_en, int* FEBEX_det_ids){
 	this->GAL_FIRED = GAL_FIRED;
+	int det_id_Galileo_tmp = 0;
 	    
 	for(int i = 0;i < GAL_FIRED;++i){
 	    
-	    GALILEO_Det_Nums[i] = FEBEX_det_ids[i];
+	    /*GALILEO_Det_Nums[i] = FEBEX_det_ids[i];
 	    GALILEO_sum_time[i] = sum_time[FEBEX_det_ids[i]];
 	    GALILEO_pileup[i] = pileup[FEBEX_det_ids[i]];
 	    GALILEO_hit_pattern[i] = hit_pattern[FEBEX_det_ids[i]];
 	    GALILEO_chan_time[i] = chan_time[FEBEX_det_ids[i]];
-	    GALILEO_chan_energy[i] = chan_en[FEBEX_det_ids[i]];
+	    GALILEO_chan_energy[i] = chan_en[FEBEX_det_ids[i]];*/
+        
+        det_id_Galileo_tmp = FEBEX_det_ids[i];
+	    
+	    GALILEO_Det_Nums[i] = det_id_Galileo_tmp;
+	    GALILEO_sum_time[det_id_Galileo_tmp] = sum_time[FEBEX_det_ids[i]];
+	    GALILEO_pileup[det_id_Galileo_tmp] = pileup[FEBEX_det_ids[i]];
+	    GALILEO_hit_pattern[det_id_Galileo_tmp] = hit_pattern[FEBEX_det_ids[i]];
+	    GALILEO_chan_time[det_id_Galileo_tmp] = chan_time[FEBEX_det_ids[i]];
+	    GALILEO_chan_energy[det_id_Galileo_tmp] = chan_en[FEBEX_det_ids[i]];
 
 	}
 
