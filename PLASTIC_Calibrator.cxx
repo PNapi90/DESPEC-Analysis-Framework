@@ -142,8 +142,7 @@ void PLASTIC_Calibrator::load_Calibration_Files(){
 			cerr << "Could not find PLASTIC Calibration file " << tamex_id << " " << ch_id << endl;
 			exit(0);
 		}
-		while(file.good()){
-			getline(file,line,'\n');
+		while(getline(file,line,'\n')){
 			if(line[0] == '#') continue;
 			sscanf(line.c_str(),format,&bin,&val);
 			if(first) bins_x_arr[b_iter] = bin;

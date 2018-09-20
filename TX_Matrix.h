@@ -32,6 +32,7 @@ private:
     
     std::mutex MUTEX;
     int iterator_mutex;
+    int strip_iterator;
 
     bool x_or_y;
 

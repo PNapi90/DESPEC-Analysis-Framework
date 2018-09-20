@@ -39,6 +39,7 @@ private:
     inline void non_threading(bool,int);
 
     void check_Thread_Use();
+    void RETURN_THREAD();
 
 public:
     AIDA_Processor(int,int*);

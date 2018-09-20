@@ -12,6 +12,7 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads,int* lens_sent){
     save_iter = 0;
     amount_of_data_points = 0;
     this->am_threads = am_threads;
+    this->strip_iterator = strip_iterator;
     cluster_counter = new int[am_threads];
 
     x_or_y = (strip_iterator % 2 == 1);
@@ -64,7 +65,7 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads,int* lens_sent){
         Energy_Arr_Save[i] = 0;
         X_Arr_Save[i] = 0;
     }
-    cout << endl;
+    
 
     Thr_Time_Array = new ULong64_t*[am_threads];
     for(int i = 0;i < am_threads;++i){
@@ -148,6 +149,8 @@ void TX_Matrix::process_mem_usage(int iter,int len_2){
 
 void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int len,int thr_it){
 
+    if(len == 0) return;
+
     iterator_mutex = 0;
 
     //set latest measured time for time comparison
@@ -175,13 +178,13 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     thread t[am_threads];
 
     //check time differences between all events using threads
-    
     for(int i = 0;i < am_threads;++i) t[i] = threading(true,i);
     for(int i = 0;i < am_threads;++i) t[i].join();
 
     int* deleteable_rows = nullptr;
 
     int rel_counter = 0;
+    
 
     for(int i = 0;i < amount_of_data_points;++i){
         //skip data points that already exist in events before
@@ -193,7 +196,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         //create coincidence matrix without 0 values
         len_line_X[i] = T_Rows[i]->get_Relevant_amount();
         deleteable_rows = T_Rows[i]->get_Relevant_Evts();
-
+        
         if(len_line_X[i] > 0) relevant_for_x[i] = new int[len_line_X[i]];
         else relevant_for_x[i] = nullptr;
         
@@ -211,7 +214,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         deleteable_rows = nullptr;
     }
     //print_COINC_MAT();
-
+    
     //check if coincident events are neighbors (using threads)
     for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
     for(int i = 0;i < am_threads;++i) t[i].join();
@@ -327,10 +330,10 @@ void TX_Matrix::Thread_X(int thr_num){
     bool active_cluster = false;
     int cluster_of_interest = 0;
     int cluster_of_interest_len = 0;
-    
     //loop over all events in thread
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         //skip if event not of interest (see Process(...))
+        
         if(skip_arr[i]) continue;
         if(!relevant_for_x[i]){
             cerr << "Skip array pointer exception in TX_Matrix" << endl;

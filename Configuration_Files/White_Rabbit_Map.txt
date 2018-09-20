@@ -1,6 +1,6 @@
 #Detector System White Rabbit IDs 
-FRS/S2      0x300
-AIDA        0x200
+FRS/S2      0x800 
+AIDA        0x300
 #PLASTIC    0x500
 FATIMA      0x500
 GALILEO     0x400

@@ -84,17 +84,18 @@ void White_Rabbit::process_White_Rabbit(int* pdata){
     WR_Header *wrh = (WR_Header*) pdata;
     int WR_d = wrh->check_wr;
     
-    bool found = false;
+    bool found = true;
     
-    for(int i = 0;i < 6;++i){
+    /*for(int i = 0;i < 6;++i){
         found = WR_d == ID[i];
         if(found) break;
-    }
+    }*/
     
     if(!found){
         cerr << hex << "White Rabbit Header 0x" << WR_d << " not known" << endl;
         cerr << "List of known headers:" << endl;
         for(int i = 0;i < 6;++i) cerr << hex << names[i] << " 0x" << ID[i] << endl;
+        cerr << "Check Configuration_Files/White_Rabbit_Map.txt" << endl;
         exit(0);
     }
     
