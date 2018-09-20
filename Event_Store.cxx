@@ -51,9 +51,9 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
         T_DIFF_Fine = new TH1D("FAT_GAL_WR_f","FAT_GAL_WR_f",100,0,1000);
         TFILE = new TFile("Root_Trees/Verbose_root.root","RECREATE");
         
-        Emat = new TH2D("mat","FAT-GAL Gamma-Gamma",500,0,800000,250,0,4000);
-        Efat = new TH1D("fat","fat",1000,0,4000);
-        Egal = new TH1D("gal","gal",80001,0,800000);
+        Emat = new TH2D("mat","FAT-GAL Gamma-Gamma",2000,0,4000,500,0,4000);
+        Efat = new TH1D("fat","fat",500,0,4000);
+        Egal = new TH1D("gal","gal",2000,0,4000);
         
         TFILE->Add(T_DIFF);
         TFILE->Add(T_DIFF_Fine);
