@@ -1,7 +1,7 @@
 GO4-*> Reading library: libGo4UserAnalysis  
 GO4-*> Find user analysis class TSCNAnalysis  
 GO4-*> !!! Find constructor with prototype TSCNAnalysis::TSCNAnalysis(int, char**)  
-GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffea4d53830)  
+GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffe75068870)  
 GO4-*> Welcome to Go4 Analysis Framework Release v5.3.0 (build 50300) !  
 **** TSCNAnalysis: Create Go4Analysis
 GO4-*> Analysis: Added analysis step Unpack  
@@ -106,7 +106,6 @@ GO4-*> Start file: ../fatima_ge_wr2.lmd tagfile:none first:0 last:0 delta:0
 
 
 First event #: 211654
-hit gates
 Event 100000 Reached!!!    Data File Number : 0				Event 200000 Reached!!!    Data File Number : 0				Event 300000 Reached!!!    Data File Number : 0				Event 400000 Reached!!!    Data File Number : 0				Event 500000 Reached!!!    Data File Number : 0				Event 600000 Reached!!!    Data File Number : 0				Event 700000 Reached!!!    Data File Number : 0				Event 800000 Reached!!!    Data File Number : 0				Event 900000 Reached!!!    Data File Number : 0				Event 1000000 Reached!!!    Data File Number : 0				Event 1100000 Reached!!!    Data File Number : 0				Event 1200000 Reached!!!    Data File Number : 0				Event 1300000 Reached!!!    Data File Number : 0				Event 1400000 Reached!!!    Data File Number : 0				Event 1500000 Reached!!!    Data File Number : 0				hit gates
 Event 1600000 Reached!!!    Data File Number : 0				Event 1700000 Reached!!!    Data File Number : 0				hit gates
 Event 1800000 Reached!!!    Data File Number : 0				hit gates

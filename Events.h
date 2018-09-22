@@ -6,6 +6,8 @@
 
 #include "Raw_Event.h"
 
+typedef unsigned long ULong;
+
 class Events{
 
 protected:
@@ -32,6 +34,8 @@ public:
     int** get_Match_ID_address();
     
     virtual double get_energy() = 0;
+    virtual double get_energies(int) = 0;
+    virtual ULong get_time(int) = 0;
 };
 
 #endif

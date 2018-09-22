@@ -120,7 +120,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     int** hit_addresses = nullptr;
     int* hit_types = nullptr;
     int* filled_types = nullptr;
-
+	Event_Storage->reset_Iter();
     //get coincidences (self coincidence not possible)
     for(int i = 0;i < 6;++i){
         hits[i] = -1;

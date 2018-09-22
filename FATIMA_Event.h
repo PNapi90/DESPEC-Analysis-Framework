@@ -22,6 +22,8 @@ public:
     virtual ~FATIMA_Event();
     
     double get_energy();
+    double get_energies(int){return 0;};
+    ULong get_time(int){return 0;};
 };
 
 #endif

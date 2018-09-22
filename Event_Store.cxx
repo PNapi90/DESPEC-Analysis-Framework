@@ -24,7 +24,8 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
     Fill_am = new int[6];
 
     Max_Fill = new int[6];
-
+	tgal = 0;
+	tfat = 0;
     for(int i = 0;i < 6;++i){
         Event[i] = new Events*[MEMORY_LIMIT];
         Event_WR[i] = new ULong64_t[MEMORY_LIMIT];
@@ -47,19 +48,43 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
 
     Verbose_Write = true;
     if(Verbose_Write){
-        T_DIFF = new TH1D("FAT_GAL_WR","FAT_GAL_WR",100,0,1000);
-        T_DIFF_Fine = new TH1D("FAT_GAL_WR_f","FAT_GAL_WR_f",100,0,1000);
+        T_DIFF = new TH1D("FAT_GAL_WR","FAT_GAL_WR",1000,0,1000);
+        T_DIFF_Fine = new TH1D("FAT_GAL_WR_f","FAT_GAL_WR_f",50000,0,100000);
+        Fine_T2 = new TH1D("t2","t2",50000,0,100000);
         TFILE = new TFile("Root_Trees/Verbose_root.root","RECREATE");
         
         Emat = new TH2D("mat","FAT-GAL Gamma-Gamma",2000,0,4000,500,0,4000);
         Efat = new TH1D("fat","fat",500,0,4000);
         Egal = new TH1D("gal","gal",2000,0,4000);
+        Efat_C = new TH1D("fatc","fatc",500,0,2000);
+        Egal_o_t = new TH2D("E_T Gal","E_T Gal",5000,0,10000,1000,0,2000);
+        e_over_t = new TH2D**[3];
+        det_vs_t = new TH2D*[3];
+        char name[100];
+        for(int i = 0;i < 3;++i){
+			e_over_t[i] = new TH2D*[3];
+			sprintf(name,"GAL_t_%d",i);
+			det_vs_t[i] = new TH2D(name,name,2000,-5000,5000,10,0,10);
+			TFILE->Add(det_vs_t[i]);
+			for(int j = 0;j < 3;++j){
+				if(j <= i) e_over_t[i][j] = nullptr;
+				else{
+					sprintf(name,"GAL_Det_%d_%d",i,j);
+					e_over_t[i][j] = new TH2D(name,name,2000,-1000,1000,2000,0,4000);
+					TFILE->Add(e_over_t[i][j]);
+				}
+			}
+			
+		}
         
         TFILE->Add(T_DIFF);
         TFILE->Add(T_DIFF_Fine);
         TFILE->Add(Emat);
         TFILE->Add(Efat);
         TFILE->Add(Egal);
+        TFILE->Add(Efat_C);
+        TFILE->Add(Egal_o_t);
+        TFILE->Add(Fine_T2);
     }
     iter_tmp = 0;
     internal_iter = 0;
@@ -171,19 +196,28 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
 
     double delta = 0;
     double WR_d = (double) WR;
+    double delta_min = 1000000;
 
     //search through event data for smallest time difference
     for(int i = 0;i < event_counter[type];++i){
-        delta = (WR > Event_WR[type][i]) ? (double)(WR - Event_WR[type][i]) : (double)(Event_WR[type][i] - WR);
-        delta = abs(delta);
+        delta = (double)(WR - Event_WR[type][i]);
+        //delta = (WR > Event_WR[type][i]) ? (double)(WR - Event_WR[type][i]) : (double)(Event_WR[type][i] - WR);
+        //delta = abs(delta);
+        delta_min = (delta_min > abs(delta)) ? delta : delta_min;
         if(in_time_windows(delta)){
             return_value = i;
-            if(Verbose_Write){
-                T_DIFF->Fill(delta/1000.);
-                if(delta/1000. <= 1.) T_DIFF_Fine->Fill(delta);
-            }
             break;
         }
+    }
+    for(int i = 0;i < event_counter[type];++i){
+        delta = (double)(WR - Event_WR[type][i]);
+        //delta = (WR > Event_WR[type][i]) ? (double)(WR - Event_WR[type][i]) : (double)(Event_WR[type][i] - WR);
+        //delta = abs(delta);
+        delta_min = (delta_min > abs(delta)) ? delta : delta_min;
+    }
+    if(Verbose_Write){
+         T_DIFF->Fill(delta_min/1000.);
+         T_DIFF_Fine->Fill(delta_min);
     }
     return return_value;
 }
@@ -191,8 +225,8 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
 //---------------------------------------------------------------
 
 inline bool Event_Store::in_time_windows(double delta){
-    double offset = 200;
-    double width = 500;
+    double offset = 205;
+    double width = 30;
     return (abs(delta - offset) < width);
 }
 
@@ -308,7 +342,28 @@ void Event_Store::create_Event(int type,Raw_Event* RAW){
 
     Event_position[type][val] = &Address_arr[val];
     
+    if(type == 4){
+		unsigned long ttt,ttt2;
+		double ttt3,etmp;
+		for(int i = 0;i < 3;++i){
+			etmp = Event[type][val]->get_energies(i);
+			ttt = Event[type][val]->get_time(i);
+			for(int j = i+1;j < 3;++j){
+				ttt2 = Event[type][val]->get_time(j);
+				if(ttt2 != 1337 && ttt != 1337){
+					etmp = Event[type][val]->get_energies(i) + Event[type][val]->get_energies(j);
+					ttt3 = (double)(ttt2-ttt);
+					e_over_t[i][j]->Fill(ttt3,etmp);
+					det_vs_t[i]->Fill(ttt3,j);
+					break;
+				}
+			}
+		}
+	}
+    
     if(Fill_am[type] == 0 && !filled) event_counter[type]++;
+    
+    
 
 }
 
@@ -341,19 +396,43 @@ int Event_Store::get_Match_ID(int type,int pos,int j){
 
 //---------------------------------------------------------------
 
+void Event_Store::reset_Iter(){internal_iter = 0;}
+
 void Event_Store::Write_Energies(int type,int evt_addr){
     double EEE = Event[type][evt_addr]->get_energy();
     if(type == 3 && EEE > 0){
 		fat_e = EEE;
 		Efat->Fill(EEE);
+		tfat = Event_WR[type][evt_addr];
 	}
     if(type == 4 && EEE > 0){
 		e_gali = EEE;
 		Egal->Fill(EEE);
+		tgal = Event_WR[type][evt_addr];
+		unsigned long ttt,ttt2;
+		double ttt3 = 0;
+		double etmp = 0;
+		for(int i = 0;i < 0;++i){
+			etmp = Event[type][evt_addr]->get_energies(i);
+			ttt = Event[type][evt_addr]->get_time(i);
+			for(int j = i+1;j < 3;++j){
+				ttt2 = Event[type][evt_addr]->get_time(j);
+				if(ttt2 != 1337 && ttt != 1337){
+					etmp = Event[type][evt_addr]->get_energies(i) + Event[type][evt_addr]->get_energies(j);
+					ttt3 = (double)(ttt2-ttt);
+					e_over_t[i][j]->Fill(ttt3,etmp);
+					det_vs_t[i]->Fill(ttt3,j);
+					break;
+				}
+			}
+		}
 	}
     internal_iter++;
     if(internal_iter == 2){
 		if(fat_e > 50) Emat->Fill(e_gali,fat_e);
+		if(abs(e_gali - 1332.5) < 5.) Efat_C->Fill(fat_e);
+		double del = (double)(tgal - tfat);
+		Fine_T2->Fill(del);
 		internal_iter = 0;
 	}    
 }

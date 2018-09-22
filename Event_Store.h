@@ -66,9 +66,12 @@ private:
     //-------------------
     TH1D* T_DIFF;
     TH1D* T_DIFF_Fine;
-    TH2D* Emat;
-    TH1D *Efat,*Egal;
+    TH2D *Emat,*Egal_o_t;
+    TH1D *Efat,*Egal,*Efat_C,*Fine_T2;
+    TH2D** det_vs_t;
+    TH2D*** e_over_t;
     TFile* TFILE;
+    ULong64_t tgal,tfat;
     bool Verbose_Write;
     //-------------------
 
@@ -87,6 +90,8 @@ public:
     void show_all_addresses(int,int);
     void show_positions(int);
     void Write_Energies(int,int);
+    
+    void reset_Iter();
 
     int get_Match_ID(int,int,int);
     int Time_Comparison(int,ULong64_t);

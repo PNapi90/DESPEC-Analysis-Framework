@@ -21,6 +21,8 @@ public:
     virtual ~PLASTIC_Event();
     
     double get_energy(){return 0;};
+    double get_energies(int){return 0;};
+    ULong get_time(int){return 0;};
 };
 
 #endif
