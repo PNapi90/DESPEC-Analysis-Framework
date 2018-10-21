@@ -8,6 +8,7 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
+#include <vector>
 
 #include "TX_Matrix.h"
 #include "Raw_Event.h"
@@ -31,7 +32,7 @@ private:
     int amount_of_deleted_events;
     int amount_of_events;
 
-    int* deleted_events;
+    std::vector<int> deleted_events;
 
     double am_threads_d;
 

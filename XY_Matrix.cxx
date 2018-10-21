@@ -16,8 +16,7 @@ XY_Matrix::XY_Matrix(int am_threads,int max_len){
     amount_of_deleted_events = 0;
     amount_of_events = 0;
 
-    deleted_events = new int[max_len];
-    for(int i = 0;i < max_len;++i) deleted_events[i] = -1;
+    deleted_events = std::vector<int>(max_len,-1);
 
     NULL_Arrays();
 
