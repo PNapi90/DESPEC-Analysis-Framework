@@ -27,8 +27,6 @@ XY_Matrix::XY_Matrix(int am_threads,int max_len){
 XY_Matrix::~XY_Matrix(){
     Cluster_X = nullptr;
     Cluster_Y = nullptr;
-
-    delete[] deleted_events;
 }
 
 //---------------------------------------------------------------

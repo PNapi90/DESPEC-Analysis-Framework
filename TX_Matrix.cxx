@@ -327,7 +327,7 @@ inline void TX_Matrix::set_skip_array_element(int delete_j,int i,int j){
     lock_guard<mutex> lockGuard(MUTEX);
 
     skip_arr[delete_j] = (delete_j != i);
-    relevant_for_x[i][j] = deleteable_rows[j];
+    relevant_for_x[i][j] = delete_j;
 }
 
 //---------------------------------------------------------------

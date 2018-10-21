@@ -76,8 +76,9 @@ private:
     inline bool keep_Event(int);
 
     inline bool check_relevant(int);
-    inline void set_relevant(int,int,int);
+    inline void set_relevant(int,int,int*);
     inline void Save_Matrix_Row(int);
+    inline void set_skip_array_element(int,int,int);
 
     std::thread threading(bool,int);
 
