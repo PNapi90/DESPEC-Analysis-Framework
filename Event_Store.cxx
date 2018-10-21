@@ -79,7 +79,7 @@ Event_Store::~Event_Store(){
     length_interest = nullptr;
     interest_array = nullptr;
 
-	int sum_event = 0;
+    int sum_event = 0;
     for(int i = 0;i < 6;++i){
         for(int j = 0;j < MEMORY_LIMIT;++j){
             if(Event[i][j]) delete Event[i][j];
@@ -105,8 +105,8 @@ Event_Store::~Event_Store(){
 
 
 void Event_Store::store(Raw_Event* RAW){
-	int sum_event = 0;
-	for(int i = 0;i < 6;++i) sum_event += event_counter[i];
+    int sum_event = 0;
+    for(int i = 0;i < 6;++i) sum_event += event_counter[i];
 
     if(sum_event >= MEMORY_LIMIT*6){
         cerr << "Event_Store MEMORY_LIMIT of " << MEMORY_LIMIT*6.*2./1024. << "MB reached !" << endl;
@@ -280,10 +280,10 @@ void Event_Store::create_Event(int type,Raw_Event* RAW){
 
     switch(type){
         case 0:
-            //Event[0][event_counter[0]] = new FRS_Event(sys_interest[0],iter[0],RAW);
+            Event[0][val] = new FRS_Event(sys_interest[0],iter[0],RAW);
             break;
         case 1:
-           // Event[1][event_counter[1]] = new AIDA_Event(sys_interest[1],iter[1],RAW);
+            Event[1][val] = new AIDA_Event(sys_interest[1],iter[1],RAW);
             break;
         case 2:
             Event[2][val] = new PLASTIC_Event(sys_interest[2],iter[2],RAW);
@@ -295,7 +295,7 @@ void Event_Store::create_Event(int type,Raw_Event* RAW){
             Event[4][val] = new GALILEO_Event(sys_interest[4],iter[4],RAW);
             break;
         case 5:
-            //Event[5][event_counter[5]] = new FINGER_Event(sys_interest[5],iter[5],RAW);
+            Event[5][val] = new FINGER_Event(sys_interest[5],iter[5],RAW);
             break;
         default:
             cerr << "Default error in Event_Store switch!" << endl;
@@ -341,19 +341,40 @@ int Event_Store::get_Match_ID(int type,int pos,int j){
 
 //---------------------------------------------------------------
 
+void Event_Store::Write(Match* MatchHit,TFile* File){
+
+    //get type of coincidence of interest and respective event addresses
+    int match_hits = MatchHit->get_amount_Hits();
+    int* filled_types = MatchHit->get_filled_types();
+    int** hit_addresses = MatchHit->get_Address_Array();
+
+    //loop over coincident events
+    for(int o = 0;o < match_hits;++o) if(filled_types[o] != -1){
+        //evoke write routine of Event
+        Event[filled_types[o]][*hit_addresses[filled_types[o]]]->Write_Event(File);
+    }
+
+    filled_types = nullptr;
+    hit_addresses = nullptr;
+}
+
+//---------------------------------------------------------------
+
 void Event_Store::Write_Energies(int type,int evt_addr){
     double EEE = Event[type][evt_addr]->get_energy();
     if(type == 3 && EEE > 0){
-		fat_e = EEE;
-		Efat->Fill(EEE);
-	}
+        fat_e = EEE;
+        Efat->Fill(EEE);
+    }
     if(type == 4 && EEE > 0){
-		e_gali = EEE;
-		Egal->Fill(EEE);
-	}
+        e_gali = EEE;
+        Egal->Fill(EEE);
+    }
     internal_iter++;
     if(internal_iter == 2){
-		if(fat_e > 50) Emat->Fill(e_gali,fat_e);
-		internal_iter = 0;
-	}    
+        if(fat_e > 50) Emat->Fill(e_gali,fat_e);
+        internal_iter = 0;
+    }    
 }
+
+//---------------------------------------------------------------

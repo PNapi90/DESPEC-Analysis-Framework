@@ -21,3 +21,9 @@ inline void PLASTIC_Event::set_DATA(Raw_Event* RAW){
 }
 
 //---------------------------------------------------------------
+
+void PLASTIC_Event::Write_Event(TFile* File){
+	//User defined what variables should be written
+}
+
+//---------------------------------------------------------------

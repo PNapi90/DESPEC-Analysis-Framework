@@ -27,3 +27,11 @@ inline void GALILEO_Event::set_DATA(Raw_Event* RAW){
 //---------------------------------------------------------------
 
 double GALILEO_Event::get_energy(){return (am_fired > 0) ? energy_tot : -1;}
+
+
+
+void GALILEO_Event::Write_Event(TFile* File){
+	//User defined what variables should be written
+}
+
+//---------------------------------------------------------------

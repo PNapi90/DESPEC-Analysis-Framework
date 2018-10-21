@@ -21,6 +21,7 @@ public:
     virtual ~PLASTIC_Event();
     
     double get_energy(){return 0;};
+    void Write_Event(TFile* File);
 };
 
 #endif

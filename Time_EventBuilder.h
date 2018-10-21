@@ -4,6 +4,10 @@
 #include <cstdlib> 
 #include <iostream>
 #include <fstream>
+#include <vector>
+
+#include <TFile.h>
+
 
 #include "Raw_Event.h"
 #include "EventBuilder.cxx"
@@ -22,7 +26,7 @@ private:
 
     int match_amount[100];
     int found_matches;
-    int iter[6];
+    int iter[6],hits[5],match_ID[50];
     int expired_counter;
 
     int max_calls[6];
@@ -36,6 +40,8 @@ private:
 	int amount_interest;
     int* length_interest;
 	int** interest_array;
+
+    TFile** FileSystem;
 	
     Match*** Matches;
 	Event_Store* Event_Storage;

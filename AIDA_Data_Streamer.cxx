@@ -130,25 +130,30 @@ inline void AIDA_Data_Streamer::check_array_position(int array_position,int z_st
 //---------------------------------------------------------------
 
 double* AIDA_Data_Streamer::get_Energy(bool xy,int z_strip){
-    return Energy[conversion_array[xy][z_strip]];
+    int xy_int = (int) xy;
+    return Energy[conversion_array[xy_int][z_strip]];
 }
 
 //---------------------------------------------------------------
 
 ULong64_t* AIDA_Data_Streamer::get_Time(bool xy,int z_strip){
-    return Time[conversion_array[xy][z_strip]];
+    int xy_int = (int) xy;
+    return Time[conversion_array[xy_int][z_strip]];
 }
 
 //---------------------------------------------------------------
 
 int* AIDA_Data_Streamer::get_Coordinate(bool xy,int z_strip){
-    return x_coord[conversion_array[xy][z_strip]];
+    int xy_int = (int) xy;
+    return x_coord[conversion_array[xy_int][z_strip]];
 }
 
 //---------------------------------------------------------------
 
 int AIDA_Data_Streamer::get_amount_of_hits(bool xy,int z_strip){
-    return array_iterator[conversion_array[xy][z_strip]];
+    int xy_int = (int) xy;
+    if(conversion_array[xy_int][z_strip] == -1) return 0;
+    return array_iterator[conversion_array[xy_int][z_strip]];
 }
 
 //---------------------------------------------------------------

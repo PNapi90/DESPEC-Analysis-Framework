@@ -12,6 +12,10 @@ ADCDataItem::ADCDataItem(){
 	front_back	  = -1;
 	layer_number	  = -1;
 	calibrated_energy = -1;
+	dataType = 0;
+	ADC_Data = 0;
+	timestampLSB = 0;
+	sampleLength = 0;
 }
 void ADCDataItem::Set_Decay_Data(int* pdata, ULong64_t AIDA_Time_Base){
 

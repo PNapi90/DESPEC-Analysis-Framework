@@ -18,6 +18,8 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
         for(int j = 0;j < length_interest[i];++j) interest_array[i][j] = interest_array_tmp[i][j];
     }
     
+    FileSystem = nullptr;
+
     Matches = new Match**[amount_interest];
     for(int i = 0;i < amount_interest;++i){
         Matches[i] = new Match*[MEMORY_LIMIT];
@@ -28,6 +30,9 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
     for(int i = 0;i < 100;++i) match_amount[i] = 0;
 
     create_relevance_array();
+
+    for(int i = 0;i < 6;++i) hits[i] = -1;
+    for(int i = 0;i < 50;++i) match_ID[i] = -1;
 
     //set event storage
     Event_Storage = new Event_Store(amount_interest,length_interest,interest_array);
@@ -59,6 +64,10 @@ Time_EventBuilder::~Time_EventBuilder(){
 //---------------------------------------------------------------
 
 void Time_EventBuilder::create_relevance_array(){
+
+    std::vector<std::string> relevance_name_tmp(amount_interest,"Root_Files/");
+    std::string name_list[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
+
     relevance_array = new bool*[6];
     //loop over all 6 systems (FRS,AIDA,...)
     for(int i = 0;i < 6;++i){
@@ -75,11 +84,22 @@ void Time_EventBuilder::create_relevance_array(){
                     relevance_system[i] = true;
                     //system i can be found in coincidence array j
                     relevance_array[i][j] = true;
+                    relevance_name_tmp[j] += name_list[i] + "_";
                     break;
                 }
             }
         }
     }
+    //.root ending for files
+    for(int i = 0;i < amount_interest;++i) relevance_name_tmp[i] += ".root";
+
+    //Root files with user-defined histograms for
+    //each type of coincidences of interest
+    FileSystem = new TFile*[amount_interest];
+    for(int i = 0;i < amount_interest;++i){
+        FileSystem[i] = new TFile(relevance_name_tmp[i].c_str(),"RECREATE");
+    }
+
 }
 
 //---------------------------------------------------------------
@@ -108,9 +128,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     //pass by pointer to allow dynamic change of position
     int* tmp_data_pos = Event_Storage->get_position(tmp_type);
 
-    //hits[i] != -1 if hit in system i
-    int hits[6];
-    int match_ID[50];
+    for(int i = 0;i < 50;++i) match_ID[i] = -1;
 
     int found_matches = 0;
     int* match_id_ptr = nullptr;
@@ -123,6 +141,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 
     //get coincidences (self coincidence not possible)
     for(int i = 0;i < 6;++i){
+        //hits[i] != -1 if hit in system i
         hits[i] = -1;
         match_ID[i] = -1;
 
@@ -151,16 +170,13 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 
                     //check if match is filled
                     if(Matches[j][match_ID[j]]->Full()){
-                        //write and delete data
-                        Matches[j][match_ID[j]]->Write();
-                        match_hits = Matches[j][match_ID[j]]->get_amount_Hits();
-                        filled_types = Matches[j][match_ID[j]]->get_filled_types();
-                        hit_addresses = Matches[j][match_ID[j]]->get_Address_Array();
-                        for(int o = 0;o < match_hits;++o) if(filled_types[o] != -1) Event_Storage->Write_Energies(filled_types[o],*hit_addresses[filled_types[o]]);
+                        //write data (directly to histogram or Root Tree)
+                        Event_Storage->Write(Matches[j][match_ID[j]],FileSystem[j]);
 
                         //get delete permission for Event_Store data
                         get_DELETE_Permission(j,match_ID[j]);
                         
+                        //delete coincident Match
                         delete Matches[j][match_ID[j]];
                         Matches[j][match_ID[j]] = nullptr;
 
@@ -170,7 +186,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                             Matches[j][match_ID[j]]->set_Address(match_ID[j]);
                         }
 
-                        //last event pointing to nullptr
+                        //last event pointing to NULL
                         Matches[j][match_amount[j]-1] = nullptr;
                         match_amount[j]--;
                     }
@@ -204,8 +220,6 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
     }
 
     //too old data has to be deleted
-    
-
     int k = 0;
 
     ULong64_t max_WR_Difference = 10000*1e3;
@@ -254,6 +268,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                 else k++;
             }
         }
+        //get "oldest" event defined by WR (smallest WR)
         for(int j = 0;j < amount_interest;++j){
             for(int o = 0;o < k;++o){
                 WR_tmp = Matches[j][o]->get_WR();
@@ -270,20 +285,19 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
 void Time_EventBuilder::get_used_Systems(){
     ifstream data("Configuration_Files/Used_Systems.txt");
     if(data.fail()){
-        cerr << "Could not find Used_Systems config file!" << endl;
+        cerr << "Could not find Used_Systems configuration file!" << endl;
         exit(0);
     }
     int i = 0;
     int id = 0;
-	string line;
-	char s_tmp[100];
-	while(data.good()){
-		getline(data,line,'\n');
-		if(line[0] == '#') continue;
-		sscanf(line.c_str(),"%s %d",s_tmp,&id);
-		Used_Systems[i] = (id == 1);
-		i++;
-	}
+    string line;
+    char s_tmp[100];
+    while(getline(data,line,'\n')){
+        if(line[0] == '#') continue;
+        sscanf(line.c_str(),"%s %d",s_tmp,&id);
+        Used_Systems[i] = (id == 1);
+        i++;
+    }
 }
 
 //---------------------------------------------------------------

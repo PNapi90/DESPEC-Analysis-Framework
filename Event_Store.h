@@ -8,13 +8,14 @@
 #include "Raw_Event.h"
 
 #include "Events.h"
+#include "Match.h"
 
-//#include "FRS_Event.h"
-//#include "AIDA_Event.h"
+#include "FRS_Event.h"
+#include "AIDA_Event.h"
 #include "PLASTIC_Event.h"
 #include "FATIMA_Event.h"
 #include "GALILEO_Event.h"
-//#include "FINGER_Event.h"
+#include "FINGER_Event.h"
 
 
 #include <TH1.h>
@@ -30,7 +31,7 @@ class Event_Store{
 
 private:
 
-	const int MEMORY_LIMIT = 200000;
+    const int MEMORY_LIMIT = 200000;
 
     int* Address_arr;
     int* Max_Fill;
@@ -42,9 +43,9 @@ private:
     double E_save[2];
     double e_gali,fat_e;
 
-	Events*** Event;
-	ULong64_t** Event_WR;
-	int*** Event_position;
+    Events*** Event;
+    ULong64_t** Event_WR;
+    int*** Event_position;
     
     int amount_interest,ev_pos;
     int* tmp_pos;
@@ -52,18 +53,20 @@ private:
     int* length_interest;
     int** interest_array;
 
-	int event_counter[6];
+    int event_counter[6];
     
     int iter[6];
     int** sys_interest;
 
-	void purge(int,int);
-	void create_Event(int,Raw_Event*);
+    void purge(int,int);
+    void create_Event(int,Raw_Event*);
     void set_Det_Sys_specific_coincidences();
 
-	inline bool in_time_windows(double);
+    inline bool in_time_windows(double);
 
     //-------------------
+    void Write_Energies(int,int);
+
     TH1D* T_DIFF;
     TH1D* T_DIFF_Fine;
     TH2D* Emat;
@@ -73,25 +76,26 @@ private:
     //-------------------
 
 public:
-	Event_Store(int,int*,int**);
-	~Event_Store();
-	
+    Event_Store(int,int*,int**);
+    ~Event_Store();
+    
 
-	void set_permission(int,int*,int);
-	void Full_Permission(int,int);
+    void set_permission(int,int*,int);
+    void Full_Permission(int,int);
 
-	bool compare_match_ID(int,int*,int);
+    bool compare_match_ID(int,int*,int);
 
-	void store(Raw_Event*);
-	void set_Match_ID_address(int,int*,int*);
+    void store(Raw_Event*);
+    void set_Match_ID_address(int,int*,int*);
     void show_all_addresses(int,int);
     void show_positions(int);
-    void Write_Energies(int,int);
+
+    void Write(Match*,TFile*);
 
     int get_Match_ID(int,int,int);
     int Time_Comparison(int,ULong64_t);
 
-	int* get_position(int);
+    int* get_position(int);
 
 };
 

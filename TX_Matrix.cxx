@@ -6,11 +6,13 @@ using namespace std;
 
 TX_Matrix::TX_Matrix(int strip_iterator,int am_threads,int* lens_sent){
 
+    cout << "Initialize TX_Matrix " << strip_iterator << endl;
     max_len = lens_sent[3];
     //load_thread_file();
     save_iter = 0;
     amount_of_data_points = 0;
     this->am_threads = am_threads;
+    this->strip_iterator = strip_iterator;
     cluster_counter = new int[am_threads];
 
     x_or_y = (strip_iterator % 2 == 1);
@@ -63,6 +65,7 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads,int* lens_sent){
         Energy_Arr_Save[i] = 0;
         X_Arr_Save[i] = 0;
     }
+    
 
     Thr_Time_Array = new ULong64_t*[am_threads];
     for(int i = 0;i < am_threads;++i){
@@ -146,6 +149,8 @@ void TX_Matrix::process_mem_usage(int iter,int len_2){
 
 void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int len,int thr_it){
 
+    if(len == 0) return;
+
     iterator_mutex = 0;
 
     //set latest measured time for time comparison
@@ -163,53 +168,18 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     this->X_Arr = X_Arr;
 
     //data point splitting for threading
-    data_points_per_thr = amount_of_data_points/am_threads;
-    amount_of_data_points_d = (double) amount_of_data_points;
-    double am_threads_d = (double) am_threads;
-    double remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr;
-    data_points_per_thr_last = ((int) remaining*am_threads) + data_points_per_thr;
+    set_data_points_per_thread();
     
     //sub threads for each xyz plane (standard = 1)
     thread t[am_threads];
 
     //check time differences between all events using threads
-    
+   
     for(int i = 0;i < am_threads;++i) t[i] = threading(true,i);
     for(int i = 0;i < am_threads;++i) t[i].join();
 
-    int* deleteable_rows = nullptr;
-
-    int rel_counter = 0;
-
-    for(int i = 0;i < amount_of_data_points;++i){
-        //skip data points that already exist in events before
-        if(skip_arr[i]){
-            relevant_for_x[i] = nullptr;
-            continue;
-        }
-        
-        //create coincidence matrix without 0 values
-        len_line_X[i] = T_Rows[i]->get_Relevant_amount();
-        deleteable_rows = T_Rows[i]->get_Relevant_Evts();
-
-        if(len_line_X[i] > 0) relevant_for_x[i] = new int[len_line_X[i]];
-        else relevant_for_x[i] = nullptr;
-        
-        //loop over coincident events of line i
-        for(int j = 0;j < len_line_X[i];++j){
-            //if event j is present in line i, line j is ignored
-            skip_arr[deleteable_rows[j]] = (deleteable_rows[j] != i);
-            relevant_for_x[i][j] = deleteable_rows[j];
-        }
-        
-        //if event i has no coincidence and time difference to
-        //latest AIDA event is short enough, event is saved
-        if(keep_Event(i)) Save_Matrix_Row(i);
-        
-        deleteable_rows = nullptr;
-    }
     //print_COINC_MAT();
-
+    
     //check if coincident events are neighbors (using threads)
     for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
     for(int i = 0;i < am_threads;++i) t[i].join();
@@ -253,6 +223,16 @@ void TX_Matrix::print_COINC_MAT(){
 
 //---------------------------------------------------------------
 
+void TX_Matrix::set_data_points_per_thread(){
+    data_points_per_thr = amount_of_data_points/am_threads;
+    amount_of_data_points_d = (double) amount_of_data_points;
+    double am_threads_d = (double) am_threads;
+    double remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr;
+    data_points_per_thr_last = ((int) remaining*am_threads) + data_points_per_thr;
+}
+
+//---------------------------------------------------------------
+
 inline bool TX_Matrix::keep_Event(int i){
     bool empty = (len_line_X[i] == 0);
     bool late_enough = (Time_Last - Time_Arr[i] < Time_tolerance);
@@ -264,7 +244,10 @@ inline bool TX_Matrix::keep_Event(int i){
 
 //---------------------------------------------------------------
 
-void TX_Matrix::Save_Matrix_Row(int i){
+inline void TX_Matrix::Save_Matrix_Row(int i){
+    
+    lock_guard<mutex> lockGuard(MUTEX);
+
     Time_Arr_Save[save_iter] = Time_Arr[i];
     X_Arr_Save[save_iter] = X_Arr[i];
     Energy_Arr_Save[save_iter] = Energy_Arr[i];
@@ -292,9 +275,59 @@ void TX_Matrix::reset_Saved(){
 void TX_Matrix::Thread_T(int thr_num){
     int data_points_per_thr_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
     int row_start = thr_num*data_points_per_thr_tmp;
+
+    int* deleteable_rows = nullptr;
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
-        T_Rows[i]->set_Row(Time_Arr,Time_Arr[i],i,amount_of_data_points); 
+        //skip data points that already exist in events before
+        if(check_relevant(i)){
+            relevant_for_x[i] = nullptr;
+            len_line_X[i] = 0;
+            continue;
+        }
+        T_Rows[i]->set_Row(Time_Arr,Time_Arr[i],i,amount_of_data_points);
+
+        //create coincidence matrix without 0 values
+        len_line_X[i] = T_Rows[i]->get_Relevant_amount();
+        deleteable_rows = T_Rows[i]->get_Relevant_Evts();
+
+        //set relevant events for row i
+        set_relevant(i,len_line_X[i],deleteable_rows);
+
+        deleteable_rows = nullptr;
     }
+}
+
+//---------------------------------------------------------------
+
+inline bool TX_Matrix::check_relevant(int i){
+    lock_guard<mutex> lockGuard(MUTEX);
+    return skip_arr[i];
+}
+
+//---------------------------------------------------------------
+
+inline void TX_Matrix::set_relevant(int i,int lenX,int* deleteable_rows){
+    
+    //set array of strips relevant for event i
+    relevant_for_x[i] = (lenX > 0) ? new int[lenX] : nullptr;
+    
+    //loop over coincident events of line i
+    //-> if event j is present in line i, line j is ignored
+    for(int j = 0;j < lenX;++j) set_skip_array_element(deleteable_rows[j],i,j);
+    
+    //if event i has no coincidence and time difference to
+    //latest AIDA event is short enough, event is saved
+    if(keep_Event(i)) Save_Matrix_Row(i);
+
+}
+
+//---------------------------------------------------------------
+
+inline void TX_Matrix::set_skip_array_element(int delete_j,int i,int j){
+    lock_guard<mutex> lockGuard(MUTEX);
+
+    skip_arr[delete_j] = (delete_j != i);
+    relevant_for_x[i][j] = deleteable_rows[j];
 }
 
 //---------------------------------------------------------------
@@ -329,6 +362,7 @@ void TX_Matrix::Thread_X(int thr_num){
     //loop over all events in thread
     for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
         //skip if event not of interest (see Process(...))
+        
         if(skip_arr[i]) continue;
         if(!relevant_for_x[i]){
             cerr << "Skip array pointer exception in TX_Matrix" << endl;
@@ -386,8 +420,8 @@ void TX_Matrix::Thread_X(int thr_num){
 
 //---------------------------------------------------------------
 
-thread TX_Matrix::threading(bool i,int j){
-    if(i) return thread([=] {Thread_T(j);});
+thread TX_Matrix::threading(bool T_or_X,int j){
+    if(T_or_X) return thread([=] {Thread_T(j);});
     else return thread([=] {Thread_X(j);});
 }
 

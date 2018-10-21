@@ -4,6 +4,8 @@
 #include <iostream>
 #include <cstdlib>
 
+#include <TFile.h>
+
 #include "Raw_Event.h"
 
 class Events{
@@ -32,6 +34,7 @@ public:
     int** get_Match_ID_address();
     
     virtual double get_energy() = 0;
+    virtual void Write_Event(TFile* File) = 0;
 };
 
 #endif

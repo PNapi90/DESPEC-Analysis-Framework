@@ -267,7 +267,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
 		subevent_iter++;
-		if(count >= 1000) continue;
+		//if(count >= 20000) continue;
 
 		pdata = psubevt->GetDataField();
 		lwords = psubevt->GetIntLen();
@@ -323,7 +323,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 
 	if(PrcID_Conv == AIDA){
 		Detector_Systems[1]->get_Event_data(RAW);
-		if(!SKIP_EVT_BUILDING) EvtBuilder[0]->set_Event(RAW);
+		if(!SKIP_EVT_BUILDING && false) EvtBuilder[0]->set_Event(RAW);
 	}
 
 

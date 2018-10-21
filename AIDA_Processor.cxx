@@ -101,14 +101,23 @@ void AIDA_Processor::get_DATA(Raw_Event* RAW){
 thread AIDA_Processor::threading(bool type,int thr_it){
     bool xy_b = (thr_it % 2 == 1);
     if(type){
+        int hits_tmp = Stream->get_amount_of_hits(xy_b,thr_it);
+        if(hits_tmp <= 0){
+            empty_bunch[thr_it] = true;
+            return thread([=] {RETURN_THREAD();});
+        }
         double* Etmp = Stream->get_Energy(xy_b,thr_it);
         int* x_tmp = Stream->get_Coordinate(xy_b,thr_it);
         ULong64_t* T_tmp = Stream->get_Time(xy_b,thr_it);
-        int hits_tmp = Stream->get_amount_of_hits(xy_b,thr_it);
 
         return thread([=] {TX[thr_it]->Process(x_tmp,T_tmp,Etmp,hits_tmp,thr_it);});
     }
-    else return thread([=] {XY[(thr_it/((int) 2))]->Process(TX[thr_it],TX[thr_it + 1]);});
+    else{
+        int hits_tmp1 = Stream->get_amount_of_hits(false,thr_it);
+        int hits_tmp2 = Stream->get_amount_of_hits(true,thr_it+1);
+        if(hits_tmp1 <= 0 || hits_tmp2 <= 0) return thread([=] {RETURN_THREAD();});
+        return thread([=] {XY[(thr_it/((int) 2))]->Process(TX[thr_it],TX[thr_it + 1]);});
+    }
 }
 
 //---------------------------------------------------------------
@@ -118,7 +127,7 @@ inline void AIDA_Processor::non_threading(bool type,int iterator){
     bool xy_b = (iterator % 2 == 1);
     if(type){
         int hits_tmp = Stream->get_amount_of_hits(xy_b,iterator);
-        if(hits_tmp == 0){
+        if(hits_tmp <= 0){
             empty_bunch[iterator] = true;
             return;
         }
@@ -131,7 +140,7 @@ inline void AIDA_Processor::non_threading(bool type,int iterator){
     else{
         int hits_tmp1 = Stream->get_amount_of_hits(false,iterator);
         int hits_tmp2 = Stream->get_amount_of_hits(true,iterator+1);
-        if(hits_tmp1 == 0 || hits_tmp2 == 0) return;
+        if(hits_tmp1 <= 0 || hits_tmp2 <= 0) return;
         XY[(iterator/((int) 2))]->Process(TX[iterator],TX[iterator + 1]);
     }
 }
@@ -177,3 +186,8 @@ void AIDA_Processor::check_Thread_Use(){
 }
 
 //---------------------------------------------------------------
+
+
+void AIDA_Processor::RETURN_THREAD(){
+    return;
+}

@@ -51,8 +51,8 @@ void T_Matrix_Row::process_mem_usage(int iter){
     cerr << "=======================================================================" << endl;
     cerr << "MEMORY USED @ iteration " << iter << " -> ";
     cerr << "VM: " << vm_usage << " MB" << endl;
-    cerr << "std::bad_alloc occured!" << endl;
-    cerr << "Problem occured in Relevant_for_i in T_Matrix_Rows" << endl;
+    cerr << "std::bad_alloc occurred!" << endl;
+    cerr << "Problem occurred in Relevant_for_i in T_Matrix_Rows" << endl;
     cerr << "max_len is set to " << max_len;
     double needed_mem = (max_len*max_len_TX)/pow(2.,18.)*6.;
     cerr << " -> " << needed_mem << " MB of RAM needed for T-Matrix" << endl;

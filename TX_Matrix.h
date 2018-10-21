@@ -32,6 +32,7 @@ private:
     
     std::mutex MUTEX;
     int iterator_mutex;
+    int strip_iterator;
 
     bool x_or_y;
 
@@ -66,14 +67,18 @@ private:
     void reset_Saved();
     void Thread_X(int);
     void Thread_T(int);
-    void Save_Matrix_Row(int);
     void print_COINC_MAT();
+    void set_data_points_per_thread();
 
     void process_mem_usage(int,int);
 
     bool sortFunc(const std::vector<int>&,const std::vector<int>&);
     inline bool keep_Event(int);
-    
+
+    inline bool check_relevant(int);
+    inline void set_relevant(int,int,int);
+    inline void Save_Matrix_Row(int);
+
     std::thread threading(bool,int);
 
 public:

@@ -39,6 +39,8 @@ void XY_Matrix::Process(TX_Matrix* Cluster_X,TX_Matrix* Cluster_Y){
 
     //set data arrays
     get_Arrays();
+    
+    if(len_X <= 0 || len_Y <= 0) return;
 
     //get amount of points per thread
     get_amount_points_per_thr();
