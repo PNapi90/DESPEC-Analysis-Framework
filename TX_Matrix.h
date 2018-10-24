@@ -3,7 +3,7 @@
 
 #define GPP_FLAG ((__GNUC__ == 4 && __GNUC_MINOR__ >= 9) || __GNUC__ > 4)
 
-#ifdef(GPP_FLAG)
+#ifdef GPP_FLAG
     #include <thread>
     #include <mutex>
 #endif
@@ -73,7 +73,7 @@ private:
     void Thread_X(int);
     void Thread_T(int);
     void print_COINC_MAT();
-    void Set_Next_Cluster(int**);
+    void Set_Next_Cluster(int**,int,int);
     void set_data_points_per_thread();
 
     void process_mem_usage(int,int);
@@ -86,7 +86,7 @@ private:
     inline void Save_Matrix_Row(int);
     inline void set_skip_array_element(int,int,int);
 
-    #ifdef(GPP_FLAG)
+    #ifdef GPP_FLAG
         std::mutex MUTEX;
         std::thread threading(bool,int);
     #endif

@@ -48,7 +48,7 @@ void XY_Matrix::Process(TX_Matrix* Cluster_X,TX_Matrix* Cluster_Y){
     //do parallel processing
 
     //g++ version >= 4.9
-    #ifdef(GPP_FLAG)
+    #ifdef GPP_FLAG
         thread t[am_threads];
         for(int i = 0;i < am_threads;++i) t[i] = threading(i);
         for(int i = 0;i < am_threads;++i) t[i].join();
@@ -182,7 +182,7 @@ inline int XY_Matrix::get_XY_Counter(){
     int fill_value = 0;
 
     //takes care of possible overlaps in increments
-    #ifdef(GPP_FLAG)
+    #ifdef GPP_FLAG
         lock_guard<mutex> lockGuard(MUTEX);
     #endif
 
@@ -200,7 +200,7 @@ inline int XY_Matrix::get_XY_Counter(){
 
 //---------------------------------------------------------------
 
-#ifdef(GPP_FLAG)
+#ifdef GPP_FLAG
     thread XY_Matrix::threading(int j){
         return thread([=] {Thread_XY(j);});
     }
