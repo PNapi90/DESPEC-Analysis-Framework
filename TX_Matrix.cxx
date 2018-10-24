@@ -167,23 +167,40 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     //positions on respective plane (x/y coordinate)
     this->X_Arr = X_Arr;
 
-    //data point splitting for threading
-    set_data_points_per_thread();
+    //g++ version >= 4.9
+    #ifdef(GPP_FLAG)
+        //data point splitting for threading
+        set_data_points_per_thread();
     
-    //sub threads for each xyz plane (standard = 1)
-    thread t[am_threads];
+        //sub threads for each xyz plane (standard = 1)
+        thread t[am_threads];
 
-    //check time differences between all events using threads
+        //check time differences between all events using threads
    
-    for(int i = 0;i < am_threads;++i) t[i] = threading(true,i);
-    for(int i = 0;i < am_threads;++i) t[i].join();
+        for(int i = 0;i < am_threads;++i) t[i] = threading(true,i);
+        for(int i = 0;i < am_threads;++i) t[i].join();
 
-    //print_COINC_MAT();
+        //print_COINC_MAT();
     
-    //check if coincident events are neighbors (using threads)
-    for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
-    for(int i = 0;i < am_threads;++i) t[i].join();
+        //check if coincident events are neighbors (using threads)
+        for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
+        for(int i = 0;i < am_threads;++i) t[i].join();
     
+    //g++ version < 4.9
+    #else
+        //"thread 1" processes all the data
+        data_points_per_thr = amount_of_data_points;
+        data_points_per_thr_last = amount_of_data_points;
+        
+        //processing time differences in serial
+        Thread_T(0);
+
+        //processing position differences in serial
+        Thread_X(0);
+
+
+    #endif
+
     //set times
     set_Time_and_Energy();
 
@@ -246,7 +263,9 @@ inline bool TX_Matrix::keep_Event(int i){
 
 inline void TX_Matrix::Save_Matrix_Row(int i){
     
-    lock_guard<mutex> lockGuard(MUTEX);
+    #ifdef(GPP_FLAG)
+        lock_guard<mutex> lockGuard(MUTEX);
+    #endif
 
     Time_Arr_Save[save_iter] = Time_Arr[i];
     X_Arr_Save[save_iter] = X_Arr[i];
@@ -300,7 +319,11 @@ void TX_Matrix::Thread_T(int thr_num){
 //---------------------------------------------------------------
 
 inline bool TX_Matrix::check_relevant(int i){
-    lock_guard<mutex> lockGuard(MUTEX);
+    
+    #ifdef(GPP_FLAG)
+        lock_guard<mutex> lockGuard(MUTEX);
+    #endif
+    
     return skip_arr[i];
 }
 
@@ -324,7 +347,10 @@ inline void TX_Matrix::set_relevant(int i,int lenX,int* deleteable_rows){
 //---------------------------------------------------------------
 
 inline void TX_Matrix::set_skip_array_element(int delete_j,int i,int j){
-    lock_guard<mutex> lockGuard(MUTEX);
+    
+    #ifdef(GPP_FLAG)
+        lock_guard<mutex> lockGuard(MUTEX);
+    #endif
 
     skip_arr[delete_j] = (delete_j != i);
     relevant_for_x[i][j] = delete_j;
@@ -351,7 +377,11 @@ void TX_Matrix::Thread_X(int thr_num){
     int row_start = thr_num*data_points_per_thr_tmp;
 
     //temporary cluster for sorting
-    int tmp_cluster[200][2] = {0};
+    int **tmp_cluster = new int*[200];
+    for(int i = 0;i < 100;++i){
+        tmp_cluster[i] = new int[2];
+        for(int j = 0;j < 2;++j) tmp_cluster[i][j] = 0;
+    }
 
     int delta_c = 0;
     int c_counter = -1;
@@ -403,26 +433,39 @@ void TX_Matrix::Thread_X(int thr_num){
         //save clusters -- those clusters are directly used as output events of AIDA as 
         //possible beta decay events
         //===========================================================
-        MUTEX.lock();
-
-        Cluster_IDs[iterator_mutex][0] = tmp_cluster[c_counter][0];
-        Cluster_IDs[iterator_mutex][1] = tmp_cluster[c_counter][1];
-        cluster_counter[thr_num]++;
-        iterator_mutex++;
-
-        MUTEX.unlock();
+        Set_Next_Cluster(tmp_cluster);
         //===========================================================
         
         c_counter = 0;
-        
     }
+
+    for(int i = 0;i < 100;++i) delete[] tmp_cluster[i];
+    delete[] tmp_cluster;
+    tmp_cluster = nullptr;
+
 }
 
 //---------------------------------------------------------------
+#ifdef(GPP_FLAG)
+    thread TX_Matrix::threading(bool T_or_X,int j){
+        if(T_or_X) return thread([=] {Thread_T(j);});
+        else return thread([=] {Thread_X(j);});
+    }
+#endif
 
-thread TX_Matrix::threading(bool T_or_X,int j){
-    if(T_or_X) return thread([=] {Thread_T(j);});
-    else return thread([=] {Thread_X(j);});
+//---------------------------------------------------------------
+
+void TX_Matrix::Set_Next_Cluster(int** tmp_cluster){
+
+    #ifdef(GPP_FLAG)
+        lock_guard<mutex> lockGuard(MUTEX);
+    #endif
+
+    Cluster_IDs[iterator_mutex][0] = tmp_cluster[c_counter][0];
+    Cluster_IDs[iterator_mutex][1] = tmp_cluster[c_counter][1];
+    cluster_counter[thr_num]++;
+    iterator_mutex++;
+
 }
 
 //---------------------------------------------------------------

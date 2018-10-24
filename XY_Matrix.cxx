@@ -8,7 +8,7 @@ XY_Matrix::XY_Matrix(int am_threads,int max_len){
     
     len_X = 0;
     len_Y = 0;
-    this->am_threads = am_threads;
+    this->am_threads = GPP_FLAG ? am_threads : 1;
     this->max_len = max_len;
     
     am_threads_d = (double) am_threads;
@@ -46,10 +46,17 @@ void XY_Matrix::Process(TX_Matrix* Cluster_X,TX_Matrix* Cluster_Y){
     amount_of_deleted_events = 0;
     
     //do parallel processing
-    thread t[am_threads];
-    for(int i = 0;i < am_threads;++i) t[i] = threading(i);
-    for(int i = 0;i < am_threads;++i) t[i].join();
 
+    //g++ version >= 4.9
+    #ifdef(GPP_FLAG)
+        thread t[am_threads];
+        for(int i = 0;i < am_threads;++i) t[i] = threading(i);
+        for(int i = 0;i < am_threads;++i) t[i].join();
+   
+    //g++ version < 4.9
+    #else
+        Thread_XY(0);
+    #endif
     //reset data arrays
     NULL_Arrays();
 
@@ -175,7 +182,9 @@ inline int XY_Matrix::get_XY_Counter(){
     int fill_value = 0;
 
     //takes care of possible overlaps in increments
-    lock_guard<mutex> lockGuard(MUTEX);
+    #ifdef(GPP_FLAG)
+        lock_guard<mutex> lockGuard(MUTEX);
+    #endif
 
     if(amount_of_deleted_events == 0){
         fill_value = amount_of_events;
@@ -191,9 +200,11 @@ inline int XY_Matrix::get_XY_Counter(){
 
 //---------------------------------------------------------------
 
-thread XY_Matrix::threading(int j){
-    return thread([=] {Thread_XY(j);});
-}
+#ifdef(GPP_FLAG)
+    thread XY_Matrix::threading(int j){
+        return thread([=] {Thread_XY(j);});
+    }
+#endif
 
 //---------------------------------------------------------------
 

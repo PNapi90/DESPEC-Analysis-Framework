@@ -1,12 +1,17 @@
 #ifndef TX_MATRIX_H
 #define TX_MATRIX_H
 
+#define GPP_FLAG ((__GNUC__ == 4 && __GNUC_MINOR__ >= 9) || __GNUC__ > 4)
+
+#ifdef(GPP_FLAG)
+    #include <thread>
+    #include <mutex>
+#endif
+
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <thread>
-#include <algorithm>
-#include <mutex>
 #include <cstdlib>
 #include <unistd.h>
 #include <iomanip>
@@ -30,7 +35,7 @@ private:
     int z_strip_number,save_iter;
     int data_points_per_thr,data_points_per_thr_last;
     
-    std::mutex MUTEX;
+    
     int iterator_mutex;
     int strip_iterator;
 
@@ -68,6 +73,7 @@ private:
     void Thread_X(int);
     void Thread_T(int);
     void print_COINC_MAT();
+    void Set_Next_Cluster(int**);
     void set_data_points_per_thread();
 
     void process_mem_usage(int,int);
@@ -80,7 +86,10 @@ private:
     inline void Save_Matrix_Row(int);
     inline void set_skip_array_element(int,int,int);
 
-    std::thread threading(bool,int);
+    #ifdef(GPP_FLAG)
+        std::mutex MUTEX;
+        std::thread threading(bool,int);
+    #endif
 
 public:
     TX_Matrix(int,int,int*);

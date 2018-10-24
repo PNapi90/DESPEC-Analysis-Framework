@@ -1,9 +1,14 @@
 #ifndef AIDA_PROCESSOR_H
 #define AIDA_PROCESSOR_H
 
-#include <thread>
-#include <iostream>
+#define GPP_FLAG ((__GNUC__ == 4 && __GNUC_MINOR__ >= 9) || __GNUC__ > 4)
 
+#if(GPP_FLAG)
+    #include <thread>
+#endif
+
+#include <iostream>
+#include <fstream>
 
 #include "TX_Matrix.h"
 #include "XY_Matrix.h"
@@ -35,7 +40,10 @@ private:
     TX_Matrix** TX;
     XY_Matrix** XY;
 
-    std::thread threading(bool,int);
+    #if(GPP_FLAG)
+        std::thread threading(bool,int);
+    #endif
+
     inline void non_threading(bool,int);
 
     void check_Thread_Use();

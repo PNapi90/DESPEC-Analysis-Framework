@@ -1,8 +1,12 @@
 #ifndef XY_MATRIX_H
 #define XY_MATRIX_H
 
-#include <mutex>
-#include <thread>
+#define GPP_FLAG ((__GNUC__ == 4 && __GNUC_MINOR__ >= 9) || __GNUC__ > 4)
+
+#ifdef(GPP_FLAG)
+    #include <mutex>
+    #include <thread>
+#endif
 
 #include <iostream>
 #include <fstream>
@@ -51,9 +55,10 @@ private:
     double** Cluster_X_Energies;
     double** Cluster_Y_Energies;
 
-    std::mutex MUTEX;
-
-    std::thread threading(int);
+    #ifdef(GPP_FLAG)
+        std::mutex MUTEX;
+        std::thread threading(int);
+    #endif
 
     inline int get_XY_Counter();
     
