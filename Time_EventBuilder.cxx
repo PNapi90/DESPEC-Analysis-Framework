@@ -19,6 +19,7 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
     }
     
     FileSystem = nullptr;
+    Trees = nullptr;
 
     Matches = new Match**[amount_interest];
     for(int i = 0;i < amount_interest;++i){
@@ -39,6 +40,10 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
 
     expired_counter = 0;
     first_event = true;
+
+    //create Root Trees for all coincidences of interest
+    create_used_Trees();
+
 
 }
 
@@ -65,7 +70,7 @@ Time_EventBuilder::~Time_EventBuilder(){
 
 void Time_EventBuilder::create_relevance_array(){
 
-    std::vector<std::string> relevance_name_tmp(amount_interest,"Root_Files/");
+    std::vector<std::string> relevance_name_tmp(amount_interest,"Root_Trees/");
     std::string name_list[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
 
     relevance_array = new bool*[6];
@@ -92,6 +97,8 @@ void Time_EventBuilder::create_relevance_array(){
     }
     //.root ending for files
     for(int i = 0;i < amount_interest;++i) relevance_name_tmp[i] += ".root";
+
+
 
     //Root files with user-defined histograms for
     //each type of coincidences of interest
@@ -316,6 +323,54 @@ void Time_EventBuilder::get_DELETE_Permission(int j,int match_ID){
         type = interest_array[j][i];
         //set delete permission from Match with id {j,match_ID}
         Event_Storage->set_permission(type,event_address_array[type],j);
+    }
+}
+
+//---------------------------------------------------------------
+
+void Time_EventBuilder::create_used_Trees(){
+    
+    //temporary type of coincidence
+    int type = 0;
+
+    //create n = amount_interest Tree arrays for all coincidences
+    Trees = new TTree*[amount_interest];
+    for(int i = 0;i < amount_interest;++i){
+        Trees[i] = new TTree(InterestNames[i].c_str(),InterestNames[i].c_str());
+        for(int j = 0;j < length_interest[i];++i){
+            //get detector system type of new tree
+            type = interest_array[i][j];
+            //add relevant branches to Tree
+            CreateBranches(type,i);
+        }
+    }
+}
+
+//---------------------------------------------------------------
+
+inline void Time_EventBuilder::CreateBranches(int type,int i){
+    switch(type){
+        case 0:
+            FRS_Branch_Creator Branch(Trees[i]);
+            break;
+        case 1:
+            AIDA_Branch_Creator Branch(Trees[i]);
+            break;
+        case 2:
+            PLASTIC_Branch_Creator Branch(Trees[i]);
+            break;
+        case 3:
+            FATIMA_Branch_Creator Branch(Trees[i]);
+            break;
+        case 4:
+            GALILEO_Branch_Creator Branch(Trees[i]);
+            break;
+        case 5:
+            FINGER_Branch_Creator Branch(Trees[i]);
+            break;
+        default:
+            cerr << "Unknown Branch_Creator type " << type << " in Time_EventBuilder" << endl;
+            exit(1);
     }
 }
 

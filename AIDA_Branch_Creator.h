@@ -1,0 +1,15 @@
+#ifndef AIDA_BRANCH_CREATOR_H
+#define AIDA_BRANCH_CREATOR_H
+
+#include <TTree.h>
+
+
+class AIDA_Branch_Creator{
+
+
+public:
+    AIDA_Branch_Creator(TTree* Tree);
+    ~AIDA_Branch_Creator();
+};
+
+#endif

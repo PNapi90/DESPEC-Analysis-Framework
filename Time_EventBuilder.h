@@ -12,6 +12,16 @@
 #include "Raw_Event.h"
 #include "EventBuilder.cxx"
 
+#include "Tree_Creator.cxx"
+
+#include "FRS_Tree_Creator.h"
+#include "AIDA_Tree_Creator.h"
+#include "PLASTIC_Tree_Creator.h"
+#include "FATIMA_Tree_Creator.h"
+#include "GALILEO_Tree_Creator.h"
+#include "FINGER_Tree_Creator.h"
+
+
 #include "Event_Store.h"
 #include "Match.h"
 
@@ -42,6 +52,7 @@ private:
 	int** interest_array;
 
     TFile** FileSystem;
+    Tree_Creator*** Trees;
 	
     Match*** Matches;
 	Event_Store* Event_Storage;
@@ -51,6 +62,9 @@ private:
     void create_relevance_array();
     void get_used_Systems();
     void get_DELETE_Permission(int,int);
+    void create_used_Trees();
+    
+    inline void CreateTree(int,int,int);
 
 public:
 	Time_EventBuilder(int,int*,int**);
