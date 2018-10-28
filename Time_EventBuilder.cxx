@@ -51,6 +51,14 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
 
 Time_EventBuilder::~Time_EventBuilder(){
 
+    for(int i = 0;i < amount_interest;++i){
+        for(int j = 0;j < length_interest[i];++j){
+            if(Branches_Created[i][j]) delete Branches_Created[i][j];
+        }
+        delete[] Branches_Created[i];
+    }
+    delete[] Branches_Created;
+
     delete Event_Storage;
     for(int i = 0;i < amount_interest;++i){
         delete[] interest_array[i];
@@ -62,6 +70,7 @@ Time_EventBuilder::~Time_EventBuilder(){
     delete[] relevance_array;
     delete[] interest_array;
     delete[] length_interest;
+
     cout << "Time_EventBuilder deleted!" << endl;
 
 }
@@ -324,6 +333,8 @@ void Time_EventBuilder::get_DELETE_Permission(int j,int match_ID){
         //set delete permission from Match with id {j,match_ID}
         Event_Storage->set_permission(type,event_address_array[type],j);
     }
+    
+    event_address_array = nullptr;
 }
 
 //---------------------------------------------------------------
@@ -334,39 +345,47 @@ void Time_EventBuilder::create_used_Trees(){
     int type = 0;
 
     //create n = amount_interest Tree arrays for all coincidences
+
+    Trees = new Tree_Creator*[amount_interest];
+    for(int i = 0;i < amount_interest;++i){
+        Trees[i] = new Tree_Creator(interest_array[i],length_interest[i]);
+    }
+
     Trees = new TTree*[amount_interest];
+    Branches_Created = new Branch_Creator**[amount_interest];
     for(int i = 0;i < amount_interest;++i){
         Trees[i] = new TTree(InterestNames[i].c_str(),InterestNames[i].c_str());
+        Branches_Created[i] = new Branches_Created*[length_interest[i]];
         for(int j = 0;j < length_interest[i];++i){
             //get detector system type of new tree
             type = interest_array[i][j];
             //add relevant branches to Tree
-            CreateBranches(type,i);
+            CreateBranches(type,i,j);
         }
     }
 }
 
 //---------------------------------------------------------------
 
-inline void Time_EventBuilder::CreateBranches(int type,int i){
+inline void Time_EventBuilder::CreateBranches(int type,int i,int j){
     switch(type){
         case 0:
-            FRS_Branch_Creator Branch(Trees[i]);
+            Branches_Created[i][j] = new FRS_Branch_Creator(Trees[i]);
             break;
         case 1:
-            AIDA_Branch_Creator Branch(Trees[i]);
+            Branches_Created[i][j] = new AIDA_Branch_Creator(Trees[i]);
             break;
         case 2:
-            PLASTIC_Branch_Creator Branch(Trees[i]);
+            Branches_Created[i][j] = new PLASTIC_Branch_Creator(Trees[i]);
             break;
         case 3:
-            FATIMA_Branch_Creator Branch(Trees[i]);
+            Branches_Created[i][j] = new FATIMA_Branch_Creator(Trees[i]);
             break;
         case 4:
-            GALILEO_Branch_Creator Branch(Trees[i]);
+            Branches_Created[i][j] = new GALILEO_Branch_Creator(Trees[i]);
             break;
         case 5:
-            FINGER_Branch_Creator Branch(Trees[i]);
+            Branches_Created[i][j] = new FINGER_Branch_Creator(Trees[i]);
             break;
         default:
             cerr << "Unknown Branch_Creator type " << type << " in Time_EventBuilder" << endl;

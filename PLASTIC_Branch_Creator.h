@@ -3,8 +3,14 @@
 
 #include <TTree.h>
 
+#include "Branch_Creator.cxx"
 
-class PLASTIC_Branch_Creator{
+class PLASTIC_Branch_Creator : public Branch_Creator{
+
+private:
+
+    double dummyArr[50];
+    double dummyVal;
 
 
 public:
