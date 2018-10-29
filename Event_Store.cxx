@@ -341,7 +341,7 @@ int Event_Store::get_Match_ID(int type,int pos,int j){
 
 //---------------------------------------------------------------
 
-void Event_Store::Write(Match* MatchHit,TFile* File){
+void Event_Store::Write(Match* MatchHit,Tree_Creator* Tree){
 
     //get type of coincidence of interest and respective event addresses
     int match_hits = MatchHit->get_amount_Hits();
@@ -351,7 +351,7 @@ void Event_Store::Write(Match* MatchHit,TFile* File){
     //loop over coincident events
     for(int o = 0;o < match_hits;++o) if(filled_types[o] != -1){
         //evoke write routine of Event
-        Event[filled_types[o]][*hit_addresses[filled_types[o]]]->Write_Event(File);
+        Event[filled_types[o]][*hit_addresses[filled_types[o]]]->Write_Event(Tree);
     }
 
     filled_types = nullptr;

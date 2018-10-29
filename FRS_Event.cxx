@@ -26,7 +26,7 @@ double FRS_Event::get_energy(){
 
 //---------------------------------------------------------------
 
-void FRS_Event::Write_Event(TFile* File){
+void FRS_Event::Write_Event(Tree_Creator* Tree){
 	//User defined what variables should be written
 }
 

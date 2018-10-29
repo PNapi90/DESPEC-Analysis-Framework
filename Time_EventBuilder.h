@@ -6,21 +6,10 @@
 #include <fstream>
 #include <vector>
 
-#include <TFile.h>
-
 
 #include "Raw_Event.h"
 #include "EventBuilder.cxx"
-
-#include "Branch_Creator.cxx"
-
-#include "FRS_Branch_Creator.h"
-#include "AIDA_Branch_Creator.h"
-#include "PLASTIC_Branch_Creator.h"
-#include "FATIMA_Branch_Creator.h"
-#include "GALILEO_Branch_Creator.h"
-#include "FINGER_Branch_Creator.h"
-
+#include "Tree_Creator.h"
 
 #include "Event_Store.h"
 #include "Match.h"
@@ -50,11 +39,6 @@ private:
 	int amount_interest;
     int* length_interest;
 	int** interest_array;
-
-    TFile** FileSystem;
-    Branch_Creator*** Branches_Created;
-
-    TTree** Trees;
 
     Tree_Creator** Trees;
 	

@@ -21,7 +21,7 @@ public:
     virtual ~PLASTIC_Event();
     
     double get_energy(){return 0;};
-    void Write_Event(TFile* File);
+    void Write_Event(Tree_Creator*);
 };
 
 #endif

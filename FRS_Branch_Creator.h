@@ -3,8 +3,9 @@
 
 #include <TTree.h>
 
+#include "Branch_Creator.cxx"
 
-class FRS_Branch_Creator{
+class FRS_Branch_Creator : public Branch_Creator{
 
 
 public:

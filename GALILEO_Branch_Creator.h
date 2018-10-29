@@ -4,7 +4,7 @@
 #include <TTree.h>
 
 
-class GALILEO_Branch_Creator{
+class GALILEO_Branch_Creator : public Branch_Creator{
 
 
 public:

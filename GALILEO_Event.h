@@ -22,7 +22,7 @@ public:
     virtual ~GALILEO_Event();
     
     double get_energy();
-    void Write_Event(TFile* File);
+    void Write_Event(Tree_Creator*);
 };
 
 #endif

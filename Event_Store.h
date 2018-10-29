@@ -17,6 +17,8 @@
 #include "GALILEO_Event.h"
 #include "FINGER_Event.h"
 
+#include "Tree_Creator.h"
+
 
 #include <TH1.h>
 #include <TH2.h>
@@ -90,7 +92,7 @@ public:
     void show_all_addresses(int,int);
     void show_positions(int);
 
-    void Write(Match*,TFile*);
+    void Write(Match*,Tree_Creator*);
 
     int get_Match_ID(int,int,int);
     int Time_Comparison(int,ULong64_t);

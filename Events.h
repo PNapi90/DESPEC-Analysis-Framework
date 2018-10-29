@@ -6,6 +6,7 @@
 
 #include <TFile.h>
 
+#include "Tree_Creator.h"
 #include "Raw_Event.h"
 
 class Events{
@@ -34,7 +35,7 @@ public:
     int** get_Match_ID_address();
     
     virtual double get_energy() = 0;
-    virtual void Write_Event(TFile* File) = 0;
+    virtual void Write_Event(Tree_Creator* Tree) = 0;
 };
 
 #endif

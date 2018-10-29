@@ -26,7 +26,7 @@ double AIDA_Event::get_energy(){
 
 //---------------------------------------------------------------
 
-void AIDA_Event::Write_Event(TFile* File){
+void AIDA_Event::Write_Event(Tree_Creator* Tree){
 	//User defined what variables should be written
 }
 

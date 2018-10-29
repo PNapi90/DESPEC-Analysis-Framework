@@ -18,7 +18,6 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
         for(int j = 0;j < length_interest[i];++j) interest_array[i][j] = interest_array_tmp[i][j];
     }
     
-    FileSystem = nullptr;
     Trees = nullptr;
 
     Matches = new Match**[amount_interest];
@@ -51,13 +50,8 @@ Time_EventBuilder::Time_EventBuilder(int amount_interest,int* length_interest_tm
 
 Time_EventBuilder::~Time_EventBuilder(){
 
-    for(int i = 0;i < amount_interest;++i){
-        for(int j = 0;j < length_interest[i];++j){
-            if(Branches_Created[i][j]) delete Branches_Created[i][j];
-        }
-        delete[] Branches_Created[i];
-    }
-    delete[] Branches_Created;
+    for(int i = 0;i < amount_interest;++i) delete Trees[i];
+    delete[] Trees;
 
     delete Event_Storage;
     for(int i = 0;i < amount_interest;++i){
@@ -79,9 +73,6 @@ Time_EventBuilder::~Time_EventBuilder(){
 
 void Time_EventBuilder::create_relevance_array(){
 
-    std::vector<std::string> relevance_name_tmp(amount_interest,"Root_Trees/");
-    std::string name_list[6] = {"FRS","AIDA","PLASTIC","FATIMA","GALILEO","FINGER"};
-
     relevance_array = new bool*[6];
     //loop over all 6 systems (FRS,AIDA,...)
     for(int i = 0;i < 6;++i){
@@ -98,24 +89,11 @@ void Time_EventBuilder::create_relevance_array(){
                     relevance_system[i] = true;
                     //system i can be found in coincidence array j
                     relevance_array[i][j] = true;
-                    relevance_name_tmp[j] += name_list[i] + "_";
                     break;
                 }
             }
         }
     }
-    //.root ending for files
-    for(int i = 0;i < amount_interest;++i) relevance_name_tmp[i] += ".root";
-
-
-
-    //Root files with user-defined histograms for
-    //each type of coincidences of interest
-    FileSystem = new TFile*[amount_interest];
-    for(int i = 0;i < amount_interest;++i){
-        FileSystem[i] = new TFile(relevance_name_tmp[i].c_str(),"RECREATE");
-    }
-
 }
 
 //---------------------------------------------------------------
@@ -187,7 +165,7 @@ void Time_EventBuilder::set_Event(Raw_Event* RAW){
                     //check if match is filled
                     if(Matches[j][match_ID[j]]->Full()){
                         //write data (directly to histogram or Root Tree)
-                        Event_Storage->Write(Matches[j][match_ID[j]],FileSystem[j]);
+                        Event_Storage->Write(Matches[j][match_ID[j]],Trees[j]);
 
                         //get delete permission for Event_Store data
                         get_DELETE_Permission(j,match_ID[j]);
@@ -345,51 +323,9 @@ void Time_EventBuilder::create_used_Trees(){
     int type = 0;
 
     //create n = amount_interest Tree arrays for all coincidences
-
     Trees = new Tree_Creator*[amount_interest];
     for(int i = 0;i < amount_interest;++i){
         Trees[i] = new Tree_Creator(interest_array[i],length_interest[i]);
-    }
-
-    Trees = new TTree*[amount_interest];
-    Branches_Created = new Branch_Creator**[amount_interest];
-    for(int i = 0;i < amount_interest;++i){
-        Trees[i] = new TTree(InterestNames[i].c_str(),InterestNames[i].c_str());
-        Branches_Created[i] = new Branches_Created*[length_interest[i]];
-        for(int j = 0;j < length_interest[i];++i){
-            //get detector system type of new tree
-            type = interest_array[i][j];
-            //add relevant branches to Tree
-            CreateBranches(type,i,j);
-        }
-    }
-}
-
-//---------------------------------------------------------------
-
-inline void Time_EventBuilder::CreateBranches(int type,int i,int j){
-    switch(type){
-        case 0:
-            Branches_Created[i][j] = new FRS_Branch_Creator(Trees[i]);
-            break;
-        case 1:
-            Branches_Created[i][j] = new AIDA_Branch_Creator(Trees[i]);
-            break;
-        case 2:
-            Branches_Created[i][j] = new PLASTIC_Branch_Creator(Trees[i]);
-            break;
-        case 3:
-            Branches_Created[i][j] = new FATIMA_Branch_Creator(Trees[i]);
-            break;
-        case 4:
-            Branches_Created[i][j] = new GALILEO_Branch_Creator(Trees[i]);
-            break;
-        case 5:
-            Branches_Created[i][j] = new FINGER_Branch_Creator(Trees[i]);
-            break;
-        default:
-            cerr << "Unknown Branch_Creator type " << type << " in Time_EventBuilder" << endl;
-            exit(1);
     }
 }
 

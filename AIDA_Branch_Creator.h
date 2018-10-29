@@ -3,8 +3,9 @@
 
 #include <TTree.h>
 
+#include "Branch_Creator.cxx"
 
-class AIDA_Branch_Creator{
+class AIDA_Branch_Creator : public Branch_Creator{
 
 
 public:

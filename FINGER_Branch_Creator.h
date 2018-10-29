@@ -3,8 +3,10 @@
 
 #include <TTree.h>
 
+#include "Branch_Creator.cxx"
 
-class FINGER_Branch_Creator{
+
+class FINGER_Branch_Creator : public Branch_Creator{
 
 
 public:

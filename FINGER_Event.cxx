@@ -26,7 +26,7 @@ double FINGER_Event::get_energy(){
 
 //---------------------------------------------------------------
 
-void FINGER_Event::Write_Event(TFile* File){
+void FINGER_Event::Write_Event(Tree_Creator* Tree){
 	//User defined what variables should be written
 }
 

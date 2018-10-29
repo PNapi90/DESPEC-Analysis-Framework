@@ -4,12 +4,16 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "FATIMA_Data_Struct.h"
+
 #include "Events.h"
 #include "Raw_Event.h"
 
 class FATIMA_Event : public Events{
 
 private:
+
+    FATIMA_Data DATA;
 
     int FAT_FIRED;
     int am_fired;
@@ -22,7 +26,7 @@ public:
     virtual ~FATIMA_Event();
     
     double get_energy();
-    void Write_Event(TFile* File);
+    void Write_Event(Tree_Creator* Tree);
 };
 
 #endif
