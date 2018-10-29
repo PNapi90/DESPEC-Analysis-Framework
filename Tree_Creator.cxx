@@ -19,10 +19,11 @@ Tree_Creator::Tree_Creator(int* interestArray,int len){
     }
 
     filename += treename + ".root";
+        
     
+    File = new TFile(filename.c_str(),"RECREATE");
     Tree = new TTree(treename.c_str(),treename.c_str());
-    File = new TFile(filename.c_str(),filename.c_str(),"RECREATE");
-
+    
     CreateBranches();
 }
 
@@ -39,7 +40,7 @@ Tree_Creator::~Tree_Creator(){
 //---------------------------------------------------------------
 
 void Tree_Creator::CreateBranches(){
-    Branches_Created = new Branches_Created*[len];
+    Branches_Created = new Branch_Creator*[len];
     for(int i = 0;i < len;++i) CreateBranch(interestArray[i],i);
 }
 
@@ -76,7 +77,7 @@ inline void Tree_Creator::CreateBranch(int type,int i){
 
 //---------------------------------------------------------------
 
-void Tree_Creator::setFATIMA(FATIMA_Data* DATA){
+void Tree_Creator::SetFATIMA(FATIMA_Data* DATA){
     
     //get Branch position from type
     int tmpPos = typePos[3];

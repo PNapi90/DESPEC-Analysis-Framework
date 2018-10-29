@@ -12,6 +12,15 @@
 //#include "GALILEO_Data_Struct.h"
 //#include "FINGER_Data_Struct.h"
 
+#include "Branch_Creator.cxx"
+
+#include "FRS_Branch_Creator.h"
+#include "AIDA_Branch_Creator.h"
+#include "PLASTIC_Branch_Creator.h"
+#include "FATIMA_Branch_Creator.h"
+#include "GALILEO_Branch_Creator.h"
+#include "FINGER_Branch_Creator.h"
+
 
 #include <TTree.h>
 #include <TFile.h>
@@ -23,8 +32,9 @@ private:
     const std::string names[6] = {"Frs","Aida","Plastic","Fatima","Galileo","Finger"};
 
     int len;
-    std::vector<int> interestArray;
-
+    std::vector<int> interestArray,typePos;
+	
+    TFile* File;
     TTree* Tree;
     Branch_Creator** Branches_Created;
 
@@ -38,7 +48,7 @@ public:
     Tree_Creator(int* interestArray,int len);
     ~Tree_Creator();
     
-    void setFATIMA(FATIMA_Data* DATA);
+    void SetFATIMA(FATIMA_Data* DATA);
 };
 
 #endif

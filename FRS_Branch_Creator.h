@@ -11,6 +11,8 @@ class FRS_Branch_Creator : public Branch_Creator{
 public:
     FRS_Branch_Creator(TTree* Tree);
     ~FRS_Branch_Creator();
+    
+    void WriteData(FATIMA_Data*){};
 };
 
 #endif

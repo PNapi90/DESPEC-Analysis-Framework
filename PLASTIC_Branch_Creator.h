@@ -16,6 +16,8 @@ private:
 public:
     PLASTIC_Branch_Creator(TTree* Tree);
     ~PLASTIC_Branch_Creator();
+    
+    void WriteData(FATIMA_Data*){};
 };
 
 #endif

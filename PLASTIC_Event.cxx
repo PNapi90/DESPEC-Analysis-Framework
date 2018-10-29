@@ -24,7 +24,6 @@ inline void PLASTIC_Event::set_DATA(Raw_Event* RAW){
 
 void PLASTIC_Event::Write_Event(Tree_Creator* Tree){
 	//User defined what variables should be written
-    Tree->ParseData();
 }
 
 //---------------------------------------------------------------

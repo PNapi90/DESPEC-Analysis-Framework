@@ -1,3 +1,5 @@
+
+#include <iostream>
 #include "FATIMA_Branch_Creator.h"
 
 using namespace std;
@@ -11,7 +13,7 @@ FATIMA_Branch_Creator::FATIMA_Branch_Creator(TTree* Tree){
     CLEAR();
 
     Tree->Branch("AmountHits",&AmountHits,"AmountHits/F");
-    Tree->Branch("Energies",&Energies,"AmountHits[50]/F");
+    Tree->Branch("Energies",Energies,"AmountHits[50]/F");
 }
 
 //---------------------------------------------------------------
@@ -28,6 +30,9 @@ void FATIMA_Branch_Creator::WriteData(FATIMA_Data* DATA){
 
     AmountHits = DATA->amountHits;
     for(int i = 0;i < AmountHits;++i) Energies[i] = DATA->Energy[i];
+    cout << "Writing " << AmountHits << " & " ;
+    for(int i = 0;i < AmountHits;++i) cout << Energies[i] << " ";
+    cout << endl;
 }
 
 //---------------------------------------------------------------

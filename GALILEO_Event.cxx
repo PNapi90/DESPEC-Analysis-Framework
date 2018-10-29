@@ -30,7 +30,7 @@ double GALILEO_Event::get_energy(){return (am_fired > 0) ? energy_tot : -1;}
 
 
 
-void GALILEO_Event::Write_Event(TFile* File){
+void GALILEO_Event::Write_Event(Tree_Creator* Tree){
 	//User defined what variables should be written
 }
 

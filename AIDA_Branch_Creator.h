@@ -11,6 +11,8 @@ class AIDA_Branch_Creator : public Branch_Creator{
 public:
     AIDA_Branch_Creator(TTree* Tree);
     ~AIDA_Branch_Creator();
+    
+    void WriteData(FATIMA_Data*){};
 };
 
 #endif

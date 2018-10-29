@@ -17,12 +17,12 @@ public:
     
     virtual ~Branch_Creator(){};
 
-    //virtual WriteData(FRS_Data*) = 0;
-    //virtual WriteData(AIDA_Data*) = 0;
-    //virtual WriteData(PLASTIC_Data*) = 0;
-    virtual WriteData(FATIMA_Data*) = 0;
-    //virtual WriteData(GALILEO_Data*) = 0;
-    //virtual WriteData(FINGER_Data*) = 0;
+    //virtual void WriteData(FRS_Data*) = 0;
+    //virtual void WriteData(AIDA_Data*) = 0;
+    //virtual void WriteData(PLASTIC_Data*) = 0;
+    virtual void WriteData(FATIMA_Data*) = 0;
+    //virtual void WriteData(GALILEO_Data*) = 0;
+    //virtual void WriteData(FINGER_Data*) = 0;
     
 };
 
