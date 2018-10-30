@@ -167,6 +167,8 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     //positions on respective plane (x/y coordinate)
     this->X_Arr = X_Arr;
 
+    int dataPosition = 0;
+
     //g++ version >= 4.9
     #ifdef GPP_FLAG
         //data point splitting for threading
@@ -176,14 +178,18 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         thread t[am_threads];
 
         //check time differences between all events using threads
-   
-        for(int i = 0;i < am_threads;++i) t[i] = threading(true,i);
-        for(int i = 0;i < am_threads;++i) t[i].join();
+        for(int i = 0;i < amount_of_data_points;++i){
+            for(int j = 0;j < am_threads;++j){
+                t[j] = threading(true,dataPosition,j);
+                ++dataPosition;
+            }
+            for(int j = 0;j < am_threads;++j) t[j].join();
+        }
 
         //print_COINC_MAT();
     
         //check if coincident events are neighbors (using threads)
-        for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
+        for(int i = 0;i < am_threads;++i) t[i] = threading(false,0,i);
         for(int i = 0;i < am_threads;++i) t[i].join();
     
     //g++ version < 4.9
@@ -318,6 +324,29 @@ void TX_Matrix::Thread_T(int thr_num){
 
 //---------------------------------------------------------------
 
+void TX_Matrix::Thread_T(int thr_num,int rowNumber){
+
+    if(check_relevant(rowNumber)){
+        relevant_for_x[rowNumber] = nullptr;
+        len_line_X[rowNumber] = 0;
+        return;
+    }
+
+    T_Rows[rowNumber]->set_Row(Time_Arr,Time_Arr[rowNumber],rowNumber,amount_of_data_points);
+
+    //create coincidence matrix without 0 values
+    len_line_X[rowNumber] = T_Rows[rowNumber]->get_Relevant_amount();
+    int* deleteable_rows = T_Rows[rowNumber]->get_Relevant_Evts();
+
+    //set relevant events for row rowNumber
+    set_relevant(rowNumber,len_line_X[rowNumber],deleteable_rows);
+
+    deleteable_rows = nullptr;
+}
+
+
+//---------------------------------------------------------------
+
 inline bool TX_Matrix::check_relevant(int i){
     
     #ifdef GPP_FLAG
@@ -448,8 +477,8 @@ void TX_Matrix::Thread_X(int thr_num){
 //---------------------------------------------------------------
 
 #ifdef GPP_FLAG
-    thread TX_Matrix::threading(bool T_or_X,int j){
-        if(T_or_X) return thread([=] {Thread_T(j);});
+    thread TX_Matrix::threading(bool T_or_X,int i,int j){
+        if(T_or_X) return thread([=] {Thread_T(i,j);});
         else return thread([=] {Thread_X(j);});
     }
 #endif

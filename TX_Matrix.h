@@ -20,7 +20,7 @@
 
 #include "T_Matrix_Row.h"
 #include "AIDA_Data_Streamer.h"
-//#include "Data_Class_Obj.h"
+
 
 typedef unsigned long long ULong64_t;
 
@@ -72,6 +72,7 @@ private:
     void reset_Saved();
     void Thread_X(int);
     void Thread_T(int);
+    void Thread_T(int,int);
     void print_COINC_MAT();
     void Set_Next_Cluster(int**,int,int);
     void set_data_points_per_thread();
@@ -88,7 +89,7 @@ private:
 
     #ifdef GPP_FLAG
         std::mutex MUTEX;
-        std::thread threading(bool,int);
+        std::thread threading(bool,int,int);
     #endif
 
 public:
