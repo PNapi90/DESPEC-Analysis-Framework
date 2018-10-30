@@ -356,11 +356,11 @@ void TX_Matrix::reset_Saved(){
 //---------------------------------------------------------------
 
 void TX_Matrix::Thread_T(int thr_num){
-    int data_points_per_thr_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
-    int row_start = thr_num*data_points_per_thr_tmp;
+    int data_points_per_thr_tmp = spacing_per_thr[thr_num][1];//(thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
+    int row_start = spacing_per_thr[thr_num][0];
 
     int* deleteable_rows = nullptr;
-    for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
+    for(int i = row_start;i < data_points_per_thr_tmp;++i){
         //skip data points that already exist in events before
         if(check_relevant(i)){
             relevant_for_x[i] = nullptr;
