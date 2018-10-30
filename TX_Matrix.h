@@ -35,6 +35,7 @@ private:
     int z_strip_number,save_iter;
     int data_points_per_thr,data_points_per_thr_last;
     
+    std::vector<std::vector<int> > spacing_per_thr;
     
     int iterator_mutex;
     int strip_iterator;
@@ -72,7 +73,6 @@ private:
     void reset_Saved();
     void Thread_X(int);
     void Thread_T(int);
-    void Thread_T(int,int);
     void print_COINC_MAT();
     void Set_Next_Cluster(int**,int,int);
     void set_data_points_per_thread();
@@ -89,7 +89,7 @@ private:
 
     #ifdef GPP_FLAG
         std::mutex MUTEX;
-        std::thread threading(bool,int,int);
+        std::thread threading(bool,int);
     #endif
 
 public:

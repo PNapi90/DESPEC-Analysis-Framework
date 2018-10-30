@@ -13,6 +13,9 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads,int* lens_sent){
     amount_of_data_points = 0;
     this->am_threads = am_threads;
     this->strip_iterator = strip_iterator;
+
+    spacing_per_thr = std::vector<std::vector<int> >(this->am_threads,std::vector<int>(2,0));
+
     cluster_counter = new int[am_threads];
 
     x_or_y = (strip_iterator % 2 == 1);
@@ -178,25 +181,19 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         thread t[am_threads];
 
         //check time differences between all events using threads
-        for(int i = 0;i < amount_of_data_points;++i){
-            for(int j = 0;j < am_threads;++j){
-                t[j] = threading(true,dataPosition,j);
-                ++dataPosition;
-            }
-            for(int j = 0;j < am_threads;++j) t[j].join();
-        }
+        for(int i = 0;i < am_threads;++i) t[i] = threading(true,i);
+        for(int i = 0;i < am_threads;++i) t[i].join();
 
         //print_COINC_MAT();
     
         //check if coincident events are neighbors (using threads)
-        for(int i = 0;i < am_threads;++i) t[i] = threading(false,0,i);
+        for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
         for(int i = 0;i < am_threads;++i) t[i].join();
     
     //g++ version < 4.9
     #else
         //"thread 1" processes all the data
-        data_points_per_thr = amount_of_data_points;
-        data_points_per_thr_last = amount_of_data_points;
+        set_data_points_per_thread();
         
         //processing time differences in serial
         Thread_T(0);
@@ -247,11 +244,72 @@ void TX_Matrix::print_COINC_MAT(){
 //---------------------------------------------------------------
 
 void TX_Matrix::set_data_points_per_thread(){
-    data_points_per_thr = amount_of_data_points/am_threads;
+    
+    //Linear spacing -> slow!
+    
+    /*data_points_per_thr = amount_of_data_points/am_threads;
     amount_of_data_points_d = (double) amount_of_data_points;
     double am_threads_d = (double) am_threads;
     double remaining = amount_of_data_points_d/am_threads_d - data_points_per_thr;
     data_points_per_thr_last = ((int) remaining*am_threads) + data_points_per_thr;
+    */
+
+    //equal spacing per thread
+
+    //area A_triangular of triangular matrix of dimension = amount_of_data_points
+
+    if(am_threads == 1){
+        spacing_per_thr[0][0] = 0;
+        spacing_per_thr[0][1] = amount_of_data_points;
+        return;
+    }
+
+    //area of triangular matrix
+    double A_triangular = pow(amount_of_data_points,2)/2.;
+    
+    std::vector<double> spacingTmp(am_threads,0);
+    
+    //aOld is upper edge-length of old trapezoid
+    //(beginning: full length of triangular matrix)
+    double aOld = (double) amount_of_data_points;
+    double n = (double) am_threads;
+
+    //spacingTmp describes edge-length of trapeziod in triangular matrix
+    //of equal area Ai with sum(Ai) = A_triangular
+    for(int i = 0;i < am_threads-1;++i){
+        spacingTmp[i] = aOld - sqrt((aOld*aOld*n - 2.*A_triangular)/n);
+        aOld -= spacingTmp[i];
+    }
+    //last area is traingle, not trapezoid (=> Ai = 0.5*aOld^2)
+    spacingTmp[am_threads-1] = aOld;
+    
+    int tmpPos = 0;
+    int delta = 0;
+
+    //threads have to calculate integer value of rows
+    //=> calculate integer spacing (may yield slightly unequal areas Ai)
+
+    tmpPos = (int) spacingTmp[0];
+    delta = (tmpPos > 0) ? tmpPos : 1;
+
+    //first trapezoid starting at 0 
+    spacing_per_thr[0][0] = 0;
+    spacing_per_thr[0][1] = delta;
+
+    //integer spacing with distance at least = 1
+    for(int i = 1;i < am_threads-1;++i){
+        
+        tmpPos = (int) spacingTmp[i];
+        delta = (tmpPos > 0) ? tmpPos : 1;
+
+        spacing_per_thr[i][0] = spacing_per_thr[i-1][1];
+        spacing_per_thr[i][1] = spacing_per_thr[i][0] + delta;
+    }
+
+    //last thread (triangle) goes up to amount_of_data_points
+    spacing_per_thr[am_threads-1][0] = spacing_per_thr[am_threads-2][1];
+    spacing_per_thr[am_threads-1][1] = amount_of_data_points;
+
 }
 
 //---------------------------------------------------------------
@@ -321,29 +379,6 @@ void TX_Matrix::Thread_T(int thr_num){
         deleteable_rows = nullptr;
     }
 }
-
-//---------------------------------------------------------------
-
-void TX_Matrix::Thread_T(int thr_num,int rowNumber){
-
-    if(check_relevant(rowNumber)){
-        relevant_for_x[rowNumber] = nullptr;
-        len_line_X[rowNumber] = 0;
-        return;
-    }
-
-    T_Rows[rowNumber]->set_Row(Time_Arr,Time_Arr[rowNumber],rowNumber,amount_of_data_points);
-
-    //create coincidence matrix without 0 values
-    len_line_X[rowNumber] = T_Rows[rowNumber]->get_Relevant_amount();
-    int* deleteable_rows = T_Rows[rowNumber]->get_Relevant_Evts();
-
-    //set relevant events for row rowNumber
-    set_relevant(rowNumber,len_line_X[rowNumber],deleteable_rows);
-
-    deleteable_rows = nullptr;
-}
-
 
 //---------------------------------------------------------------
 
@@ -477,8 +512,8 @@ void TX_Matrix::Thread_X(int thr_num){
 //---------------------------------------------------------------
 
 #ifdef GPP_FLAG
-    thread TX_Matrix::threading(bool T_or_X,int i,int j){
-        if(T_or_X) return thread([=] {Thread_T(i,j);});
+    thread TX_Matrix::threading(bool T_or_X,int j){
+        if(T_or_X) return thread([=] {Thread_T(j);});
         else return thread([=] {Thread_X(j);});
     }
 #endif
