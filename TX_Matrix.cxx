@@ -15,6 +15,7 @@ TX_Matrix::TX_Matrix(int strip_iterator,int am_threads,int* lens_sent){
     this->strip_iterator = strip_iterator;
 
     spacing_per_thr = std::vector<std::vector<int> >(this->am_threads,std::vector<int>(2,0));
+    lenMax = std::vector<int>(am_threads,0);
 
     cluster_counter = new int[am_threads];
 
@@ -187,8 +188,8 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
         //print_COINC_MAT();
     
         //check if coincident events are neighbors (using threads)
-        for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
-        for(int i = 0;i < am_threads;++i) t[i].join();
+        //for(int i = 0;i < am_threads;++i) t[i] = threading(false,i);
+        //for(int i = 0;i < am_threads;++i) t[i].join();
     
     //g++ version < 4.9
     #else
@@ -220,6 +221,8 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
             relevant_for_x[i] = nullptr;
         }
     }
+
+    
 }
 
 //---------------------------------------------------------------
@@ -309,7 +312,17 @@ void TX_Matrix::set_data_points_per_thread(){
     //last thread (triangle) goes up to amount_of_data_points
     spacing_per_thr[am_threads-1][0] = spacing_per_thr[am_threads-2][1];
     spacing_per_thr[am_threads-1][1] = amount_of_data_points;
-
+    
+    /*cout << "Thread spacing in AIDA: " << endl;
+    int delta_val = 0;
+    for(int i = 0;i < am_threads;++i){
+		for(int j = 0;j < 2;++j) cout << spacing_per_thr[i][j] << " ";
+		delta_val = spacing_per_thr[i][1] - spacing_per_thr[i][0];
+		
+		cout <<  delta_val <<  endl;
+	}
+	cout << " - - - - - - - - - - - - - - - - - - -" << endl;
+	*/
 }
 
 //---------------------------------------------------------------
@@ -359,6 +372,8 @@ void TX_Matrix::Thread_T(int thr_num){
     int data_points_per_thr_tmp = spacing_per_thr[thr_num][1];//(thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
     int row_start = spacing_per_thr[thr_num][0];
 
+    lenMax[thr_num] = 0;
+
     int* deleteable_rows = nullptr;
     for(int i = row_start;i < data_points_per_thr_tmp;++i){
         //skip data points that already exist in events before
@@ -377,7 +392,17 @@ void TX_Matrix::Thread_T(int thr_num){
         set_relevant(i,len_line_X[i],deleteable_rows);
 
         deleteable_rows = nullptr;
+        
+        lenMax[thr_num] = (len_line_X[i] > lenMax[thr_num]) ? len_line_X[i] : lenMax[thr_num];
+		//if(i % 100 == 0) PrintIT(i/100,thr_num);
     }
+}
+
+//---------------------------------------------------------------
+
+void TX_Matrix::PrintIT(int i,int tnum){
+	lock_guard<mutex> lockGuard(MUTEX);
+	cout << "Thread " << tnum << " at " << i << endl;
 }
 
 //---------------------------------------------------------------
@@ -433,7 +458,7 @@ void TX_Matrix::Thread_X(int thr_num){
     cluster_counter[thr_num] = 0;
     
     //temporary sort array for position sorting
-    vector<vector<int> > xy_for_sort(2000,vector<int>(2,10000));
+    vector<vector<int> > xy_for_sort(lenMax[thr_num]+1,vector<int>(2,lenMax[thr_num]+1));
     
     bool check_bool = (thr_num == am_threads - 1);
     
@@ -455,6 +480,7 @@ void TX_Matrix::Thread_X(int thr_num){
     
     //loop over all events in thread
     for(int i = row_start;i < data_points_per_thr_tmp;++i){
+		
         //skip if event not of interest (see Process(...))
         
         if(skip_arr[i]) continue;
@@ -513,7 +539,11 @@ void TX_Matrix::Thread_X(int thr_num){
 
 #ifdef GPP_FLAG
     thread TX_Matrix::threading(bool T_or_X,int j){
-        if(T_or_X) return thread([=] {Thread_T(j);});
+        if(T_or_X) return thread([=] {
+			Thread_T(j);
+			Thread_X(j);
+		}
+		);
         else return thread([=] {Thread_X(j);});
     }
 #endif

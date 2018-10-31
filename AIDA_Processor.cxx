@@ -65,6 +65,22 @@ void AIDA_Processor::PROCESSING(AIDA_Decay_Event_Store* Store){
         //Threading active ?
         if(USE_THREADS){
 
+            //Cluster x/y strips by time, energy and position
+            for(int i = 0;i < amount_z_strips*2;++i) non_threading(TX_CALC,i);
+            
+            //Cluster X and Y of each z plane to possible beta clusters
+            for(int i = 0;i < amount_z_strips;++i) if(!empty_bunch[i]) non_threading(XY_CALC,i);
+            
+            
+            // =================================================================
+            
+            //REMARK:
+            //Threads inside threads not properly working with Go4!
+            //strips are computed in serial
+            
+            //Threads in threads code:
+            
+            /*
             //create threads for parallel calculations
             thread t[amount_thr];
         
@@ -81,6 +97,9 @@ void AIDA_Processor::PROCESSING(AIDA_Decay_Event_Store* Store){
                 thread_iterator += 2;
             }
             for(int i = 0;i < amount_z_strips;++i) t[i].join();
+            */
+            
+            // =================================================================
         }
         //single thread mode
         else{
@@ -210,7 +229,8 @@ void AIDA_Processor::check_Thread_Use(){
     }
     if(USE_THREADS){
         cout << "**AIDA THREADING ENABLED**" << endl;
-        cout << "Using a total number of " << amount_z_strips*2*am_sub_threads << " threads" << endl;
+        //cout << "Using a total number of " << amount_z_strips*2*am_sub_threads << " threads" << endl;
+        cout << "Using a total number of " << am_sub_threads << " threads" << endl;
     }
     else{
         cout << "**AIDA THREADING DISABLED**" << endl;

@@ -11,7 +11,7 @@ Tree_Creator::Tree_Creator(int* interestArray,int len){
     typePos = std::vector<int>(len,0);
 
     string treename = "";
-    string filename = "Root_Trees/";
+    filename = "Root_Trees/";
 
     for(int i = 0;i < len;++i){
         this->interestArray[i] = interestArray[i];

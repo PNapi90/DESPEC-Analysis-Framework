@@ -33,7 +33,7 @@ private:
 
     int len;
     std::vector<int> interestArray,typePos;
-	
+	std::string filename;
     TFile* File;
     TTree* Tree;
     Branch_Creator** Branches_Created;

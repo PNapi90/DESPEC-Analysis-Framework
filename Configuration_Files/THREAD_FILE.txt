@@ -14,4 +14,15 @@
 # If threading is enabled, the total number of used threads hence is N*2*SUB
 #
 PRIMARY     1
-SUB         6
+SUB         16
+#
+# =================================================================================
+# REMARK:
+# ---------------------------------------------------------------------------------
+# Threading in threading is currently not working with Go4
+# -> only use SUB for threading
+# Due to "massive" overhead of threads, only about 40% of the threads
+# are running at one time (possible fix needed!)
+# => However, if amount of threads is high enough, AIDA
+# analysis is still fast enough
+# =================================================================================

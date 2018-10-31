@@ -36,6 +36,7 @@ private:
     int data_points_per_thr,data_points_per_thr_last;
     
     std::vector<std::vector<int> > spacing_per_thr;
+    std::vector<int> lenMax;
     
     int iterator_mutex;
     int strip_iterator;
@@ -78,6 +79,8 @@ private:
     void set_data_points_per_thread();
 
     void process_mem_usage(int,int);
+    
+    void PrintIT(int,int);
 
     bool sortFunc(const std::vector<int>&,const std::vector<int>&);
     inline bool keep_Event(int);
