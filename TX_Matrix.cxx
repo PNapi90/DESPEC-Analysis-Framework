@@ -437,8 +437,8 @@ void TX_Matrix::Thread_X(int thr_num){
     
     bool check_bool = (thr_num == am_threads - 1);
     
-    int data_points_per_thr_tmp = (thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
-    int row_start = thr_num*data_points_per_thr_tmp;
+    int data_points_per_thr_tmp = spacing_per_thr[thr_num][1];//(thr_num == am_threads - 1) ? data_points_per_thr_last : data_points_per_thr;
+    int row_start = spacing_per_thr[thr_num][0];//thr_num*data_points_per_thr_tmp;
 
     //temporary cluster for sorting
     int **tmp_cluster = new int*[200];
@@ -454,7 +454,7 @@ void TX_Matrix::Thread_X(int thr_num){
     int cluster_of_interest_len = 0;
     
     //loop over all events in thread
-    for(int i = row_start;i < data_points_per_thr_tmp+row_start;++i){
+    for(int i = row_start;i < data_points_per_thr_tmp;++i){
         //skip if event not of interest (see Process(...))
         
         if(skip_arr[i]) continue;
