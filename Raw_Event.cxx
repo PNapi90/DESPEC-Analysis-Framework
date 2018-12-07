@@ -6,8 +6,10 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-Raw_Event::Raw_Event(){
+Raw_Event::Raw_Event(bool PADI_OR_PADIWA){
     Event_Type = -1;
+    this->PADI_OR_PADIWA = PADI_OR_PADIWA;
+    ChannelPOS = PADI_OR_PADIWA ? 1 : 0;
 }
 
 //---------------------------------------------------------------
@@ -134,35 +136,35 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 								int* det_ids_QDC,int* det_ids_TDC){
 	
 	
-	this->FAT_QDCs_FIRED = QDC_FIRED;
-	this->FAT_TDCs_FIRED = TDC_FIRED;
+	FAT_QDCs_FIRED = QDC_FIRED;
+	FAT_TDCs_FIRED = TDC_FIRED;
 	int dets_fired = 0;
 	for (int i=0; i<QDC_FIRED; i++) {
-		this->FAT_QDC_id[i] = det_ids_QDC[i];
+		FAT_QDC_id[i] = det_ids_QDC[i];
 		if (det_ids_QDC[i] == 35) cout<<"I am in QDC"<<endl;
-		this->FAT_QLong[i]  = Ql[i];
-		this->FAT_QLong_Raw[i]  = Ql_Raw[i];
-		this->FAT_QShort_Raw[i] = Qs_Raw[i];
-		this->FAT_QDC_t_coarse[i] = QDC_c[i];
-		this->FAT_QDC_t_fine[i] = QDC_f[i];
+		FAT_QLong[i]  = Ql[i];
+		FAT_QLong_Raw[i]  = Ql_Raw[i];
+		FAT_QShort_Raw[i] = Qs_Raw[i];
+		FAT_QDC_t_coarse[i] = QDC_c[i];
+		FAT_QDC_t_fine[i] = QDC_f[i];
 		for (int j=0; j<TDC_FIRED; j++) {
 			if (det_ids_QDC[i] == det_ids_TDC[j]) {
-				this->FAT_id[dets_fired] = det_ids_QDC[i];
+				FAT_id[dets_fired] = det_ids_QDC[i];
 				if (det_ids_TDC[j] == 35) cout<<"I am in TDC"<<endl;
 
-				this->FAT_E[dets_fired] = Ql[i];
-				this->FAT_ratio[dets_fired] = (double) Qs_Raw[i]/Ql_Raw[i];
-				this->FAT_t[dets_fired] = TDC_ns[j];
-				this->FAT_t_qdc[dets_fired] = QDC_c[i];
+				FAT_E[dets_fired] = Ql[i];
+				FAT_ratio[dets_fired] = (double) Qs_Raw[i]/Ql_Raw[i];
+				FAT_t[dets_fired] = TDC_ns[j];
+				FAT_t_qdc[dets_fired] = QDC_c[i];
 				dets_fired++;
 			}
 		}
 	}
-	this->FAT_DET_FIRED = dets_fired;
+	FAT_DET_FIRED = dets_fired;
 	
 	for (int i=0; i<TDC_FIRED; i++) {
-		this->FAT_TDC_id[i]        = det_ids_TDC[i];
-		this->FAT_TDC_timestamp[i] = TDC[i];
+		FAT_TDC_id[i] = det_ids_TDC[i];
+		FAT_TDC_timestamp[i] = TDC[i];
 	}
 
 	
@@ -249,6 +251,8 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 			trailing_hits_ch[i][j] = 0;
 		}
 	}
+	
+	std::vector<double> tmpVec(17,0);
 
 	//loop over all 4 tamex modules
 	for(int i = 0;i < amount_hit_tamex;++i){
@@ -260,11 +264,11 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 		trailing_hits[i] = 0;
 		for(int j = 0;j < iterator[i];++j){
 			ch_ID[i][j] = ch_ed[i][j];
-			if(ch_ID[i][j] % 2 == 1){
+			if(ch_ID[i][j] % 2 == ChannelPOS){
 				coarse_T_edge_lead[i][j] = (double) Edge_Coarse[i][j]*5.0;
 				fine_T_edge_lead[i][j] = (double) Edge_fine[i][j]*5.0;
 				
-				phys_channel[i][j] = (ch_ID[i][j]+1)/2;
+				phys_channel[i][j] = PADI_OR_PADIWA ? (ch_ID[i][j]+1)/2 : (ch_ID[i][j])/2;
 				leading_hits[i]++;
 				leading_hits_ch[i][phys_channel[i][j]]++;
 			}
@@ -273,11 +277,18 @@ void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine
 				fine_T_edge_trail[i][j] =(double)  Edge_fine[i][j]*5.0;
 				
 				trailing_hits[i]++;
-				phys_channel[i][j] = (ch_ID[i][j])/2;
+				phys_channel[i][j] = PADI_OR_PADIWA ? (ch_ID[i][j])/2 : (ch_ID[i][j]+1)/2;
 				trailing_hits_ch[i][phys_channel[i][j]]++;
 
 			}
-		}	
+		}
+		if(!PADI_OR_PADIWA){
+			for(int j = 0;j < iterator[i];++j){
+				
+			
+			}
+		
+		}
 	}
 
     Event_Type = 2;
@@ -458,9 +469,17 @@ double Raw_Event::get_PLASTIC_trail_T(int i,int j){
 
 double Raw_Event::get_PLASTIC_TOT(int i,int j){
     // i is board ID, j is physical channel
-    double T_lead = (coarse_T_edge_lead[i][j] - fine_T_edge_lead[i][j]);
-    double T_trail = (coarse_T_edge_trail[i][j+1] - fine_T_edge_trail[i][j+1]);
-
+    
+    double T_lead = 0,T_Trail = 0;
+    if(PADI_OR_PADIWA){
+		T_lead = (coarse_T_edge_lead[i][j] - fine_T_edge_lead[i][j]);
+		T_trail = (coarse_T_edge_trail[i][j+1] - fine_T_edge_trail[i][j+1]);
+	}
+	else{
+		T_lead = (coarse_T_edge_lead[i][j+1] - fine_T_edge_lead[i][j+1]);
+		T_trail = (coarse_T_edge_trail[i][j] - fine_T_edge_trail[i][j]);
+	}
+   
     return T_trail - T_lead;
 }
 

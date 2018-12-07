@@ -1,0 +1,7 @@
+#ignore all root files
+*.root
+
+# ignore all *.o,so and *.d files
+*.o
+*.so
+*.d

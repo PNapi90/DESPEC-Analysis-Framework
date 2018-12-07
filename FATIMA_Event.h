@@ -15,9 +15,6 @@ private:
 
     FATIMA_Data DATA;
 
-    int FAT_FIRED;
-    int am_fired;
-    double energy_tot;
     inline void set_DATA(Raw_Event*);
 
 

@@ -147,7 +147,8 @@ void PLASTIC_Detector_System::Process_TAMEX(){
     TAMEX_CHANNEL_HEADER* head = (TAMEX_CHANNEL_HEADER*) pdata;
     
     //check if end of TAMEX MBS reached
-    bool ongoing = (head->identify == tamex_identifier) && (head->identify_2 == 0) && (head->sfp_id == 1 || head->sfp_id == 0);
+    bool ongoing = (head->identify == tamex_identifier) && (head->identify_2 == 0)
+					&& (head->sfp_id == 1 || head->sfp_id == 0);
     
     if(!ongoing){
         tamex_end = true;
@@ -289,9 +290,6 @@ void PLASTIC_Detector_System::get_edges(){
         edge_fine[tamex_iter][iterator[tamex_iter]] = (double) data->fine_T;
         ch_ID_edge[tamex_iter][iterator[tamex_iter]] = data->ch_ID;
         lead_arr[tamex_iter][iterator[tamex_iter]] = 1 - (data->ch_ID % 2);
-
-        //cout << "debug edges" << endl;
-        //cout << dec << tamex_iter << " " << data->ch_ID << " " << endl;
         
         //trailing edge reached
         iterator[tamex_iter]++;
@@ -430,7 +428,7 @@ void PLASTIC_Detector_System::get_Calib_type(){
         cout << endl;
         cout << "######################################################################" << endl;
         cout << "!!! ONLINE ANALYSIS IN FORCED MODE" << endl;
-        cout << "!!! TO DISABLE, CHECK PLASTIC_CALIB_FILE IN Configuration_Files" << endl;
+        cout << "!!! TO DISABLE, CHECK PLASTIC_CALIB_FILE IN Configuration_Files/" << endl;
         cout << "######################################################################" << endl;
         cout << endl;
     }

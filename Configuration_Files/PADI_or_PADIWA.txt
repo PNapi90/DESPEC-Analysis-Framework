@@ -1,0 +1,6 @@
+# Configuration file for used PLASTIC module PADI or PADIWA
+#
+# (only PADI or PADIWA as input allowed!)
+#
+# used module:
+PADIWA

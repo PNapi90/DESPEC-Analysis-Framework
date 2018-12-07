@@ -132,6 +132,10 @@ private:
 	double fine_T_edge_trail[4][100];
 	UInt ch_ID[4][100];
 	bool fired_tamex[4];
+	
+	bool PADI_OR_PADIWA;
+	
+	int ChannelPOS;
 
 	
 	//GALILEO

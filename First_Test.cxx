@@ -113,8 +113,11 @@ TGo4EventProcessor(name) // Histograms defined here //
 		EvtBuilder[0] = new Time_EventBuilder(amount_interest,length_interest,interest_array);
 	}
 	
+	
+	checkPADI_or_PADIWA();
+	
 	//Raw_Event object to handle data
-	RAW = new Raw_Event();
+	RAW = new Raw_Event(PADI_OR_PADIWA);
 
 	load_PrcID_File();
 		
@@ -1088,7 +1091,7 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 		    if(!Trail_LEAD[i][phys_ch]) Trail_LEAD[i][phys_ch] = MakeTH1('D',Form("trail_minus_lead/trail_minus_lead_board%d_ch%d",i,phys_ch),
 								Form("trail_minus_lead_board%d_ch%d",i,phys_ch),1000,-500,500);
 	
-		    if(j % 2 == 0){
+		    if(j % 2 == !PADI_OR_PADIWA){
 			    tmp_fill_val = (double) (RAW->get_PLASTIC_trail_T(i,j+1)-RAW->get_PLASTIC_lead_T(i,j));
 			    Trail_LEAD[i][phys_ch]->Fill(tmp_fill_val);
 		
@@ -1096,7 +1099,7 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 		    
 				    phys_ch_tmp = RAW->get_PLASTIC_physical_channel(i,k);
 			
-				    if(k % 2 == 0 && k != j){
+				    if(k % 2 == !PADI_OR_PADIWA && k != j){
 					
 					
 					    if(!LEAD_LEAD_Total[i][phys_ch]){
@@ -1481,6 +1484,35 @@ void TSCNUnpackProc::Fill_GALILEO_Histos(){
 	}
     }    
 }
+
+void TSCNUnpackProc::checkPADI_or_PADIWA(){
+
+	std::ifstream PADIFILE("Configuration_Files/PADI_or_PADIWA.txt");
+	
+	std::string line;
+	
+	if(PADIFILE.fail()){
+		std::cerr << "Could not find Configuration_Files/PADI_or_PADIWA.txt file" << std::endl;
+		exit(1); 
+	}
+	bool P_or_PW = false;
+	while(std::getline(PADIFILE,line)){
+		if(line[0] == "#") continue;
+		
+		if(line == "PADI") P_or_PW = true;
+		if(line == "PADIWA") P_or_PW = false;
+		
+		if(line != "PADIWA" && line != "PADI"){
+			std::cerr << line << " module of PLASTIC not known!" <<std::endl;
+			exit(1);
+		}
+	}
+
+	PADI_OR_PADIWA = P_or_PW;
+
+}
+
+
 
 bool TSCNUnpackProc::Check_Cal_Plastic(){
 	ifstream data("Configuration_Files/PLASTIC_CALIB_FILE.txt");

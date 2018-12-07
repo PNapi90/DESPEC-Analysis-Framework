@@ -347,12 +347,27 @@ void Event_Store::Write(Match* MatchHit,Tree_Creator* Tree){
     int match_hits = MatchHit->get_amount_Hits();
     int* filled_types = MatchHit->get_filled_types();
     int** hit_addresses = MatchHit->get_Address_Array();
-
-    //loop over coincident events
-    for(int o = 0;o < match_hits;++o) if(filled_types[o] != -1){
-        //evoke write routine of Event
-        Event[filled_types[o]][*hit_addresses[filled_types[o]]]->Write_Event(Tree);
-    }
+    
+    //do coincidence-specific calibrations (e.g. time walk FAT <-> PLASTIC)
+    bool MatchCalibration = MatchSpecificCalibrations.CheckType(match_hits,Match->hit_addresses());
+    
+    //Calibration needed?
+    if(MatchCalibration){
+		//loop over coincident events
+		for(int o = 0;o < match_hits;++o){ 
+			if(filled_types[o] != -1){
+				//Pass event to calibration routine
+				MatchSpecificCalibrations.PassEvent(Event[filled_types[o]][*hit_addresses[filled_types[o]]]);
+			}
+		}
+		//check if data needed for calibration has been sent to 
+		//MatchSpecificCalibrations object (if not -> error!)
+		if(!MatchSpecificCalibrations.Filled()) MatchSpecificCalibration.ERROR();
+		
+		MatchSpecificCalibrations.CALIBRATE();
+	}
+    
+    
 
     filled_types = nullptr;
     hit_addresses = nullptr;

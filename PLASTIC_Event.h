@@ -3,16 +3,20 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <vector>
 
 #include "Events.h"
 #include "Raw_Event.h"
+
+#include "PLASTIC_Data_Struct.h"
 
 class PLASTIC_Event : public Events{
 
 private:
 
-    int FAT_FIRED;
+	PLASTIC_Data DATA;
 
+	
     inline void set_DATA(Raw_Event*);
 
 

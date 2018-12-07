@@ -230,6 +230,8 @@ using namespace std;
 			bool Used_Systems[10];
 
 			bool SKIP_EVT_BUILDING;
+			
+			bool PADI_OR_PADIWA;
 
 			double vals[100000];
 			int val_it;
@@ -295,6 +297,8 @@ using namespace std;
 			
 			
 			bool Check_Cal_Plastic();
+			
+			void checkPADI_or_PADIWA();
 			
 			bool PLASTIC_CALIBRATION;
 			
