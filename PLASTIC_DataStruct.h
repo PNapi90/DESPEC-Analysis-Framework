@@ -1,7 +1,7 @@
 #ifndef PLASTIC_DATA_STRUCT_H
 #define PLASTIC_DATA_STRUCT_H
 
-typedef unsigned int UInt
+typedef unsigned int UInt;
 
 
 #include <vector>

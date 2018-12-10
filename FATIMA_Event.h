@@ -13,7 +13,7 @@ class FATIMA_Event : public Events{
 
 private:
 
-    FATIMA_Data DATA;
+    //FATIMA_Data DATA;
 
     inline void set_DATA(Raw_Event*);
 
