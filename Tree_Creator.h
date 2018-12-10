@@ -8,7 +8,7 @@
 //#include "FRS_Data_Struct.h"
 //#include "AIDA_Data_Struct.h"
 //#include "PLASTIC_Data_Struct.h"
-#include "FATIMA_Data_Struct.h"
+//#include "FATIMA_Data_Struct.h"
 //#include "GALILEO_Data_Struct.h"
 //#include "FINGER_Data_Struct.h"
 
