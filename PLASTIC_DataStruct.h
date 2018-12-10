@@ -8,32 +8,42 @@ struct PLASTIC_DataStruct{
     
     int amount_hit_tamex = 0;
 
-    std::vector<int> iterator(4,0);
+    std::vector<int> iterator;
     
-    std::vector<double> trigger_coarse(100,0);
-    std::vector<double> trigger_fine(100,0);
+    std::vector<double> trigger_coarse;
+    std::vector<double> trigger_fine;
 
-    std::vector<int> leading_hits(4,0);
-    std::vector<int> trailing_hits(4,0);
-    std::vector<std::vector<int> > phys_channel(4,std::vector<int>(17,0));
-    std::vector<std::vector<int> > leading_hits_ch(4,std::vector<int>(17,0));
-    std::vector<std::vector<int> > trailing_hits_ch(4,std::vector<int>(17,0));
+    std::vector<int> leading_hits;
+    std::vector<int> trailing_hits;
+    std::vector<std::vector<int> > phys_channel;
+    std::vector<std::vector<int> > leading_hits_ch;
+    std::vector<std::vector<int> > trailing_hits_ch;
 
-    std::vector<std::vector<double> > Time_Lead(4,std::vector<double>(17,0));
-    std::vector<std::vector<double> > Time_Trail(4,std::vector<double>(17,0));
+    std::vector<std::vector<double> > Time_Lead;
+    std::vector<std::vector<double> > Time_Trail;
     
 
-    std::vector<std::vector<double> > coarse_T_edge_lead(4,std::vector<double>(100,0));
-    std::vector<std::vector<double> > coarse_T_edge_trail(4,std::vector<double>(100,0));
-    std::vector<std::vector<double> > fine_T_edge_lead(4,std::vector<double>(100,0));
-    std::vector<std::vector<double> > fine_T_edge_trail(4,std::vector<double>(100,0));
-    std::vector<std::vector<UInt> > ch_ID(4,std::vector<UInt>(100,0));
+    std::vector<std::vector<double> > coarse_T_edge_lead;
+    std::vector<std::vector<double> > coarse_T_edge_trail;
+    std::vector<std::vector<double> > fine_T_edge_lead;
+    std::vector<std::vector<double> > fine_T_edge_trail;
+    std::vector<std::vector<UInt> > ch_ID;
     
-    std::vector<bool> fired_tamex(4,false);
+    std::vector<bool> fired_tamex;
     
     bool PADI_OR_PADIWA = true;
     
     int ChannelPOS = 0;
+
+    PLASTIC_DataStruct() : iterator(4,0) , trigger_coarse(100,0) , trigger_fine(100,0) ,
+                           leading_hits(4,0) , trailing_hits(4,0) , phys_channel(4,std::vector<int>(17,0)) ,
+                           leading_hits_ch(4,std::vector<int>(17,0)) , trailing_hits_ch(4,std::vector<int>(17,0)) ,
+                           Time_Lead(4,std::vector<double>(17,0)) , Time_Trail(4,std::vector<double>(17,0)) ,
+                           coarse_T_edge_lead(4,std::vector<double>(100,0)) , coarse_T_edge_trail(4,std::vector<double>(100,0)) , 
+                           fine_T_edge_lead(4,std::vector<double>(100,0)) , fine_T_edge_trail(4,std::vector<double>(100,0)) , 
+                           ch_ID(4,std::vector<UInt>(100,0)) , fired_tamex(4,false){}
+
+    ~PLASTIC_DataStruct(){}
 
     void SetData(std::vector<int> &it,std::vector<std::vector<double> > &Edge_Coarse,
                  std::vector<std::vector<double> > &Edge_fine, std::vector<std::vector<UInt> > &ch_ed,
