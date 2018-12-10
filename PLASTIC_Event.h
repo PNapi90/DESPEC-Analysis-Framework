@@ -13,7 +13,7 @@ class PLASTIC_Event : public Events{
 
 private:
 
-	PLASTIC_Data DATA;
+	//PLASTIC_Data DATA;
 
 	
     inline void set_DATA(Raw_Event*);
