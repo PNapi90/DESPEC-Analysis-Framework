@@ -48,21 +48,6 @@ PLASTIC_Detector_System::~PLASTIC_Detector_System(){
 
 //---------------------------------------------------------------
 
-
-ULong** PLASTIC_Detector_System::tmp_get_coarse_T(){return (ULong**) edge_coarse;}
-
-
-
-//---------------------------------------------------------------
-
-int PLASTIC_Detector_System::tmp_get_am_hits(){
-    int h = 0;
-    for(int i = 0;i < tamex_iter-1;++i) h += iterator[i];
-    return h;
-}
-
-//---------------------------------------------------------------
-
 void PLASTIC_Detector_System::get_Event_data(Raw_Event* RAW){
     RAW->set_DATA_PLASTIC(iterator,edge_coarse,edge_fine,ch_ID_edge,coarse_T,fine_T,tamex_iter); 
 }

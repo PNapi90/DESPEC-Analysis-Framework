@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <float.h>
+#include <vector>
 
 #include "PLASTIC_DataStruct.h"
 
