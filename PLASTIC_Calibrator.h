@@ -8,6 +8,7 @@ typedef unsigned int UInt;
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <vector>
 
 
 #include <TFile.h>
@@ -41,6 +42,7 @@ public:
 	~PLASTIC_Calibrator();
 
     void get_data(double**,UInt**,int,int*);
+    void get_data(std::vector<std::vector<double> >& ,std::vector<std::vector<UInt> >&,int,std::vector<double>& );
 
     void ONLINE_CALIBRATION();
     double get_Calibration_val(double,int,int);

@@ -180,6 +180,21 @@ double PLASTIC_Calibrator::get_Calibration_val(double value,int tamex_id_tmp,int
 
 //---------------------------------------------------------------
 
+void PLASTIC_Calibrator::get_data(std::vector<std::vector<double> > &fine_T,
+								  std::vector<std::vector<UInt> > &ch_id,
+								  int tamex_iter,std::vector<int> &iterator){
+	//write into corresponding root histograms
+	
+	for(int i = 0;i < tamex_iter;++i){
+		for(int j = 0;j < iterator[i];++j){
+			Fine_Hist[i][ch_id[i][j]]->Fill(fine_T[i][j]);
+			fired[i][ch_id[i][j]] = true;
+		}
+	}
+}
+
+//---------------------------------------------------------------
+
 void PLASTIC_Calibrator::get_data(double** fine_T,UInt** ch_id,int tamex_iter,int* iterator){
 	//write into corresponding root histograms
 	
