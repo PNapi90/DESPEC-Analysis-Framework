@@ -1581,7 +1581,7 @@ void TSCNUnpackProc::checkPADI_or_PADIWA(){
 	}
 	bool P_or_PW = false;
 	while(std::getline(PADIFILE,line)){
-		if(line[0] == "#") continue;
+		if(line[0] == '#') continue;
 		
 		if(line == "PADI") P_or_PW = true;
 		if(line == "PADIWA") P_or_PW = false;
