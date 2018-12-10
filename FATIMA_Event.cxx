@@ -16,14 +16,14 @@ FATIMA_Event::~FATIMA_Event(){}
 
 inline void FATIMA_Event::set_DATA(Raw_Event* RAW){
     
-    DATA.AmountFired = RAW->get_FAT_det_fired();
+    /*DATA.AmountFired = RAW->get_FAT_det_fired();
     
     for(int i = 0;i < DATA.AmountFired;++i){
 		DATA.Energies[i] = RAW->get_FAT_E(i);
 		DATA.IDs[i] = RAW->get_FAT_id(i);
 		DATA.Times[i] = RAW->get_FAT_t(i);
 	}
-
+    */
 }
 
 //---------------------------------------------------------------

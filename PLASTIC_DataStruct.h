@@ -1,6 +1,9 @@
 #ifndef PLASTIC_DATA_STRUCT_H
 #define PLASTIC_DATA_STRUCT_H
 
+typedef unsigned int UInt
+
+
 #include <vector>
 
 
@@ -81,7 +84,7 @@ struct PLASTIC_DataStruct{
                 }
                 else{
                     coarse_T_edge_trail[i][j] = Edge_Coarse[i][j]*5.0;
-                    fine_T_edge_trail[i][j] = iEdge_fine[i][j]*5.0;
+                    fine_T_edge_trail[i][j] = Edge_fine[i][j]*5.0;
                 
                     phys_channel[i][j] = PADI_OR_PADIWA ? (ch_ID[i][j])/2 : (ch_ID[i][j]+1)/2;
                 

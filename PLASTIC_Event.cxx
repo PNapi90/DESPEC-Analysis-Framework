@@ -18,7 +18,7 @@ PLASTIC_Event::~PLASTIC_Event(){}
 inline void PLASTIC_Event::set_DATA(Raw_Event* RAW){
     
     //save plastic data in PLASTIC_Data struct DATA
-    DATA.TamexHits  = RAW->get_PLASTIC_tamex_hits();
+    /*DATA.TamexHits  = RAW->get_PLASTIC_tamex_hits();
     
     int phys_channel = 0;
     int physicalOLD = -1;
@@ -44,7 +44,7 @@ inline void PLASTIC_Event::set_DATA(Raw_Event* RAW){
 			
 			physicalOLD = phys_channel
 		}
-	}
+	}*/
 }
 
 //---------------------------------------------------------------

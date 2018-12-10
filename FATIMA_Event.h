@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "FATIMA_Data_Struct.h"
+//#include "FATIMA_Data_Struct.h"
 
 #include "Events.h"
 #include "Raw_Event.h"

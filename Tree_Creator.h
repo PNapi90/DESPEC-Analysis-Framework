@@ -48,7 +48,7 @@ public:
     Tree_Creator(int* interestArray,int len);
     ~Tree_Creator();
     
-    void SetFATIMA(FATIMA_Data* DATA);
+    //void SetFATIMA(FATIMA_Data* DATA);
 };
 
 #endif
