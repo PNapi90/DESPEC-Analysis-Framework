@@ -76,7 +76,7 @@ inline void Tree_Creator::CreateBranch(int type,int i){
 }
 
 //---------------------------------------------------------------
-
+/*
 void Tree_Creator::SetFATIMA(FATIMA_Data* DATA){
     
     //get Branch position from type
@@ -88,5 +88,5 @@ void Tree_Creator::SetFATIMA(FATIMA_Data* DATA){
     //fill tree with current data
     Tree->Fill();
 }
-
+*/
 //---------------------------------------------------------------

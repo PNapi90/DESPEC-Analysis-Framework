@@ -1051,9 +1051,12 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
     int TamexHits = RAW->get_PLASTIC_tamex_hits();
 
     int Physical_hits = 0;
-    int leadHits = 0;
-    int trailHits = 0;
+    int leadHits = 0,leadHitsCh = 0;
+    int trailHits = 0,trailHitsCh = 0;
     int Phys_Channel[2] = {0,0};
+    double Lead[2] = {0,0};
+    double Trail[2] = {0,0};
+    double TOT[2] = {0,0};
 
     double Diff = 0;
 
@@ -1076,7 +1079,7 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
                     Phys_Channel[1] = RAW->get_PLASTIC_physical_channel(i,k);
                     Lead[1] = RAW->get_PLASTIC_lead_T(i,Phys_Channel[1]);
                     Diff = Lead[0] - Lead[1];
-                    LEAD_LEAD[i][Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
+                    //LEAD_LEAD[i][Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
                 }
             }
         }
@@ -1090,7 +1093,7 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
                     Phys_Channel[1] = RAW->get_PLASTIC_physical_channel(i,k);
                     Trail[1] = RAW->get_PLASTIC_trail_T(i,Phys_Channel[1]);
                     Diff = Trail[0] - Trail[1]; 
-                    TRAIL_TRAIL[i][Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
+                    //TRAIL_TRAIL[i][Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
                 }
             }
         }
@@ -1114,11 +1117,11 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
                         if(leadHitsCh == trailHitsCh){
                             TOT[1] = RAW->get_PLASTIC_TOT(i,Phys_Channel[1]);
                             Diff = TOT[0] - TOT[1];
-                            TOT_TOT[Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
+                            //TOT_TOT[Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
                         }
                     }
                 }
-                TOT_Single[i][Phys_Channel[0]]->Fill(TOT[0]);
+                //TOT_Single[i][Phys_Channel[0]]->Fill(TOT[0]);
             }
         }
     }

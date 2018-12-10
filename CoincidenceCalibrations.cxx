@@ -20,7 +20,7 @@ void CoincidenceCalibrations::LoadCalibrationTypes(){
 	std::string filename = "Configuration_Files/CoincidenceCalibrations.txt";
 	std::ifstream CoincFile(filename);
 	
-	if(filename.fail()){
+	if(CoincFile.fail()){
 		std::cerr << "Could not find " << filename << std::endl;
 		exit(1);
 	}
