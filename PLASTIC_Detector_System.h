@@ -58,6 +58,8 @@ private:
     ULong Pre_Trigger_Window;
     ULong Post_Trigger_Window;
 
+    std::vector<int> iterator;
+
     std::vector<std::vector<int> > leading_hits;
     std::vector<std::vector<int> > trailing_hits;
 
