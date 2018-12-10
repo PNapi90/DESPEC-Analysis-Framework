@@ -31,8 +31,6 @@ public:
 
 //    virtual void get_Event_data(Data_Stream*) = 0;
 
-    virtual unsigned long** tmp_get_coarse_T() = 0;
-
 
     virtual int* get_pdata() = 0;
 
