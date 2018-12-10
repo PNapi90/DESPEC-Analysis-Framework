@@ -24,7 +24,7 @@ FATIMA_Branch_Creator::~FATIMA_Branch_Creator(){
 
 //---------------------------------------------------------------
 
-void FATIMA_Branch_Creator::WriteData(FATIMA_Data* DATA){
+/*void FATIMA_Branch_Creator::WriteData(FATIMA_Data* DATA){
     
     CLEAR();
 
@@ -34,7 +34,7 @@ void FATIMA_Branch_Creator::WriteData(FATIMA_Data* DATA){
     for(int i = 0;i < AmountHits;++i) cout << Energies[i] << " ";
     cout << endl;
 }
-
+*/
 //---------------------------------------------------------------
 
 void FATIMA_Branch_Creator::CLEAR(){
