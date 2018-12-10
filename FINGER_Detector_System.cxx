@@ -70,29 +70,6 @@ FINGER_Detector_System::~FINGER_Detector_System(){
 
 //---------------------------------------------------------------
 
-
-ULong** FINGER_Detector_System::tmp_get_coarse_T(){return (ULong**) edge_coarse;}
-
-
-
-//---------------------------------------------------------------
-
-int FINGER_Detector_System::tmp_get_am_hits(){
-    int h = 0;
-    for(int i = 0;i < tamex_iter-1;++i) h += iterator[i];
-    return h;
-}
-
-//---------------------------------------------------------------
-
-unsigned int** FINGER_Detector_System::tmp_get_chID(){return ch_ID_edge;}
-
-//---------------------------------------------------------------
-
-int* FINGER_Detector_System::tmp_get_iterator(){return iterator;}
-
-//---------------------------------------------------------------
-
 void FINGER_Detector_System::get_Event_data(Raw_Event* RAW){
     //RAW->set_DATA_FINGER(iterator,edge_coarse,edge_fine,ch_ID_edge,coarse_T,fine_T,tamex_iter); 
 }

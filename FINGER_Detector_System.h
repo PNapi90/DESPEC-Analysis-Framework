@@ -101,13 +101,6 @@ public:
 
 
     int* get_pdata();
-    
-    ULong** tmp_get_coarse_T();
-    int tmp_get_am_hits();
-
-    unsigned int** tmp_get_chID();
-
-    int* tmp_get_iterator();
 
     bool calibration_done();
 

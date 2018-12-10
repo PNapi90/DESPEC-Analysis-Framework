@@ -6,7 +6,7 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-Raw_Event::Raw_Event(bool PADI_OR_PADIWA){
+Raw_Event::Raw_Event(bool PADI_OR_PADIWA) : PLASTIC_Data(){
     Event_Type = -1;
     
     PLASTIC_Data.PADI_OR_PADIWA = PADI_OR_PADIWA;

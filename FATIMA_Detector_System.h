@@ -115,14 +115,6 @@ public:
 	int* get_pdata();
 		
 
-	unsigned long** tmp_get_coarse_T(){return NULL;};
-    int tmp_get_am_hits(){return 0;};
-
-    unsigned int** tmp_get_chID(){return NULL;};
-
-    int* tmp_get_iterator(){return NULL;};
-
-    bool calibration_done(){return false;};
     //bool do_gain_matching(){return gain_match_used;};
 
     void write();

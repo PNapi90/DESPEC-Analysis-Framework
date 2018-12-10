@@ -33,13 +33,9 @@ public:
 
     virtual unsigned long** tmp_get_coarse_T() = 0;
 
-    virtual int tmp_get_am_hits() = 0;
 
     virtual int* get_pdata() = 0;
 
-    virtual unsigned int** tmp_get_chID() = 0;
-
-	virtual int* tmp_get_iterator() = 0;
 
 	virtual bool calibration_done() = 0;
 

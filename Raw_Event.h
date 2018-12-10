@@ -135,7 +135,7 @@ private:
 
 
 public:
-	Raw_Event();
+	Raw_Event(bool);
 	~Raw_Event();
 
 
