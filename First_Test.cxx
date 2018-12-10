@@ -1047,6 +1047,87 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
     
     //cout << "FILLING PLASTIC HISTOGRAMS" << endl;
 
+	//get amount of fired Tamex modules
+    int TamexHits = RAW->get_PLASTIC_tamex_hits();
+
+    int Physical_hits = 0;
+    int leadHits = 0;
+    int trailHits = 0;
+    int Phys_Channel[2] = {0,0};
+
+    double Diff = 0;
+
+    int MaxHits = 0;
+
+    for(int i = 0;i < TamexHits;++i){
+        
+        leadHits = RAW->get_PLASTIC_lead_hits(i);
+        trailHits = RAW->get_PLASTIC_trail_hits(i);
+
+        MaxHits = (leadHits >= trailHits) ? leadHits : trailHits;
+
+        for(int j = 0;j < leadHits;++j){
+            Phys_Channel[0] = RAW->get_PLASTIC_physical_channel(i,j);
+            Lead[0] = RAW->get_PLASTIC_lead_T(i,Phys_Channel[0]);
+            
+            //Leading - Leading
+            for(int k = 0;k < leadHits;++k){
+                if(k != j){
+                    Phys_Channel[1] = RAW->get_PLASTIC_physical_channel(i,k);
+                    Lead[1] = RAW->get_PLASTIC_lead_T(i,Phys_Channel[1]);
+                    Diff = Lead[0] - Lead[1];
+                    LEAD_LEAD[i][Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
+                }
+            }
+        }
+        for(int j = 0;j < trailHits;++j){
+            Phys_Channel[0] = RAW->get_PLASTIC_physical_channel(i,j);
+            Trail[0] = RAW->get_PLASTIC_trail_T(i,Phys_Channel[0]);
+            
+            //Trailing - Trailing
+            for(int k = 0;k < trailHits;++k){
+                if(k != j){
+                    Phys_Channel[1] = RAW->get_PLASTIC_physical_channel(i,k);
+                    Trail[1] = RAW->get_PLASTIC_trail_T(i,Phys_Channel[1]);
+                    Diff = Trail[0] - Trail[1]; 
+                    TRAIL_TRAIL[i][Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
+                }
+            }
+        }
+        for(int j = 0;j < MaxHits;++j){
+
+            Phys_Channel[0] = RAW->get_PLASTIC_physical_channel(i,j);
+
+            leadHitsCh = RAW->get_PLASTIC_physical_lead_hits(i,Phys_Channel[0]);
+            trailHitsCh = RAW->get_PLASTIC_physical_trail_hits(i,Phys_Channel[0]);
+            
+            if(leadHitsCh == trailHitsCh){
+                TOT[0] = RAW->get_PLASTIC_TOT(i,Phys_Channel[0]);
+                //Trailing - Trailing
+                for(int k = 0;k < MaxHits;++k){
+                    if(k != j){
+                        Phys_Channel[1] = RAW->get_PLASTIC_physical_channel(i,k);
+
+                        leadHitsCh = RAW->get_PLASTIC_physical_lead_hits(i,Phys_Channel[1]);
+                        trailHitsCh = RAW->get_PLASTIC_physical_trail_hits(i,Phys_Channel[1]);
+
+                        if(leadHitsCh == trailHitsCh){
+                            TOT[1] = RAW->get_PLASTIC_TOT(i,Phys_Channel[1]);
+                            Diff = TOT[0] - TOT[1];
+                            TOT_TOT[Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
+                        }
+                    }
+                }
+                TOT_Single[i][Phys_Channel[0]]->Fill(TOT[0]);
+            }
+        }
+    }
+}
+/*
+void TSCNUnpackProc::Fill_Plastic_Histos(){
+    
+    //cout << "FILLING PLASTIC HISTOGRAMS" << endl;
+
     int pl_iter = 0;
     int sum_l = 0;
     int sum_t = 0;
@@ -1187,7 +1268,7 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
 	    }
 	}
 }
-
+*/
 void TSCNUnpackProc::Make_FATIMA_Histos(){
     
     FAT_REF_DET = 0;

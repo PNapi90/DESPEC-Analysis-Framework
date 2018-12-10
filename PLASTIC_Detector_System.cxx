@@ -23,48 +23,26 @@ PLASTIC_Detector_System::PLASTIC_Detector_System(){
     error_code = 238;
     tamex_identifier = 52;
     
-    iterator = new int[100];
-    for(int i = 0;i < 100;++i) iterator[i] = 0;
+    iterator = std::vector<int>(100,0);
 
     tamex_iter = 0;
 
-    leading_hits = new int*[100];
-    trailing_hits = new int*[100];
+    leading_hits = std::vector<std::vector<int> >(100,std::vector<int>(100,0));
+    trailing_hits = std::vector<std::vector<int> >(100,std::vector<int>(100,0));
 
-    coarse_T = new double[100];
-    fine_T = new double[100];
-    ch_ID = new unsigned int[100];
+    coarse_T = std::vector<double>(100,0);
+    fine_T = std::vector<double>(100,0);
+    ch_ID = std::vector<unsigned int>(100,0);
 
-    edge_coarse = new double*[100];
-    edge_fine = new double*[100];
-    ch_ID_edge = new unsigned int*[100];
-    for(int o = 0;o < 100;++o){
-        edge_coarse[o] = new double[100];
-        edge_fine[o] = new double[100];
-        ch_ID_edge[o] = new unsigned int[100];
-        leading_hits[o] = new int[100];
-        trailing_hits[o] = new int[100];
-    }
+    edge_coarse = std::vector<std::vector<double> >(100,std::vector<double>(100,0));
+    edge_fine = std::vector<std::vector<double> >(100,std::vector<double>(100,0));
+    ch_ID_edge = std::vector<std::vector<unsigned int> >(100,std::vector<unsigned int>(100,0));
+
 }
 
 //---------------------------------------------------------------
 
 PLASTIC_Detector_System::~PLASTIC_Detector_System(){
-    for(int i = 0;i < 100;++i){
-        delete[] edge_coarse[i];
-        delete[] edge_fine[i];
-        delete[] ch_ID_edge[i];
-        delete[] leading_hits[i];
-        delete[] trailing_hits[i];
-    }
-    delete[] edge_coarse;
-    delete[] edge_fine;
-    delete[] ch_ID_edge;
-
-    delete[] coarse_T;
-    delete[] fine_T;
-    delete[] ch_ID;
-
     delete PLASTIC_Calibration;
 }
 
@@ -82,14 +60,6 @@ int PLASTIC_Detector_System::tmp_get_am_hits(){
     for(int i = 0;i < tamex_iter-1;++i) h += iterator[i];
     return h;
 }
-
-//---------------------------------------------------------------
-
-unsigned int** PLASTIC_Detector_System::tmp_get_chID(){return ch_ID_edge;}
-
-//---------------------------------------------------------------
-
-int* PLASTIC_Detector_System::tmp_get_iterator(){return iterator;}
 
 //---------------------------------------------------------------
 

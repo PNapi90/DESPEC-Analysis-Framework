@@ -8,8 +8,9 @@ using namespace std;
 
 Raw_Event::Raw_Event(bool PADI_OR_PADIWA){
     Event_Type = -1;
-    this->PADI_OR_PADIWA = PADI_OR_PADIWA;
-    ChannelPOS = PADI_OR_PADIWA ? 1 : 0;
+    
+    PLASTIC_Data.PADI_OR_PADIWA = PADI_OR_PADIWA;
+
 }
 
 //---------------------------------------------------------------
@@ -241,56 +242,13 @@ void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
 
 //---------------------------------------------------------------
 
-void Raw_Event::set_DATA_PLASTIC(int* it,double** Edge_Coarse,double** Edge_fine,UInt** ch_ed,double* Coarse_Trigger,double* Fine_Trigger,int amount_hit_tamex){
+void Raw_Event::set_DATA_PLASTIC(std::vector<int> &it,std::vector<std::vector<double> > &Edge_Coarse,
+                                 std::vector<std::vector<double> > &Edge_fine, std::vector<std::vector<UInt> > &ch_ed,
+                                 std::vector<double> &Coarse_Trigger,std::vector<double> &Fine_Trigger,int amount_hit_tamex)
+{
 	
-	this->amount_hit_tamex = amount_hit_tamex;
-	//reset lead and trail hits
-	for(int i = 0;i < amount_hit_tamex;++i){
-		for(int j = 0;j < 17;++j){
-			leading_hits_ch[i][j] = 0;
-			trailing_hits_ch[i][j] = 0;
-		}
-	}
+    PLASTIC_Data.SetData(it,Edge_Coarse,Edge_fine,ch_ed,Coarse_Trigger,Fine_Trigger,amount_hit_tamex);
 	
-	std::vector<double> tmpVec(17,0);
-
-	//loop over all 4 tamex modules
-	for(int i = 0;i < amount_hit_tamex;++i){
-		iterator[i] = it[i];
-		trigger_coarse[i] = Coarse_Trigger[i];
-		trigger_fine[i] = Fine_Trigger[i];
-		fired_tamex[i] = (iterator[i] > 0);
-		leading_hits[i] = 0;
-		trailing_hits[i] = 0;
-		for(int j = 0;j < iterator[i];++j){
-			ch_ID[i][j] = ch_ed[i][j];
-			if(ch_ID[i][j] % 2 == ChannelPOS){
-				coarse_T_edge_lead[i][j] = (double) Edge_Coarse[i][j]*5.0;
-				fine_T_edge_lead[i][j] = (double) Edge_fine[i][j]*5.0;
-				
-				phys_channel[i][j] = PADI_OR_PADIWA ? (ch_ID[i][j]+1)/2 : (ch_ID[i][j])/2;
-				leading_hits[i]++;
-				leading_hits_ch[i][phys_channel[i][j]]++;
-			}
-			else{
-				coarse_T_edge_trail[i][j] = (double)  Edge_Coarse[i][j]*5.0;
-				fine_T_edge_trail[i][j] =(double)  Edge_fine[i][j]*5.0;
-				
-				trailing_hits[i]++;
-				phys_channel[i][j] = PADI_OR_PADIWA ? (ch_ID[i][j])/2 : (ch_ID[i][j]+1)/2;
-				trailing_hits_ch[i][phys_channel[i][j]]++;
-
-			}
-		}
-		if(!PADI_OR_PADIWA){
-			for(int j = 0;j < iterator[i];++j){
-				
-			
-			}
-		
-		}
-	}
-
     Event_Type = 2;
 }
 
@@ -429,32 +387,40 @@ ULong64_t Raw_Event::get_FAT_QDC_t_Coarse(int i){return FAT_QDC_t_coarse[i];}
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_PLASTIC_tamex_hits(){return amount_hit_tamex;}
+int Raw_Event::get_PLASTIC_tamex_hits(){
+    return PLASTIC_Data.amount_hit_tamex;
+}
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_PLASTIC_am_Fired(int i){return iterator[i];}
+int Raw_Event::get_PLASTIC_am_Fired(int i){
+    return PLASTIC_Data.iterator[i];
+}
 
 //---------------------------------------------------------------
 
-double Raw_Event::get_PLASTIC_trigger_T(int i){return (trigger_coarse[i] - trigger_fine[i]);}
+double Raw_Event::get_PLASTIC_trigger_T(int i){
+    return (PLASTIC_Data.trigger_coarse[i] - PLASTIC_Data.trigger_fine[i]);
+}
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_PLASTIC_CH_ID(int i,int j){return ch_ID[i][j];}
+int Raw_Event::get_PLASTIC_CH_ID(int i,int j){
+    return PLASTIC_Data.ch_ID[i][j];
+}
 
 //---------------------------------------------------------------
 
 double Raw_Event::get_PLASTIC_lead_T(int i,int j){
 	//cout << "SEND l" << coarse_T_edge_lead[i][j] << " " << fine_T_edge_lead[i][j]  << " " <<  coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j] << endl;
-	return (coarse_T_edge_lead[i][j] - fine_T_edge_lead[i][j]);
+	return PLASTIC_Data.Time_Lead[i][j];
 }
 
 //---------------------------------------------------------------
 
 double Raw_Event::get_PLASTIC_coarse_lead(int i,int j){
 	//cout << "SEND l" << coarse_T_edge_lead[i][j] << " " << fine_T_edge_lead[i][j]  << " " <<  coarse_T_edge_lead[i][j]*5 - fine_T_edge_lead[i][j] << endl;
-	return coarse_T_edge_lead[i][j];
+	return PLASTIC_Data.coarse_T_edge_lead[i][j];
 }
 
 
@@ -462,7 +428,7 @@ double Raw_Event::get_PLASTIC_coarse_lead(int i,int j){
 
 double Raw_Event::get_PLASTIC_trail_T(int i,int j){
 	//cout << "SEND t" << coarse_T_edge_trail[i][j] << " " << fine_T_edge_trail[i][j] << endl;
-	return (coarse_T_edge_trail[i][j] - fine_T_edge_trail[i][j]);
+	return PLASTIC_Data.Time_Trail[i][j];
 }
 
 //---------------------------------------------------------------
@@ -470,39 +436,42 @@ double Raw_Event::get_PLASTIC_trail_T(int i,int j){
 double Raw_Event::get_PLASTIC_TOT(int i,int j){
     // i is board ID, j is physical channel
     
-    double T_lead = 0,T_Trail = 0;
-    if(PADI_OR_PADIWA){
-		T_lead = (coarse_T_edge_lead[i][j] - fine_T_edge_lead[i][j]);
-		T_trail = (coarse_T_edge_trail[i][j+1] - fine_T_edge_trail[i][j+1]);
-	}
-	else{
-		T_lead = (coarse_T_edge_lead[i][j+1] - fine_T_edge_lead[i][j+1]);
-		T_trail = (coarse_T_edge_trail[i][j] - fine_T_edge_trail[i][j]);
-	}
-   
+    double T_lead = PLASTIC_Data.Time_Lead[i][j];
+    double T_trail = PLASTIC_Data.Time_Trail[i][j];
+
     return T_trail - T_lead;
 }
 
 //---------------------------------------------------------------
 
 
-int Raw_Event::get_PLASTIC_trail_hits(int i){return trailing_hits[i];}
+int Raw_Event::get_PLASTIC_trail_hits(int i){
+    return PLASTIC_Data.trailing_hits[i];
+}
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_PLASTIC_lead_hits(int i){return leading_hits[i];}
+int Raw_Event::get_PLASTIC_lead_hits(int i){
+    return PLASTIC_Data.leading_hits[i];
+}
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_PLASTIC_physical_channel(int i,int j){return phys_channel[i][j];}
+int Raw_Event::get_PLASTIC_physical_channel(int i,int j){
+    return PLASTIC_Data.phys_channel[i][j];
+}
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_PLASTIC_physical_lead_hits(int i,int j){return leading_hits_ch[i][j];}
+int Raw_Event::get_PLASTIC_physical_lead_hits(int i,int j){
+    return PLASTIC_Data.leading_hits_ch[i][j];
+}
 
 //---------------------------------------------------------------
 
-int Raw_Event::get_PLASTIC_physical_trail_hits(int i,int j){return trailing_hits_ch[i][j];}
+int Raw_Event::get_PLASTIC_physical_trail_hits(int i,int j){
+    return PLASTIC_Data.trailing_hits_ch[i][j];
+}
 
 //---------------------------------------------------------------
 

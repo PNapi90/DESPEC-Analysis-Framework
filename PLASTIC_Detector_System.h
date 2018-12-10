@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "Detector_System.cxx"
 #include "PLASTIC_Data_Stream.h"
@@ -49,7 +50,6 @@ private:
     int am_fired[100];
     int sfp_id[100];
     int trigger_type[100];
-    int* iterator;
     int tamex_id[100];
 
 
@@ -58,18 +58,18 @@ private:
     ULong Pre_Trigger_Window;
     ULong Post_Trigger_Window;
 
-    int** leading_hits;
-    int** trailing_hits;
+    std::vector<std::vector<int> > leading_hits;
+    std::vector<std::vector<int> > trailing_hits;
 
     int lead_arr[4][100];
 
-    double** edge_coarse;
-    double** edge_fine;
-    unsigned int** ch_ID_edge;
+    std::vector<double> coarse_T;
+    std::vector<double> fine_T;
+    std::vector<unsigned int> ch_ID;
 
-    double* coarse_T;
-    double* fine_T;
-    unsigned int* ch_ID;
+    std::vector<std::vector<double> > edge_coarse;
+    std::vector<std::vector<double> > edge_fine;
+    std::vector<std::vector<unsigned int> > ch_ID_edge;
 
     void check_error();
     void check_trailer();
@@ -90,14 +90,6 @@ public:
     PLASTIC_Detector_System();
     ~PLASTIC_Detector_System();
 
-    //void Process_FRS(TModParameter* , TGo4MbsSubEvent* , TGo4MbsEvent*){};
-
-    
-
-    //void Process_FRS(TGo4MbsSubEvent* psubevt){};
-
-    //void Process_AIDA(TGo4MbsSubEvent* psubevt){};
-
     //functions from abstract class Detector_System
     void Process_MBS(int*);
     
@@ -106,15 +98,7 @@ public:
     void get_Event_data(Raw_Event*);
     //void get_Event_data(Data_Stream*){return;};
 
-
     int* get_pdata();
-    
-    ULong** tmp_get_coarse_T();
-    int tmp_get_am_hits();
-
-    unsigned int** tmp_get_chID();
-
-    int* tmp_get_iterator();
 
     bool calibration_done();
 

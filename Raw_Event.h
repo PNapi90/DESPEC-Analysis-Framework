@@ -114,28 +114,7 @@ private:
 	
 
 	//PLASTIC
-	int amount_hit_tamex;
-	int iterator[4];
-	double trigger_coarse[100];
-	double trigger_fine[100];
-
-	int leading_hits[4];
-	int trailing_hits[4];
-	int phys_channel[4][17];
-	int leading_hits_ch[4][17];
-	int trailing_hits_ch[4][17];
-	
-
-	double coarse_T_edge_lead[4][100];
-	double coarse_T_edge_trail[4][100];
-	double fine_T_edge_lead[4][100];
-	double fine_T_edge_trail[4][100];
-	UInt ch_ID[4][100];
-	bool fired_tamex[4];
-	
-	bool PADI_OR_PADIWA;
-	
-	int ChannelPOS;
+	PLASTIC_DataStruct PLASTIC_Data;
 
 	
 	//GALILEO
@@ -178,7 +157,9 @@ public:
 						 ULong64_t*,double*,
 						 ULong64_t*,double*,
 						 int*,int*);
-	void set_DATA_PLASTIC(int*,double**,double**,UInt**,double*,double*,int);
+	void set_DATA_PLASTIC(std::vector<int> &it,std::vector<std::vector<double> > &Edge_Coarse,
+                          std::vector<std::vector<double> > &Edge_fine, std::vector<std::vector<UInt> > &ch_ed,
+                          std::vector<double> &Coarse_Trigger,std::vector<double> &Fine_Trigger,int amount_hit_tamex);
 	void set_DATA_GALILEO(int,ULong64_t*,int*,int*,ULong64_t*,double*,int*);
 
 	int get_Event_type();

@@ -1,0 +1,89 @@
+#ifndef PLASTIC_DATA_STRUCT_H
+#define PLASTIC_DATA_STRUCT_H
+
+#include <vector>
+
+
+struct PLASTIC_DataStruct{
+    
+    int amount_hit_tamex = 0;
+
+    std::vector<int> iterator(4,0);
+    
+    std::vector<double> trigger_coarse(100,0);
+    std::vector<double> trigger_fine(100,0);
+
+    std::vector<int> leading_hits(4,0);
+    std::vector<int> trailing_hits(4,0);
+    std::vector<std::vector<int> > phys_channel(4,std::vector<int>(17,0));
+    std::vector<std::vector<int> > leading_hits_ch(4,std::vector<int>(17,0));
+    std::vector<std::vector<int> > trailing_hits_ch(4,std::vector<int>(17,0));
+
+    std::vector<std::vector<double> > Time_Lead(4,std::vector<double>(17,0));
+    std::vector<std::vector<double> > Time_Trail(4,std::vector<double>(17,0));
+    
+
+    std::vector<std::vector<double> > coarse_T_edge_lead(4,std::vector<double>(100,0));
+    std::vector<std::vector<double> > coarse_T_edge_trail(4,std::vector<double>(100,0));
+    std::vector<std::vector<double> > fine_T_edge_lead(4,std::vector<double>(100,0));
+    std::vector<std::vector<double> > fine_T_edge_trail(4,std::vector<double>(100,0));
+    std::vector<std::vector<UInt> > ch_ID(4,std::vector<UInt>(100,0));
+    
+    std::vector<bool> fired_tamex(4,false);
+    
+    bool PADI_OR_PADIWA = true;
+    
+    int ChannelPOS = 0;
+
+    void SetData(std::vector<int> &it,std::vector<std::vector<double> > &Edge_Coarse,
+                 std::vector<std::vector<double> > &Edge_fine, std::vector<std::vector<UInt> > &ch_ed,
+                 std::vector<double> &Coarse_Trigger,std::vector<double> &Fine_Trigger,int amount_hit_tamex)
+    {
+        this->amount_hit_tamex = amount_hit_tamex;
+        //reset lead and trail hits
+        for(int i = 0;i < amount_hit_tamex;++i){
+            for(int j = 0;j < 17;++j){
+                leading_hits_ch[i][j] = 0;
+                trailing_hits_ch[i][j] = 0;
+            }
+        }
+
+        //loop over all 4 tamex modules
+        for(int i = 0;i < amount_hit_tamex;++i){
+            iterator[i] = it[i];
+            trigger_coarse[i] = Coarse_Trigger[i];
+            trigger_fine[i] = Fine_Trigger[i];
+            fired_tamex[i] = (iterator[i] > 0);
+            leading_hits[i] = 0;
+            trailing_hits[i] = 0;
+            for(int j = 0;j < iterator[i];++j){
+                ch_ID[i][j] = ch_ed[i][j];
+                if(ch_ID[i][j] % 2 == PADI_OR_PADIWA){
+                    coarse_T_edge_lead[i][j] = Edge_Coarse[i][j]*5.0;
+                    fine_T_edge_lead[i][j] = Edge_fine[i][j]*5.0;
+                
+                    phys_channel[i][j] = PADI_OR_PADIWA ? (ch_ID[i][j]+1)/2 : (ch_ID[i][j])/2;
+                
+                    Time_Lead[phys_channel[i][j]][leading_hits_ch[i][phys_channel[i][j]]] = coarse_T_edge_lead[i][j] - fine_T_edge_lead[i][j];
+                    
+                    ++leading_hits[i];
+                    ++leading_hits_ch[i][phys_channel[i][j]];
+                }
+                else{
+                    coarse_T_edge_trail[i][j] = Edge_Coarse[i][j]*5.0;
+                    fine_T_edge_trail[i][j] = iEdge_fine[i][j]*5.0;
+                
+                    phys_channel[i][j] = PADI_OR_PADIWA ? (ch_ID[i][j])/2 : (ch_ID[i][j]+1)/2;
+                
+                
+                    Time_Trail[phys_channel[i][j]][leading_hits_ch[i][phys_channel[i][j]]] = coarse_T_edge_trail[i][j] - fine_T_edge_trail[i][j];
+                
+                    ++trailing_hits[i];
+                    ++trailing_hits_ch[i][phys_channel[i][j]];
+                }
+            }
+        }
+    }
+};
+
+#endif
