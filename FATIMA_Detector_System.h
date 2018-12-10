@@ -118,7 +118,8 @@ public:
     //bool do_gain_matching(){return gain_match_used;};
 
     void write();
-    
+    bool calibration_done(){return false;}
+
     void set_Gain_Match_Filename(std::string);
 
 
