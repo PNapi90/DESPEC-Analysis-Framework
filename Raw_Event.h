@@ -4,6 +4,8 @@
 #include <math.h>
 #include <float.h>
 
+#include "PLASTIC_DataStruct.h"
+
 //#include "Rtypes.h"
 
 typedef unsigned long ULong;

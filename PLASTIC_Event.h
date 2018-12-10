@@ -8,7 +8,6 @@
 #include "Events.h"
 #include "Raw_Event.h"
 
-#include "PLASTIC_Data_Struct.h"
 
 class PLASTIC_Event : public Events{
 

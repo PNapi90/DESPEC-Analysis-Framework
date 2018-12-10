@@ -13,7 +13,7 @@ public:
     FINGER_Branch_Creator(TTree* Tree);
     ~FINGER_Branch_Creator();
     
-    void WriteData(FATIMA_Data*){};
+    //void WriteData(FATIMA_Data*){};
 };
 
 #endif

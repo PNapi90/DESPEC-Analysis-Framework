@@ -13,7 +13,7 @@ public:
     GALILEO_Branch_Creator(TTree* Tree);
     ~GALILEO_Branch_Creator();
     
-    void WriteData(FATIMA_Data*){};
+    //void WriteData(FATIMA_Data*){};
 };
 
 #endif

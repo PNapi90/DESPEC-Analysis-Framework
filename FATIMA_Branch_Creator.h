@@ -18,7 +18,7 @@ public:
     FATIMA_Branch_Creator(TTree* Tree);
     ~FATIMA_Branch_Creator();
 
-    void WriteData(FATIMA_Data* DATA);
+    //void WriteData(FATIMA_Data* DATA);
 };
 
 #endif

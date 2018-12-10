@@ -12,7 +12,7 @@ public:
     AIDA_Branch_Creator(TTree* Tree);
     ~AIDA_Branch_Creator();
     
-    void WriteData(FATIMA_Data*){};
+    //void WriteData(FATIMA_Data*){};
 };
 
 #endif

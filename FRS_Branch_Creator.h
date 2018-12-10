@@ -12,7 +12,7 @@ public:
     FRS_Branch_Creator(TTree* Tree);
     ~FRS_Branch_Creator();
     
-    void WriteData(FATIMA_Data*){};
+    //void WriteData(FATIMA_Data*){};
 };
 
 #endif
