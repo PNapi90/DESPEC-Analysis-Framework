@@ -171,7 +171,7 @@ public:
                           std::vector<double> &Coarse_Trigger,std::vector<double> &Fine_Trigger,int amount_hit_tamex);
 
 	void set_DATA_PLASTIC_VME(std::vector<double> &VME_QDC_Data,std::vector<double> &VME_QDC_Channels,
-						  std::vector<double> &VME_TDC_Data,std::vector<double> &VME_TDC_Channels);
+						  std::vector<double> &VME_TDC_Data,std::vector<double> &VME_TDC_Channels,int i);
 
 	void set_DATA_GALILEO(int,ULong64_t*,int*,int*,ULong64_t*,double*,int*);
 
