@@ -13,11 +13,11 @@ class EventProcessor{
 public:
     virtual ~EventProcessor(){}
 
-    virtual void PassEvent(FRS_Event*) = 0;
-    virtual void PassEvent(AIDA_Event*) = 0;
-    virtual void PassEvent(PLASTIC_Event*) = 0;
-    virtual void PassEvent(FATIMA_Event*) = 0;
-    virtual void PassEvent(GALILEO_Event*) = 0;
+    virtual void PassEvent_FRS(FRS_Event*) = 0;
+    virtual void PassEvent_AIDA(AIDA_Event*) = 0;
+    virtual void PassEvent_PLASTIC(PLASTIC_Event*) = 0;
+    virtual void PassEvent_FATIMA(FATIMA_Event*) = 0;
+    virtual void PassEvent_GALILEO(GALILEO_Event*) = 0;
 
     virtual bool AllPassed() = 0;
 };

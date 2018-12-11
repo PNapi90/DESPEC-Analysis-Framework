@@ -362,7 +362,7 @@ void Event_Store::Write(Match* MatchHit,Tree_Creator* Tree){
 	for(int o = 0;o < match_hits;++o){ 
 		if(filled_types[o] != -1){
 			//Pass event to Processor
-			PROCESSORS[0]->PassEvent(Event[filled_types[o]][*hit_addresses[filled_types[o]]]);
+            FILL_PROCESSOR(filled_types[o],*hit_addresses[filled_types[o]],0);
 		}
 	}
 	//check if data needed for calibration has been sent to 
@@ -374,6 +374,32 @@ void Event_Store::Write(Match* MatchHit,Tree_Creator* Tree){
 }
 
 //---------------------------------------------------------------
+
+void Event_Store::FILL_PROCESSOR(int type,int position,int ProcessorID){
+    switch(type){
+        case 0:
+            PROCESSORS[ProcessorID]->PassEvent_FRS(Event[type][position])
+            break;
+        case 1:
+            PROCESSORS[ProcessorID]->PassEvent_AIDA(Event[type][position])
+            break;
+        case 2:
+            PROCESSORS[ProcessorID]->PassEvent_PLASTIC(Event[type][position])
+            break;
+        case 3:
+            PROCESSORS[ProcessorID]->PassEvent_FATIMA(Event[type][position])
+            break;
+        case 4:
+            PROCESSORS[ProcessorID]->PassEvent_GALILEO(Event[type][position])
+            break;
+        default:
+            std::cerr << "FILL_PROCESSOR: System type not known!" << std::endl;
+            exit(1);
+    }
+}
+
+//---------------------------------------------------------------
+
 
 void Event_Store::Write_Energies(int type,int evt_addr){
     double EEE = Event[type][evt_addr]->get_energy();

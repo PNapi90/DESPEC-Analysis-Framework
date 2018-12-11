@@ -69,6 +69,8 @@ private:
     void create_Event(int,Raw_Event*);
     void set_Det_Sys_specific_coincidences();
 
+    void FILL_PROCESSOR(int,int,int);
+
     inline bool in_time_windows(double);
 
     //-------------------

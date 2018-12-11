@@ -49,9 +49,10 @@ public:
     bool AllPassed();
 
     //not used here
-    void PassEvent(FRS_Event*){return;}
-    void PassEvent(AIDA_Event*){return;}
-    void PassEvent(GALILEO_Event*){return;}
+    void PassEvent_FRS(FRS_Event*){};
+    void PassEvent_AIDA(AIDA_Event*){};
+
+    void PassEvent_GALILEO(GALILEO_Event*){};
 
 
 
