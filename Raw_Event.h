@@ -6,6 +6,8 @@
 #include <vector>
 
 #include "PLASTIC_DataStruct.h"
+#include "PLASTIC_VME_DataStruct.h"
+
 
 //#include "Rtypes.h"
 
@@ -118,6 +120,9 @@ private:
 
 	//PLASTIC
 	PLASTIC_DataStruct PLASTIC_Data;
+	PLASTIC_VME_DataStruct PLASTIC_VME_Data;
+
+	bool VME_Event;
 
 	
 	//GALILEO
@@ -163,10 +168,15 @@ public:
 	void set_DATA_PLASTIC(std::vector<int> &it,std::vector<std::vector<double> > &Edge_Coarse,
                           std::vector<std::vector<double> > &Edge_fine, std::vector<std::vector<UInt> > &ch_ed,
                           std::vector<double> &Coarse_Trigger,std::vector<double> &Fine_Trigger,int amount_hit_tamex);
+
+	void set_DATA_PLASTIC_VME(std::vector<double> &VME_QDC_Data,std::vector<double> &VME_QDC_Channels,
+						  std::vector<double> &VME_TDC_Data,std::vector<double> &VME_TDC_Channels);
+
 	void set_DATA_GALILEO(int,ULong64_t*,int*,int*,ULong64_t*,double*,int*);
 
 	int get_Event_type();
 
+	bool PLASTIC_CheckVME();
 
 
 	// ####################################################
@@ -266,6 +276,9 @@ ULong64_t get_FAT_QDC_t_Coarse(int i);
 	double get_PLASTIC_coarse_lead(int,int);
 	double get_PLASTIC_TOT(int,int);
 	int get_PLASTIC_tamex_hits();
+
+	PLASTIC_VME_DataStruct* PassPLASTIC_VME();
+	PLASTIC_DataStruct* PassPLASTIC();
 
 	//temporary GALILEO getters
 	int get_GALILEO_am_Fired();

@@ -13,7 +13,9 @@ class PLASTIC_Event : public Events{
 
 private:
 
-	//PLASTIC_Data DATA;
+	PLASTIC_DataStruct DATA;
+    PLASTIC_VME_DataStruct DATA_VME;
+    bool VME_Event;
 
 	
     inline void set_DATA(Raw_Event*);
@@ -25,6 +27,13 @@ public:
     
     double get_energy(){return 0;};
     void Write_Event(Tree_Creator*);
+
+    PLASTIC_DataStruct* GET_PLASTIC();
+    PLASTIC_VME_DataStruct* GET_PLASTIC_VME();
+
+    FATIMA_DataStruct* GET_FATIMA(){return nullptr;};
+
+
 };
 
 #endif

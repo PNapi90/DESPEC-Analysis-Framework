@@ -45,6 +45,10 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
 
     for(int i = 0;i < MEMORY_LIMIT;++i) Address_arr[i] = i;
 
+    //define coincidence processors
+    PROCESSORS = new EventProcessor*[1];
+    PROCESSORS[0] = new PL_FAT_EventProcessor();
+
     Verbose_Write = true;
     if(Verbose_Write){
         T_DIFF = new TH1D("FAT_GAL_WR","FAT_GAL_WR",100,0,1000);
@@ -92,6 +96,10 @@ Event_Store::~Event_Store(){
         sum_event += event_counter[i];
     }
     cout << "*** Event_Store: from " << MEMORY_LIMIT*6 << " possible objects " << sum_event << " were used ***" << endl;
+
+    //Change to PROCESSOR array if more than one processor used
+    delete PROCESSORS[0];
+    delete[] PROCESSORS;
 
     delete[] Event;
     delete[] Event_WR;
@@ -348,27 +356,19 @@ void Event_Store::Write(Match* MatchHit,Tree_Creator* Tree){
     int* filled_types = MatchHit->get_filled_types();
     int** hit_addresses = MatchHit->get_Address_Array();
     
-    //do coincidence-specific calibrations (e.g. time walk FAT <-> PLASTIC)
-    /*bool MatchCalibration = MatchSpecificCalibrations.CheckType(match_hits,Match->hit_addresses());
+    //do coincidence-specific operations (e.g. time walk FAT <-> PLASTIC)
     
-    //Calibration needed?
-    if(MatchCalibration){
-		//loop over coincident events
-		for(int o = 0;o < match_hits;++o){ 
-			if(filled_types[o] != -1){
-				//Pass event to calibration routine
-				MatchSpecificCalibrations.PassEvent(Event[filled_types[o]][*hit_addresses[filled_types[o]]]);
-			}
+	//loop over coincident events
+	for(int o = 0;o < match_hits;++o){ 
+		if(filled_types[o] != -1){
+			//Pass event to Processor
+			PROCESSORS[0]->PassEvent(Event[filled_types[o]][*hit_addresses[filled_types[o]]]);
 		}
-		//check if data needed for calibration has been sent to 
-		//MatchSpecificCalibrations object (if not -> error!)
-		if(!MatchSpecificCalibrations.Filled()) MatchSpecificCalibration.ERROR();
-		
-		MatchSpecificCalibrations.CALIBRATE();
 	}
-    */
+	//check if data needed for calibration has been sent to 
+	//MatchSpecificCalibrations object (if not -> error!)
+	if(!PROCESSORS[0]->AllPassed()) exit(1);
     
-
     filled_types = nullptr;
     hit_addresses = nullptr;
 }

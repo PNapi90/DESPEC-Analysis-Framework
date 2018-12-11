@@ -23,6 +23,11 @@ public:
     
     double get_energy();
     void Write_Event(Tree_Creator*);
+
+    PLASTIC_DataStruct* GET_PLASTIC(){return nullptr;};
+    PLASTIC_VME_DataStruct* GET_PLASTIC_VME(){return nullptr;};
+
+    FATIMA_DataStruct* GET_FATIMA(){return nullptr;};
 };
 
 #endif

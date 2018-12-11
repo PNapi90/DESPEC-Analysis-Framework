@@ -1,0 +1,7 @@
+# Configuration file for chosing between TAMEX of VME for PLASTIC
+# 
+# used module: (VME, TAMEX)
+# ===================================
+VME
+# ===================================
+#

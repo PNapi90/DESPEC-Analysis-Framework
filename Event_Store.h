@@ -19,6 +19,9 @@
 
 #include "Tree_Creator.h"
 
+#include "EventProcessor.h"
+#include "PL_FAT_EventProcessor.h"
+
 
 #include <TH1.h>
 #include <TH2.h>
@@ -48,6 +51,8 @@ private:
     Events*** Event;
     ULong64_t** Event_WR;
     int*** Event_position;
+
+    EventProcessor** PROCESSORS;
     
     int amount_interest,ev_pos;
     int* tmp_pos;

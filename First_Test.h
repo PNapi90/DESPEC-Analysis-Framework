@@ -170,17 +170,18 @@ using namespace std;
 			
 			
 			//Plastic histograms
-			TH1*** tamex_Mult_Ch_lead;
-			TH1*** tamex_Mult_Ch_trail;
-			TH2** tamex_mult_mat_lead;
-			TH2** tamex_mult_mat_trail;
-			TH1*** Trail_LEAD;
+			//TH1*** tamex_Mult_Ch_lead;
+			//TH1*** tamex_Mult_Ch_trail;
+			//TH2** tamex_mult_mat_lead;
+			//TH2** tamex_mult_mat_trail;
+			//TH1*** Trail_LEAD;
 			TH1**** TRAIL_TRAIL;
 			TH1**** LEAD_LEAD;
-			TH1*** Coarse;
-			TH1** DIFF_ARR;
-			TH1**** TOT;
-			TH1*** LEAD_LEAD_Total;
+			//TH1*** Coarse;
+			//TH1** DIFF_ARR;
+			TH1**** TOT_TOT;
+			TH1*** TOT_Single;
+			//TH1*** LEAD_LEAD_Total;
 			
 			
 			TH1* FAT_TDC_Diff; // ****NEWLY ADDED****
@@ -231,7 +232,9 @@ using namespace std;
 
 			bool SKIP_EVT_BUILDING;
 			
-			bool PADI_OR_PADIWA;
+			bool PADI_OR_PADIWA,VME_TAMEX;
+
+
 
 			double vals[100000];
 			int val_it;
@@ -299,6 +302,7 @@ using namespace std;
 			bool Check_Cal_Plastic();
 			
 			void checkPADI_or_PADIWA();
+			void checkTAMEXorVME();
 			
 			bool PLASTIC_CALIBRATION;
 			

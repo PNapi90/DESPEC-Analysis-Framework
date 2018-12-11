@@ -113,8 +113,9 @@ TGo4EventProcessor(name) // Histograms defined here //
 		EvtBuilder[0] = new Time_EventBuilder(amount_interest,length_interest,interest_array);
 	}
 	
-	
+	checkTAMEXorVME();
 	checkPADI_or_PADIWA();
+
 	
 	//Raw_Event object to handle data
 	RAW = new Raw_Event(PADI_OR_PADIWA);
@@ -973,7 +974,7 @@ void TSCNUnpackProc::Fill_FRS_Histos(){
     if(ts2) hts2->Fill(ts2);
 
 }
-
+/*
 void TSCNUnpackProc::Make_Plastic_Histos(){
     
     C_t = MakeTH1('D',"pl","pl",1001,0,1000);
@@ -1042,12 +1043,43 @@ void TSCNUnpackProc::Make_Plastic_Histos(){
 		}
     }
 }
+*/
+
+void TSCNUnpackProc::Make_Plastic_Histos(){
+    
+    
+    TOT_TOT = new TH1***[100];
+    TOT_Single = new TH1**[100];
+    TRAIL_TRAIL = new TH1***[100];
+    LEAD_LEAD = new TH1***[100];
+    
+    for(int i = 0;i < 100;++i){
+        TOT_Single[i] = new TH1*[100];
+        TOT_TOT[i] = new TH1**[100];
+        TRAIL_TRAIL[i] = new TH1**[100];
+        LEAD_LEAD[i] = new TH1**[100];
+        
+        for(int j = 0;j < 100;++j){
+            TOT_TOT[i][j] = new TH1*[100];
+            TRAIL_TRAIL[i][j] = new TH1*[100];
+            LEAD_LEAD[i][j] = new TH1*[100];
+
+            for(int k = 0;k < 100;++k){
+                TOT_TOT[i][j][k] = nullptr;
+                TRAIL_TRAIL[i][j][k] = nullptr;
+                LEAD_LEAD[i][j][k]   = nullptr;
+            }
+
+            TOT_Single[i][j] = nullptr;
+
+        }
+    }
+}
+
 
 void TSCNUnpackProc::Fill_Plastic_Histos(){
     
-    //cout << "FILLING PLASTIC HISTOGRAMS" << endl;
-
-	//get amount of fired Tamex modules
+    //get amount of fired Tamex modules
     int TamexHits = RAW->get_PLASTIC_tamex_hits();
 
     int Physical_hits = 0;
@@ -1079,7 +1111,13 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
                     Phys_Channel[1] = RAW->get_PLASTIC_physical_channel(i,k);
                     Lead[1] = RAW->get_PLASTIC_lead_T(i,Phys_Channel[1]);
                     Diff = Lead[0] - Lead[1];
-                    //LEAD_LEAD[i][Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
+                    
+                    if(!LEAD_LEAD[i][Phys_Channel[0]][Phys_Channel[1]]){
+                        LEAD_LEAD[i][Phys_Channel[0]][Phys_Channel[1]] = MakeTH1('D',
+                                    Form("PLASTIC/lead_minus_lead_all_chans/lead_minus_lead_board_%d_from_ch%d_to_everything",i,phys_ch),
+                                    Form("lead_minus_lead_board%d_from_ch%d_to_everything",i,phys_ch),10000, -500., 500.);
+                    }
+                    LEAD_LEAD[i][Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
                 }
             }
         }
@@ -1092,8 +1130,15 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
                 if(k != j){
                     Phys_Channel[1] = RAW->get_PLASTIC_physical_channel(i,k);
                     Trail[1] = RAW->get_PLASTIC_trail_T(i,Phys_Channel[1]);
-                    Diff = Trail[0] - Trail[1]; 
-                    //TRAIL_TRAIL[i][Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
+                    Diff = Trail[0] - Trail[1];
+
+                    if(!TRAIL_TRAIL[i][Phys_Channel[0]][Phys_Channel[1]]){
+                        TRAIL_TRAIL[i][Phys_Channel[0]][Phys_Channel[1]] = MakeTH1('D',
+                                      Form("PLASTIC/trail_minus_trail/trail_minus_trail_board_%d_from_ch%d_to_%d",i,Phys_Channel[0],Phys_Channel[1]),
+                                      Form("trail_minus_trail_board%d_from_ch%d_to_%d",i,Phys_Channel[0],Phys_Channel[1]),10000, -500., 500.);
+                    }
+
+                    TRAIL_TRAIL[i][Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
                 }
             }
         }
@@ -1117,11 +1162,22 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
                         if(leadHitsCh == trailHitsCh){
                             TOT[1] = RAW->get_PLASTIC_TOT(i,Phys_Channel[1]);
                             Diff = TOT[0] - TOT[1];
-                            //TOT_TOT[Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
+
+                            if(!TOT_TOT[i][Phys_Channel[0]][Phys_Channel[1]]){
+                                TOT_TOT[i][Phys_Channel[0]][Phys_Channel[1]] = MakeTH1('D',
+                                      Form("PLASTIC/TOT/TOT_Diffs/TOT_board_%d_from_ch%d_to_%d",i,Phys_Channel[0],Phys_Channel[1]),
+                                      Form("TOT_board%d_from_ch%d_to_%d",i,Phys_Channel[0],Phys_Channel[1]),10000, -500., 500.);
+                            }
+
+                            TOT_TOT[Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
                         }
                     }
                 }
-                //TOT_Single[i][Phys_Channel[0]]->Fill(TOT[0]);
+                if(!TOT_Single[i][Phys_Channel[0]]){
+                    TOT_Single[i][Phys_Channel[0]] = MakeTH1('D',Form("PLASTIC/TOT/TOTs/TOT_board_%d_ch%d",i,Phys_Channel[0]),
+                                                     Form("TOT_board%d_ch%d",i,Phys_Channel[0]),10000, -500., 500.);
+                }
+                TOT_Single[i][Phys_Channel[0]]->Fill(TOT[0]);
             }
         }
     }
@@ -1593,6 +1649,33 @@ void TSCNUnpackProc::checkPADI_or_PADIWA(){
 	}
 
 	PADI_OR_PADIWA = P_or_PW;
+
+}
+
+void TSCNUnpackProc::checkTAMEXorVME(){
+
+	std::ifstream PL_FILE("Configuration_Files/TAMEX_or_VME.txt");
+	
+	std::string line;
+	
+	if(PL_FILE.fail()){
+		std::cerr << "Could not find Configuration_Files/TAMEX_or_VME.txt file" << std::endl;
+		exit(1); 
+	}
+	bool T_or_V = false;
+	while(std::getline(PL_FILE,line)){
+		if(line[0] == '#') continue;
+		
+		if(line == "VME") T_or_V = true;
+		if(line == "TAMEX") T_or_V = false;
+		
+		if(line != "VME" && line != "TAMEX"){
+			std::cerr << line << " module of PLASTIC not known!" <<std::endl;
+			exit(1);
+		}
+	}
+
+	VME_TAMEX = T_or_V;
 
 }
 

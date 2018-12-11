@@ -93,11 +93,11 @@ public:
     ~PLASTIC_Detector_System();
 
     //functions from abstract class Detector_System
-    void Process_MBS(int*);
+    void Process_MBS(int* pdata);
     
     void Process_MBS(TGo4MbsSubEvent* psubevt){};
 
-    void get_Event_data(Raw_Event*);
+    void get_Event_data(Raw_Event* RAW);
     //void get_Event_data(Data_Stream*){return;};
 
     int* get_pdata();

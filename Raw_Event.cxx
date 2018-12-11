@@ -6,7 +6,7 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-Raw_Event::Raw_Event(bool PADI_OR_PADIWA) : PLASTIC_Data(){
+Raw_Event::Raw_Event(bool PADI_OR_PADIWA) : PLASTIC_Data(),PLASTIC_VME_Data(){
     Event_Type = -1;
     
     PLASTIC_Data.PADI_OR_PADIWA = PADI_OR_PADIWA;
@@ -248,8 +248,25 @@ void Raw_Event::set_DATA_PLASTIC(std::vector<int> &it,std::vector<std::vector<do
 {
 	
     PLASTIC_Data.SetData(it,Edge_Coarse,Edge_fine,ch_ed,Coarse_Trigger,Fine_Trigger,amount_hit_tamex);
-	
+    VME_Event = false;
     Event_Type = 2;
+}
+
+//---------------------------------------------------------------
+
+void set_DATA_PLASTIC_VME(std::vector<double> &VME_QDC_Data,std::vector<double> &VME_QDC_Channels,
+                          std::vector<double> &VME_TDC_Data,std::vector<double> &VME_TDC_Channels,int TDC_iterator){
+
+    PLASTIC_VME_Data.SetData(VME_QDC_Data,VME_QDC_Channels,VME_TDC_Data,VME_TDC_Channels,TDC_iterator);
+    VME_Event = true;
+    Event_Type = 2;
+
+}
+
+//---------------------------------------------------------------
+
+bool Raw_Event::PLASTIC_CheckVME(){
+    return VME_Event;
 }
 
 //---------------------------------------------------------------
@@ -475,6 +492,18 @@ int Raw_Event::get_PLASTIC_physical_trail_hits(int i,int j){
 
 //---------------------------------------------------------------
 
+PLASTIC_VME_DataStruct* Raw_Event::PassPLASTIC_VME(){
+    return &PLASTIC_VME_Data;
+}
+
+//---------------------------------------------------------------
+
+PLASTIC_DataStruct* Raw_Event::PassPLASTIC(){
+    return &PLASTIC_Data;
+}
+
+//---------------------------------------------------------------
+//---------------------------------------------------------------
 
 //GALILEO
 
