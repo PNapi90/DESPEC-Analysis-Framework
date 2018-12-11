@@ -43,6 +43,20 @@ private:
     char pi_flg, rt_flg;
   
     int value, value_t, chNo,TDC_iterator;
+    int type,geo,d_cnt,data,caen_header;
+
+
+    const unsigned int  OV_MASK = 0x00001000;  /* overflow bit */
+    const unsigned int  UN_MASK = 0x00002000;  /* underthreshold bit */
+    const unsigned int   V_MASK = 0x00004000;  /* data valid bit */
+    const unsigned int FCH_MASK = 0x00003F00;  /* number of fired channels mask */
+    const unsigned int  CH_MASK = 0x003F0000;  /* channel mask */
+    const unsigned int  DA_MASK = 0x00000FFF;  /* data mask */
+    const unsigned int  TY_MASK = 0x07000000;  /* type mask */
+    const unsigned int GEO_MASK = 0xF8000000;  /* geo address mask */
+
+    const unsigned int CH_MASK2 = 0x03E00000;  // channel mask for V1290
+    const unsigned int DA_MASK2 = 0x001FFFFF;  // data mask for V1290
     
     // ===== THE ONE'S I ADDED ======== //
     
