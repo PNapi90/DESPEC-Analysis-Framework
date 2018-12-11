@@ -21,7 +21,7 @@ struct PLASTIC_VME_DataStruct{
 
     ~PLASTIC_VME_DataStruct(){}
 
-    void SetData(std::vector<double> &_VME_QDC_Data,std::vector<double> &_VME_QDC_Channels,
+    void SetDATA(std::vector<double> &_VME_QDC_Data,std::vector<double> &_VME_QDC_Channels,
                  std::vector<double> &_VME_TDC_Data,std::vector<double> &_VME_TDC_Channels,
                  int _TDC_iterator)
     {

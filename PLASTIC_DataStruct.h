@@ -48,7 +48,7 @@ struct PLASTIC_DataStruct{
 
     ~PLASTIC_DataStruct(){}
 
-    void SetData(std::vector<int> &it,std::vector<std::vector<double> > &Edge_Coarse,
+    void SetDATA(std::vector<int> &it,std::vector<std::vector<double> > &Edge_Coarse,
                  std::vector<std::vector<double> > &Edge_fine, std::vector<std::vector<UInt> > &ch_ed,
                  std::vector<double> &Coarse_Trigger,std::vector<double> &Fine_Trigger,int amount_hit_tamex)
     {

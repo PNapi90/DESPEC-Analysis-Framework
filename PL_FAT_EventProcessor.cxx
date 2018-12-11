@@ -31,8 +31,8 @@ PL_FAT_EventProcessor::~PL_FAT_EventProcessor(){
 
 void PL_FAT_EventProcessor::PassEvent(PLASTIC_Event* Event){
 
-    if(PLASTIC_VME) DATA_VME_P = Event->GET();
-    else DATA_P = Event->GET();
+    if(PLASTIC_VME) DATA_VME_P = Event->GET_PLASTIC_VME();
+    else DATA_P = Event->GET_PLASTIC();
 
     PLASTIC_Passed = true;
 }
@@ -41,7 +41,7 @@ void PL_FAT_EventProcessor::PassEvent(PLASTIC_Event* Event){
 
 void PL_FAT_EventProcessor::PassEvent(FATIMA_Event* Event){
 
-    Event->GET(DATA_F);
+    DATA_F = Event->GET_FATIMA();
 
     FATIMA_Passed = true;
 }
