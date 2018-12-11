@@ -4,6 +4,10 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "FATIMA_DataStruct.h"
+#include "PLASTIC_DataStruct.h"
+#include "PLASTIC_VME_DataStruct.h"
+
 #include "Events.h"
 #include "Raw_Event.h"
 

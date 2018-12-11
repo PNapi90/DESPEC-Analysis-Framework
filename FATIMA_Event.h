@@ -9,6 +9,10 @@
 #include "Events.h"
 #include "Raw_Event.h"
 
+#include "FATIMA_DataStruct.h"
+#include "PLASTIC_DataStruct.h"
+#include "PLASTIC_VME_DataStruct.h"
+
 class FATIMA_Event : public Events{
 
 private:
