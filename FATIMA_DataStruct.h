@@ -9,6 +9,12 @@ typedef unsigned long long ULong64_t;
 
 struct FATIMA_DataStruct{
 
+    
+    FATIMA_DataStruct() : FAT_DET_FIRED(0),FAT_id(100,0),FAT_E(100,0),FAT_ratio(100,0),FAT_t(100,0),FAT_t_qdc(100,0),
+                          FAT_QDCs_FIRED(0),FAT_QDC_id(100,0),FAT_QLong(100,0),FAT_QLong_Raw(100,0),FAT_QShort_Raw(100,0),
+                          FAT_QDC_t_coarse(100,0),FAT_QDC_t_fine(100,0),FAT_TDCs_FIRED(0),FAT_TDC_id(100,0),FAT_TDC_timestamp(100,0)
+    {}
+
     int    FAT_DET_FIRED;         //number of completed detectors in evt
     std::vector<int>    FAT_id;           //id according to allocation file
     std::vector<double> FAT_E;            //energy (calibrated nad gain matched)
@@ -28,10 +34,6 @@ struct FATIMA_DataStruct{
     std::vector<int>    FAT_TDC_id;
     std::vector<double> FAT_TDC_timestamp;//tdc time raw
 
-    FATIMA_DataStruct() : FAT_DET_FIRED(0),FAT_id(100,0),FAT_E(100,0),FAT_ratio(100,0),FAT_t(100,0),FAT_t_qdc(100,0),
-                          FAT_QDCs_FIRED(0),FAT_QDC_id(100,0),FAT_QLong(100,0),FAT_QLong_Raw(100,0),FAT_QShort_Raw(100,0),
-                          FAT_QDC_t_coarse(100,0),FAT_QDC_t_fine(100,0),FAT_TDCs_FIRED(0),FAT_TDC_id(100,0),FAT_TDC_timestamp(100,0)
-    {}
 
     void SetDATA_Directly(int _FAT_DET_FIRED,std::vector<int> &_FAT_id,std::vector<double> &_FAT_E,std::vector<double> &_FAT_ratio,
                      std::vector<double> &_FAT_t,std::vector<double> &_FAT_t_qdc,int _FAT_QDCs_FIRED,std::vector<int> &_FAT_QDC_id,

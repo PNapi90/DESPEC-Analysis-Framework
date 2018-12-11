@@ -8,6 +8,16 @@ typedef unsigned int UInt;
 
 
 struct PLASTIC_DataStruct{
+
+    PLASTIC_DataStruct() : amount_hit_tamex(0) , iterator(4,0) , trigger_coarse(100,0) , trigger_fine(100,0) ,
+                           leading_hits(4,0) , trailing_hits(4,0) , phys_channel(4,std::vector<int>(17,0)) ,
+                           leading_hits_ch(4,std::vector<int>(17,0)) , trailing_hits_ch(4,std::vector<int>(17,0)) ,
+                           Time_Lead(4,std::vector<double>(17,0)) , Time_Trail(4,std::vector<double>(17,0)) ,
+                           coarse_T_edge_lead(4,std::vector<double>(100,0)) , coarse_T_edge_trail(4,std::vector<double>(100,0)) , 
+                           fine_T_edge_lead(4,std::vector<double>(100,0)) , fine_T_edge_trail(4,std::vector<double>(100,0)) , 
+                           ch_ID(4,std::vector<UInt>(100,0)) , fired_tamex(4,false),PADI_OR_PADIWA(true){}
+
+    ~PLASTIC_DataStruct(){}
     
     int amount_hit_tamex = 0;
 
@@ -35,18 +45,7 @@ struct PLASTIC_DataStruct{
     std::vector<bool> fired_tamex = {};
     
     bool PADI_OR_PADIWA = true;
-    
-    int ChannelPOS = 0;
 
-    PLASTIC_DataStruct() : iterator(4,0) , trigger_coarse(100,0) , trigger_fine(100,0) ,
-                           leading_hits(4,0) , trailing_hits(4,0) , phys_channel(4,std::vector<int>(17,0)) ,
-                           leading_hits_ch(4,std::vector<int>(17,0)) , trailing_hits_ch(4,std::vector<int>(17,0)) ,
-                           Time_Lead(4,std::vector<double>(17,0)) , Time_Trail(4,std::vector<double>(17,0)) ,
-                           coarse_T_edge_lead(4,std::vector<double>(100,0)) , coarse_T_edge_trail(4,std::vector<double>(100,0)) , 
-                           fine_T_edge_lead(4,std::vector<double>(100,0)) , fine_T_edge_trail(4,std::vector<double>(100,0)) , 
-                           ch_ID(4,std::vector<UInt>(100,0)) , fired_tamex(4,false){}
-
-    ~PLASTIC_DataStruct(){}
 
 
     void SetDATA_Directly(int amount_hit_tamex,std::vector<int> &iterator,std::vector<double> &trigger_coarse,
