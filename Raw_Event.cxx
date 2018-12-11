@@ -147,7 +147,7 @@ void Raw_Event::set_DATA_PLASTIC(std::vector<int> &it,std::vector<std::vector<do
                                  std::vector<double> &Coarse_Trigger,std::vector<double> &Fine_Trigger,int amount_hit_tamex)
 {
 	
-    PLASTIC_Data.SetData(it,Edge_Coarse,Edge_fine,ch_ed,Coarse_Trigger,Fine_Trigger,amount_hit_tamex);
+    PLASTIC_Data.SetDATA(it,Edge_Coarse,Edge_fine,ch_ed,Coarse_Trigger,Fine_Trigger,amount_hit_tamex);
     VME_Event = false;
     Event_Type = 2;
 }
@@ -157,7 +157,7 @@ void Raw_Event::set_DATA_PLASTIC(std::vector<int> &it,std::vector<std::vector<do
 void set_DATA_PLASTIC_VME(std::vector<double> &VME_QDC_Data,std::vector<double> &VME_QDC_Channels,
                           std::vector<double> &VME_TDC_Data,std::vector<double> &VME_TDC_Channels,int TDC_iterator){
 
-    PLASTIC_VME_Data.SetData(VME_QDC_Data,VME_QDC_Channels,VME_TDC_Data,VME_TDC_Channels,TDC_iterator);
+    PLASTIC_VME_Data.SetDATA(VME_QDC_Data,VME_QDC_Channels,VME_TDC_Data,VME_TDC_Channels,TDC_iterator);
     VME_Event = true;
     Event_Type = 2;
 
