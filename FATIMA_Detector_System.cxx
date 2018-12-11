@@ -21,18 +21,18 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
 
     fired_QDC_amount = 0;
 
-    QLong = std::vector<double>(max_dets,0);
-    QLong_Raw = std::vector<double>(max_dets,0);
-    QShort_Raw = std::vector<double>(max_dets,0);
+    QLong = std::vector<double>(max_am_dets,0);
+    QLong_Raw = std::vector<double>(max_am_dets,0);
+    QShort_Raw = std::vector<double>(max_am_dets,0);
 
-    QDC_Time_Coarse = std::vector<ULong64_t>(max_dets,0);
-    QDC_Time_Fine = std::vector<double>(max_dets,0);
+    QDC_Time_Coarse = std::vector<ULong64_t>(max_am_dets,0);
+    QDC_Time_Fine = std::vector<double>(max_am_dets,0);
 
-    TDC_Time_raw = std::vector<ULong64_t>(max_dets,0);
-    TDC_Time_ns  = std::vector<double>(max_dets,0);
+    TDC_Time_raw = std::vector<ULong64_t>(max_am_dets,0);
+    TDC_Time_ns  = std::vector<double>(max_am_dets,0);
 
-    det_ids_QDC = std::vector<int>(max_dets,0);
-    det_ids_TDC = std::vector<int>(max_dets,0);
+    det_ids_QDC = std::vector<int>(max_am_dets,0);
+    det_ids_TDC = std::vector<int>(max_am_dets,0);
 
 
     det_ID_QDC = std::vector<std::vector<int> >(100,std::vector<int>(100,0));

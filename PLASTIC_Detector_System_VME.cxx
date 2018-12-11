@@ -1,4 +1,4 @@
-#include "PLASTIC_VME_Detector_System.h"
+#include "PLASTIC_Detector_System_VME.h"
 
 using namespace std;
 
