@@ -7,7 +7,7 @@
 
 #include "PLASTIC_DataStruct.h"
 #include "PLASTIC_VME_DataStruct.h"
-
+#include "FATIMA_DataStruct.h"
 
 //#include "Rtypes.h"
 
@@ -116,6 +116,8 @@ private:
 	int	   FAT_TDCs_FIRED;
 	int    FAT_TDC_id[100];
 	double FAT_TDC_timestamp[100];//tdc time raw
+
+	FATIMA_DataStruct FATIMA_Data;
 	
 
 	//PLASTIC
@@ -160,11 +162,10 @@ public:
 
 	// ########################################################## 
 
-	void set_DATA_FATIMA(int,int,
-						 double*,double*,double*,
-						 ULong64_t*,double*,
-						 ULong64_t*,double*,
-						 int*,int*);
+	void set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,std::vector<double> &Ql_Raw,std::vector<double> &Qs_Raw,
+                         std::vector<double> &Ql,std::vector<ULong64_t> &TDC,std::vector<double> &TDC_ns,
+                         std::vector<ULong64_t> &QDC_c,std::vector<double> &QDC_f,std::vector<int> &det_ids_QDC,
+                         std::vector<int> &det_ids_TDC);
 	void set_DATA_PLASTIC(std::vector<int> &it,std::vector<std::vector<double> > &Edge_Coarse,
                           std::vector<std::vector<double> > &Edge_fine, std::vector<std::vector<UInt> > &ch_ed,
                           std::vector<double> &Coarse_Trigger,std::vector<double> &Fine_Trigger,int amount_hit_tamex);
@@ -260,6 +261,8 @@ ULong64_t get_FAT_QDC_t_Coarse(int i);
       int get_FAT_TDCs_fired();
 	  int get_FAT_TDC_id(int i);
    double get_FAT_TDC_timestamp(int i);
+
+    FATIMA_DataStruct* PassFATIMA();
 	
 
 	//temporary PLASTIC getters

@@ -9,9 +9,9 @@ PL_FAT_EventProcessor::PL_FAT_EventProcessor() : PLASTIC_Passed(false) ,
 
     char Name[50];
 
-    TDiff = new TH1**[MAX_FAT];
+    TDiff = new TH1D**[MAX_FAT];
     for(int i = 0;i < MAX_FAT;++i){
-        TDiff[i] = new TH1*[MAX_PL];
+        TDiff[i] = new TH1D*[MAX_PL];
         for(int j = 0;j < MAX_PL;++j){
             sprintf(Name,"Time_Difference_FAT_%d_PL_%d",i,j);
             TDiff[i][j] = new TH1D(Name,Name,500,0,500,500,0,500);

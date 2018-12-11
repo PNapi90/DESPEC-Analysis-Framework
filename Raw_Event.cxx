@@ -6,7 +6,7 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-Raw_Event::Raw_Event(bool PADI_OR_PADIWA) : PLASTIC_Data(),PLASTIC_VME_Data(){
+Raw_Event::Raw_Event(bool PADI_OR_PADIWA) : PLASTIC_Data(),PLASTIC_VME_Data(),FATIMA_Data(){
     Event_Type = -1;
     
     PLASTIC_Data.PADI_OR_PADIWA = PADI_OR_PADIWA;
@@ -129,113 +129,13 @@ int Raw_Event::get_Event_type(){
 }
 
 
-void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,
-								double* Ql_Raw,double* Qs_Raw,
-								double* Ql,
-								ULong64_t* TDC, double* TDC_ns,
-								ULong64_t* QDC_c, double* QDC_f,
-								int* det_ids_QDC,int* det_ids_TDC){
+void Raw_Event::set_DATA_FATIMA(int QDC_FIRED,int TDC_FIRED,std::vector<double> &Ql_Raw,std::vector<double> &Qs_Raw,
+                                std::vector<double> &Ql,std::vector<ULong64_t> &TDC,std::vector<double> &TDC_ns,
+                                std::vector<ULong64_t> &QDC_c,std::vector<double> &QDC_f,std::vector<int> &det_ids_QDC,
+                                std::vector<int> &det_ids_TDC){
 	
+    FATIMA_Data.SetDATA(QDC_FIRED,TDC_FIRED,Ql_Raw,Qs_Raw,Ql,TDC,TDC_ns,QDC_c,QDC_f,det_ids_QDC,det_ids_TDC);
 	
-	FAT_QDCs_FIRED = QDC_FIRED;
-	FAT_TDCs_FIRED = TDC_FIRED;
-	int dets_fired = 0;
-	for (int i=0; i<QDC_FIRED; i++) {
-		FAT_QDC_id[i] = det_ids_QDC[i];
-		if (det_ids_QDC[i] == 35) cout<<"I am in QDC"<<endl;
-		FAT_QLong[i]  = Ql[i];
-		FAT_QLong_Raw[i]  = Ql_Raw[i];
-		FAT_QShort_Raw[i] = Qs_Raw[i];
-		FAT_QDC_t_coarse[i] = QDC_c[i];
-		FAT_QDC_t_fine[i] = QDC_f[i];
-		for (int j=0; j<TDC_FIRED; j++) {
-			if (det_ids_QDC[i] == det_ids_TDC[j]) {
-				FAT_id[dets_fired] = det_ids_QDC[i];
-				if (det_ids_TDC[j] == 35) cout<<"I am in TDC"<<endl;
-
-				FAT_E[dets_fired] = Ql[i];
-				FAT_ratio[dets_fired] = (double) Qs_Raw[i]/Ql_Raw[i];
-				FAT_t[dets_fired] = TDC_ns[j];
-				FAT_t_qdc[dets_fired] = QDC_c[i];
-				dets_fired++;
-			}
-		}
-	}
-	FAT_DET_FIRED = dets_fired;
-	
-	for (int i=0; i<TDC_FIRED; i++) {
-		FAT_TDC_id[i] = det_ids_TDC[i];
-		FAT_TDC_timestamp[i] = TDC[i];
-	}
-
-	
-	
-	
-	
-	/*this->FAT_FIRED = FAT_FIRED;
-	this->TDC_FIRED = TDC_FIRED;
-
-	int position = -5;
-	int active_det = 0;
-	BOTH_FIRED = 0;
-
-	for(int i = 0;i < 50;++i) used_for_QDC[i] = false;
-	//all correlated tdcs and qdcs
-	for(int i = 0;i < FAT_FIRED;++i){
-
-		active_det = det_ids_QDC[i];
-		//cout<<"From RAW EVENT:"<<endl;;
-
-		//cout<<active_det<<" ";
-
-		//used_for_QDC[active_det] = false;
-		for(int j = 0;j < TDC_FIRED;++j){
-			if(det_ids_QDC[i] == det_ids_TDC[j]){
-				position = det_ids_TDC[j];
-				used_for_QDC[position] = true;
-				//Det_Nums[i] = det_ids_QDC[i];
-				FAT_Both[BOTH_FIRED] = i;
-				++BOTH_FIRED;
-				//cout << "USED POS " << j << endl;
-				break;
-			}
-		}
-		Det_Nums[i] = det_ids_QDC[i];
-		E_Raw[i] = Ql_Raw[active_det];
-		QShort_Raw[i] = Qs_Raw[active_det];
-		E[i] = Ql[active_det];
-		QShort[i] = Qs[active_det];
-		QDC_t_coarse[i] = QDC_c[active_det];
-		QDC_t_fine[i] = QDC_f[active_det];
-		TDC_timestamp[i] = TDC[position];
-	}
-	
-	//cout<<endl;
-
-	ch51 = false;
-	if(FAT_FIRED == 0) return;
-	
-	//remaining tdcs
-	for(int i = FAT_FIRED;i < TDC_FIRED;++i){
-		active_det = det_ids_TDC[i];
-		//if(!ch51 && active_det == 51 && position != -5) ch51 = true;
-		if(!used_for_QDC[active_det]){
-			Det_Nums[i] = det_ids_TDC[active_det];
-			TDC_timestamp[i] = TDC[active_det];
-
-			if(active_det == 51 && position != -5 && !ch51 && TDC_FIRED == 3){
-				ch51 = true;
-				time_difference = ((double) TDC_timestamp[i]) - ((double) TDC_timestamp[0]);
-			}
-		}
-	}
-	if(TDC_FIRED != FAT_FIRED && false){
-		cout << "FAT " << FAT_FIRED << " " << TDC_FIRED << endl;
-		for(int i = 0;i < TDC_FIRED;++i) cout << Det_Nums[i] << " " << used_for_QDC[i] << " | ";
-		cout << endl;
-
-	}
-    */
     Event_Type = 3;
 
 }
@@ -386,6 +286,9 @@ ULong64_t Raw_Event::get_FAT_QDC_t_Coarse(int i){return FAT_QDC_t_coarse[i];}
       int Raw_Event::get_FAT_TDCs_fired(){return FAT_TDCs_FIRED;}
       int Raw_Event::get_FAT_TDC_id(int i){return FAT_TDC_id[i];}
    double Raw_Event::get_FAT_TDC_timestamp(int i){return FAT_TDC_timestamp[i];}
+
+
+FATIMA_DataStruct* Raw_Event::PassFATIMA(){return &FATIMA_Data;}
 
 
 //---------------------------------------------------------------
