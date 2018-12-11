@@ -42,8 +42,8 @@ public:
     ~PL_FAT_EventProcessor();
 
 
-    void PassEvent(PLASTIC_Event* Event);
-    void PassEvent(FATIMA_Event* Event);
+    void PassEvent_PLASTIC(PLASTIC_Event* Event);
+    void PassEvent_FATIMA(FATIMA_Event* Event);
 
 
     bool AllPassed();
