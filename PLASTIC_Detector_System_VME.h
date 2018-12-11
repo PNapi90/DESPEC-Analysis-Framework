@@ -60,7 +60,7 @@ public:
     void Process_MBS(TGo4MbsSubEvent* psubevt);
 
     //functions from abstract class Detector_System
-    void Process_MBS(int*){return};
+    void Process_MBS(int*){return;};
 
     void get_Event_data(Raw_Event*);
 
