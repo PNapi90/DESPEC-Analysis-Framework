@@ -36,7 +36,7 @@ struct FATIMA_DataStruct{
     void SetDATA_Directly(int _FAT_DET_FIRED,std::vector<int> &_FAT_id,std::vector<double> &_FAT_E,std::vector<double> &_FAT_ratio,
                      std::vector<double> &_FAT_t,std::vector<double> &_FAT_t_qdc,int _FAT_QDCs_FIRED,std::vector<int> &_FAT_QDC_id,
                      std::vector<double> &_FAT_QLong,std::vector<double> &_FAT_QLong_Raw,std::vector<double> &_FAT_QShort_Raw,
-                     std::vector<ULong> &_FAT_QDC_t_coarse,std::vector<double> &_FAT_QDC_t_fine,std::vector<double> &_FAT_TDCs_FIRED,
+                     std::vector<ULong> &_FAT_QDC_t_coarse,std::vector<double> &_FAT_QDC_t_fine,int _FAT_TDCs_FIRED,
                      std::vector<int> &_FAT_TDC_id,std::vector<double> &_FAT_TDC_timestamp)
     {
         FAT_DET_FIRED = _FAT_DET_FIRED;
