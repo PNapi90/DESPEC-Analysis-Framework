@@ -19,7 +19,7 @@
 
 #include "Tree_Creator.h"
 
-#include "EventProcessor.h"
+#include "EventProcessor.cxx"
 #include "PL_FAT_EventProcessor.h"
 
 

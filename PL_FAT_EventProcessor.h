@@ -10,7 +10,7 @@
 #include "PLASTIC_VME_DataStruct.h"
 #include "FATIMA_DataStruct.h"
 
-#include "EventProcessor.h"
+#include "EventProcessor.cxx"
 
 
 
