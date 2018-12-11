@@ -154,8 +154,8 @@ void Raw_Event::set_DATA_PLASTIC(std::vector<int> &it,std::vector<std::vector<do
 
 //---------------------------------------------------------------
 
-void Raw_Event::set_DATA_PLASTIC_VME(std::vector<double> &VME_QDC_Data,std::vector<double> &VME_QDC_Channels,
-                          std::vector<double> &VME_TDC_Data,std::vector<double> &VME_TDC_Channels,int TDC_iterator){
+void Raw_Event::set_DATA_PLASTIC_VME(int TDC_iterator, std::vector<double> &VME_QDC_Data,std::vector<double> &VME_QDC_Channels,
+                          std::vector<double> &VME_TDC_Data,std::vector<double> &VME_TDC_Channels){
 
     PLASTIC_VME_Data.SetDATA(TDC_iterator,VME_QDC_Data,VME_QDC_Channels,VME_TDC_Data,VME_TDC_Channels);
     VME_Event = true;
