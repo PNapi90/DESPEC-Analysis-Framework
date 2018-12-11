@@ -46,9 +46,10 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
     for(int i = 0;i < MEMORY_LIMIT;++i) Address_arr[i] = i;
 
     //define coincidence processors
-    PROCESSORS = new EventProcessor*[1];
+    PROCESSORS = new EventProcessor*[2];
     PROCESSORS[0] = new PL_FAT_EventProcessor();
-
+    PROCESSORS[1] = nullptr;
+    
     Verbose_Write = true;
     if(Verbose_Write){
         T_DIFF = new TH1D("FAT_GAL_WR","FAT_GAL_WR",100,0,1000);

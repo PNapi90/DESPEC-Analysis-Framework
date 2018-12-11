@@ -9,12 +9,12 @@ typedef unsigned int UInt;
 
 struct PLASTIC_VME_DataStruct{
 
-    int TDC_iterator;
+    int TDC_iterator = 0;
     
-    std::vector<double> VME_QDC_Data;
-    std::vector<double> VME_QDC_Channels;
-    std::vector<double> VME_TDC_Data;
-    std::vector<double> VME_TDC_Channels;
+    std::vector<double> VME_QDC_Data = {};
+    std::vector<double> VME_QDC_Channels = {};
+    std::vector<double> VME_TDC_Data = {};
+    std::vector<double> VME_TDC_Channels = {};
 
     PLASTIC_VME_DataStruct() : VME_QDC_Data(100,0) , VME_QDC_Channels(100,0) , 
                                VME_TDC_Data(100,0) , VME_TDC_Channels(100,0),TDC_iterator(0) {}

@@ -11,28 +11,28 @@ struct PLASTIC_DataStruct{
     
     int amount_hit_tamex = 0;
 
-    std::vector<int> iterator;
+    std::vector<int> iterator = {};
     
-    std::vector<double> trigger_coarse;
-    std::vector<double> trigger_fine;
+    std::vector<double> trigger_coarse = {};
+    std::vector<double> trigger_fine = {};
 
-    std::vector<int> leading_hits;
-    std::vector<int> trailing_hits;
-    std::vector<std::vector<int> > phys_channel;
-    std::vector<std::vector<int> > leading_hits_ch;
-    std::vector<std::vector<int> > trailing_hits_ch;
+    std::vector<int> leading_hits = {};
+    std::vector<int> trailing_hits = {};
+    std::vector<std::vector<int> > phys_channel = {};
+    std::vector<std::vector<int> > leading_hits_ch = {};
+    std::vector<std::vector<int> > trailing_hits_ch = {};
 
-    std::vector<std::vector<double> > Time_Lead;
-    std::vector<std::vector<double> > Time_Trail;
+    std::vector<std::vector<double> > Time_Lead = {};
+    std::vector<std::vector<double> > Time_Trail = {};
     
 
-    std::vector<std::vector<double> > coarse_T_edge_lead;
-    std::vector<std::vector<double> > coarse_T_edge_trail;
-    std::vector<std::vector<double> > fine_T_edge_lead;
-    std::vector<std::vector<double> > fine_T_edge_trail;
-    std::vector<std::vector<UInt> > ch_ID;
+    std::vector<std::vector<double> > coarse_T_edge_lead = {};
+    std::vector<std::vector<double> > coarse_T_edge_trail = {};
+    std::vector<std::vector<double> > fine_T_edge_lead = {};
+    std::vector<std::vector<double> > fine_T_edge_trail = {};
+    std::vector<std::vector<UInt> > ch_ID = {};
     
-    std::vector<bool> fired_tamex;
+    std::vector<bool> fired_tamex = {};
     
     bool PADI_OR_PADIWA = true;
     
@@ -47,6 +47,36 @@ struct PLASTIC_DataStruct{
                            ch_ID(4,std::vector<UInt>(100,0)) , fired_tamex(4,false){}
 
     ~PLASTIC_DataStruct(){}
+
+
+    void SetDATA_Directly(int amount_hit_tamex,std::vector<int> &iterator,std::vector<double> &trigger_coarse,
+                          std::vector<double> &trigger_fine,std::vector<int> &leading_hits,std::vector<int> &trailing_hits,
+                          std::vector<std::vector<int> > &phys_channel,std::vector<std::vector<int> > &leading_hits_ch,
+                          std::vector<std::vector<int> > &trailing_hits_ch,std::vector<std::vector<double> > &Time_Lead,
+                          std::vector<std::vector<double> > &Time_Trail,std::vector<std::vector<double> > &coarse_T_edge_lead,
+                          std::vector<std::vector<double> > &coarse_T_edge_trail,std::vector<std::vector<double> > &fine_T_edge_lead,
+                          std::vector<std::vector<double> > &fine_T_edge_trail,std::vector<std::vector<UInt> > &ch_ID,
+                          std::vector<bool> &fired_tamex,bool PADI_OR_PADIWA)
+    {   
+        this->amount_hit_tamex = amount_hit_tamex;
+        this->iterator = iterator;
+        this->trigger_coarse = trigger_coarse;
+        this->trigger_fine = trigger_fine;
+        this->leading_hits = leading_hits;
+        this->trailing_hits = trailing_hits;
+        this->phys_channel = phys_channel;
+        this->leading_hits_ch = leading_hits_ch;
+        this->trailing_hits_ch = trailing_hits_ch;
+        this->Time_Lead = Time_Lead;
+        this->Time_Trail = Time_Trail;
+        this->coarse_T_edge_lead = coarse_T_edge_lead;
+        this->coarse_T_edge_trail = coarse_T_edge_trail;
+        this->fine_T_edge_lead = fine_T_edge_lead;
+        this->fine_T_edge_trail = fine_T_edge_trail;
+        this->ch_ID = ch_ID;
+        this->fired_tamex = fired_tamex;
+        this->PADI_OR_PADIWA = PADI_OR_PADIWA;
+    }
 
     void SetDATA(std::vector<int> &it,std::vector<std::vector<double> > &Edge_Coarse,
                  std::vector<std::vector<double> > &Edge_fine, std::vector<std::vector<UInt> > &ch_ed,
