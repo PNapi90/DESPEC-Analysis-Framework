@@ -36,7 +36,7 @@ inline void PLASTIC_Event::set_DATA(Raw_Event* RAW){
                      P_Tmp->leading_hits,P_Tmp->trailing_hits,P_Tmp->phys_channel,
                      P_Tmp->leading_hits_ch,P_Tmp->trailing_hits_ch,P_Tmp->Time_Lead,
                      P_Tmp->Time_Trail,P_Tmp->coarse_T_edge_lead,P_Tmp->coarse_T_edge_trail,
-                     P_Tmp->fine_T_edge_lead,P_Tmp->fine_T_edge_trail,P_Tmp->ch_ID,P_TMP->fired_tamex);
+                     P_Tmp->fine_T_edge_lead,P_Tmp->fine_T_edge_trail,P_Tmp->ch_ID,P_Tmp->fired_tamex);
         P_Tmp = nullptr;
     }
     

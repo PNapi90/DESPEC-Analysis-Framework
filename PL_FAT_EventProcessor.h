@@ -39,7 +39,7 @@ private:
 
 public:
     PL_FAT_EventProcessor();
-    ~PL_FAT_EventProcessor();
+    virtual ~PL_FAT_EventProcessor();
 
 
     void PassEvent(PLASTIC_Event* Event);
@@ -49,10 +49,10 @@ public:
     bool AllPassed();
 
     //not used here
-    void PassEvent_FRS(FRS_Event*){};
-    void PassEvent_AIDA(AIDA_Event*){};
+    void PassEvent_FRS(FRS_Event*){return;};
+    void PassEvent_AIDA(AIDA_Event*){return;};
 
-    void PassEvent_GALILEO(GALILEO_Event*){};
+    void PassEvent_GALILEO(GALILEO_Event*){return;};
 
 
 
