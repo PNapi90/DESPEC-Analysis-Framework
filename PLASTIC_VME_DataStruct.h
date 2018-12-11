@@ -23,7 +23,7 @@ struct PLASTIC_VME_DataStruct{
 
     void SetData(std::vector<double> &_VME_QDC_Data,std::vector<double> &_VME_QDC_Channels,
                  std::vector<double> &_VME_TDC_Data,std::vector<double> &_VME_TDC_Channels,
-                 int _TDC_iterator);
+                 int _TDC_iterator)
     {
         for(int i = 0;i < 100;++i){
             VME_QDC_Data[i] = _VME_QDC_Data[i];
