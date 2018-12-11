@@ -39,7 +39,7 @@ private:
 
 public:
     PL_FAT_EventProcessor();
-    virtual ~PL_FAT_EventProcessor();
+    ~PL_FAT_EventProcessor();
 
 
     void PassEvent(PLASTIC_Event* Event);
