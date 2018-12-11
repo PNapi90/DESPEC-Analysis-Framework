@@ -33,7 +33,7 @@ struct FATIMA_DataStruct{
                           FAT_QDC_t_coarse(100,0),FAT_QDC_t_fine(100,0),FAT_TDCs_FIRED(0),FAT_TDC_id(100,0),FAT_TDC_timestamp(100,0)
     {}
 
-    SetDATA_Directly(int _FAT_DET_FIRED,std::vector<int> &_FAT_id,std::vector<double> &_FAT_E,std::vector<double> &_FAT_ratio,
+    void SetDATA_Directly(int _FAT_DET_FIRED,std::vector<int> &_FAT_id,std::vector<double> &_FAT_E,std::vector<double> &_FAT_ratio,
                      std::vector<double> &_FAT_t,std::vector<double> &_FAT_t_qdc,int _FAT_QDCs_FIRED,std::vector<int> &_FAT_QDC_id,
                      std::vector<double> &_FAT_QLong,std::vector<double> &_FAT_QLong_Raw,std::vector<double> &_FAT_QShort_Raw,
                      std::vector<ULong> &_FAT_QDC_t_coarse,std::vector<double> &_FAT_QDC_t_fine,std::vector<double> &_FAT_TDCs_FIRED,
@@ -42,7 +42,7 @@ struct FATIMA_DataStruct{
         FAT_DET_FIRED = _FAT_DET_FIRED;
         FAT_TDCs_FIRED = _FAT_TDCs_FIRED;
         FAT_QDCs_FIRED = _FAT_QDCs_FIRED;
-        
+
         for(int i = 0;i < 100;++i){
             FAT_id[i] = _FAT_id[i];
             FAT_E[i] = _FAT_E[i];
@@ -62,7 +62,7 @@ struct FATIMA_DataStruct{
     }
 
 
-    SetDATA(int QDC_FIRED,int TDC_FIRED,std::vector<double> &Ql_Raw,std::vector<double> &Qs_Raw,
+    void SetDATA(int QDC_FIRED,int TDC_FIRED,std::vector<double> &Ql_Raw,std::vector<double> &Qs_Raw,
             std::vector<double> &Ql,std::vector<ULong64_t> &TDC,std::vector<double> &TDC_ns,
             std::vector<ULong64_t> &QDC_c,std::vector<double> &QDC_f,std::vector<int> &det_ids_QDC,
             std::vector<int> &det_ids_TDC)
