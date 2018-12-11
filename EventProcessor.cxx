@@ -11,7 +11,7 @@
 class EventProcessor{
 
 public:
-    virtual ~EventProcessor(){}
+    virtual ~EventProcessor(){};
 
     virtual void PassEvent_FRS(FRS_Event*) = 0;
     virtual void PassEvent_AIDA(AIDA_Event*) = 0;
