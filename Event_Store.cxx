@@ -378,19 +378,19 @@ void Event_Store::Write(Match* MatchHit,Tree_Creator* Tree){
 void Event_Store::FILL_PROCESSOR(int type,int position,int ProcessorID){
     switch(type){
         case 0:
-            PROCESSORS[ProcessorID]->PassEvent_FRS(Event[type][position])
+            PROCESSORS[ProcessorID]->PassEvent_FRS((FRS_Event*)Event[type][position])
             break;
         case 1:
-            PROCESSORS[ProcessorID]->PassEvent_AIDA(Event[type][position])
+            PROCESSORS[ProcessorID]->PassEvent_AIDA((AIDA_Event*)Event[type][position])
             break;
         case 2:
-            PROCESSORS[ProcessorID]->PassEvent_PLASTIC(Event[type][position])
+            PROCESSORS[ProcessorID]->PassEvent_PLASTIC((PLASTIC_Event*)Event[type][position])
             break;
         case 3:
-            PROCESSORS[ProcessorID]->PassEvent_FATIMA(Event[type][position])
+            PROCESSORS[ProcessorID]->PassEvent_FATIMA((FATIMA_Event*)Event[type][position])
             break;
         case 4:
-            PROCESSORS[ProcessorID]->PassEvent_GALILEO(Event[type][position])
+            PROCESSORS[ProcessorID]->PassEvent_GALILEO((GALILEO_Event*)Event[type][position])
             break;
         default:
             std::cerr << "FILL_PROCESSOR: System type not known!" << std::endl;
