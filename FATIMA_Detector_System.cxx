@@ -21,50 +21,26 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
 
     fired_QDC_amount = 0;
 
-    QLong = new double[max_am_dets];
-    QLong_Raw = new double[max_am_dets];
-    QShort_Raw = new double[max_am_dets];
+    QLong = std::vector<double>(max_dets,0);
+    QLong_Raw = std::vector<double>(max_dets,0);
+    QShort_Raw = std::vector<double>(max_dets,0);
 
-    QDC_Time_Coarse = new ULong64_t[max_am_dets];
-    QDC_Time_Fine = new double[max_am_dets];
+    QDC_Time_Coarse = std::vector<ULong64_t>(max_dets,0);
+    QDC_Time_Fine = std::vector<double>(max_dets,0);
 
-    TDC_Time_raw = new ULong64_t[max_am_dets];
-    TDC_Time_ns  = new double[max_am_dets];
+    TDC_Time_raw = std::vector<ULong64_t>(max_dets,0);
+    TDC_Time_ns  = std::vector<double>(max_dets,0);
 
-    det_ids_QDC = new int[max_am_dets];
-    det_ids_TDC = new int[max_am_dets];
+    det_ids_QDC = std::vector<int>(max_dets,0);
+    det_ids_TDC = std::vector<int>(max_dets,0);
 
-    for(int i = 0;i < max_am_dets;++i){
-        QLong[i] = 0;
-        //QShort[i] = 0;
-        QDC_Time_Coarse[i] = 0;
-        QDC_Time_Fine[i] = 0;
-        TDC_Time_raw[i] = 0;
-        TDC_Time_ns[i] = 0;
-        det_ids_QDC[i] = 0;
-        det_ids_TDC[i] = 0;
-    }
 
-    det_ID_QDC = new int*[100];
-    det_ID_TDC = new int*[100];
-    for(int i = 0;i < 100;++i){
-    	det_ID_QDC[i] = new int[100];
-    	det_ID_TDC[i] = new int[100];
-        for(int j = 0;j < 100;++j){
-            det_ID_QDC[i][j] = -1;
-            det_ID_TDC[i][j] = -1;
-        }
+    det_ID_QDC = std::vector<std::vector<int> >(100,std::vector<int>(100,0));
+    det_ID_TDC = std::vector<std::vector<int> >(100,std::vector<int>(100,0));
 
-    }
-    FAT_positions = new double*[36];
-    source_position_correction = new double[36];
-    for(int i = 0; i < 36; i++){
-	FAT_positions[i] = new double[3];
-	source_position_correction[i] = -1;
+    FAT_positions = std::vector<std::vector<double> >(36,std::vector<double>(3,-1));
+    source_position_correction = std::vector<double>(36,-1);
 
-	for (int j = 0; j < 3; j++) FAT_positions[i][j] = -1;
-    
-    }
 
     FATIMA_T_CALIB = new FATIMA_Time_Calibration();
     FATIMA_E_CALIB = new FATIMA_Energy_Calibration();
@@ -87,28 +63,6 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
 //---------------------------------------------------------------
 
 FATIMA_Detector_System::~FATIMA_Detector_System(){
-
-
-
-	for(int i = 0;i < 100;++i){
-		delete[] det_ID_QDC[i];
-		delete[] det_ID_TDC[i];
-	}
-
-	delete[] det_ID_TDC;
-	delete[] det_ID_QDC;
-
-	delete[] det_ids_QDC;
-	delete[] det_ids_TDC;
-
-	delete[] QLong_Raw;
-	delete[] QShort_Raw;
-	delete[] QLong;
-	delete[] QDC_Time_Coarse;
-	delete[] QDC_Time_Fine;
-	delete[] TDC_Time_raw;
-	delete[] TDC_Time_ns;
-
 	delete FATIMA_T_CALIB;
 	delete FATIMA_E_CALIB;
 }

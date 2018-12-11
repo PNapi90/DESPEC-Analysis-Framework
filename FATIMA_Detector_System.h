@@ -6,6 +6,7 @@
 #include <string>
 #include <cmath>
 #include <math.h>
+#include <vector>
 
 #include <TFile.h>
 #include <TH1.h>
@@ -35,26 +36,26 @@ private:
 	
 	//These are indexed by fired_QDC_amount
 	int fired_QDC_amount;
-	int* det_ids_QDC;
-	double* QLong;
-	double* QLong_Raw;
-	double* QShort_Raw;
-	ULong64_t* QDC_Time_Coarse;
-	double* QDC_Time_Fine;
+	std::vector<int> det_ids_QDC;
+	std::vector<double> QLong;
+	std::vector<double> QLong_Raw;
+	std::vector<double> QShort_Raw;
+	std::vector<ULong64_t> QDC_Time_Coarse;
+	std::vector<double> QDC_Time_Fine;
 	
 	//These are indexed by fired_TDC_amount
 	int fired_TDC_amount;
-	int* det_ids_TDC;
-	ULong64_t* TDC_Time_raw;		//This is the raw TDC time
-	double* TDC_Time_ns;		//This is the raw TDC time
+	std::vector<int> det_ids_TDC;
+	std::vector<ULong64_t> TDC_Time_raw;		//This is the raw TDC time
+	std::vector<double> TDC_Time_ns;		//This is the raw TDC time
 
 
 	//These are used for mapping mod,chn to detector
-	int** det_ID_QDC;
-	int** det_ID_TDC;
-	double** FAT_positions;
+	std::vector<std::vector<int> > det_ID_QDC;
+	std::vector<std::vector<int> > det_ID_TDC;
+	std::vector<std::vector<double> > FAT_positions;
 	
-	double* source_position_correction;
+	std::vector<double> source_position_correction;
 
 	bool exiter;
 	bool no_data;
