@@ -43,7 +43,7 @@ public:
 
 
     void PassEvent_PLASTIC_VME(PLASTIC_VME_DataStruct* DATA_VME_P);
-    void PassEvent_PLASTIC_VME(PLASTIC_DataStruct* DATA_VME_P);
+    void PassEvent_PLASTIC(PLASTIC_DataStruct* DATA_VME_P);
     void PassEvent_FATIMA(FATIMA_DataStruct* DATA_F);
 
 
