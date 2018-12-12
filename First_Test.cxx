@@ -277,7 +277,14 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		pdata = psubevt->GetDataField();
 		lwords = psubevt->GetIntLen();
 		PrcID = psubevt->GetProcid();
-		
+
+		std::cout << "----------------------" << std::endl;
+		for(int k = 0;k < lwords;++k){
+			cout << hex << *(pdata+k) << " ";
+			if(k % 5 == 0 && k > 0) std::cout << std::endl;
+		}
+		std::cout << "----------------------" << std::endl;
+
 		PrcID_Conv = get_Conversion(PrcID);
 		sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
    
