@@ -45,6 +45,8 @@ private:
     int value, value_t, chNo,TDC_iterator;
     int type,geo,d_cnt,data,caen_header;
 
+    unsigned int chan1;
+
 
     const unsigned int  OV_MASK = 0x00001000;  /* overflow bit */
     const unsigned int  UN_MASK = 0x00002000;  /* underthreshold bit */
