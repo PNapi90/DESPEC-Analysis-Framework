@@ -50,7 +50,7 @@ void PL_FAT_EventProcessor::PassEvent_PLASTIC_VME(PLASTIC_VME_DataStruct* DATA_V
 
 //---------------------------------------------------------------
 
-void PL_FAT_EventProcessor::PassEvent_FATIMA(FATIMA_DataStruc* DATA_F){
+void PL_FAT_EventProcessor::PassEvent_FATIMA(FATIMA_DataStruct* DATA_F){
 
     this->DATA_F = DATA_F;
 
