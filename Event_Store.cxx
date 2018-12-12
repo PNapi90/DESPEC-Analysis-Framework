@@ -13,6 +13,8 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
     set_Det_Sys_specific_coincidences();
 
     tmp_pos = nullptr;
+    VME_or_TAMEX = false;
+
 
     Event = new Events**[6];
     Event_WR = new ULong64_t*[6];
@@ -124,6 +126,10 @@ void Event_Store::store(Raw_Event* RAW){
         exit(0);
     }
     int event_type = RAW->get_Event_type();
+    
+    //check for VME 
+    if(event_type == 2) VME_or_TAMEX = RAW->PLASTIC_CheckVME();
+    
     create_Event(event_type,RAW);
 }
 
@@ -384,19 +390,20 @@ void Event_Store::Write(Match* MatchHit,Tree_Creator* Tree){
 void Event_Store::FILL_PROCESSOR(int type,int position,int ProcessorID){
     switch(type){
         case 0:
-            PROCESSORS[ProcessorID]->PassEvent_FRS((FRS_Event*)Event[type][position]);
+            PROCESSORS[ProcessorID]->PassEvent_FRS(Event[type][position]->GET_FRS());
             break;
         case 1:
-            PROCESSORS[ProcessorID]->PassEvent_AIDA((AIDA_Event*)Event[type][position]);
+            PROCESSORS[ProcessorID]->PassEvent_AIDA(Event[type][position]->GET_AIDA());
             break;
         case 2:
-            PROCESSORS[ProcessorID]->PassEvent_PLASTIC((PLASTIC_Event*)Event[type][position]);
+            if(VME_or_TAMEX) PROCESSORS[ProcessorID]->PassEvent_PLASTIC_VME(Event[type][position]->GET_PLASTIC_VME());
+            else PROCESSORS[ProcessorID]->PassEvent_PLASTIC(Event[type][position]->GET_PLASTIC());
             break;
         case 3:
-            PROCESSORS[ProcessorID]->PassEvent_FATIMA((FATIMA_Event*)Event[type][position]);
+            PROCESSORS[ProcessorID]->PassEvent_FATIMA(Event[type][position]->GET_FATIMA());
             break;
         case 4:
-            PROCESSORS[ProcessorID]->PassEvent_GALILEO((GALILEO_Event*)Event[type][position]);
+            PROCESSORS[ProcessorID]->PassEvent_GALILEO(Event[type][position]->GET_GALILEO());
             break;
         default:
             std::cerr << "FILL_PROCESSOR: System type not known!" << std::endl;

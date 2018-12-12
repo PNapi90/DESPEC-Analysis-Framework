@@ -42,17 +42,18 @@ public:
     ~PL_FAT_EventProcessor();
 
 
-    void PassEvent_PLASTIC(PLASTIC_Event* Event);
-    void PassEvent_FATIMA(FATIMA_Event* Event);
+    void PassEvent_PLASTIC_VME(PLASTIC_VME_DataStruct* DATA_VME_P);
+    void PassEvent_PLASTIC_VME(PLASTIC_DataStruct* DATA_VME_P);
+    void PassEvent_FATIMA(FATIMA_DataStruct* DATA_F);
 
 
     bool AllPassed();
 
     //not used here
-    void PassEvent_FRS(FRS_Event*){return;};
-    void PassEvent_AIDA(AIDA_Event*){return;};
+    void PassEvent_FRS(FRS_DataStruct*){return;};
+    void PassEvent_AIDA(AIDA_DataStruct*){return;};
 
-    void PassEvent_GALILEO(GALILEO_Event*){return;};
+    void PassEvent_GALILEO(GALILEO_DataStruct*){return;};
 
 
 

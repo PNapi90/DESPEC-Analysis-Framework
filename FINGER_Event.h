@@ -30,6 +30,10 @@ public:
     PLASTIC_VME_DataStruct* GET_PLASTIC_VME(){return nullptr;};
 
     FATIMA_DataStruct* GET_FATIMA(){return nullptr;};
+    FRS_DataStruct* GET_FRS(){return nullptr;};
+    AIDA_DataStruct* GET_AIDA(){return nullptr;};
+    GALILEO_DataStruct* GET_GALILEO(){return nullptr;};
+    FINGER_DataStruct* GET_FINGER(){return nullptr;};
 };
 
 #endif /* FINGER_EVENT_H_ */

@@ -9,6 +9,10 @@ PL_FAT_EventProcessor::PL_FAT_EventProcessor() : PLASTIC_Passed(false) ,
 
     char Name[50];
 
+    DATA_F = nullptr;
+    DATA_P = nullptr;
+    DATA_VME_P = nullptr;
+
     TDiff = new TH1D**[MAX_FAT];
     for(int i = 0;i < MAX_FAT;++i){
         TDiff[i] = new TH1D*[MAX_PL];
@@ -28,19 +32,27 @@ PL_FAT_EventProcessor::~PL_FAT_EventProcessor(){
 
 //---------------------------------------------------------------
 
-void PL_FAT_EventProcessor::PassEvent_PLASTIC(PLASTIC_Event* Event){
+void PL_FAT_EventProcessor::PassEvent_PLASTIC(PLASTIC_DataStruct* DATA_P){
 
-    if(PLASTIC_VME) DATA_VME_P = Event->GET_PLASTIC_VME();
-    else DATA_P = Event->GET_PLASTIC();
+    this->DATA_P = DATA_P;
 
     PLASTIC_Passed = true;
 }
 
 //---------------------------------------------------------------
 
-void PL_FAT_EventProcessor::PassEvent_FATIMA(FATIMA_Event* Event){
+void PL_FAT_EventProcessor::PassEvent_PLASTIC_VME(PLASTIC_VME_DataStruct* DATA_VME_P){
 
-    DATA_F = Event->GET_FATIMA();
+    this->DATA_VME_P = DATA_VME_P;
+
+    PLASTIC_Passed = true;
+}
+
+//---------------------------------------------------------------
+
+void PL_FAT_EventProcessor::PassEvent_FATIMA(FATIMA_DataStruc* DATA_F){
+
+    this->DATA_F = DATA_F;
 
     FATIMA_Passed = true;
 }
@@ -106,6 +118,9 @@ void PL_FAT_EventProcessor::ProcessEvent(){
             //TWalk_MAT[FAT_Ch][PL_Ch]->Fill(ToT,Diff_FAT_PL);
         }
     }
+    DATA_F = nullptr;
+    DATA_P = nullptr;
+    DATA_VME_P = nullptr;
 }
 
 //---------------------------------------------------------------

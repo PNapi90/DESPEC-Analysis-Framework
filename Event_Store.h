@@ -17,6 +17,13 @@
 #include "GALILEO_Event.h"
 #include "FINGER_Event.h"
 
+#include "FRS_DataStruct.h"
+#include "AIDA_DataStruct.h"
+#include "PLASTIC_DataStruct.h"
+#include "PLASTIC_VME_DataStruct.h"
+#include "FATIMA_DataStruct.h"
+#include "GALILEO_DataStruct.h"
+
 #include "Tree_Creator.h"
 
 #include "EventProcessor.cxx"
@@ -47,6 +54,8 @@ private:
     int iter_tmp,internal_iter;
     double E_save[2];
     double e_gali,fat_e;
+
+    bool VME_or_TAMEX;
 
     Events*** Event;
     ULong64_t** Event_WR;
