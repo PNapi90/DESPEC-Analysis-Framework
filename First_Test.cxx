@@ -289,7 +289,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		
 		//if necessary, directly print MBS for wanted Detector_System
-		if(PrcID_Conv == FATIMA && false) print_MBS(pdata,lwords);
+		if(PrcID_Conv == FATIMA) print_MBS(pdata,lwords);
+		if(PrcID_Conv == PLASTIC) print_MBS(pdata,lwords);
 		
 		//=================================================================
 		//UNPACKING
@@ -1693,8 +1694,7 @@ bool TSCNUnpackProc::Check_Cal_Plastic(){
     int val;
     bool CALIBRATE = false;
 
-    while(data.good()){
-        getline(data,line,'\n');
+    while(getline(data,line,'\n')){
         if(line[0] == '#') continue;
         sscanf(line.c_str(),format,&s,&val);
         if(string(s) == string("ONLINE")) CALIBRATE = (val == 1);
