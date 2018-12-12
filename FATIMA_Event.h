@@ -29,11 +29,12 @@ public:
     double get_energy();
     void Write_Event(Tree_Creator* Tree);
 
-    PLASTIC_DataStruct* GET_PLASTIC(){return nullptr;};
-    PLASTIC_VME_DataStruct* GET_PLASTIC_VME(){return nullptr;};
 
     FATIMA_DataStruct* GET_FATIMA();
     
+    FRS_DataStruct* GET_FRS(){return nullptr;};
+    PLASTIC_DataStruct* GET_PLASTIC(){return nullptr;};
+    PLASTIC_VME_DataStruct* GET_PLASTIC_VME(){return nullptr;};
     AIDA_DataStruct* GET_AIDA(){return nullptr;};
     GALILEO_DataStruct* GET_GALILEO(){return nullptr;};
     FINGER_DataStruct* GET_FINGER(){return nullptr;};

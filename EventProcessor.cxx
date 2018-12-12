@@ -21,6 +21,7 @@ public:
     virtual void PassEvent_PLASTIC(PLASTIC_DataStruct*) = 0;
     virtual void PassEvent_FATIMA(FATIMA_DataStruct*) = 0;
     virtual void PassEvent_GALILEO(GALILEO_DataStruct*) = 0;
+    virtual void PassEvent_FINGER(FINGER_DataStruct*) = 0;
 
     virtual bool AllPassed() = 0;
 };

@@ -54,6 +54,7 @@ public:
     void PassEvent_AIDA(AIDA_DataStruct*){return;};
 
     void PassEvent_GALILEO(GALILEO_DataStruct*){return;};
+    void PassEvent_FINGER(FINGER_DataStruct*){return;};
 
 
 

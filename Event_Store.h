@@ -23,6 +23,7 @@
 #include "PLASTIC_VME_DataStruct.h"
 #include "FATIMA_DataStruct.h"
 #include "GALILEO_DataStruct.h"
+#include "FINGER_DataStruct.h"
 
 #include "Tree_Creator.h"
 
