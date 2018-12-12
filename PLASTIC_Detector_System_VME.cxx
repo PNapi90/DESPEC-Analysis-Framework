@@ -62,9 +62,9 @@ void PLASTIC_VME_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
     int lwords = psubevt->GetIntLen();
     
 
-    int EvCounter = 0;
-    int geo_ad = 0;
-    int Channels = 0;
+    //int EvCounter = 0;
+    //int geo_ad = 0;
+    //int Channels = 0;
 
 
 
@@ -164,11 +164,6 @@ void PLASTIC_VME_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
         ++TDC_iterator;
 
     } // end while(true)
-}
-//---------------------------------------------------------------
-
-int* PLASTIC_VME_Detector_System::get_pdata(){
-    return pdata;
 }
 
 //---------------------------------------------------------------
