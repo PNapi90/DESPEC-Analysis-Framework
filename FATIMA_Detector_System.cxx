@@ -219,24 +219,15 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
         
     //loop over FATIMA modules
     while(!TDC_Called){
-		
-		
-		
-		
-		
-		
         //QDC channel empty (check a -> always with QDC, length-> am_channels called (len-4))
         if(QDChead->check_a == 10 && QDChead->length == 4) {
-			for(int i = 0;i < 3;++i) {
-				this->pdata++;
-			}
-			
-		}
+            for(int i = 0;i < 3;++i) this->pdata++;
+        }
         //QDC channel filled 
         else if(QDChead->check_a == 10){
-	    
-	    // double length = QDChead->length;
-	    	    
+        
+        // double length = QDChead->length;
+    
             QDC_DATA = true;
             Check_QDC_DATA(QDChead);
         }
@@ -247,42 +238,34 @@ void FATIMA_Detector_System::Process_MBS(int* pdata){
 
             this->pdata--;
 
-	    Check_TDC_DATA(); 
+            Check_TDC_DATA(); 
 
-	    if (num_TDC_modules == 0){
-		 
-		TDC_Called = true;
-		
-		this->pdata++;
+            if (num_TDC_modules == 0){
+                TDC_Called = true;
+                this->pdata++;
+            } 
+        }
+        else if(TDChead->no == 3145728){
 
-	    }
-	     
-	}
-	else if(TDChead->no == 3145728){
-	    
-	    num_TDC_modules--;
-	     
-	    if (num_TDC_modules == 0){
-		
-			TDC_Called = true;
-		 
-			this->pdata++;
-		 
-	    }
-	}
-	else{
-	    cout << "Unknown header word: " << TDChead->type << endl;
-	    
-	    unknown_header_counter++;
-	    if(unknown_header_counter > 10){
-             cout << endl;
-             cout << "ERROR: Too many unknown header words in FATIMA unpacker" << endl;
-             cout << "Something is probably wrong with the setup configuration" << endl;
-             cout << "Most likely White Rabbit is/isn't enabled" << endl;
-             exit(0);
-	    }
-	}
-	
+            num_TDC_modules--;
+         
+            if (num_TDC_modules == 0){
+                TDC_Called = true;
+                this->pdata++;
+            }
+        }
+        else{
+            cout << "Unknown header word: " << TDChead->type << endl;
+            unknown_header_counter++;
+            if(unknown_header_counter > 10){
+                cout << endl;
+                cout << "ERROR: Too many unknown header words in FATIMA unpacker" << endl;
+                cout << "Something is probably wrong with the setup configuration" << endl;
+                cout << "Most likely White Rabbit is/isn't enabled" << endl;
+                exit(0);
+            }
+        }
+
         this->pdata++;
         
         QDChead = (QDC_Header*) this->pdata;
@@ -392,6 +375,9 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 			pdata += skip;
 	      
 		}else{
+            if(fired_QDC_amount > max_am_dets){
+                cerr << "fired_QDC_amount too large! " << fired_QDC_amount << endl;
+            }
 			//set active board_ID and channel #
 			active_board = Fired_QDC_Channels[i][0];
 			active_Channel = Fired_QDC_Channels[i][1];
@@ -445,9 +431,6 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 			fired_QDC_amount++;
 		}
 	}
-    
-
-    
 }
 
 
@@ -491,6 +474,9 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                 no_data = true;
             }
             else{
+                if(fired_QDC_amount > max_am_dets){
+                    cerr << "fired_TDC_amount too large! " << fired_TDC_amount << endl;
+                }
                 active_det = det_ID_TDC[tdc_board_ID][TDC_ch];
                 det_ids_TDC[fired_TDC_amount] = active_det;
                 //cout << "DET!" << active_det << endl;
