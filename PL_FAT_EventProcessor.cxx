@@ -5,7 +5,7 @@
 PL_FAT_EventProcessor::PL_FAT_EventProcessor() : PLASTIC_Passed(false) , 
                                                  FATIMA_Passed(false)
 {
-    FILE = new TFile("PL_FAT_EventBuild","RECREATE");
+    FILE = new TFile("PL_FAT_EventBuild.root","RECREATE");
 
     char Name[50];
 
@@ -13,9 +13,8 @@ PL_FAT_EventProcessor::PL_FAT_EventProcessor() : PLASTIC_Passed(false) ,
     for(int i = 0;i < MAX_FAT;++i){
         TDiff[i] = new TH1D*[MAX_PL];
         for(int j = 0;j < MAX_PL;++j){
-            sprintf(Name,"Time_Difference_FAT_%d_PL_%d",i,j);
-            TDiff[i][j] = new TH1D(Name,Name,500,0,500);
-            FILE->Add(TDiff[i][j]);
+            TDiff[i][j] = nullptr;
+            //FILE->Add(TDiff[i][j]);
         }
     }
 
@@ -94,6 +93,12 @@ void PL_FAT_EventProcessor::ProcessEvent(){
                 Diff_FAT_PL = DATA_F->FAT_t[i] - DATA_P->Time_Trail[PL_Ch][tmpIter];
             }
 
+            if(!TDiff[FAT_Ch][PL_Ch]){
+                char Name[50];
+                sprintf(Name,"Time_Difference_FAT_%d_PL_%d",FAT_Ch,PL_Ch);
+                TDiff[FAT_Ch][PL_Ch] = new TH1D(Name,Name,500,0,500);
+                TFile->Add(TDiff[FAT_Ch][PL_Ch])
+            }
             TDiff[FAT_Ch][PL_Ch]->Fill(Diff_FAT_PL);
             //TWalk_MAT[FAT_Ch][PL_Ch]->Fill(ToT,Diff_FAT_PL);
         }
