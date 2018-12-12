@@ -53,6 +53,8 @@ bool PL_FAT_EventProcessor::AllPassed(){
         PLASTIC_Passed = false;
         FATIMA_Passed = false;
 
+        std::cout << "Processing!" << std::endl;
+
         ProcessEvent();
 
         return true;
@@ -77,6 +79,8 @@ void PL_FAT_EventProcessor::ProcessEvent(){
 
     int FAT_Ch = 0, PL_Ch = 0;
     int tmpIter = 0;
+
+    std::cout << FAT_Fired << " " << PL_Fired << std::endl;
 
     //loop over FATIMA
     for(int i = 0;i < FAT_Fired;++i){
