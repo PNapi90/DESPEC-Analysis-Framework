@@ -93,6 +93,8 @@ void PL_FAT_EventProcessor::ProcessEvent(){
                 Diff_FAT_PL = DATA_F->FAT_t[i] - DATA_P->Time_Trail[PL_Ch][tmpIter];
             }
 
+            std::cout << "DIFF " << Diff_FAT_PL << std::endl;
+
             if(!TDiff[FAT_Ch][PL_Ch]){
                 char Name[50];
                 sprintf(Name,"Time_Difference_FAT_%d_PL_%d",FAT_Ch,PL_Ch);
