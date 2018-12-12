@@ -118,7 +118,7 @@ struct PLASTIC_DataStruct{
                     phys_channel[i][j] = PADI_OR_PADIWA ? (ch_ID[i][j])/2 : (ch_ID[i][j]+1)/2;
                 
                 
-                    Time_Trail[phys_channel[i][j]][leading_hits_ch[i][phys_channel[i][j]]] = coarse_T_edge_trail[i][j] - fine_T_edge_trail[i][j];
+                    Time_Trail[phys_channel[i][j]][trailing_hits_ch[i][phys_channel[i][j]]] = coarse_T_edge_trail[i][j] - fine_T_edge_trail[i][j];
                 
                     ++trailing_hits[i];
                     ++trailing_hits_ch[i][phys_channel[i][j]];

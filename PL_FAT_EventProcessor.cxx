@@ -71,12 +71,13 @@ bool PL_FAT_EventProcessor::AllPassed(){
 
 void PL_FAT_EventProcessor::ProcessEvent(){
     int FAT_Fired = DATA_F->FAT_DET_FIRED;
-    int PL_Fired = PLASTIC_VME ? DATA_VME_P->TDC_iterator : DATA_P->AmountFired;
+    int PL_Fired = PLASTIC_VME ? DATA_VME_P->TDC_iterator : DATA_P->iterator[0];
 
     double Diff_FAT_PL = 0;
     
 
     int FAT_Ch = 0, PL_Ch = 0;
+    int tmpIter = 0;
 
     //loop over FATIMA
     for(int i = 0;i < FAT_Fired;++i){
@@ -88,8 +89,9 @@ void PL_FAT_EventProcessor::ProcessEvent(){
                 Diff_FAT_PL = DATA_F->FAT_t[i] - DATA_VME_P->VME_TDC_Data[j];
             }
             else{
-                PL_Ch = DATA_P->FiredChannel[j];
-                Diff_FAT_PL = DATA_F->FAT_t[i] - DATA_P->Time_Trail[j];
+                PL_Ch = DATA_P->ch_ID[0][j];
+                tmpIter = DATA_P->trailing_hits_ch[0][PL_Ch];
+                Diff_FAT_PL = DATA_F->FAT_t[i] - DATA_P->Time_Trail[PL_Ch][tmpIter];
             }
 
             TDiff[FAT_Ch][PL_Ch]->Fill(Diff_FAT_PL);
