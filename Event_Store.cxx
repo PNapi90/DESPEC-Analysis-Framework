@@ -371,7 +371,7 @@ void Event_Store::Write(Match* MatchHit,Tree_Creator* Tree){
     //do coincidence-specific operations (e.g. time walk FAT <-> PLASTIC)
     
 	//loop over coincident events
-	for(int o = 0;o < match_hits;++o){ 
+	/*for(int o = 0;o < match_hits;++o){ 
 		if(filled_types[o] != -1){
 			//Pass event to Processor
             FILL_PROCESSOR(filled_types[o],*hit_addresses[filled_types[o]],0);
@@ -379,7 +379,7 @@ void Event_Store::Write(Match* MatchHit,Tree_Creator* Tree){
 	}
 	//check if data needed for calibration has been sent to 
 	//MatchSpecificCalibrations object (if not -> error!)
-	if(!PROCESSORS[0]->AllPassed()) exit(1);
+	if(!PROCESSORS[0]->AllPassed()) exit(1);*/
     
     filled_types = nullptr;
     hit_addresses = nullptr;
