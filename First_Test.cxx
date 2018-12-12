@@ -1169,7 +1169,7 @@ void TSCNUnpackProc::Fill_Plastic_Histos(){
                                       Form("TOT_board%d_from_ch%d_to_%d",i,Phys_Channel[0],Phys_Channel[1]),10000, -500., 500.);
                             }
 
-                            TOT_TOT[Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
+                            TOT_TOT[i][Phys_Channel[0]][Phys_Channel[1]]->Fill(Diff);
                         }
                     }
                 }
