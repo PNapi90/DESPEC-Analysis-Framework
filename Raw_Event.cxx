@@ -268,24 +268,24 @@ ULong64_t Raw_Event::get_WR(){return WR;}
 
 //---------------------------------------------------------------
 
-      int Raw_Event::get_FAT_det_fired(){return FAT_DET_FIRED;}
-	  int Raw_Event::get_FAT_id(int i){return FAT_id[i];}
-   double Raw_Event::get_FAT_E(int i){return FAT_E[i];}
-   double Raw_Event::get_FAT_ratio(int i){return FAT_ratio[i];}
-   double Raw_Event::get_FAT_t(int i){return FAT_t[i];}
-   double Raw_Event::get_FAT_t_qdc(int i){return FAT_t_qdc[i];}
+      int Raw_Event::get_FAT_det_fired(){return FATIMA_Data.FAT_DET_FIRED;}
+	  int Raw_Event::get_FAT_id(int i){return FATIMA_Data.FAT_id[i];}
+   double Raw_Event::get_FAT_E(int i){return FATIMA_Data.FAT_E[i];}
+   double Raw_Event::get_FAT_ratio(int i){return FATIMA_Data.FAT_ratio[i];}
+   double Raw_Event::get_FAT_t(int i){return FATIMA_Data.FAT_t[i];}
+   double Raw_Event::get_FAT_t_qdc(int i){return FATIMA_Data.FAT_t_qdc[i];}
 
-      int Raw_Event::get_FAT_QDCs_fired(){return FAT_QDCs_FIRED;}
-      int Raw_Event::get_FAT_QDC_id(int i){return FAT_QDC_id[i];}
-   double Raw_Event::get_FAT_QLong(int i){return FAT_QLong[i];}
-   double Raw_Event::get_FAT_QShort_Raw(int i){return FAT_QShort_Raw[i];}
-   double Raw_Event::get_FAT_QLong_Raw(int i){return FAT_QLong_Raw[i];}
-ULong64_t Raw_Event::get_FAT_QDC_t_Coarse(int i){return FAT_QDC_t_coarse[i];}
-   double Raw_Event::get_FAT_QDC_t_Fine(int i){return FAT_QDC_t_fine[i];}
+      int Raw_Event::get_FAT_QDCs_fired(){return FATIMA_Data.FAT_QDCs_FIRED;}
+      int Raw_Event::get_FAT_QDC_id(int i){return FATIMA_Data.FAT_QDC_id[i];}
+   double Raw_Event::get_FAT_QLong(int i){return FATIMA_Data.FAT_QLong[i];}
+   double Raw_Event::get_FAT_QShort_Raw(int i){return FATIMA_Data.FAT_QShort_Raw[i];}
+   double Raw_Event::get_FAT_QLong_Raw(int i){return FATIMA_Data.FAT_QLong_Raw[i];}
+ULong64_t Raw_Event::get_FAT_QDC_t_Coarse(int i){return FATIMA_Data.FAT_QDC_t_coarse[i];}
+   double Raw_Event::get_FAT_QDC_t_Fine(int i){return FATIMA_Data.FAT_QDC_t_fine[i];}
 
-      int Raw_Event::get_FAT_TDCs_fired(){return FAT_TDCs_FIRED;}
-      int Raw_Event::get_FAT_TDC_id(int i){return FAT_TDC_id[i];}
-   double Raw_Event::get_FAT_TDC_timestamp(int i){return FAT_TDC_timestamp[i];}
+      int Raw_Event::get_FAT_TDCs_fired(){return FATIMA_Data.FAT_TDCs_FIRED;}
+      int Raw_Event::get_FAT_TDC_id(int i){return FATIMA_Data.FAT_TDC_id[i];}
+   double Raw_Event::get_FAT_TDC_timestamp(int i){return FATIMA_Data.FAT_TDC_timestamp[i];}
 
 
 FATIMA_DataStruct* Raw_Event::PassFATIMA(){return &FATIMA_Data;}
