@@ -72,8 +72,6 @@ void PL_FAT_EventProcessor::ProcessEvent(){
     int FAT_Fired = DATA_F->FAT_DET_FIRED;
     int PL_Fired = PLASTIC_VME ? DATA_VME_P->TDC_iterator : DATA_P->iterator[0];
 
-    std::cout << "ProcessEvent " << std::endl;
-
     double Diff_FAT_PL = 0;
     
 
