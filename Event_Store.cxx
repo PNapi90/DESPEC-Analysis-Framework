@@ -202,7 +202,7 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
 //---------------------------------------------------------------
 
 inline bool Event_Store::in_time_windows(double delta){
-    double offset = 200;
+    double offset = 200*0;
     double width = 50000;
     return (abs(delta - offset) < width);
 }
