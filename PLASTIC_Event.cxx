@@ -22,9 +22,9 @@ inline void PLASTIC_Event::set_DATA(Raw_Event* RAW){
     if(VME_Event){
         PLASTIC_VME_DataStruct* P_Tmp = RAW->PassPLASTIC_VME();
         //set event data
-        DATA_VME.SetDATA(P_Tmp->VME_QDC_Data,P_Tmp->VME_QDC_Channels,
-                         P_Tmp->VME_TDC_Data,P_Tmp->VME_TDC_Channels,
-                         P_Tmp->TDC_iterator);
+        DATA_VME.SetDATA(P_Tmp->TDC_iterator,
+                         P_Tmp->VME_QDC_Data,P_Tmp->VME_QDC_Channels,
+                         P_Tmp->VME_TDC_Data,P_Tmp->VME_TDC_Channels);
         P_Tmp = nullptr;
     }
     //Plastic read from TAMEX
