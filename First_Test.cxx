@@ -114,7 +114,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	//Skip event building if plastic calibration is enabled
 	SKIP_EVT_BUILDING = SKIP_EVT_BUILDING || PLASTIC_CALIBRATION;
-
+	SKIP_EVT_BUILDING = true;
 	
 	if(!SKIP_EVT_BUILDING){
 		EvtBuilder = new EventBuilder*[1];
@@ -297,7 +297,7 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 			FirstIteration = false;
 		}
 		
-		
+		if(PrcID_Conv != PLASTIC) continue;
 		//if necessary, directly print MBS for wanted Detector_System
 		if(PrcID_Conv == FATIMA && false) print_MBS(pdata,lwords);
 		
