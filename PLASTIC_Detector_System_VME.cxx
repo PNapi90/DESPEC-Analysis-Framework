@@ -48,7 +48,7 @@ PLASTIC_VME_Detector_System::~PLASTIC_VME_Detector_System(){
 //---------------------------------------------------------------
 
 void PLASTIC_VME_Detector_System::get_Event_data(Raw_Event* RAW){
-    RAW->set_DATA_PLASTIC_VME(VME_QDC_Data,VME_QDC_Channels,VME_TDC_Data,VME_TDC_Channels,TDC_iterator);
+    RAW->set_DATA_PLASTIC_VME(TDC_iterator,VME_QDC_Data,VME_QDC_Channels,VME_TDC_Data,VME_TDC_Channels);
 }
 
 //---------------------------------------------------------------
