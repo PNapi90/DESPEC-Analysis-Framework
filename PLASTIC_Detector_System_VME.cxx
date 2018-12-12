@@ -105,9 +105,10 @@ void PLASTIC_VME_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
                 chan = (data & CH_MASK) >> 16;     // [0..31] 
                 data = data & DA_MASK;
                 
-                VME_QDC_Channels[jj] = chan;
-                VME_QDC_Data[jj] = data;
-
+                if(geo == 6){
+                    VME_QDC_Channels[jj] = chan;
+                    VME_QDC_Data[jj] = data;
+                }
             } // end for(jj)
 
  
@@ -117,9 +118,11 @@ void PLASTIC_VME_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
                 data = *pl_data++;
                 chan = (data & CH_MASK) >> 16;     // [0..31] 
                 data = data & DA_MASK;
-
-                VME_QDC_Channels[jj] = chan;
-                VME_QDC_Data[jj] = data;
+                
+                if(geo == 6){
+                    VME_QDC_Channels[jj] = chan;
+                    VME_QDC_Data[jj] = data;
+                }
 
             } // end for(jj)
             pl_data++;   // skip EOB word 
@@ -130,7 +133,6 @@ void PLASTIC_VME_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
     //***  CAEN V1290 TDC  ***
     //************************
 
-    pdata = pl_data;
 
     caen_header = *pdata++;     // read header word 
 
