@@ -174,7 +174,7 @@ void TX_Matrix::Process(int* X_Arr,ULong64_t* Time_Arr,double* Energy_Arr,int le
     int dataPosition = 0;
 
     //g++ version >= 4.9
-    #ifdef GPP_FLAG
+    #if(GPP_FLAG)
         //data point splitting for threading
         set_data_points_per_thread();
     
@@ -340,7 +340,7 @@ inline bool TX_Matrix::keep_Event(int i){
 
 inline void TX_Matrix::Save_Matrix_Row(int i){
     
-    #ifdef GPP_FLAG
+    #if(GPP_FLAG)
         lock_guard<mutex> lockGuard(MUTEX);
     #endif
 
@@ -409,7 +409,7 @@ void TX_Matrix::PrintIT(int i,int tnum){
 
 inline bool TX_Matrix::check_relevant(int i){
     
-    #ifdef GPP_FLAG
+    #if(GPP_FLAG)
         lock_guard<mutex> lockGuard(MUTEX);
     #endif
     
@@ -437,7 +437,7 @@ inline void TX_Matrix::set_relevant(int i,int lenX,int* deleteable_rows){
 
 inline void TX_Matrix::set_skip_array_element(int delete_j,int i,int j){
     
-    #ifdef GPP_FLAG
+    #if(GPP_FLAG)
         lock_guard<mutex> lockGuard(MUTEX);
     #endif
 
@@ -537,7 +537,7 @@ void TX_Matrix::Thread_X(int thr_num){
 
 //---------------------------------------------------------------
 
-#ifdef GPP_FLAG
+#if(GPP_FLAG)
     thread TX_Matrix::threading(bool T_or_X,int j){
         if(T_or_X) return thread([=] {
 			Thread_T(j);
@@ -552,7 +552,7 @@ void TX_Matrix::Thread_X(int thr_num){
 
 void TX_Matrix::Set_Next_Cluster(int** tmp_cluster,int c_counter,int thr_num){
 
-    #ifdef GPP_FLAG
+    #if(GPP_FLAG)
         lock_guard<mutex> lockGuard(MUTEX);
     #endif
 

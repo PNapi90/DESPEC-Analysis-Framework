@@ -60,7 +60,7 @@ void AIDA_Processor::PROCESSING(AIDA_Decay_Event_Store* Store){
     //if compiler too old, threading not possible
     
     //g++ version >= 4.9
-    #ifdef GPP_FLAG
+    #if(GPP_FLAG)
 
         //Threading active ?
         if(USE_THREADS){
@@ -134,9 +134,9 @@ void AIDA_Processor::get_DATA(Raw_Event* RAW){
 
 //---------------------------------------------------------------
 
-#ifdef GPP_FLAG
+#if(GPP_FLAG)
 
-    thread AIDA_Processor::threading(bool type,int thr_it){
+    std::thread AIDA_Processor::threading(bool type,int thr_it){
         bool xy_b = (thr_it % 2 == 1);
         if(type){
             int hits_tmp = Stream->get_amount_of_hits(xy_b,thr_it);
