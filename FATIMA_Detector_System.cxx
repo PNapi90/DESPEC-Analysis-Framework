@@ -315,6 +315,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
      // Loop retrieves channels fired from integer value //
     for(int j = 7; j >= 0; j--){
         if(num_Channels >= pow(2, j)){
+            cout << num_channels_fired << " " << Fired_QDC_Channels.size() << std::endl;
             //fill Fired_Channel array with corresponding ids
             if(wired_QDC(board_ID,j)){
                 Fired_QDC_Channels[num_channels_fired][0] = board_ID; 
