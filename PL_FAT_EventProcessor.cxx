@@ -97,7 +97,7 @@ void PL_FAT_EventProcessor::ProcessEvent(){
                 char Name[50];
                 sprintf(Name,"Time_Difference_FAT_%d_PL_%d",FAT_Ch,PL_Ch);
                 TDiff[FAT_Ch][PL_Ch] = new TH1D(Name,Name,500,0,500);
-                FILE->Add(TDiff[FAT_Ch][PL_Ch])
+                FILE->Add(TDiff[FAT_Ch][PL_Ch]);
             }
             TDiff[FAT_Ch][PL_Ch]->Fill(Diff_FAT_PL);
             //TWalk_MAT[FAT_Ch][PL_Ch]->Fill(ToT,Diff_FAT_PL);
