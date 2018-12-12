@@ -53,8 +53,6 @@ bool PL_FAT_EventProcessor::AllPassed(){
         PLASTIC_Passed = false;
         FATIMA_Passed = false;
 
-        std::cout << "Processing!" << std::endl;
-
         ProcessEvent();
 
         return true;
@@ -80,7 +78,6 @@ void PL_FAT_EventProcessor::ProcessEvent(){
     int FAT_Ch = 0, PL_Ch = 0;
     int tmpIter = 0;
 
-    std::cout << FAT_Fired << " " << PL_Fired << std::endl;
 
     //loop over FATIMA
     for(int i = 0;i < FAT_Fired;++i){
@@ -96,16 +93,16 @@ void PL_FAT_EventProcessor::ProcessEvent(){
                 tmpIter = DATA_P->trailing_hits_ch[0][PL_Ch];
                 Diff_FAT_PL = DATA_F->FAT_t[i] - DATA_P->Time_Trail[PL_Ch][tmpIter];
             }
+            Diff_FAT_PL /= 1000.;
 
-            std::cout << "DIFF " << Diff_FAT_PL << std::endl;
-
-            if(!TDiff[FAT_Ch][PL_Ch]){
-                char Name[50];
-                sprintf(Name,"Time_Difference_FAT_%d_PL_%d",FAT_Ch,PL_Ch);
-                TDiff[FAT_Ch][PL_Ch] = new TH1D(Name,Name,500,0,500);
-                FILE->Add(TDiff[FAT_Ch][PL_Ch]);
+			if(abs(FAT_Ch) <= MAX_FAT && abs(PL_Ch) <= MAX_PL){
+                if(!TDiff[FAT_Ch][PL_Ch]){
+                    char Name[50];
+                    sprintf(Name,"Time_Difference_FAT_%d_PL_%d",FAT_Ch,PL_Ch);
+                    TDiff[FAT_Ch][PL_Ch] = new TH1D(Name,Name,4000,-2000,2000);
+                }
+                TDiff[FAT_Ch][PL_Ch]->Fill(Diff_FAT_PL);
             }
-            TDiff[FAT_Ch][PL_Ch]->Fill(Diff_FAT_PL);
             //TWalk_MAT[FAT_Ch][PL_Ch]->Fill(ToT,Diff_FAT_PL);
         }
     }

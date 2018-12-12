@@ -105,7 +105,7 @@ void PLASTIC_VME_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
                 chan = (data & CH_MASK) >> 16;     // [0..31] 
                 data = data & DA_MASK;
                 
-                if(geo == 6){
+                if(geo == 6 && abs(chan) <= 31){
                     VME_QDC_Channels[jj] = chan;
                     VME_QDC_Data[jj] = data;
                 }
@@ -119,7 +119,7 @@ void PLASTIC_VME_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
                 chan = (data & CH_MASK) >> 16;     // [0..31] 
                 data = data & DA_MASK;
                 
-                if(geo == 6){
+                if(geo == 6 && abs(chan) <= 31 ){
                     VME_QDC_Channels[jj] = chan;
                     VME_QDC_Data[jj] = data;
                 }
@@ -141,6 +141,7 @@ void PLASTIC_VME_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
     geo  = caen_header & 0x1F;            // get geographical address 
 
     TDC_iterator = 0; 
+    
 
     // scan data until global Trailer
     while(true){   
@@ -156,17 +157,17 @@ void PLASTIC_VME_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
             
             break;  // exit loop
         }
+        
+        
 
-        chan1 = (data & CH_MASK2) >> 21;     // [0..31] 
+        chan = (data & CH_MASK2) >> 21;     // [0..31] 
         data = data & DA_MASK2;
 
-        VME_TDC_Channels[TDC_iterator] = chan1;
-        VME_TDC_Data[TDC_iterator] = data;
-
-
-
-        ++TDC_iterator;
-
+        if(abs(chan) <= 31){
+            VME_TDC_Channels[TDC_iterator] = chan;
+            VME_TDC_Data[TDC_iterator] = data;
+            ++TDC_iterator;
+        }
     } // end while(true)
 }
 

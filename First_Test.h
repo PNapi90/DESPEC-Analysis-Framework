@@ -37,6 +37,7 @@
 #include "Detector_System.cxx"
 #include "FATIMA_Detector_System.h"
 #include "PLASTIC_Detector_System.h"
+#include "PLASTIC_Detector_System_VME.h"
 #include "GALILEO_Detector_System_TEST.h"
 //#include "FRS_Detector_System.h"
 

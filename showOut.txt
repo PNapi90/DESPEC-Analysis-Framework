@@ -1,0 +1,116 @@
+GO4-*> Reading library: libGo4UserAnalysis  
+GO4-*> Find user analysis class TSCNAnalysis  
+GO4-*> !!! Find constructor with prototype TSCNAnalysis::TSCNAnalysis(int, char**)  
+GO4-*> Process: new TSCNAnalysis(1, (char**)0x7ffd2c980430)  
+GO4-*> Welcome to Go4 Analysis Framework Release v5.3.2 (build 50302) !  
+**** TSCNAnalysis: Create Go4Analysis
+GO4-*> Analysis: Added analysis step Unpack  
+GO4-*> Analysis: Added analysis step Calibration  
+GO4-*> Analysis: Added analysis step Analysis  
+GO4-*> Main: starting analysis in batch mode ...    
+GO4-!> Fail to open AutoSave file Go4AnalysisASF.root  
+GO4-*> Analysis LoadObjects: Failed to load from file Go4AnalysisASF.root  
+GO4-*> TGo4MbsFile: Open file ../pl_fat_0002.lmd  
+GO4-*> UnpackFactory: Create input event for MBS  
+GO4-*> Event MbsEvent101 has source ../pl_fat_0002.lmd class: TGo4MbsFile  
+GO4-*> UnpackFactory: Create event processor UnpackProc  
+**** TSCNUnpackProc: Create
+
+=====================================================
+USED SYSTEMS
+-----------------------------------------------------
+FRS
+AIDA
+PLASTIC
+FATIMA
+GALILEO
+=====================================================
+set MUSIC parameters
+ setMap :5
+Setup done 
+
+-------------------------------------
+**AIDA THREADING ENABLED**
+Using a total number of 16 threads
+-------------------------------------
+
+Initialize TX_Matrix 0
+Initialize TX_Matrix 1
+Initialize TX_Matrix 2
+Initialize TX_Matrix 3
+Initialize TX_Matrix 4
+Initialize TX_Matrix 5
+
+=====================================================
+Coincidences of interest are: 
+-----------------------------------------------------
+-> FATIMA + GALILEO
+=====================================================
+
+
+////////////////////////////////////////////////////////////////////////
+Setup Parameters List: 
+White Rabbit: Enabled
+FATIMA Gain Matching: Disabled
+'Nearest Neighbour Exclusion': Disabled (Distance set to 0)
+////////////////////////////////////////////////////////////////////////
+
+
+
+============================================================
+A Matrix of excluded detector pairings can be found in
+'Configuration_Files/FATIMA_Exclusion_Matrix.txt'
+============================================================
+
+GO4-*> UnpackFactory: Create output event UnpackEvent  
+GO4-*> Event UnpackEvent has source UnpackProc class: TSCNUnpackProc  
+GO4-*> CalibrationFactory: Create input event UnpackEvent  
+GO4-!> Event UnpackEvent has no data source  
+GO4-*> CalibrationFactory: Create event processor CalProc  
+**** TSCNCalProc: Create
+No parameters file. Using default constructor
+GO4-*> CalibrationFactory: Create output event CalEvent  
+GO4-*> Event CalEvent has source CalProc class: TSCNCalProc  
+GO4-*> AnalysisFactory: Create input event CalEvent  
+GO4-!> Event CalEvent has no data source  
+GO4-*> AnalysisFactory: Create event processor AnlProc  
+GO4-*> AnalysisFactory: Create output event AnlEvent  
+GO4-*> Event AnlEvent has source AnlProc class: TSCNAnlProc  
+GO4-*> Analysis --  Initializing EventClasses done.  
+**** TSCNAnalysis: PreLoop
+----------------------------------------------  
+++++++ Status of Go4Analysis ++++++
+First Analysis Step index: 	0
+Last Analysis Step index: 	2
+Autosave Interval: 		500 s
+Autosave File: 		Go4AnalysisASF.root 
+Autosave File compression: 	5 
+Autosave overwrite mode: 	0 
+Autosave enabled: 		1 
+----------------------------------------------  
+ ++++ Analysis Step Unpack ++++	 
+  Eventsource: TGo4MbsFile 
+    Name: 	../pl_fat_0002.lmd 
+    Timeout: 	1 s
+    Startevent: 	0	 Stopevent: 	0 
+    Event interval: 	0
+Tagfile: GO4-NOLMDTAG 
+  EventStore is disabled.
+  Process Status: -1717986919
+ ----------------------------------------------  
+ ++++ Analysis Step Calibration ++++	 
+  EventSource is disabled. 
+  EventStore is disabled.
+  Process Status: -1717986919
+ ----------------------------------------------  
+ ++++ Analysis Step Analysis ++++	 
+  EventSource is disabled. 
+  EventStore is disabled.
+  Process Status: -1717986919
+ ----------------------------------------------  
+----------------------------------------------  
+
+**************************************
+GO4-*> Analysis loop is starting...  
+GO4-*> Start file: ../pl_fat_0002.lmd tagfile:none first:0 last:0 delta:0  
+

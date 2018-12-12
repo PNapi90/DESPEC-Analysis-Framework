@@ -29,6 +29,8 @@
 #include "AIDA_Detector_System.h"
 #include "FATIMA_Detector_System.h"
 #include "PLASTIC_Detector_System.h"
+#include "PLASTIC_Detector_System_VME.h"
+
 #include "GALILEO_Detector_System_TEST.h"
 #include "FRS_Detector_System.h"
 
@@ -78,6 +80,8 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	WHITE_RABBIT_USED = WR_used;
 	
+	checkTAMEXorVME();
+
 
 	//create Detector Systems
 	Detector_Systems = new Detector_System*[6];
@@ -86,7 +90,10 @@ TGo4EventProcessor(name) // Histograms defined here //
 	//-> calling uninitialized system will cause an error !
 	Detector_Systems[0] = !Used_Systems[0] ? nullptr : new FRS_Detector_System();
 	Detector_Systems[1] = !Used_Systems[1] ? nullptr : new AIDA_Detector_System();
-	Detector_Systems[2] = !Used_Systems[2] ? nullptr : new PLASTIC_Detector_System();
+	
+	if(VME_TAMEX) Detector_Systems[2] = !Used_Systems[2] ? nullptr : new PLASTIC_VME_Detector_System();
+	else Detector_Systems[2] = !Used_Systems[2] ? nullptr : new PLASTIC_Detector_System();
+	
 	Detector_Systems[3] = !Used_Systems[3] ? nullptr : new FATIMA_Detector_System();
 	Detector_Systems[4] = !Used_Systems[4] ? nullptr : new GALILEO_Detector_System();
 
@@ -114,7 +121,6 @@ TGo4EventProcessor(name) // Histograms defined here //
 		EvtBuilder[0] = new Time_EventBuilder(amount_interest,length_interest,interest_array);
 	}
 	
-	checkTAMEXorVME();
 	checkPADI_or_PADIWA();
 
 	

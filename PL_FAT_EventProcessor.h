@@ -18,7 +18,7 @@ class PL_FAT_EventProcessor : public EventProcessor{
 
 private:
 
-    const int MAX_FAT = 36;
+    const int MAX_FAT = 50;
     const int MAX_PL = 50;
 
     const bool PLASTIC_VME = true;
