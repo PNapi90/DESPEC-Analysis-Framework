@@ -76,6 +76,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	WR_HIST2 = MakeTH1('D',"WR2","WR2",2001,-10,4000);
 	WR_F = MakeTH1('D',"WRf","WRf",2001,-10,4000);
 	
+	WHITE_RABBIT_USED = WR_used;
 	
 
 	//create Detector Systems
