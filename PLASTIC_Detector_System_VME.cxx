@@ -130,6 +130,8 @@ void PLASTIC_VME_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
     //***  CAEN V1290 TDC  ***
     //************************
 
+    pdata = pl_data;
+
     caen_header = *pdata++;     // read header word 
 
     type = (caen_header >> 27) & 0x1F;   // get global header ID 
