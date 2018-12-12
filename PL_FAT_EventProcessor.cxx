@@ -14,7 +14,7 @@ PL_FAT_EventProcessor::PL_FAT_EventProcessor() : PLASTIC_Passed(false) ,
         TDiff[i] = new TH1D*[MAX_PL];
         for(int j = 0;j < MAX_PL;++j){
             sprintf(Name,"Time_Difference_FAT_%d_PL_%d",i,j);
-            TDiff[i][j] = new TH1D(Name,Name,500,0,500,500,0,500);
+            TDiff[i][j] = new TH1D(Name,Name,500,0,500);
             FILE->Add(TDiff[i][j]);
         }
     }
@@ -70,7 +70,7 @@ bool PL_FAT_EventProcessor::AllPassed(){
 //---------------------------------------------------------------
 
 void PL_FAT_EventProcessor::ProcessEvent(){
-    int FAT_Fired = DATA_F->AmountFired;
+    int FAT_Fired = DATA_F->FAT_DET_FIRED;
     int PL_Fired = PLASTIC_VME ? DATA_VME_P->TDC_iterator : DATA_P->AmountFired;
 
     double Diff_FAT_PL = 0;
@@ -80,16 +80,16 @@ void PL_FAT_EventProcessor::ProcessEvent(){
 
     //loop over FATIMA
     for(int i = 0;i < FAT_Fired;++i){
-        FAT_Ch = DATA_FFiredChannel[i];
+        FAT_Ch = DATA_F->FAT_id[i];
         for(int j = 0;j < PL_Fired;++j){
 
             if(PLASTIC_VME){
                 PL_Ch = DATA_VME_P->VME_TDC_Channels[j];
-                Diff_FAT_PL = DATA_F->Time[i] - DATA_VME_P->Time_Trail[j];
+                Diff_FAT_PL = DATA_F->FAT_t[i] - DATA_VME_P->VME_TDC_Data[j];
             }
             else{
                 PL_Ch = DATA_P->FiredChannel[j];
-                Diff_FAT_PL = DATA_F->Time[i] - DATA_P->Time_Trail[j];
+                Diff_FAT_PL = DATA_F->FAT_t[i] - DATA_P->Time_Trail[j];
             }
 
             TDiff[FAT_Ch][PL_Ch]->Fill(Diff_FAT_PL);
