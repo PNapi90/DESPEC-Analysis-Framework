@@ -268,6 +268,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 	Int_t sub_evt_length = 0;
 	
 	WR_tmp = 0;
+
+	bool FirstIteration = true;
 	
 	while ((psubevt = inp_evt->NextSubEvent()) != 0) // subevent loop //
 	{
@@ -278,21 +280,15 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		lwords = psubevt->GetIntLen();
 		PrcID = psubevt->GetProcid();
 
-		std::cout << "----------------------" << std::endl;
-		for(int k = 0;k < lwords;++k){
-			cout << hex << *(pdata+k) << " ";
-			if(k % 5 == 0 && k > 0) std::cout << std::endl;
-		}
-		std::cout << "----------------------" << std::endl;
-
 		PrcID_Conv = get_Conversion(PrcID);
 		sub_evt_length  = (psubevt->GetDlen() - 2) / 2;
    
 		    
-		if(WHITE_RABBIT_USED){
+		if(WHITE_RABBIT_USED && FirstIteration){
 			sub_evt_length = sub_evt_length - 5;
 			WR_tmp = WR->get_White_Rabbit(pdata);
 			pdata = WR->get_pdata();
+			FirstIteration = false;
 		}
 		
 		
