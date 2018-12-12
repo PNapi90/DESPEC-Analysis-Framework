@@ -290,8 +290,8 @@ Bool_t TSCNUnpackProc::BuildEvent(TGo4EventElement* dest)
 		
 		
 		//if necessary, directly print MBS for wanted Detector_System
-		if(PrcID_Conv == FATIMA) print_MBS(pdata,lwords);
-		if(PrcID_Conv == PLASTIC) print_MBS(pdata,lwords);
+		if(PrcID_Conv == FATIMA) cout <<"FATIMA"<<endl; print_MBS(pdata,lwords);
+		if(PrcID_Conv == PLASTIC) cout <<"PLASTIC"<<endl; print_MBS(pdata,lwords);
 		
 		//=================================================================
 		//UNPACKING
