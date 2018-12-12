@@ -76,7 +76,7 @@ Event_Store::~Event_Store(){
     
     if(Verbose_Write){
         TFILE->Write();
-        TFILE->Close();
+        //TFILE->Close();
         cout << "WR diff Histograms written" << endl;
     }
 
@@ -185,12 +185,14 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
     for(int i = 0;i < event_counter[type];++i){
         delta = (WR > Event_WR[type][i]) ? (double)(WR - Event_WR[type][i]) : (double)(Event_WR[type][i] - WR);
         delta = abs(delta);
+        T_DIFF->Fill(delta/1000.);
+        if(delta/1000. <= 1.) T_DIFF_Fine->Fill(delta);
         if(in_time_windows(delta)){
             return_value = i;
-            if(Verbose_Write){
-                T_DIFF->Fill(delta/1000.);
-                if(delta/1000. <= 1.) T_DIFF_Fine->Fill(delta);
-            }
+            //if(Verbose_Write){
+                //T_DIFF->Fill(delta/1000.);
+                //if(delta/1000. <= 1.) T_DIFF_Fine->Fill(delta);
+            //}
             break;
         }
     }
@@ -201,7 +203,7 @@ int Event_Store::Time_Comparison(int type,ULong64_t WR){
 
 inline bool Event_Store::in_time_windows(double delta){
     double offset = 200;
-    double width = 500;
+    double width = 50000;
     return (abs(delta - offset) < width);
 }
 
