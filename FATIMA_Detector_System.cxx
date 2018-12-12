@@ -474,7 +474,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
                 no_data = true;
             }
             else{
-                if(fired_QDC_amount > max_am_dets){
+                if(fired_TDC_amount > max_am_dets){
                     cerr << "fired_TDC_amount too large! " << fired_TDC_amount << endl;
                 }
                 active_det = det_ID_TDC[tdc_board_ID][TDC_ch];
