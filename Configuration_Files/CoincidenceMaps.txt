@@ -1,0 +1,15 @@
+#
+# Define Processor Map for different coincidence types 
+#
+# (types: FRS = 0,AIDA = 1,PLASTIC = 2,FATIMA = 3,GALILEO = 4,FINGER = 5) 
+# 
+# ======================================================
+# DATA TYPES HAVE TO BE IN ASCENDING ORDER!
+# ======================================================
+#
+# files sorted like:
+# Processor ID | amount of coincidences | types ...
+#
+0	2	2	3
+
+

@@ -2,8 +2,13 @@
 #define EVENT_STORE_H
 
 #include <iostream>
+#include <fstream>
+#include <vector>
 #include <cstdlib>
 #include <cmath>
+#include <sstream>
+#include <iterator>
+#include <algorithm>
 
 #include "Raw_Event.h"
 
@@ -24,6 +29,8 @@
 #include "FATIMA_DataStruct.h"
 #include "GALILEO_DataStruct.h"
 #include "FINGER_DataStruct.h"
+
+#include "ProcessDef.h"
 
 #include "Tree_Creator.h"
 
@@ -55,14 +62,18 @@ private:
     int iter_tmp,internal_iter;
     double E_save[2];
     double e_gali,fat_e;
+    
+    int ProcessAmount;
 
     bool VME_or_TAMEX;
 
     Events*** Event;
     ULong64_t** Event_WR;
     int*** Event_position;
+    
 
     EventProcessor** PROCESSORS;
+    ProcessDef** Process_Type;
     
     int amount_interest,ev_pos;
     int* tmp_pos;
@@ -81,7 +92,13 @@ private:
 
     void FILL_PROCESSOR(int,int,int);
 
-    inline bool in_time_windows(double);
+    inline bool in_time_windows(double);   
+    
+    void GetCoincidenceMap();
+    void SetProcessors();
+    void ProcessCreator(int);
+    
+    int getProcessorType(int,int*);
 
     //-------------------
     void Write_Energies(int,int);

@@ -48,9 +48,16 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
     for(int i = 0;i < MEMORY_LIMIT;++i) Address_arr[i] = i;
 
     //define coincidence processors
-    PROCESSORS = new EventProcessor*[2];
-    PROCESSORS[0] = new PL_FAT_EventProcessor();
-    PROCESSORS[1] = nullptr;
+    
+    Process_Type = new ProcessDef*[100];
+    for(int i = 0;i < 100;++i) Process_Type[i] = nullptr;
+    ProcessAmount = 0;
+    
+    GetCoincidenceMap();
+    
+    PROCESSORS = new EventProcessor*[amount_interest];
+    SetProcessors();
+
     
     Verbose_Write = false;
     if(Verbose_Write){
@@ -103,6 +110,12 @@ Event_Store::~Event_Store(){
     //Change to PROCESSOR array if more than one processor used
     delete PROCESSORS[0];
     delete[] PROCESSORS;
+    
+    for(int i = 0;i < ProcessAmount;++i){
+        delete Process_Type[i];
+        Process_Type[i] = nullptr;
+    }
+    delete[] Process_Type;
 
     delete[] Event;
     delete[] Event_WR;
@@ -368,18 +381,20 @@ void Event_Store::Write(Match* MatchHit,Tree_Creator* Tree){
     int* filled_types = MatchHit->get_filled_types();
     int** hit_addresses = MatchHit->get_Address_Array();
     
-    //do coincidence-specific operations (e.g. time walk FAT <-> PLASTIC)
-    
+    //get Processor type
+    std::sort(filled_types,filled_types + match_hits);
+    int ProcessorType = getProcessorType(match_hits,filled_types);
+
 	//loop over coincident events
 	for(int o = 0;o < match_hits;++o){ 
 		if(filled_types[o] != -1){
 			//Pass event to Processor
-            FILL_PROCESSOR(filled_types[o],*hit_addresses[filled_types[o]],0);
+            FILL_PROCESSOR(filled_types[o],*hit_addresses[filled_types[o]],ProcessorType);
 		}
 	}
-	//check if data needed for calibration has been sent to 
-	//MatchSpecificCalibrations object (if not -> error!)
-	if(!PROCESSORS[0]->AllPassed()) exit(1);
+	//check if data has been sent to Processor
+	//(if not -> error!)
+	if(!PROCESSORS[ProcessorType]->AllPassed()) exit(1);
     
     filled_types = nullptr;
     hit_addresses = nullptr;
@@ -432,3 +447,108 @@ void Event_Store::Write_Energies(int type,int evt_addr){
 }
 
 //---------------------------------------------------------------
+
+void Event_Store::GetCoincidenceMap(){
+
+    std::ifstream CoincMap("Configuration_Files/CoincidenceMaps.txt");
+    
+    if(CoincMap.fail()){
+        std::cerr << "Could not find Configuration_Files/CoincidenceMaps.txt" << std::endl;
+        exit(1);
+    }
+        
+    std::vector<int> types(10,-1);
+    std::string line;
+    int ID = 0,Length = 0;
+    
+    int iter = 0;
+        
+    while(std::getline(CoincMap,line)){
+        
+        if(line[0] == '#') continue;
+        
+        std::istringstream buffer1(line);
+        std::vector<std::string> words1(std::istream_iterator<std::string>{buffer1},std::istream_iterator<std::string>());
+        
+        ID = std::stoi(words1[0]);
+        Length = std::stoi(words1[1]);
+        for(int i = 0;i < Length;++i) types[i] = std::stoi(words1[i+2]);
+        
+        Process_Type[iter] = new ProcessDef(ID,Length,types);
+        
+        ++iter;
+        if(iter >= 100){
+            cerr << "Possible problem with CoincidenceMaps array" << endl;
+            cerr << "Iterator exceeded allowed range" << endl;
+            exit(1);
+        }
+        
+    }
+    
+    ProcessAmount = iter;
+
+}
+
+//---------------------------------------------------------------
+
+void Event_Store::SetProcessors(){
+    
+    bool overlap = true;
+    int OverlapType = 0;
+    for(int i = 0;i < amount_interest;++i){
+        overlap = true;
+        for(int j = 0;j < length_interest[i];++j){
+            overlap = overlap && (Process_Type[i]->types[j] == interest_array[i][j]);
+        }
+        if(overlap && length_interest[i] > 1){
+            OverlapType = Process_Type[i]->ID;
+            ProcessCreator(OverlapType);
+        }
+    }
+}
+
+//---------------------------------------------------------------
+
+void Event_Store::ProcessCreator(int ID){
+    
+    //set Processor IDs here (defined in CoincidenceMap file)
+    switch(ID){
+        case 0:
+            PROCESSORS[ID] = new PL_FAT_EventProcessor();
+            break;
+        //case 1: //<- Define your Processors here
+            //break;
+            
+        //case 2: //<- Define your Processors here
+            //break;
+        
+        default:
+            std::cerr << "Unknown Process ID " << ID << std::endl;
+            std::cerr << "Defined types are: ";
+            for(int i = 0;i < Process_Type[ID]->Length;++i){
+                std::cerr << Process_Type[ID]->types[i] << " ";
+            }
+            std::cerr << std::endl;
+            exit(1);
+    }
+}
+
+//---------------------------------------------------------------
+
+int Event_Store::getProcessorType(int Amount,int* types){
+    bool overlap = true;
+    int OverlapType = 0;
+    for(int i = 0;i < amount_interest;++i){
+        overlap = false;
+        if(length_interest[i] == Amount){
+            overlap = true;
+            for(int j = 0;j < length_interest[i];++j){
+                overlap = overlap && (Process_Type[i]->types[j] == types[j]);
+            }
+        }
+        if(overlap && length_interest[i] > 1) return Process_Type[i]->ID;
+    }
+}
+
+//---------------------------------------------------------------
+

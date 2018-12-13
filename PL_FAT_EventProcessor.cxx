@@ -6,6 +6,13 @@ PL_FAT_EventProcessor::PL_FAT_EventProcessor() : PLASTIC_Passed(false) ,
                                                  FATIMA_Passed(false)
 {
     FILE = new TFile("Root_Trees/EventBuilder/PL_FAT_EventBuild.root","RECREATE");
+    
+    std::cout << "***********************************************************" << std::endl;
+    std::cout << "Created PLASTIC_FATIMA Event Processor " << std::endl;
+    std::cout << "Output in Root_Trees/EventBuilder/PL_FAT_EventBuild.root" << std::endl;
+    std::cout << "***********************************************************" << std::endl;
+
+    
 
     char Name[50];
 
