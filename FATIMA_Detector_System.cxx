@@ -434,6 +434,7 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 			fired_QDC_amount++;
 		}
 	}
+    cout << "QDC checked!" << endl;
 }
 
 
@@ -514,6 +515,7 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
             exit(0);
         }
     }
+    cout << "TDC checked!" << endl;
 }
 
 //---------------------------------------------------------------
