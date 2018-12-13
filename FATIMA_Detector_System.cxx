@@ -41,6 +41,8 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
     FAT_positions = std::vector<std::vector<double> >(36,std::vector<double>(3,-1));
     source_position_correction = std::vector<double>(36,-1);
 
+    Fired_QDC_Channels = std::vector<std::vector<int>(100,std::vector<int>(2,-1));
+
 
     FATIMA_T_CALIB = new FATIMA_Time_Calibration();
     FATIMA_E_CALIB = new FATIMA_Energy_Calibration();

@@ -68,7 +68,7 @@ private:
 	int num_TDC_modules_fixed = 0;  //Set in the constructor
     
 	    //This is used during individual module unpacking
-	int Fired_QDC_Channels[100][2];
+	std::vector<std::vector<int> Fired_QDC_Channels;
     
 
 	void load_board_channel_file();
