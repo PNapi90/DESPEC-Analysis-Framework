@@ -41,7 +41,7 @@ FATIMA_Detector_System::FATIMA_Detector_System(){
     FAT_positions = std::vector<std::vector<double> >(36,std::vector<double>(3,-1));
     source_position_correction = std::vector<double>(36,-1);
 
-    Fired_QDC_Channels = std::vector<std::vector<int>(100,std::vector<int>(2,-1));
+    Fired_QDC_Channels = std::vector<std::vector<int> >(100,std::vector<int>(2,-1));
 
 
     FATIMA_T_CALIB = new FATIMA_Time_Calibration();
@@ -193,7 +193,7 @@ void FATIMA_Detector_System::get_Event_data(Raw_Event* RAW){
 //---------------------------------------------------------------
 
 void FATIMA_Detector_System::Process_MBS(int* pdata){
-
+	
 
     this->pdata = pdata;
     FAT_evt++;
@@ -317,7 +317,6 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
      // Loop retrieves channels fired from integer value //
     for(int j = 7; j >= 0; j--){
         if(num_Channels >= pow(2, j)){
-            cout << num_channels_fired << " " << Fired_QDC_Channels.size() << std::endl;
             //fill Fired_Channel array with corresponding ids
             if(wired_QDC(board_ID,j)){
                 Fired_QDC_Channels[num_channels_fired][0] = board_ID; 
@@ -434,7 +433,6 @@ void FATIMA_Detector_System::Check_QDC_DATA(QDC_Header* QDChead){
 			fired_QDC_amount++;
 		}
 	}
-    cout << "QDC checked!" << endl;
 }
 
 
@@ -515,7 +513,6 @@ void FATIMA_Detector_System::Check_TDC_DATA(){
             exit(0);
         }
     }
-    cout << "TDC checked!" << endl;
 }
 
 //---------------------------------------------------------------

@@ -86,10 +86,10 @@ void White_Rabbit::process_White_Rabbit(int* pdata){
     
     bool found = true;
     
-    /*for(int i = 0;i < 6;++i){
+    for(int i = 0;i < 6;++i){
         found = WR_d == ID[i];
         if(found) break;
-    }*/
+    }
     
     if(!found){
         cerr << hex << "White Rabbit Header 0x" << WR_d << " not known" << endl;

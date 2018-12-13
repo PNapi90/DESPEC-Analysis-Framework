@@ -163,12 +163,13 @@ void PLASTIC_VME_Detector_System::Process_MBS(TGo4MbsSubEvent* psubevt){
         chan = (data & CH_MASK2) >> 21;     // [0..31] 
         data = data & DA_MASK2;
 
-        if(abs(chan) <= 31){
+        if(abs(chan) <= 31 && TDC_iterator < 50){
             VME_TDC_Channels[TDC_iterator] = chan;
             VME_TDC_Data[TDC_iterator] = data;
             ++TDC_iterator;
         }
     } // end while(true)
+    
 }
 
 //---------------------------------------------------------------

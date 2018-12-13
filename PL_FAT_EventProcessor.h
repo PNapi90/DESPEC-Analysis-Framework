@@ -5,6 +5,7 @@
 #include <TH1.h>
 #include <TH2.h>
 #include <TF1.h>
+#include <string>
 
 #include "PLASTIC_DataStruct.h"
 #include "PLASTIC_VME_DataStruct.h"
@@ -18,8 +19,8 @@ class PL_FAT_EventProcessor : public EventProcessor{
 
 private:
 
-    const int MAX_FAT = 50;
-    const int MAX_PL = 50;
+    const int MAX_FAT = 40;
+    const int MAX_PL = 40;
 
     const bool PLASTIC_VME = true;
 
@@ -32,8 +33,8 @@ private:
     bool FATIMA_Passed;
 
     TFile* FILE;
-    TH1D*** TDiff;
-
+    TH1F*** TDiff;
+    TH2F*** EvE;
     void ProcessEvent();
 
 

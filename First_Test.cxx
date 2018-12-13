@@ -114,7 +114,7 @@ TGo4EventProcessor(name) // Histograms defined here //
 	
 	//Skip event building if plastic calibration is enabled
 	SKIP_EVT_BUILDING = SKIP_EVT_BUILDING || PLASTIC_CALIBRATION;
-	SKIP_EVT_BUILDING = true;
+	
 	
 	if(!SKIP_EVT_BUILDING){
 		EvtBuilder = new EventBuilder*[1];
