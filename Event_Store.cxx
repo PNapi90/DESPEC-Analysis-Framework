@@ -55,7 +55,7 @@ Event_Store::Event_Store(int amount_interest,int* length_interest,int** interest
     
     GetCoincidenceMap();
     
-    PROCESSORS = new EventProcessor*[amount_interest];
+    PROCESSORS = new EventProcessor*[ProcessAmount];
     SetProcessors();
 
     
